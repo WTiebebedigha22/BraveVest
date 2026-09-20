@@ -9,6 +9,8 @@ const investorLinks = [
   { to: '/wallet', label: 'Wallet' },
   { to: '/documents', label: 'Documents' },
   { to: '/profile', label: 'Profile' },
+  { to: '/year-in-review', label: 'Year in Review' },
+  { to: '/referral', label: 'Referrals' },
 ];
 const adminLinks = [
   { to: '/admin', label: 'Overview' },

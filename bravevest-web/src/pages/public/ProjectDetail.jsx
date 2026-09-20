@@ -5,6 +5,8 @@ import Loader from '@/components/shared/Loader';
 import Button from '@/components/shared/Button';
 import Currency from '@/components/shared/Currency';
 import InvestModal from '@/components/marketplace/InvestModal';
+import ReturnCalculator from '@/components/marketplace/ReturnCalculator';
+import RiskDisclosure from '@/components/marketplace/RiskDisclosure';
 import { projectsApi } from '@/api/projects';
 import { useAuth } from '@/hooks/useAuth';
 import { useSEO } from '@/hooks/useSEO';
@@ -73,6 +75,8 @@ export default function ProjectDetail() {
           <p className="pd__summary">{project.summary}</p>
 
           <div className="pd__divider" />
+
+          <RiskDisclosure level={project.riskLevel || "medium"} />
 
           <h3 className="pd__section-h">About this opportunity</h3>
           <p className="pd__body">{project.description}</p>

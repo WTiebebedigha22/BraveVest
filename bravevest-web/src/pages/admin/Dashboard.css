@@ -1,23 +1,17 @@
-/* bravevest-web/src/pages/admin/Dashboard.css */
-.dash-card {
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  padding: 24px;
+.admin-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.admin-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+.admin-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--gray-600); }
+.admin-viewall {
+  font-size: 12px; color: var(--gray-600);
+  text-decoration: underline; text-underline-offset: 3px;
 }
-.dash-card__head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
+.admin-viewall:hover { color: var(--ink); }
+
+@media (max-width: 1100px) {
+  .admin-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .admin-grid-2 { grid-template-columns: 1fr; }
 }
-.dash-card__head h3 {
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0;
-}
-.dash-card__link {
-  font-size: 12px;
-  color: var(--gray-600);
+@media (max-width: 640px) {
+  .admin-grid-4 { grid-template-columns: 1fr; }
 }

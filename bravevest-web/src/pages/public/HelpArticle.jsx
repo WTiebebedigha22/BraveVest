@@ -1,0 +1,198 @@
+import { useParams, Link } from 'react-router-dom';
+import { useSEO } from '@/hooks/useSEO';
+import './HelpArticle.css';
+
+const CONTENT = {
+  'how-verification-works': {
+    cat: 'Getting started',
+    title: 'How does BraveVest verify projects?',
+    body: [
+      'Every project listed on BraveVest goes through a structured verification process before investors can fund it.',
+      '1. Sponsor verification — we confirm the identity, track record, and financial capacity of the project sponsor or originator.',
+      '2. Land/title review — for property and development projects, we review the title documents, survey plans, and any encumbrances.',
+      '3. Budget review — the project budget, cost assumptions, and use-of-funds statement are checked against market rates.',
+      '4. Timeline review — the development timeline is assessed for realism given the scope.',
+      '5. Site inspection — for construction and development projects, we conduct a physical inspection or send a trusted partner.',
+      '6. Investment committee review — the opportunity is approved by our investment committee before it goes live.',
+      '7. Ongoing monitoring — after listing, we track progress against milestones and report to investors.',
+      'If you have questions about a specific project, contact investor relations.',
+    ],
+  },
+  'understanding-returns': {
+    cat: 'Investing',
+    title: 'Understanding your returns and payout schedule',
+    body: [
+      'Returns on BraveVest are calculated based on the expected annual return % and the tenor of the investment.',
+      'Example: ₦1,000,000 invested in a 24-month project at 15% p.a. returns ₦300,000 in total (15% × 2 years).',
+      'Payout frequency depends on the product: monthly, quarterly, annually, or bullet (all at maturity).',
+      'You can see the exact projected values for any project using the return calculator on the project page.',
+      'Important: projected returns are estimates, not guarantees. Actual returns depend on project performance.',
+    ],
+  },
+  'kyc-guide': {
+    cat: 'Getting started',
+    title: 'How to complete your KYC',
+    body: [
+      'BraveVest is required by Nigerian financial regulations to verify the identity of every investor.',
+      'Step 1 — Personal details: date of birth, gender, nationality, occupation.',
+      'Step 2 — Identity: upload a government-issued ID (NIN, BVN, passport, driver\'s license, or voter\'s card).',
+      'Step 3 — Address: provide your residential address.',
+      'Step 4 — Bank: provide the bank account where payouts should land.',
+      'Step 5 — Review and submit: confirm your details and submit for review.',
+      'Our compliance team reviews submissions within 24–48 hours. You will receive an email when your KYC is approved.',
+    ],
+  },
+  'risk-explained': {
+    cat: 'Investing',
+    title: 'Understanding investment risk',
+    body: [
+      'All investments carry risk. BraveVest assigns each project a risk level (low, medium, or high) based on:',
+      '· Project sponsor track record',
+      '· Security or collateral backing the project',
+      '· Repayment source certainty',
+      '· Market conditions',
+      '· Timeline feasibility',
+      'Risk levels are shown on every project page. Investors must acknowledge risk before subscribing.',
+      'Diversification is your best defense: spreading capital across categories and projects reduces overall risk.',
+      'Read the full disclosure before investing.',
+    ],
+  },
+  'project-default': {
+    cat: 'Safety',
+    title: 'What happens if a project defaults?',
+    body: [
+      'Project default is rare but possible. Our process when a project misses a payment or milestone:',
+      '1. Early warning — we contact the operator and escalate to the investment committee.',
+      '2. Cure period — the operator has a defined window to catch up or restructure.',
+      '3. Enforcement — if cure fails, we activate the security (collateral, guarantees, or legal action).',
+      '4. Recovery — funds recovered are distributed to investors proportionally after costs.',
+      '5. Reporting — investors receive a written update at each stage.',
+      'Timelines vary. Recovery can take weeks to months depending on the asset backing the project.',
+    ],
+  },
+  'fees-explained': {
+    cat: 'Money',
+    title: 'All fees, explained',
+    body: [
+      'Transparent fees are core to BraveVest. Here is what we charge:',
+      '· Structuring fee (1–3%): paid by the project sponsor, not the investor.',
+      '· Platform administration fee (0.5–2%): covers onboarding, documentation, and reporting.',
+      '· Project management fee (2–5%): paid by the sponsor for monitoring and execution oversight.',
+      '· Performance fee (10–20%): only charged when a project exceeds agreed benchmarks.',
+      '· Property management fee (5–10%): for rental or lease income products.',
+      'Investors see the net return rate on each project page — all fees are already accounted for.',
+    ],
+  },
+  'withdrawing': {
+    cat: 'Money',
+    title: 'How to withdraw your returns',
+    body: [
+      'Returns are automatically paid to the bank account on file for your account.',
+      'For monthly or quarterly payouts, funds arrive on or within 3 business days of the scheduled payout date.',
+      'For bullet payouts, funds arrive at maturity.',
+      'To change your bank account, go to Profile → Bank details and submit the update. Changes are verified within 24 hours.',
+      'Withdrawal fees: none. Transfers are handled by our payment partner.',
+    ],
+  },
+  'taxes': {
+    cat: 'Money',
+    title: 'Taxes on your returns',
+    body: [
+      'Returns from investments on BraveVest may be subject to Nigerian tax depending on your tax status and the product type.',
+      'BraveVest provides an annual statement of returns you can use for tax filing.',
+      'We do not withhold tax on returns for individual investors by default.',
+      'For specific guidance, consult a tax adviser. BraveVest does not provide tax advice.',
+    ],
+  },
+  'security': {
+    cat: 'Safety',
+    title: 'How we keep your account secure',
+    body: [
+      'Bank-grade security is standard across BraveVest:',
+      '· 256-bit SSL encryption on every page',
+      '· PCI-DSS compliant payment processors',
+      '· Two-factor authentication (2FA) available on all accounts',
+      '· Encrypted storage of sensitive data',
+      '· Regular security audits',
+      'To protect yourself: never share your password, verify URLs before logging in, and enable 2FA. BraveVest will never ask for your password by email or SMS.',
+    ],
+  },
+  'co-investing': {
+    cat: 'Advanced',
+    title: 'Co-investing with groups',
+    body: [
+      'BraveVest CoFund lets cooperatives, families, associations, churches, and diaspora groups invest together.',
+      'How it works:',
+      '· A group representative creates a CoFund account',
+      '· Members contribute via a shared portal',
+      '· The group invests in selected projects under one profile',
+      '· Returns are distributed to members proportionally',
+      'CoFund accounts get: consolidated reporting, private briefings, and priority allocation on selected products.',
+      'Contact investor relations to set up a CoFund.',
+    ],
+  },
+  'prime-circle': {
+    cat: 'Advanced',
+    title: 'Prime & Circle explained',
+    body: [
+      'BraveVest Prime is our tier for high-ticket investors seeking premium opportunities: larger project deals, private co-investments, and institutional-style offers.',
+      'BraveVest Circle is our private investment community: early access, private briefings, site inspections, and quarterly portfolio updates.',
+      'Qualification is by invitation or by request. Reach out to investor relations to discuss eligibility.',
+    ],
+  },
+  'dispute-resolution': {
+    cat: 'Safety',
+    title: 'Filing a complaint',
+    body: [
+      'If you have a complaint about a project, a payout, or the platform:',
+      '1. Email complaints@bravevest.com with your name, account email, and description.',
+      '2. You will receive an acknowledgement within 1 business day.',
+      '3. We investigate and respond within 10 business days.',
+      '4. If unresolved, the matter escalates to the investment committee.',
+      '5. You may also contact the relevant regulator if you are not satisfied with our final response.',
+      'We take every complaint seriously and log all reports for compliance review.',
+    ],
+  },
+};
+
+export default function HelpArticle() {
+  const { slug } = useParams();
+  const article = CONTENT[slug];
+
+  useSEO({
+    title: article ? article.title : 'Article not found',
+    description: article ? article.body[0] : 'Help article on BraveVest.',
+    canonical: `/#/help/${slug}`,
+  });
+
+  if (!article) {
+    return (
+      <div className="help-article container">
+        <Link to="/help" className="help-article__back">← All articles</Link>
+        <h1>Article not found</h1>
+        <p className="text-muted">The article you're looking for doesn't exist or was moved.</p>
+      </div>
+    );
+  }
+
+  return (
+    <article className="help-article container">
+      <Link to="/help" className="help-article__back">← All articles</Link>
+      <div className="help-article__cat">{article.cat}</div>
+      <h1 className="help-article__title">{article.title}</h1>
+
+      <div className="help-article__body">
+        {article.body.map((p, i) => (
+          <p key={i} className={p.startsWith('·') || /^\d\./.test(p) ? 'help-article__list-item' : ''}>
+            {p}
+          </p>
+        ))}
+      </div>
+
+      <div className="help-article__foot">
+        <div className="help-article__foot-title">Still need help?</div>
+        <Link to="/contact" className="help-article__foot-link">Contact support →</Link>
+      </div>
+    </article>
+  );
+}

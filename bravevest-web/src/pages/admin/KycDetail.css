@@ -1,1 +1,18 @@
-/* uses shared card styles */
+.kycdoc-view {
+  color: var(--ink); font-size: 12.5px;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.kycdoc-note {
+  background: #FBE6E6; color: #8a2121;
+  padding: 14px 18px; border-radius: var(--r-md);
+  font-size: 13.5px; line-height: 1.6;
+}
+.kycdoc-actions {
+  display: flex; justify-content: flex-end; gap: 10px;
+  padding-top: 20px; border-top: 1px solid var(--line);
+}
+.admin-error {
+  background: #FBE6E6; color: #8a2121;
+  padding: 12px 18px; border-radius: var(--r-md);
+  font-size: 13.5px; margin-bottom: 18px;
+}

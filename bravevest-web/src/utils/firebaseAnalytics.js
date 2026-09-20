@@ -1,14 +1,12 @@
-// src/utils/firebaseAnalytics.js — Firebase Analytics events
-import { logEvent } from 'firebase/analytics';
+﻿// src/utils/firebaseAnalytics.js — Firebase Analytics events (disabled-safe)
+
 import { analytics } from '@/lib/firebase';
 
 export function fbTrack(name, params = {}) {
   if (!analytics) return;
-  try {
-    logEvent(analytics, name, params);
-  } catch {
-    // Analytics is best-effort
-  }
+  import('firebase/analytics').then(({ logEvent }) => {
+    try { logEvent(analytics, name, params); } catch { /* best-effort */ }
+  });
 }
 
 export const FbAnalytics = {

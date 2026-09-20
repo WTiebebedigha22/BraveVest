@@ -1,0 +1,34 @@
+.astat {
+  background: #fff; border: 1px solid var(--line);
+  border-radius: var(--r-lg); padding: 22px 24px;
+  display: flex; flex-direction: column; gap: 12px;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.astat:hover { transform: translateY(-2px); border-color: #d6d6d6; }
+.astat__top { display: flex; justify-content: space-between; align-items: flex-start; }
+.astat__label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--gray-600); font-weight: 600;
+}
+.astat__icon {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--surface-soft);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink);
+}
+.astat__value {
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 3vw, 34px); line-height: 1.05;
+  color: var(--ink); letter-spacing: -0.01em;
+}
+.astat__bottom { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.astat__delta {
+  font-size: 12px; font-weight: 600;
+  color: #3a5a10; background: #EAF7CE;
+  padding: 3px 8px; border-radius: var(--r-pill);
+}
+.astat__delta.is-down { color: #8a2121; background: #FBE6E6; }
+.astat__hint { font-size: 12px; color: var(--gray-600); }
+
+.astat--green .astat__value { color: #3a5a10; }
+.astat--gold .astat__value { color: #8a6c0a; }

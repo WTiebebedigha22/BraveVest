@@ -1,4 +1,4 @@
-// src/middleware/error.js
+﻿// src/middleware/error.js
 const env = require('../config/env');
 const ApiError = require('../utils/apiError');
 const logger = require('../config/logger');
@@ -30,7 +30,6 @@ function errorHandler(err, req, res, next) {
   if (error.details) body.details = error.details;
   if (env.isDev && error.statusCode >= 500) body.stack = error.stack;
 
-  // Guard against an already-sent response
   if (res.headersSent) return next(error);
 
   res.status(error.statusCode).json(body);

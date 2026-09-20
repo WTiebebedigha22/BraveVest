@@ -6,6 +6,7 @@ import Button from '@/components/shared/Button';
 import Loader from '@/components/shared/Loader';
 import Currency from '@/components/shared/Currency';
 import PortfolioChart from '@/components/investor/PortfolioChart';
+import PortfolioHealth from '@/components/investor/PortfolioHealth';
 import { useAuth } from '@/hooks/useAuth';
 import { investmentsApi } from '@/api/investments';
 import { paymentsApi } from '@/api/payments';
@@ -63,6 +64,8 @@ export default function Dashboard() {
           </div>
 
           <div className="mb-4"><PortfolioChart /></div>
+
+          <div className="mb-4"><PortfolioHealth investments={investments} /></div>
 
           <div className="grid grid-2">
             <div className="dash-card">

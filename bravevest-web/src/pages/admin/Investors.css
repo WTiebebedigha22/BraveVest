@@ -1,1 +1,10 @@
-/* uses shared .inv-table styles */
+.inv-row { display: flex; align-items: center; gap: 12px; }
+.inv-row__avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal), var(--lime));
+  color: #fff; font-weight: 600; font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+  text-transform: uppercase;
+}
+.inv-row__name { font-weight: 500; }
+.inv-row__meta { font-size: 11.5px; color: var(--gray-600); margin-top: 2px; }

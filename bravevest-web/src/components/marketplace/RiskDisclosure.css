@@ -1,0 +1,43 @@
+.risk {
+  background: var(--risk-bg);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  margin: 20px 0;
+}
+.risk__head {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 14px 18px; gap: 16px;
+  text-align: left; color: var(--risk-fg);
+}
+.risk__head-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.risk__badge {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .04em;
+  background: rgba(255,255,255,.6);
+  padding: 4px 10px; border-radius: var(--r-pill);
+}
+.risk__head-text { font-size: 13px; }
+.risk__caret { font-size: 12px; transition: transform .2s ease; }
+.risk__caret.is-open { transform: rotate(180deg); }
+
+.risk__body {
+  padding: 0 18px 18px;
+  color: var(--risk-fg);
+}
+.risk__bar {
+  height: 4px; background: rgba(255,255,255,.6);
+  border-radius: 2px; overflow: hidden; margin-bottom: 14px;
+}
+.risk__bar-fill {
+  height: 100%; background: currentColor; opacity: .8;
+  transition: width .3s ease;
+}
+.risk__p {
+  font-size: 12.5px; line-height: 1.65; margin-bottom: 10px;
+  opacity: .9;
+}
+.risk__links {
+  display: flex; gap: 18px; margin-top: 14px;
+  font-size: 12px;
+}
+.risk__links a { text-decoration: underline; text-underline-offset: 3px; }

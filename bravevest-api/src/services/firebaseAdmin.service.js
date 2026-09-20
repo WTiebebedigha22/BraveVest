@@ -1,4 +1,4 @@
-// src/services/firebaseAdmin.service.js — Firebase Admin SDK singleton
+// src/services/firebaseAdmin.service.js
 const fs = require('fs');
 const path = require('path');
 const admin = require('firebase-admin');
@@ -9,11 +9,6 @@ function init() {
   if (initialized) return admin;
 
   const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-  const hasEnvCreds =
-    process.env.FIREBASE_PROJECT_ID &&
-    process.env.FIREBASE_CLIENT_EMAIL &&
-    process.env.FIREBASE_PRIVATE_KEY &&
-    !process.env.FIREBASE_PRIVATE_KEY.includes('REPLACE_WITH_REAL_KEY');
 
   if (credPath && fs.existsSync(path.resolve(credPath))) {
     admin.initializeApp({
@@ -23,6 +18,13 @@ function init() {
     initialized = true;
     return admin;
   }
+
+  // Fallback: inline creds
+  const hasEnvCreds =
+    process.env.FIREBASE_PROJECT_ID &&
+    process.env.FIREBASE_CLIENT_EMAIL &&
+    process.env.FIREBASE_PRIVATE_KEY &&
+    !process.env.FIREBASE_PRIVATE_KEY.includes('REPLACE_WITH_REAL_KEY');
 
   if (hasEnvCreds) {
     admin.initializeApp({
@@ -37,7 +39,6 @@ function init() {
     return admin;
   }
 
-  // Not configured — return null so callers can fall back to JWT
   return null;
 }
 

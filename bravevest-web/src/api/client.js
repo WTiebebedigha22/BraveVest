@@ -1,14 +1,13 @@
 import axios from 'axios';
+import { ENABLED as FIREBASE_ENABLED } from '@/lib/firebase';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
-const USE_FIREBASE = !!import.meta.env.VITE_FIREBASE_API_KEY;
 
 export const api = axios.create({
   baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' },
 });
 
-/* ── Token storage (legacy JWT mode) ── */
 export const tokens = {
   get access() { return localStorage.getItem('bv_access'); },
   get refresh() { return localStorage.getItem('bv_refresh'); },
@@ -22,17 +21,13 @@ export const tokens = {
   },
 };
 
-/* ── Request: attach token ── */
 api.interceptors.request.use(async (config) => {
-  if (USE_FIREBASE) {
-    // Prefer a fresh Firebase ID token
+  if (FIREBASE_ENABLED) {
     try {
       const { fbGetIdToken } = await import('./firebaseAuth');
       const idToken = await fbGetIdToken(false);
       if (idToken) config.headers.Authorization = `Bearer ${idToken}`;
-    } catch {
-      // fall through to JWT if Firebase fails
-    }
+    } catch { /* ignore */ }
   }
   if (!config.headers.Authorization) {
     const t = tokens.access;
@@ -41,17 +36,13 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-/* ── Response: auto-refresh JWT on 401 (legacy mode only) ── */
 let refreshing = null;
 api.interceptors.response.use(
   (r) => r,
   async (error) => {
     const original = error.config;
 
-    if (USE_FIREBASE) {
-      // Firebase handles its own refresh; nothing to do
-      return Promise.reject(error);
-    }
+    if (FIREBASE_ENABLED) return Promise.reject(error);
 
     const isAuthEndpoint =
       original?.url?.includes('/auth/login') ||
