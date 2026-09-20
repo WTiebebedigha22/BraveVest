@@ -1,0 +1,340 @@
+// BraveVest Marketplace — Phase 1 & 2 only
+// Proposal No. BV-QT-2026-001
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  INVESTOR
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  PENDING_VERIFICATION
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum KycStatus {
+  NOT_STARTED
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum IdType {
+  NIN
+  BVN
+  PASSPORT
+  DRIVERS_LICENSE
+  VOTERS_CARD
+}
+
+enum ProjectCategory {
+  REAL_ESTATE
+  AGRICULTURE
+  ENERGY
+  SME
+  INFRASTRUCTURE
+}
+
+enum ProjectStatus {
+  DRAFT
+  PENDING_REVIEW
+  OPEN
+  FUNDED
+  CLOSED
+  CANCELLED
+}
+
+enum InvestmentStatus {
+  PENDING
+  CONFIRMED
+  ACTIVE
+  MATURED
+  WITHDRAWN
+  CANCELLED
+  DEFAULTED
+}
+
+enum TransactionType {
+  DEPOSIT
+  INVESTMENT
+  RETURN
+  WITHDRAWAL
+  REFUND
+  FEE
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REVERSED
+}
+
+enum PaymentProvider {
+  PAYSTACK
+  FLUTTERWAVE
+  BANK_TRANSFER
+  MANUAL
+}
+
+enum DocumentType {
+  ID_CARD
+  PASSPORT_PHOTO
+  PROOF_OF_ADDRESS
+  BANK_STATEMENT
+  UTILITY_BILL
+  SIGNATURE
+  OTHER
+}
+
+enum AuditAction {
+  USER_REGISTERED
+  USER_LOGIN
+  KYC_SUBMITTED
+  KYC_APPROVED
+  KYC_REJECTED
+  INVESTMENT_CREATED
+  INVESTMENT_CONFIRMED
+  PROJECT_CREATED
+  PROJECT_UPDATED
+  PAYMENT_INITIALIZED
+  PAYMENT_VERIFIED
+  ADMIN_ACTION
+}
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  phone         String?    @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  role          UserRole   @default(INVESTOR)
+  status        UserStatus @default(PENDING_VERIFICATION)
+  emailVerified DateTime?
+  image         String?
+
+  kyc           KycProfile?
+  investments   Investment[]
+  transactions  Transaction[]
+  documents     Document[]
+  auditLogs     AuditLog[]
+  refreshTokens RefreshToken[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([role])
+  @@index([status])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model KycProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  status KycStatus @default(NOT_STARTED)
+
+  dateOfBirth DateTime?
+  gender      String?
+  nationality String?
+  occupation  String?
+
+  idType       IdType?
+  idNumber     String?
+  idIssuedDate DateTime?
+  idExpiryDate DateTime?
+
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  state        String?
+  postalCode   String?
+  country      String? @default("NG")
+
+  bankName      String?
+  bankCode      String?
+  accountNumber String?
+  accountName   String?
+
+  reviewedById  String?
+  reviewedAt    DateTime?
+  rejectionNote String?
+  providerRef   String?
+
+  submittedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status])
+  @@map("kyc_profiles")
+}
+
+model Project {
+  id          String          @id @default(cuid())
+  slug        String          @unique
+  title       String
+  summary     String
+  description String          @db.Text
+  category    ProjectCategory
+  status      ProjectStatus   @default(DRAFT)
+
+  coverImage String?
+  gallery    String[]        @default([])
+  documents  String[]        @default([])
+
+  targetAmount      Decimal @db.Decimal(18, 2)
+  minInvestment     Decimal @db.Decimal(18, 2)
+  raisedAmount      Decimal @db.Decimal(18, 2) @default(0)
+  expectedReturnPct Decimal @db.Decimal(5, 2)
+  tenorMonths       Int
+  payoutFrequency   String?
+
+  startDate DateTime?
+  endDate   DateTime?
+  closesAt  DateTime?
+
+  location    String?
+  riskLevel   String?
+  isFeatured  Boolean @default(false)
+  createdById String
+
+  investments Investment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([category])
+  @@index([isFeatured])
+  @@map("projects")
+}
+
+model Investment {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  projectId String
+  project   Project          @relation(fields: [projectId], references: [id])
+  status    InvestmentStatus @default(PENDING)
+
+  amount         Decimal @db.Decimal(18, 2)
+  units          Int     @default(1)
+  expectedReturn Decimal @db.Decimal(18, 2)
+  actualReturn   Decimal @db.Decimal(18, 2) @default(0)
+
+  investedAt  DateTime?
+  maturesAt   DateTime?
+  withdrawnAt DateTime?
+
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([status])
+  @@map("investments")
+}
+
+model Transaction {
+  id           String      @id @default(cuid())
+  reference    String      @unique
+  userId       String
+  user         User        @relation(fields: [userId], references: [id])
+  investmentId String?
+  investment   Investment? @relation(fields: [investmentId], references: [id])
+
+  type     TransactionType
+  status   TransactionStatus @default(PENDING)
+  provider PaymentProvider   @default(PAYSTACK)
+
+  amount    Decimal @db.Decimal(18, 2)
+  fee       Decimal @db.Decimal(18, 2) @default(0)
+  netAmount Decimal @db.Decimal(18, 2)
+  currency  String  @default("NGN")
+
+  providerRef   String?
+  providerMeta  Json?
+  failureReason String?
+
+  paidAt    DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([investmentId])
+  @@index([status])
+  @@index([reference])
+  @@map("transactions")
+}
+
+model Document {
+  id     String       @id @default(cuid())
+  userId String
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type   DocumentType
+
+  fileName String
+  fileUrl  String
+  fileSize Int?
+  mimeType String?
+
+  verified   Boolean   @default(false)
+  verifiedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([type])
+  @@map("documents")
+}
+
+model AuditLog {
+  id       String      @id @default(cuid())
+  userId   String?
+  user     User?       @relation(fields: [userId], references: [id])
+  action   AuditAction
+  entity   String?
+  entityId String?
+  meta     Json?
+  ip       String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

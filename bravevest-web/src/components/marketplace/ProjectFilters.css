@@ -1,0 +1,9 @@
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 24px 0 32px; }
+.filters__pill {
+  padding: 8px 18px; border-radius: var(--r-pill);
+  border: 1px solid var(--line); background: #fff;
+  font-size: 13px; font-weight: 500; color: var(--gray-700);
+  transition: all .12s ease;
+}
+.filters__pill:hover { border-color: var(--ink); }
+.filters__pill.is-active { background: var(--ink); color: #fff; border-color: var(--ink); }

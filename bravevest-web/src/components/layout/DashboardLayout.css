@@ -1,0 +1,17 @@
+.dash {
+  display: grid; grid-template-columns: 260px 1fr;
+  min-height: 100vh; background: #FBFBF9;
+}
+.dash__main { min-width: 0; }
+.dash__inner { padding: clamp(20px, 4vw, 48px); max-width: 1200px; }
+
+/* Tablet — narrow sidebar */
+@media (max-width: 1100px) {
+  .dash { grid-template-columns: 220px 1fr; }
+}
+
+/* Phone — sidebar becomes a top bar with horizontal scroll */
+@media (max-width: 800px) {
+  .dash { grid-template-columns: 1fr; }
+  .dash__inner { padding: 20px clamp(16px, 4vw, 24px) 40px; }
+}

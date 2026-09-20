@@ -1,0 +1,5 @@
+.hiw-page { padding: 60px 28px; }
+.hiw-page__head { max-width: 720px; margin-bottom: 40px; }
+.hiw-page__eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: var(--gray-600); margin-bottom: 16px; }
+.hiw-page__title { font-family: var(--font-serif); font-size: 56px; }
+.hiw-page__sub { color: var(--gray-600); font-size: 17px; margin-top: 16px; }

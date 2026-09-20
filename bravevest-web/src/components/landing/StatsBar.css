@@ -1,0 +1,13 @@
+.stats {
+  background: var(--ink); color: #fff;
+  border-radius: var(--r-xl);
+  padding: 44px 32px;
+  max-width: 1160px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+.stats__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center; }
+.stats__value { font-family: var(--font-serif); font-size: 40px; color: #fff; }
+.stats__label { font-size: 13px; color: rgba(255,255,255,.65); margin-top: 6px; letter-spacing: .02em; }
+@media (max-width: 700px) { .stats__grid { grid-template-columns: repeat(2, 1fr); } .stats__value { font-size: 30px; } }

@@ -1,0 +1,11 @@
+.marketplace { padding: clamp(28px, 5vw, 60px) clamp(16px, 4vw, 28px); }
+.marketplace__search {
+  padding: 12px 20px; border: 1px solid var(--line);
+  border-radius: var(--r-pill); font-size: 14px;
+  width: 280px; outline: none; background: #fff;
+}
+.marketplace__search:focus { border-color: var(--ink); }
+@media (max-width: 640px) { .marketplace__search { width: 100%; } }
+
+.marketplace__empty { text-align: center; padding: 60px 0; }
+.marketplace__empty h3 { font-family: var(--font-serif); font-size: 26px; margin-bottom: 8px; }

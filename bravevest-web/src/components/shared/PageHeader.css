@@ -1,0 +1,17 @@
+.page-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+}
+.page-header__title {
+  font-size: clamp(22px, 4vw, 34px); line-height: 1.15;
+}
+.page-header__title.serif { font-family: var(--font-serif); font-weight: 400; }
+.page-header__subtitle { color: var(--gray-600); margin-top: 6px; font-size: 14px; }
+.page-header__right { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+@media (max-width: 640px) {
+  .page-header { align-items: flex-start; }
+  .page-header__right { width: 100%; }
+  .page-header__right > input,
+  .page-header__right > button,
+  .page-header__right > .marketplace__search { width: 100%; }
+}

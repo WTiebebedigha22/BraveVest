@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BraveVest — Redirecting</title>
+    <meta name="robots" content="noindex" />
+    <script>
+      // GH Pages serves this file for any unknown path.
+      // Rewrite to the hash route so the React app takes over.
+      (function () {
+        var repo = '/BraveVest/';
+        var path = window.location.pathname;
+        var idx = path.indexOf(repo);
+        if (idx === -1) return;
+        var rest = path.slice(idx + repo.length);
+        var search = window.location.search || '';
+        var hash = window.location.hash || '';
+        var newHash = hash || (rest ? '#/' + rest : '#/');
+        window.location.replace(window.location.origin + repo + search + newHash);
+      })();
+    </script>
+    <meta http-equiv="refresh" content="0; url=./" />
+  </head>
+  <body><p>Redirecting…</p></body>
+</html>

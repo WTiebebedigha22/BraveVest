@@ -1,0 +1,12 @@
+.stepper { display: flex; gap: 12px; margin-bottom: 40px; flex-wrap: wrap; }
+.stepper__item { display: flex; align-items: center; gap: 10px; padding: 8px 16px 8px 8px; border-radius: var(--r-pill); background: var(--surface-soft); }
+.stepper__item.is-active { background: var(--ink); color: #fff; }
+.stepper__item.is-active .stepper__dot { background: var(--lime); color: var(--ink); }
+.stepper__dot {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #fff; color: var(--ink);
+  font-size: 12px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+.stepper__item.is-done .stepper__dot { background: var(--lime); }
+.stepper__label { font-size: 12.5px; font-weight: 500; }

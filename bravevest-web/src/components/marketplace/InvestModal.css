@@ -1,0 +1,9 @@
+.invest-modal { margin-bottom: 8px; }
+.invest-modal__summary {
+  background: var(--surface-soft); border-radius: var(--r-md);
+  padding: 16px 20px; display: flex; flex-direction: column; gap: 10px;
+  font-size: 14px; margin-top: 4px;
+}
+.invest-modal__row { display: flex; justify-content: space-between; color: var(--gray-600); }
+.invest-modal__row strong { color: var(--ink); font-weight: 600; }
+.invest-modal__accent { color: #3a5a10 !important; }
