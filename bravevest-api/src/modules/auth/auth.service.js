@@ -1,4 +1,4 @@
-// src/modules/auth/auth.service.js
+﻿// src/modules/auth/auth.service.js
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const { prisma } = require('../../config/database');
@@ -98,3 +98,4 @@ async function resetPassword(token, newPassword) {
 }
 
 module.exports = { register, login, refresh, logout, me, forgotPassword, resetPassword };
+

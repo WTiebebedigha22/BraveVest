@@ -1,0 +1,71 @@
+.rcalc {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 28px;
+}
+.rcalc__header { margin-bottom: 24px; }
+.rcalc__label {
+  font-family: var(--font-serif); font-size: 22px; color: var(--ink);
+  line-height: 1.15;
+}
+.rcalc__sub { font-size: 13px; color: var(--gray-600); margin-top: 6px; }
+
+.rcalc__amount-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 12px;
+}
+.rcalc__amount-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--gray-600); font-weight: 600;
+}
+.rcalc__amount-value {
+  font-family: var(--font-serif); font-size: 28px; color: var(--ink);
+}
+
+.rcalc__slider { margin-bottom: 24px; }
+.rcalc__range {
+  width: 100%; -webkit-appearance: none; appearance: none;
+  height: 6px; border-radius: 3px;
+  background: linear-gradient(90deg, var(--teal), var(--lime));
+  outline: none;
+}
+.rcalc__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--ink); border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.25); cursor: pointer;
+}
+.rcalc__range::-moz-range-thumb {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--ink); border: 3px solid #fff; cursor: pointer;
+}
+.rcalc__range-labels {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--gray-600); margin-top: 8px;
+}
+
+.rcalc__grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--line); border-radius: var(--r-md);
+  overflow: hidden; margin-bottom: 20px;
+}
+.rcalc__cell {
+  background: #fff; padding: 16px 18px;
+}
+.rcalc__cell-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--gray-600); font-weight: 600;
+}
+.rcalc__cell-value {
+  font-size: 16px; font-weight: 600; color: var(--ink); margin-top: 6px;
+}
+.rcalc__cell-value--accent { color: #3a5a10; }
+
+.rcalc__cta { width: 100%; }
+
+.rcalc__disclaimer {
+  font-size: 11.5px; color: var(--gray-600);
+  margin-top: 14px; line-height: 1.55;
+  text-align: center;
+}

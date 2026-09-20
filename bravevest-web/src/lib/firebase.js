@@ -1,16 +1,6 @@
-// src/lib/firebase.js — Firebase Web SDK init
-// Import only what you use. Tree-shaken by Vite in prod.
+﻿// src/lib/firebase.js — Firebase Web SDK init (defensive, disabled-safe)
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, connectAuthEmulator } from 'firebase/auth';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { getStorage, connectStorageEmulator } from 'firebase/storage';
-import { getAnalytics, isSupported as analyticsSupported } from 'firebase/analytics';
-
-/* ─────────────────────────────────────────────────────────
-   Firebase public config (safe in browser — protected by
-   Firebase Security Rules on the project side).
-   ───────────────────────────────────────────────────────── */
 
 const firebaseConfig = {
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
@@ -22,46 +12,39 @@ const firebaseConfig = {
   measurementId:     import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Guard: fail loudly if env is missing (e.g. forgot to restart Vite)
-const missing = Object.entries(firebaseConfig)
-  .filter(([k, v]) => !v && k !== 'measurementId')
-  .map(([k]) => k);
+const ENABLED = Boolean(firebaseConfig.apiKey);
 
-if (missing.length) {
-  console.warn(
-    '[firebase] Missing config:',
-    missing.join(', '),
-    '— check bravevest-web/.env.local and restart Vite'
-  );
+let app = null;
+let auth = null;
+let db = null;
+let storage = null;
+let analytics = null;
+
+if (ENABLED) {
+  try {
+    app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+
+    const { getAuth } = await import('firebase/auth');
+    const { getFirestore } = await import('firebase/firestore');
+    const { getStorage } = await import('firebase/storage');
+
+    auth = getAuth(app);
+    db = getFirestore(app);
+    storage = getStorage(app);
+
+    if (typeof window !== 'undefined') {
+      try {
+        const { getAnalytics, isSupported } = await import('firebase/analytics');
+        const ok = await isSupported();
+        if (ok) analytics = getAnalytics(app);
+      } catch { /* analytics optional */ }
+    }
+  } catch (err) {
+    console.warn('[firebase] init failed, disabling:', err.message);
+  }
+} else {
+  console.info('[firebase] disabled — using backend JWT auth');
 }
 
-/* ─────────────────────────────────────────────────────────
-   Init (idempotent — safe under React StrictMode double-mount)
-   ───────────────────────────────────────────────────────── */
-
-export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-
-export const auth    = getAuth(app);
-export const db      = getFirestore(app);
-export const storage = getStorage(app);
-
-// Analytics is browser-only and unsupported in some environments — guard.
-export let analytics = null;
-if (typeof window !== 'undefined') {
-  analyticsSupported()
-    .then((ok) => { if (ok) analytics = getAnalytics(app); })
-    .catch(() => { /* ignore */ });
-}
-
-/* ─────────────────────────────────────────────────────────
-   Emulator hooks (opt-in via .env: VITE_USE_FIREBASE_EMULATORS=true)
-   ───────────────────────────────────────────────────────── */
-
-if (import.meta.env.VITE_USE_FIREBASE_EMULATORS === 'true') {
-  connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
-  connectFirestoreEmulator(db, 'localhost', 8080);
-  connectStorageEmulator(storage, 'localhost', 9199);
-  console.info('[firebase] Using local emulators');
-}
-
+export { app, auth, db, storage, analytics, ENABLED };
 export default app;

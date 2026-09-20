@@ -1,30 +1,18 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import PageHeader from '@/components/shared/PageHeader';
-import Input from '@/components/shared/Input';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import Button from '@/components/shared/Button';
 import { adminApi } from '@/api/admin';
 import './ProjectForm.css';
 
-const FIELDS = [
-  { k: 'title',             label: 'Title',              type: 'text',     required: true },
-  { k: 'summary',           label: 'Summary',            type: 'text',     required: true, hint: 'Short one-liner (10–240 chars)' },
-  { k: 'description',       label: 'Description',        type: 'textarea', required: true },
-  { k: 'category',          label: 'Category',           type: 'select',   required: true, options: ['REAL_ESTATE','AGRICULTURE','ENERGY','SME','INFRASTRUCTURE'] },
-  { k: 'coverImage',        label: 'Cover image URL',    type: 'text' },
-  { k: 'targetAmount',      label: 'Target amount (₦)',  type: 'number',   required: true },
-  { k: 'minInvestment',     label: 'Minimum investment (₦)', type: 'number', required: true },
-  { k: 'expectedReturnPct', label: 'Expected return (% p.a.)', type: 'number', required: true },
-  { k: 'tenorMonths',       label: 'Tenor (months)',     type: 'number',   required: true },
-  { k: 'payoutFrequency',   label: 'Payout frequency',   type: 'select',   options: ['monthly','quarterly','annually','bullet'] },
-  { k: 'location',          label: 'Location',           type: 'text' },
-  { k: 'riskLevel',         label: 'Risk level',         type: 'select',   options: ['low','medium','high'] },
-  { k: 'closesAt',          label: 'Closes at',          type: 'date' },
-];
-
 export default function ProjectNew() {
   const nav = useNavigate();
-  const [form, setForm] = useState({ payoutFrequency: 'quarterly', riskLevel: 'medium', category: 'REAL_ESTATE' });
+  const [form, setForm] = useState({
+    category: 'REAL_ESTATE',
+    payoutFrequency: 'quarterly',
+    riskLevel: 'medium',
+    status: 'OPEN',
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -34,13 +22,12 @@ export default function ProjectNew() {
     e.preventDefault();
     setLoading(true); setError('');
     try {
-      // coerce numeric strings
       const payload = { ...form };
-      ['targetAmount','minInvestment','expectedReturnPct','tenorMonths'].forEach((k) => {
+      ['targetAmount', 'minInvestment', 'expectedReturnPct', 'tenorMonths'].forEach((k) => {
         if (payload[k] !== '' && payload[k] != null) payload[k] = Number(payload[k]);
       });
       const created = await adminApi.createProject(payload);
-      nav(`/marketplace/${created.slug}`);
+      nav('/marketplace/' + created.slug);
     } catch (err) {
       const details = err?.response?.data?.details;
       const first = details && Object.keys(details)[0];
@@ -50,61 +37,105 @@ export default function ProjectNew() {
 
   return (
     <>
-      <Link to="/admin/projects" className="pf__back">← All projects</Link>
-      <PageHeader title="New project" subtitle="Create a new marketplace opportunity." />
+      <Link to="/admin/projects" className="pf2__back">← All projects</Link>
+      <AdminPageHeader
+        eyebrow="Admin"
+        title="New project"
+        subtitle="Create a new marketplace opportunity"
+      />
 
-      <form onSubmit={submit} className="pf">
-        <div className="pf__grid">
-          {FIELDS.map((f) => <Field key={f.k} field={f} form={form} update={update} />)}
+      <form onSubmit={submit} className="pf2">
+        {error && <div className="pf2__error">{error}</div>}
+
+        <div className="pf2__section">
+          <div className="pf2__section-title">Overview</div>
+          <div className="pf2__section-sub">What are you listing?</div>
+          <div className="pf2__grid">
+            <div className="pf2__field pf2__field--full">
+              <label className="pf2__label">Title</label>
+              <input className="pf2__control" value={form.title || ''} onChange={update('title')} required />
+            </div>
+            <div className="pf2__field pf2__field--full">
+              <label className="pf2__label">Summary</label>
+              <input className="pf2__control" value={form.summary || ''} onChange={update('summary')} required />
+              <span className="pf2__hint">One-line pitch (10–240 chars)</span>
+            </div>
+            <div className="pf2__field pf2__field--full">
+              <label className="pf2__label">Description</label>
+              <textarea className="pf2__control pf2__textarea" value={form.description || ''} onChange={update('description')} required rows={6} />
+            </div>
+            <div className="pf2__field">
+              <label className="pf2__label">Category</label>
+              <select className="pf2__control" value={form.category} onChange={update('category')}>
+                <option value="REAL_ESTATE">Real Estate</option>
+                <option value="AGRICULTURE">Agriculture</option>
+                <option value="ENERGY">Energy</option>
+                <option value="SME">SME</option>
+                <option value="INFRASTRUCTURE">Infrastructure</option>
+              </select>
+            </div>
+            <div className="pf2__field">
+              <label className="pf2__label">Risk level</label>
+              <select className="pf2__control" value={form.riskLevel} onChange={update('riskLevel')}>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+            <div className="pf2__field pf2__field--full">
+              <label className="pf2__label">Cover image URL</label>
+              <input className="pf2__control" value={form.coverImage || ''} onChange={update('coverImage')} placeholder="https://…" />
+            </div>
+            <div className="pf2__field">
+              <label className="pf2__label">Location</label>
+              <input className="pf2__control" value={form.location || ''} onChange={update('location')} placeholder="Lagos, Nigeria" />
+            </div>
+          </div>
         </div>
 
-        {error && <div className="auth__error">{error}</div>}
+        <div className="pf2__section">
+          <div className="pf2__section-title">Financials</div>
+          <div className="pf2__section-sub">Terms and returns</div>
+          <div className="pf2__grid">
+            <div className="pf2__field">
+              <label className="pf2__label">Target amount (₦)</label>
+              <input className="pf2__control" type="number" value={form.targetAmount || ''} onChange={update('targetAmount')} required />
+            </div>
+            <div className="pf2__field">
+              <label className="pf2__label">Minimum investment (₦)</label>
+              <input className="pf2__control" type="number" value={form.minInvestment || ''} onChange={update('minInvestment')} required />
+            </div>
+            <div className="pf2__field">
+              <label className="pf2__label">Expected return (% p.a.)</label>
+              <input className="pf2__control" type="number" step="0.1" value={form.expectedReturnPct || ''} onChange={update('expectedReturnPct')} required />
+            </div>
+            <div className="pf2__field">
+              <label className="pf2__label">Tenor (months)</label>
+              <input className="pf2__control" type="number" value={form.tenorMonths || ''} onChange={update('tenorMonths')} required />
+            </div>
+            <div className="pf2__field">
+              <label className="pf2__label">Payout frequency</label>
+              <select className="pf2__control" value={form.payoutFrequency} onChange={update('payoutFrequency')}>
+                <option value="monthly">Monthly</option>
+                <option value="quarterly">Quarterly</option>
+                <option value="annually">Annually</option>
+                <option value="bullet">On maturity</option>
+              </select>
+            </div>
+            <div className="pf2__field">
+              <label className="pf2__label">Closes at</label>
+              <input className="pf2__control" type="date" value={form.closesAt || ''} onChange={update('closesAt')} />
+            </div>
+          </div>
+        </div>
 
-        <div className="pf__actions">
+        <div className="pf2__actions">
           <Button as={Link} to="/admin/projects" variant="secondary" size="lg">Cancel</Button>
-          <Button type="submit" variant="primary" size="lg" disabled={loading}>{loading ? 'Creating…' : 'Create project'}</Button>
+          <Button type="submit" variant="primary" size="lg" disabled={loading}>
+            {loading ? 'Creating…' : 'Create project'}
+          </Button>
         </div>
       </form>
     </>
   );
 }
-
-export function Field({ field, form, update }) {
-  if (field.type === 'select') {
-    return (
-      <label className="pf__field">
-        <span className="pf__label">{field.label}</span>
-        <select className="pf__control" value={form[field.k] || ''} onChange={update(field.k)} required={field.required}>
-          <option value="">Select…</option>
-          {field.options.map((o) => <option key={o} value={o}>{o}</option>)}
-        </select>
-        {field.hint && <span className="pf__hint">{field.hint}</span>}
-      </label>
-    );
-  }
-  if (field.type === 'textarea') {
-    return (
-      <label className="pf__field pf__field--full">
-        <span className="pf__label">{field.label}</span>
-        <textarea className="pf__control pf__textarea" value={form[field.k] || ''} onChange={update(field.k)} required={field.required} rows={5} />
-        {field.hint && <span className="pf__hint">{field.hint}</span>}
-      </label>
-    );
-  }
-  return (
-    <label className="pf__field">
-      <span className="pf__label">{field.label}</span>
-      <input
-        className="pf__control"
-        type={field.type}
-        value={form[field.k] || ''}
-        onChange={update(field.k)}
-        required={field.required}
-        step={field.type === 'number' ? 'any' : undefined}
-      />
-      {field.hint && <span className="pf__hint">{field.hint}</span>}
-    </label>
-  );
-}
-
-export { FIELDS };

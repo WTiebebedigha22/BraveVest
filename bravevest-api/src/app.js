@@ -83,6 +83,7 @@ app.use('/api/admin', require('./modules/admin/admin.routes'));
 app.use('/api/projects', require('./modules/projects/projects.routes'));
 app.use('/api/investments', require('./modules/investments/investments.routes'));
 app.use('/api/payments', require('./modules/payments/payments.routes'));
+app.use('/api/users', require('./modules/users/users.routes'));
 
 // ── 404 + error handlers (must be last) ──
 app.use(notFound);
