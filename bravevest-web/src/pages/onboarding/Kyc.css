@@ -1,0 +1,27 @@
+.kyc { max-width: 640px; margin: 0 auto; }
+.kyc__title { font-family: var(--font-serif); font-size: clamp(26px, 5vw, 40px); margin-bottom: 8px; line-height: 1.1; }
+.kyc__sub { color: var(--gray-600); font-size: 14.5px; margin-bottom: 28px; }
+.kyc__form {
+  background: #fff; border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: clamp(20px, 4vw, 28px);
+}
+.kyc__field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.kyc__label { font-size: 12px; color: var(--gray-600); text-transform: uppercase; letter-spacing: .06em; font-weight: 500; }
+.kyc__select { padding: 14px 18px; border: 1px solid var(--line); border-radius: var(--r-pill); background: #fff; font-size: 14px; outline: none; }
+.kyc__select:focus { border-color: var(--ink); }
+.kyc__actions {
+  display: flex; justify-content: flex-end; margin-top: 8px;
+}
+@media (max-width: 480px) {
+  .kyc__actions { justify-content: stretch; }
+  .kyc__actions > * { width: 100%; justify-content: center; }
+}
+.kyc__docs { margin-top: 8px; }
+.kyc__docs-title { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-600); margin: 18px 0 10px; }
+.kyc__doc-list { margin-top: 12px; }
+.kyc__doc-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line); gap: 12px; }
+.kyc__review-row { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 14px; gap: 12px; }
+.kyc__review-row:last-of-type { border-bottom: none; }
+.kyc__review-row span { color: var(--gray-600); }
+.kyc__review-row strong { text-align: right; word-break: break-word; }

@@ -1,0 +1,23 @@
+/* bravevest-web/src/pages/admin/Dashboard.css */
+.dash-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 24px;
+}
+.dash-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+.dash-card__head h3 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+.dash-card__link {
+  font-size: 12px;
+  color: var(--gray-600);
+}

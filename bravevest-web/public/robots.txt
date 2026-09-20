@@ -1,0 +1,25 @@
+# BraveVest — robots.txt
+# https://wtiebebedigha22.github.io/BraveVest
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /documents
+Disallow: /profile
+Disallow: /kyc
+Disallow: /payment
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /forgot-password
+
+# Sitemap
+Sitemap: https://wtiebebedigha22.github.io/BraveVest/sitemap.xml
+
+# Crawl-delay for aggressive bots
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10

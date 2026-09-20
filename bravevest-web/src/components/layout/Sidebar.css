@@ -1,0 +1,73 @@
+.sidebar {
+  display: flex; flex-direction: column;
+  width: 260px; padding: 24px 16px;
+  border-right: 1px solid var(--line);
+  background: #fff;
+  min-height: 100vh;
+  position: sticky; top: 0; align-self: start;
+}
+@media (max-width: 1100px) { .sidebar { width: 220px; } }
+
+@media (max-width: 800px) {
+  .sidebar {
+    width: 100%; min-height: auto;
+    border-right: none; border-bottom: 1px solid var(--line);
+    position: static;
+    padding: 12px 0 10px;
+  }
+  .sidebar__brand { padding: 4px 16px 12px; border-bottom: none; margin-bottom: 6px; }
+  .sidebar__section { display: flex; flex-direction: column; }
+  .sidebar__eyebrow { display: none; }
+  .sidebar nav {
+    display: flex; gap: 6px; overflow-x: auto;
+    padding: 0 16px 6px;
+    scrollbar-width: none;
+  }
+  .sidebar nav::-webkit-scrollbar { display: none; }
+  .sidebar__link {
+    flex: 0 0 auto;
+    padding: 8px 14px; border-radius: var(--r-pill);
+    font-size: 13px;
+    background: var(--surface-soft);
+    margin-bottom: 0;
+    white-space: nowrap;
+  }
+  .sidebar__link.is-active { background: var(--ink); color: #fff; }
+  .sidebar__bottom {
+    display: none; /* hide user block on phone — shown via top nav */
+  }
+}
+
+.sidebar__brand {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-weight: 600; font-size: 16px; padding: 0 10px 20px;
+  border-bottom: 1px solid var(--line); margin-bottom: 18px;
+}
+.sidebar__mark {
+  width: 20px; height: 20px; border-radius: 5px;
+  background: linear-gradient(135deg, var(--teal), var(--lime));
+}
+.sidebar__eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--gray-600); padding: 0 10px 10px;
+}
+.sidebar__link {
+  display: block; padding: 10px 14px; border-radius: var(--r-pill);
+  color: var(--gray-700); font-size: 14px; font-weight: 500; margin-bottom: 2px;
+}
+.sidebar__link:hover { background: var(--surface-soft); color: var(--ink); }
+.sidebar__link.is-active { background: var(--ink); color: #fff; }
+.sidebar__bottom { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--line); }
+.sidebar__user { display: flex; gap: 10px; align-items: center; padding: 6px 8px; }
+.sidebar__avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--ink); color: #fff; font-weight: 600; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.sidebar__user-name { font-size: 13px; font-weight: 600; }
+.sidebar__user-email { font-size: 11.5px; color: var(--gray-600); }
+.sidebar__logout {
+  margin-top: 10px; font-size: 12.5px; color: var(--gray-600);
+  padding: 8px 10px; width: 100%; text-align: left;
+}
+.sidebar__logout:hover { color: var(--ink); }

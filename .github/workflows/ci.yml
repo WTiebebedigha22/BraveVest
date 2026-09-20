@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  api:
+    name: API — install + boot check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bravevest-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: bravevest-api/package-lock.json
+      - run: npm ci
+      - run: npx prisma generate
+      - name: Boot check
+        run: node -e "require('./src/app'); console.log('OK')"
+        env:
+          DATABASE_URL: postgresql://u:p@localhost:5432/db
+          JWT_SECRET: ci
+          JWT_REFRESH_SECRET: ci
+          PORT: 3001
+          NODE_ENV: test
+
+  web:
+    name: Web — install + build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bravevest-web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: bravevest-web/package-lock.json
+      - run: npm ci
+      - run: npm run build
+        env:
+          VITE_API_BASE_URL: https://api.bravevest.com/api

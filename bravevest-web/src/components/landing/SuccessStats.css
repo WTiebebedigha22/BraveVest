@@ -1,0 +1,62 @@
+.success {
+  background: #fff;
+  padding: clamp(40px, 6vw, 72px) 0 clamp(28px, 4vw, 40px);
+  border-top: 1px solid var(--line);
+}
+.success__inner { padding: 0 clamp(16px, 4vw, 28px); }
+
+.success__head {
+  display: grid; grid-template-columns: 1fr auto; align-items: end;
+  gap: 24px; margin-bottom: clamp(28px, 4vw, 40px);
+}
+@media (max-width: 800px) {
+  .success__head { grid-template-columns: 1fr; gap: 12px; }
+}
+.success__title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-h2); line-height: 1.08; color: var(--ink);
+}
+.success__sub { color: var(--gray-600); font-size: 13px; margin-top: 8px; }
+.success__big {
+  font-family: var(--font-serif);
+  font-size: var(--fs-stat-xl); line-height: 1; color: var(--ink);
+  letter-spacing: -0.02em;
+}
+@media (max-width: 800px) { .success__big { text-align: left; } }
+
+.success__chart {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  height: clamp(260px, 40vh, 380px);
+  align-items: end;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+@media (max-width: 700px) {
+  .success__chart { grid-template-columns: repeat(2, 1fr); gap: 0; height: auto; }
+  .success__col { border-left: none; padding-left: 0; border-top: 1px solid var(--line); padding-top: 12px; height: 220px; }
+  .success__col:nth-child(odd) { border-top: none; padding-top: 0; }
+}
+.success__col {
+  display: flex; flex-direction: column; justify-content: flex-end;
+  height: 100%;
+  border-left: 1px solid var(--line);
+  padding-left: 12px;
+}
+.success__col:first-child { border-left: none; padding-left: 0; }
+.success__year { font-size: 12px; color: var(--gray-600); margin-bottom: 12px; }
+.success__bar-wrap { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; }
+.success__bar {
+  border-radius: 0;
+  display: flex; align-items: flex-start; justify-content: flex-start;
+  padding: clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 18px);
+  min-height: 40px;
+  transition: filter .15s ease;
+}
+.success__bar:hover { filter: brightness(.96); }
+.success__bar-value {
+  font-family: var(--font-sans);
+  font-weight: 700; font-size: clamp(14px, 2.5vw, 18px);
+  letter-spacing: -0.01em;
+}

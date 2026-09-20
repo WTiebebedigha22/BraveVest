@@ -1,0 +1,12 @@
+Place a 1200×630 PNG named "og-image.png" in this folder.
+
+It will be used for:
+  - og:image (Facebook, WhatsApp, LinkedIn previews)
+  - twitter:image (X/Twitter cards)
+
+Recommended content:
+  - BraveVest wordmark + gradient mark
+  - Tagline: "Access Verified Investment Opportunities"
+  - Small print: "Powered by Bravelion Capital"
+
+Then update the og-image reference in index.html if the filename differs.

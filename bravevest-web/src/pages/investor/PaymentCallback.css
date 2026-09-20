@@ -1,0 +1,17 @@
+.pcb { padding: 80px 28px; display: flex; justify-content: center; }
+.pcb__card {
+  max-width: 500px; width: 100%; text-align: center;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--r-xl);
+  padding: 48px 40px;
+}
+.pcb__icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; margin: 0 auto 20px;
+}
+.pcb__icon--ok { background: #EAF7CE; color: #3a5a10; }
+.pcb__icon--err { background: #FBE6E6; color: #8a2121; }
+.pcb__title { font-family: var(--font-serif); font-size: 32px; }
+.pcb__sub { color: var(--gray-600); margin-top: 10px; }
+.pcb__actions { display: flex; gap: 12px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
+.pcb__link { font-size: 13px; text-decoration: underline; color: var(--gray-600); align-self: center; }
