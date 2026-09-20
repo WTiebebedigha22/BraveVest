@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useSEO } from '@/hooks/useSEO';
 
 const SITE_NAME = 'BraveVest';
 const SITE_URL  = 'https://wtiebebedigha22.github.io/BraveVest';
