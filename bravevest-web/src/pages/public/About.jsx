@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from '@/components/shared/Button';
 import './About.css';
+import { useSEO } from '@/hooks/useSEO';
 
 /* ────────────────────────────────────────────────────────────
    Content pulled from BraveVest Marketplace brand document.

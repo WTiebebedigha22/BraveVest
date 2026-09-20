@@ -9,7 +9,7 @@ const createSchema = z.object({
 const listQuerySchema = z.object({
   status: z.enum(['PENDING', 'CONFIRMED', 'ACTIVE', 'MATURED', 'WITHDRAWN', 'CANCELLED', 'DEFAULTED']).optional(),
   page: z.coerce.number().int().positive().optional(),
-  limit: z.coerce.number().int().positive().max(100).optional(),
+  limit: z.coerce.number().int().positive().max(500).optional(),
 });
 
 module.exports = { createSchema, listQuerySchema };

@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://api.bravevest.com/api/:path*"
+      "destination": "https://random-words-1234.trycloudflare.com/api/:path*"
     },
     {
       "source": "/(.*)",
@@ -17,10 +17,7 @@
     {
       "source": "/assets/(.*)",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     }
   ]
