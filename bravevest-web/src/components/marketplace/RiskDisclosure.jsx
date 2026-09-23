@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import './RiskDisclosure.css';
 
@@ -41,8 +42,8 @@ export default function RiskDisclosure({ level = 'medium' }) {
             depend on the operator's execution and market conditions.
           </p>
           <div className="risk__links">
-            <a href="/#/resources/risk-disclosure">Full risk disclosure →</a>
-            <a href="/#/resources/terms">Terms of service →</a>
+            <Link to="/risk-disclosure">Full risk disclosure →</Link>
+            <Link to="/terms">Terms of service →</Link>
           </div>
         </div>
       )}

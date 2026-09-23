@@ -45,10 +45,20 @@
 
 .pill { border-radius: var(--r-pill); }
 
-/* iOS safe area (notch / home bar) */
+/* iOS safe area */
 @supports (padding: max(0px)) {
   .container {
     padding-left: max(clamp(16px, 4vw, 28px), env(safe-area-inset-left));
     padding-right: max(clamp(16px, 4vw, 28px), env(safe-area-inset-right));
   }
+}
+
+/* Performance: skip layout/paint on off-screen sections */
+section { content-visibility: auto; contain-intrinsic-size: 500px; }
+
+/* Smooth anchor scrolling */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }

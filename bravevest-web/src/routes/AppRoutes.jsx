@@ -18,6 +18,10 @@ const HelpCenter    = lazy(() => import('@/pages/public/HelpCenter'));
 const HelpArticle   = lazy(() => import('@/pages/public/HelpArticle'));
 const Stories       = lazy(() => import('@/pages/public/Stories'));
 const StarterPool   = lazy(() => import('@/pages/public/StarterPool'));
+const Terms         = lazy(() => import('@/pages/public/Terms'));
+const Privacy       = lazy(() => import('@/pages/public/Privacy'));
+const Disclosures   = lazy(() => import('@/pages/public/Disclosures'));
+const RiskDisclosurePage = lazy(() => import('@/pages/public/RiskDisclosurePage'));
 const Insights      = lazy(() => import('@/pages/public/Insights'));
 const InsightDetail = lazy(() => import('@/pages/public/InsightDetail'));
 
@@ -94,6 +98,10 @@ export default function AppRoutes() {
           <Route path="/stories" element={<Stories />} />
           <Route path="/starter" element={<StarterPool />} />
           <Route path="/insights" element={<Insights />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/disclosures" element={<Disclosures />} />
+          <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
           <Route path="/insights/:id" element={<InsightDetail />} />
         </Route>
 
