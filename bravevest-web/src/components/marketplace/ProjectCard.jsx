@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Currency from '@/components/shared/Currency';
+import SmartImage from '@/components/shared/SmartImage';
 import './ProjectCard.css';
 
 const categoryLabel = {
@@ -17,11 +18,9 @@ export default function ProjectCard({ project }) {
   } = project;
 
   return (
-    <Link to={`/marketplace/${slug}`} className="pcard">
+    <Link to={'/marketplace/' + slug} className="pcard">
       <div className="pcard__media">
-        {coverImage ? (
-          <img src={coverImage} alt={title} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-        ) : null}
+        <SmartImage src={coverImage} alt={title} aspect="16/10" />
         <span className="pcard__cat">{categoryLabel[category] || category}</span>
       </div>
       <div className="pcard__body">
@@ -42,7 +41,7 @@ export default function ProjectCard({ project }) {
         </div>
 
         <div className="pcard__progress">
-          <div className="pcard__progress-bar" style={{ width: `${percentFunded}%` }} />
+          <div className="pcard__progress-bar" style={{ width: percentFunded + '%' }} />
         </div>
         <div className="pcard__meta">
           <span>{percentFunded}% funded</span>

@@ -1,0 +1,29 @@
+.simg {
+  position: relative;
+  background: linear-gradient(135deg, #E5F0F5 0%, #F0F7E0 100%);
+  overflow: hidden;
+}
+.simg__placeholder {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, #f0f0ee 0%, #f7f7f5 50%, #f0f0ee 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+.simg__img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.simg__img.is-loaded { opacity: 1; }
+
+.simg--placeholder {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--lime) 100%);
+  opacity: .35;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
