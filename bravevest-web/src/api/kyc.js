@@ -3,7 +3,7 @@ import { api } from './client';
 export const kycApi = {
   async me() { return (await api.get('/kyc')).data.data; },
   async status() { return (await api.get('/kyc/status')).data.data; },
-  async saveStep(step, payload) { return (await api.patch(`/kyc/step/${step}`, payload)).data.data; },
+  async saveStep(step, payload) { return (await api.patch('/kyc/step/' + step, payload)).data.data; },
   async uploadDocument(file, type) {
     const form = new FormData();
     form.append('file', file);

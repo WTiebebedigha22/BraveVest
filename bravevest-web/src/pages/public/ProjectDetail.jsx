@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import PageHeader from '@/components/shared/PageHeader';
 import Loader from '@/components/shared/Loader';
 import Button from '@/components/shared/Button';
 import Currency from '@/components/shared/Currency';
 import InvestModal from '@/components/marketplace/InvestModal';
 import ReturnCalculator from '@/components/marketplace/ReturnCalculator';
 import RiskDisclosure from '@/components/marketplace/RiskDisclosure';
+import TrustBadges from '@/components/shared/TrustBadges';
 import { projectsApi } from '@/api/projects';
 import { useAuth } from '@/hooks/useAuth';
 import { useSEO } from '@/hooks/useSEO';
@@ -25,6 +25,7 @@ export default function ProjectDetail() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [investOpen, setInvestOpen] = useState(false);
+  const [prefillAmount, setPrefillAmount] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -41,7 +42,7 @@ export default function ProjectDetail() {
   useSEO({
     title: project ? project.title : 'Project',
     description: project ? project.summary : 'View this investment opportunity on BraveVest.',
-    canonical: `/#/marketplace/${slug}`,
+    canonical: '/#/marketplace/' + slug,
     type: 'article',
   });
 
@@ -76,7 +77,8 @@ export default function ProjectDetail() {
 
           <div className="pd__divider" />
 
-          <RiskDisclosure level={project.riskLevel || "medium"} />
+          <RiskDisclosure level={project.riskLevel || 'medium'} />
+          <TrustBadges />
 
           <h3 className="pd__section-h">About this opportunity</h3>
           <p className="pd__body">{project.description}</p>
@@ -86,6 +88,21 @@ export default function ProjectDetail() {
             <div><div className="pd__meta-label">Risk</div><div className="pd__meta-value">{project.riskLevel || '—'}</div></div>
             <div><div className="pd__meta-label">Tenor</div><div className="pd__meta-value">{project.tenorMonths} months</div></div>
             <div><div className="pd__meta-label">Payout</div><div className="pd__meta-value">{project.payoutFrequency || 'On maturity'}</div></div>
+          </div>
+
+          <div className="pd__calculator">
+            <h3 className="pd__section-h">Calculate your returns</h3>
+            <ReturnCalculator
+              minInvestment={Number(project.minInvestment)}
+              maxInvestment={Number(project.targetAmount) - Number(project.raisedAmount)}
+              returnPct={Number(project.expectedReturnPct)}
+              tenorMonths={Number(project.tenorMonths)}
+              payoutFreq={project.payoutFrequency || 'bullet'}
+              onInvest={(amount) => {
+                setPrefillAmount(amount);
+                setInvestOpen(true);
+              }}
+            />
           </div>
         </div>
 
@@ -99,7 +116,7 @@ export default function ProjectDetail() {
               <div className="pd__stat-badge">{project.percentFunded}% funded</div>
             </div>
 
-            <div className="pd__progress"><div className="pd__progress-bar" style={{ width: `${project.percentFunded}%` }} /></div>
+            <div className="pd__progress"><div className="pd__progress-bar" style={{ width: project.percentFunded + '%' }} /></div>
 
             <div className="pd__stat-pair">
               <div>
@@ -125,7 +142,7 @@ export default function ProjectDetail() {
 
             {user ? (
               canInvest ? (
-                <Button variant="primary" size="lg" onClick={() => { setInvestOpen(true); Analytics.investStart(slug, project.minInvestment); }}>
+                <Button variant="primary" size="lg" onClick={() => { setPrefillAmount(null); setInvestOpen(true); }}>
                   Invest now
                 </Button>
               ) : user.kycStatus !== 'APPROVED' ? (
@@ -148,8 +165,9 @@ export default function ProjectDetail() {
 
       <InvestModal
         open={investOpen}
-        onClose={() => setInvestOpen(false)}
+        onClose={() => { setInvestOpen(false); setPrefillAmount(null); }}
         project={project}
+        defaultAmount={prefillAmount}
         onSuccess={() => setInvestOpen(false)}
       />
     </div>

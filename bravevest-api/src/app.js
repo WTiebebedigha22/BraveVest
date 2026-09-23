@@ -84,6 +84,11 @@ app.use('/api/projects', require('./modules/projects/projects.routes'));
 app.use('/api/investments', require('./modules/investments/investments.routes'));
 app.use('/api/payments', require('./modules/payments/payments.routes'));
 app.use('/api/users', require('./modules/users/users.routes'));
+app.use('/api/groups', require('./modules/groups/groups.routes'));
+app.use('/api/goals', require('./modules/goals/goals.routes'));
+app.use('/api/streaks', require('./modules/streaks/streaks.routes'));
+app.use('/api/insights', require('./modules/insights/insights.routes'));
+app.use('/api/referrals', require('./modules/referrals/referrals.routes'));
 
 // ── 404 + error handlers (must be last) ──
 app.use(notFound);

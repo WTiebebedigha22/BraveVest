@@ -1,0 +1,13 @@
+.topup { margin: 12px 0 18px; }
+.topup__label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--gray-600); font-weight: 600; margin-bottom: 8px;
+}
+.topup__pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.topup__pill {
+  padding: 9px 16px; border-radius: var(--r-pill);
+  border: 1px solid var(--line); background: #fff;
+  font-size: 13px; font-weight: 500; color: var(--ink);
+  transition: all .12s ease;
+}
+.topup__pill:hover { border-color: var(--ink); background: var(--surface-soft); }

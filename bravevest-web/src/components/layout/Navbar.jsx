@@ -30,6 +30,7 @@ export default function Navbar() {
           <NavLink to="/resources" className="navbar__link">Resources</NavLink>
           <NavLink to="/help" className="navbar__link">Help Center</NavLink>
           <NavLink to="/stories" className="navbar__link">Stories</NavLink>
+          <NavLink to="/insights" className="navbar__link">Insights</NavLink>
           <NavLink to="/about" className="navbar__link">About</NavLink>
         </nav>
 

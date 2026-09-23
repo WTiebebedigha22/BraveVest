@@ -1,16 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Modal from '@/components/shared/Modal';
 import Button from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
 import { investmentsApi } from '@/api/investments';
 import { paymentsApi } from '@/api/payments';
 import { formatNaira } from '@/utils/format';
+import { useToast } from '@/hooks/useToast';
 import './InvestModal.css';
 
-export default function InvestModal({ open, onClose, project, onSuccess }) {
-  const [amount, setAmount] = useState(project?.minInvestment || '');
+export default function InvestModal({ open, onClose, project, defaultAmount, onSuccess }) {
+  const nav = useNavigate();
+  const toast = useToast();
+  const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (open && project) {
+      const initial = defaultAmount || Number(project.minInvestment) || '';
+      setAmount(initial ? String(initial) : '');
+      setError('');
+    }
+  }, [open, project, defaultAmount]);
 
   if (!project) return null;
 
@@ -20,28 +32,31 @@ export default function InvestModal({ open, onClose, project, onSuccess }) {
 
   async function submit() {
     setError('');
-    if (!amount || Number(amount) < min) {
-      setError(`Minimum investment is ${formatNaira(min)}`);
-      return;
-    }
+    const num = Number(amount);
+    if (!num || num < min) { setError('Minimum investment is ' + formatNaira(min)); return; }
+    if (num > max) { setError('Only ' + formatNaira(max) + ' left to fund'); return; }
+
     setLoading(true);
     try {
-      const inv = await investmentsApi.create({ projectId: project.id, amount: Number(amount) });
+      const inv = await investmentsApi.create({ projectId: project.id, amount: num });
       const payment = await paymentsApi.initialize(inv.data.id);
       if (payment.data?.authorizationUrl) {
         window.location.href = payment.data.authorizationUrl;
       } else {
+        toast.success('Investment created — awaiting payment');
         onSuccess?.();
       }
     } catch (err) {
-      setError(err?.response?.data?.message || 'Unable to start investment');
+      const msg = err?.response?.data?.message || 'Unable to start investment';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <Modal open={open} onClose={onClose} title={`Invest in ${project.title}`}>
+    <Modal open={open} onClose={onClose} title={'Invest in ' + project.title}>
       <div className="invest-modal">
         <Input
           label="Amount (₦)"
@@ -50,15 +65,13 @@ export default function InvestModal({ open, onClose, project, onSuccess }) {
           max={max}
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          hint={`Min ${formatNaira(min)} · Remaining ${formatNaira(max)}`}
+          hint={'Min ' + formatNaira(min) + ' · Remaining ' + formatNaira(max)}
           error={error}
         />
         <div className="invest-modal__summary">
           <div className="invest-modal__row">
             <span>Expected return</span>
-            <strong className="invest-modal__accent">
-              {formatNaira(expectedReturn)}
-            </strong>
+            <strong className="invest-modal__accent">{formatNaira(expectedReturn)}</strong>
           </div>
           <div className="invest-modal__row">
             <span>Return rate</span>

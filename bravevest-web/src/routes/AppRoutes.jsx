@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+﻿import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import PublicLayout from '@/components/layout/PublicLayout';
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -6,7 +6,7 @@ import ProtectedRoute from './ProtectedRoute';
 import RoleRoute from './RoleRoute';
 import Loader from '@/components/shared/Loader';
 
-/* ── Public ── */
+/* Public */
 const Home          = lazy(() => import('@/pages/public/Home'));
 const About         = lazy(() => import('@/pages/public/About'));
 const Resources     = lazy(() => import('@/pages/public/Resources'));
@@ -18,22 +18,24 @@ const HelpCenter    = lazy(() => import('@/pages/public/HelpCenter'));
 const HelpArticle   = lazy(() => import('@/pages/public/HelpArticle'));
 const Stories       = lazy(() => import('@/pages/public/Stories'));
 const StarterPool   = lazy(() => import('@/pages/public/StarterPool'));
+const Insights      = lazy(() => import('@/pages/public/Insights'));
+const InsightDetail = lazy(() => import('@/pages/public/InsightDetail'));
 
-/* ── Auth ── */
+/* Auth */
 const Login          = lazy(() => import('@/pages/auth/Login'));
 const Register       = lazy(() => import('@/pages/auth/Register'));
 const ForgotPassword = lazy(() => import('@/pages/auth/ForgotPassword'));
 const ResetPassword  = lazy(() => import('@/pages/auth/ResetPassword'));
 const VerifyEmail    = lazy(() => import('@/pages/auth/VerifyEmail'));
 
-/* ── Onboarding ── */
+/* Onboarding */
 const KycStep1Personal = lazy(() => import('@/pages/onboarding/KycStep1Personal'));
 const KycStep2Identity = lazy(() => import('@/pages/onboarding/KycStep2Identity'));
 const KycStep3Address  = lazy(() => import('@/pages/onboarding/KycStep3Address'));
 const KycStep4Bank     = lazy(() => import('@/pages/onboarding/KycStep4Bank'));
 const KycStep5Review   = lazy(() => import('@/pages/onboarding/KycStep5Review'));
 
-/* ── Investor ── */
+/* Investor */
 const InvestorDashboard = lazy(() => import('@/pages/investor/Dashboard'));
 const Investments       = lazy(() => import('@/pages/investor/Investments'));
 const InvestmentDetail  = lazy(() => import('@/pages/investor/InvestmentDetail'));
@@ -44,8 +46,12 @@ const Profile           = lazy(() => import('@/pages/investor/Profile'));
 const YearInReview      = lazy(() => import('@/pages/investor/YearInReview'));
 const Referral          = lazy(() => import('@/pages/investor/Referral'));
 const PaymentCallback   = lazy(() => import('@/pages/investor/PaymentCallback'));
+const Groups            = lazy(() => import('@/pages/investor/Groups'));
+const Goals             = lazy(() => import('@/pages/investor/Goals'));
+const GoalDetail        = lazy(() => import('@/pages/investor/GoalDetail'));
+const Gifting           = lazy(() => import('@/pages/investor/Gifting'));
 
-/* ── Admin ── */
+/* Admin */
 const AdminDashboard      = lazy(() => import('@/pages/admin/Dashboard'));
 const AdminInvestors      = lazy(() => import('@/pages/admin/Investors'));
 const AdminInvestorDetail = lazy(() => import('@/pages/admin/InvestorDetail'));
@@ -57,8 +63,10 @@ const AdminProjectEdit    = lazy(() => import('@/pages/admin/ProjectEdit'));
 const AdminInvestments    = lazy(() => import('@/pages/admin/Investments'));
 const AdminTransactions   = lazy(() => import('@/pages/admin/Transactions'));
 const AdminReports        = lazy(() => import('@/pages/admin/Reports'));
+const AdminInsights       = lazy(() => import('@/pages/admin/Insights'));
+const InsightEditor       = lazy(() => import('@/pages/admin/InsightEditor'));
 
-/* ── Misc ── */
+/* Misc */
 const NotFound = lazy(() => import('@/pages/NotFound'));
 
 function Loading() {
@@ -85,6 +93,8 @@ export default function AppRoutes() {
           <Route path="/help/:slug" element={<HelpArticle />} />
           <Route path="/stories" element={<Stories />} />
           <Route path="/starter" element={<StarterPool />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/insights/:id" element={<InsightDetail />} />
         </Route>
 
         <Route path="/login" element={<Login />} />
@@ -108,6 +118,11 @@ export default function AppRoutes() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/year-in-review" element={<YearInReview />} />
           <Route path="/referral" element={<Referral />} />
+          <Route path="/groups" element={<Groups />} />
+          <Route path="/groups/:id" element={<Groups />} />
+          <Route path="/goals" element={<Goals />} />
+          <Route path="/goals/:id" element={<GoalDetail />} />
+          <Route path="/gifting" element={<Gifting />} />
         </Route>
 
         <Route path="/payment/callback" element={<ProtectedRoute><PaymentCallback /></ProtectedRoute>} />
@@ -124,6 +139,9 @@ export default function AppRoutes() {
           <Route path="/admin/investments" element={<AdminInvestments />} />
           <Route path="/admin/transactions" element={<AdminTransactions />} />
           <Route path="/admin/reports" element={<AdminReports />} />
+          <Route path="/admin/insights" element={<AdminInsights />} />
+          <Route path="/admin/insights/new" element={<InsightEditor />} />
+          <Route path="/admin/insights/:id/edit" element={<InsightEditor />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

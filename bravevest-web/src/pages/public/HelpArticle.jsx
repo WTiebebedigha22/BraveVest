@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+﻿import { useParams, Link } from 'react-router-dom';
 import { useSEO } from '@/hooks/useSEO';
 import './HelpArticle.css';
 
@@ -8,13 +8,13 @@ const CONTENT = {
     title: 'How does BraveVest verify projects?',
     body: [
       'Every project listed on BraveVest goes through a structured verification process before investors can fund it.',
-      '1. Sponsor verification — we confirm the identity, track record, and financial capacity of the project sponsor or originator.',
-      '2. Land/title review — for property and development projects, we review the title documents, survey plans, and any encumbrances.',
-      '3. Budget review — the project budget, cost assumptions, and use-of-funds statement are checked against market rates.',
-      '4. Timeline review — the development timeline is assessed for realism given the scope.',
-      '5. Site inspection — for construction and development projects, we conduct a physical inspection or send a trusted partner.',
-      '6. Investment committee review — the opportunity is approved by our investment committee before it goes live.',
-      '7. Ongoing monitoring — after listing, we track progress against milestones and report to investors.',
+      '1. Sponsor verification â€” we confirm the identity, track record, and financial capacity of the project sponsor or originator.',
+      '2. Land/title review â€” for property and development projects, we review the title documents, survey plans, and any encumbrances.',
+      '3. Budget review â€” the project budget, cost assumptions, and use-of-funds statement are checked against market rates.',
+      '4. Timeline review â€” the development timeline is assessed for realism given the scope.',
+      '5. Site inspection â€” for construction and development projects, we conduct a physical inspection or send a trusted partner.',
+      '6. Investment committee review â€” the opportunity is approved by our investment committee before it goes live.',
+      '7. Ongoing monitoring â€” after listing, we track progress against milestones and report to investors.',
       'If you have questions about a specific project, contact investor relations.',
     ],
   },
@@ -23,7 +23,7 @@ const CONTENT = {
     title: 'Understanding your returns and payout schedule',
     body: [
       'Returns on BraveVest are calculated based on the expected annual return % and the tenor of the investment.',
-      'Example: ₦1,000,000 invested in a 24-month project at 15% p.a. returns ₦300,000 in total (15% × 2 years).',
+      'Example: â‚¦1,000,000 invested in a 24-month project at 15% p.a. returns â‚¦300,000 in total (15% Ã— 2 years).',
       'Payout frequency depends on the product: monthly, quarterly, annually, or bullet (all at maturity).',
       'You can see the exact projected values for any project using the return calculator on the project page.',
       'Important: projected returns are estimates, not guarantees. Actual returns depend on project performance.',
@@ -34,12 +34,12 @@ const CONTENT = {
     title: 'How to complete your KYC',
     body: [
       'BraveVest is required by Nigerian financial regulations to verify the identity of every investor.',
-      'Step 1 — Personal details: date of birth, gender, nationality, occupation.',
-      'Step 2 — Identity: upload a government-issued ID (NIN, BVN, passport, driver\'s license, or voter\'s card).',
-      'Step 3 — Address: provide your residential address.',
-      'Step 4 — Bank: provide the bank account where payouts should land.',
-      'Step 5 — Review and submit: confirm your details and submit for review.',
-      'Our compliance team reviews submissions within 24–48 hours. You will receive an email when your KYC is approved.',
+      'Step 1 â€” Personal details: date of birth, gender, nationality, occupation.',
+      'Step 2 â€” Identity: upload a government-issued ID (NIN, BVN, passport, driver\'s license, or voter\'s card).',
+      'Step 3 â€” Address: provide your residential address.',
+      'Step 4 â€” Bank: provide the bank account where payouts should land.',
+      'Step 5 â€” Review and submit: confirm your details and submit for review.',
+      'Our compliance team reviews submissions within 24â€“48 hours. You will receive an email when your KYC is approved.',
     ],
   },
   'risk-explained': {
@@ -47,11 +47,11 @@ const CONTENT = {
     title: 'Understanding investment risk',
     body: [
       'All investments carry risk. BraveVest assigns each project a risk level (low, medium, or high) based on:',
-      '· Project sponsor track record',
-      '· Security or collateral backing the project',
-      '· Repayment source certainty',
-      '· Market conditions',
-      '· Timeline feasibility',
+      'Â· Project sponsor track record',
+      'Â· Security or collateral backing the project',
+      'Â· Repayment source certainty',
+      'Â· Market conditions',
+      'Â· Timeline feasibility',
       'Risk levels are shown on every project page. Investors must acknowledge risk before subscribing.',
       'Diversification is your best defense: spreading capital across categories and projects reduces overall risk.',
       'Read the full disclosure before investing.',
@@ -62,11 +62,11 @@ const CONTENT = {
     title: 'What happens if a project defaults?',
     body: [
       'Project default is rare but possible. Our process when a project misses a payment or milestone:',
-      '1. Early warning — we contact the operator and escalate to the investment committee.',
-      '2. Cure period — the operator has a defined window to catch up or restructure.',
-      '3. Enforcement — if cure fails, we activate the security (collateral, guarantees, or legal action).',
-      '4. Recovery — funds recovered are distributed to investors proportionally after costs.',
-      '5. Reporting — investors receive a written update at each stage.',
+      '1. Early warning â€” we contact the operator and escalate to the investment committee.',
+      '2. Cure period â€” the operator has a defined window to catch up or restructure.',
+      '3. Enforcement â€” if cure fails, we activate the security (collateral, guarantees, or legal action).',
+      '4. Recovery â€” funds recovered are distributed to investors proportionally after costs.',
+      '5. Reporting â€” investors receive a written update at each stage.',
       'Timelines vary. Recovery can take weeks to months depending on the asset backing the project.',
     ],
   },
@@ -75,12 +75,12 @@ const CONTENT = {
     title: 'All fees, explained',
     body: [
       'Transparent fees are core to BraveVest. Here is what we charge:',
-      '· Structuring fee (1–3%): paid by the project sponsor, not the investor.',
-      '· Platform administration fee (0.5–2%): covers onboarding, documentation, and reporting.',
-      '· Project management fee (2–5%): paid by the sponsor for monitoring and execution oversight.',
-      '· Performance fee (10–20%): only charged when a project exceeds agreed benchmarks.',
-      '· Property management fee (5–10%): for rental or lease income products.',
-      'Investors see the net return rate on each project page — all fees are already accounted for.',
+      'Â· Structuring fee (1â€“3%): paid by the project sponsor, not the investor.',
+      'Â· Platform administration fee (0.5â€“2%): covers onboarding, documentation, and reporting.',
+      'Â· Project management fee (2â€“5%): paid by the sponsor for monitoring and execution oversight.',
+      'Â· Performance fee (10â€“20%): only charged when a project exceeds agreed benchmarks.',
+      'Â· Property management fee (5â€“10%): for rental or lease income products.',
+      'Investors see the net return rate on each project page â€” all fees are already accounted for.',
     ],
   },
   'withdrawing': {
@@ -90,7 +90,7 @@ const CONTENT = {
       'Returns are automatically paid to the bank account on file for your account.',
       'For monthly or quarterly payouts, funds arrive on or within 3 business days of the scheduled payout date.',
       'For bullet payouts, funds arrive at maturity.',
-      'To change your bank account, go to Profile → Bank details and submit the update. Changes are verified within 24 hours.',
+      'To change your bank account, go to Profile â†’ Bank details and submit the update. Changes are verified within 24 hours.',
       'Withdrawal fees: none. Transfers are handled by our payment partner.',
     ],
   },
@@ -109,11 +109,11 @@ const CONTENT = {
     title: 'How we keep your account secure',
     body: [
       'Bank-grade security is standard across BraveVest:',
-      '· 256-bit SSL encryption on every page',
-      '· PCI-DSS compliant payment processors',
-      '· Two-factor authentication (2FA) available on all accounts',
-      '· Encrypted storage of sensitive data',
-      '· Regular security audits',
+      'Â· 256-bit SSL encryption on every page',
+      'Â· PCI-DSS compliant payment processors',
+      'Â· Two-factor authentication (2FA) available on all accounts',
+      'Â· Encrypted storage of sensitive data',
+      'Â· Regular security audits',
       'To protect yourself: never share your password, verify URLs before logging in, and enable 2FA. BraveVest will never ask for your password by email or SMS.',
     ],
   },
@@ -123,10 +123,10 @@ const CONTENT = {
     body: [
       'BraveVest CoFund lets cooperatives, families, associations, churches, and diaspora groups invest together.',
       'How it works:',
-      '· A group representative creates a CoFund account',
-      '· Members contribute via a shared portal',
-      '· The group invests in selected projects under one profile',
-      '· Returns are distributed to members proportionally',
+      'Â· A group representative creates a CoFund account',
+      'Â· Members contribute via a shared portal',
+      'Â· The group invests in selected projects under one profile',
+      'Â· Returns are distributed to members proportionally',
       'CoFund accounts get: consolidated reporting, private briefings, and priority allocation on selected products.',
       'Contact investor relations to set up a CoFund.',
     ],
@@ -168,7 +168,7 @@ export default function HelpArticle() {
   if (!article) {
     return (
       <div className="help-article container">
-        <Link to="/help" className="help-article__back">← All articles</Link>
+        <Link to="/help" className="help-article__back">â† All articles</Link>
         <h1>Article not found</h1>
         <p className="text-muted">The article you're looking for doesn't exist or was moved.</p>
       </div>
@@ -177,13 +177,13 @@ export default function HelpArticle() {
 
   return (
     <article className="help-article container">
-      <Link to="/help" className="help-article__back">← All articles</Link>
+      <Link to="/help" className="help-article__back">â† All articles</Link>
       <div className="help-article__cat">{article.cat}</div>
       <h1 className="help-article__title">{article.title}</h1>
 
       <div className="help-article__body">
         {article.body.map((p, i) => (
-          <p key={i} className={p.startsWith('·') || /^\d\./.test(p) ? 'help-article__list-item' : ''}>
+          <p key={i} className={p.startsWith('Â·') || /^\d\./.test(p) ? 'help-article__list-item' : ''}>
             {p}
           </p>
         ))}
@@ -191,7 +191,7 @@ export default function HelpArticle() {
 
       <div className="help-article__foot">
         <div className="help-article__foot-title">Still need help?</div>
-        <Link to="/contact" className="help-article__foot-link">Contact support →</Link>
+        <Link to="/contact" className="help-article__foot-link">Contact support â†’</Link>
       </div>
     </article>
   );

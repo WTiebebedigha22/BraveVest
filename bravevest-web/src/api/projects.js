@@ -2,11 +2,15 @@ import { api } from './client';
 
 export const projectsApi = {
   async list(params = {}) {
-    const res = await api.get('/projects', { params });
-    return { data: res.data.data, meta: res.data.meta };
+    const r = await api.get('/projects', { params });
+    return { data: r.data.data, meta: r.data.meta };
   },
   async get(slug) {
-    const res = await api.get(`/projects/${slug}`);
-    return res.data;
+    const r = await api.get('/projects/' + slug);
+    return r.data;
+  },
+  async featured(limit = 3) {
+    const r = await api.get('/projects', { params: { featured: 'true', limit } });
+    return r.data.data;
   },
 };

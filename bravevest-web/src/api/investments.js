@@ -6,7 +6,7 @@ export const investmentsApi = {
     const r = await api.get('/investments', { params });
     return { data: r.data.data, meta: r.data.meta };
   },
-  async get(id) { return (await api.get(`/investments/${id}`)).data; },
+  async get(id) { return (await api.get('/investments/' + id)).data; },
   async portfolio() { return (await api.get('/investments/portfolio')).data; },
   async series() { return (await api.get('/investments/portfolio/series')).data; },
 };

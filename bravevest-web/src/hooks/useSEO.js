@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { useSEO } from '@/hooks/useSEO';
+﻿import { useEffect } from 'react';
 
 const SITE_NAME = 'BraveVest';
 const SITE_URL  = 'https://wtiebebedigha22.github.io/BraveVest';
@@ -23,17 +22,19 @@ export function useSEO({
     const prevCanonical = getLink('canonical');
     const prevRobots = getMeta('name', 'robots');
 
-    document.title = title ? `${title} · ${SITE_NAME}` : SITE_NAME + ' — Access Verified Investment Opportunities';
+    document.title = title
+      ? title + ' · ' + SITE_NAME
+      : SITE_NAME + ' — Access Verified Investment Opportunities';
 
     if (description) setMeta('name', 'description', description);
     if (canonical) setLink('canonical', SITE_URL + canonical);
     if (noIndex) setMeta('name', 'robots', 'noindex, nofollow');
 
-    // OG + Twitter mirror
     setMeta('property', 'og:title', title || SITE_NAME);
     setMeta('property', 'og:description', description || '');
     setMeta('property', 'og:url', SITE_URL + (canonical || '/'));
     setMeta('property', 'og:type', type);
+
     if (image) {
       setMeta('property', 'og:image', image);
       setMeta('name', 'twitter:image', image);
@@ -51,7 +52,7 @@ export function useSEO({
 }
 
 function setMeta(attr, key, value) {
-  let el = document.head.querySelector(`meta[${attr}="${key}"]`);
+  let el = document.head.querySelector('meta[' + attr + '="' + key + '"]');
   if (!el) {
     el = document.createElement('meta');
     el.setAttribute(attr, key);
@@ -61,12 +62,12 @@ function setMeta(attr, key, value) {
 }
 
 function getMeta(attr, key) {
-  const el = document.head.querySelector(`meta[${attr}="${key}"]`);
+  const el = document.head.querySelector('meta[' + attr + '="' + key + '"]');
   return el ? el.getAttribute('content') : '';
 }
 
 function setLink(rel, href) {
-  let el = document.head.querySelector(`link[rel="${rel}"]`);
+  let el = document.head.querySelector('link[rel="' + rel + '"]');
   if (!el) {
     el = document.createElement('link');
     el.setAttribute('rel', rel);
@@ -76,6 +77,6 @@ function setLink(rel, href) {
 }
 
 function getLink(rel) {
-  const el = document.head.querySelector(`link[rel="${rel}"]`);
+  const el = document.head.querySelector('link[rel="' + rel + '"]');
   return el ? el.getAttribute('href') : '';
 }

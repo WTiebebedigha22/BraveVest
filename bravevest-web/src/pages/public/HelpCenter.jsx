@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+﻿import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/shared/Button';
 import { useSEO } from '@/hooks/useSEO';
@@ -10,7 +10,7 @@ const ARTICLES = [
   { id: 'kyc-guide', cat: 'Getting started', title: 'How to complete your KYC', excerpt: 'A step-by-step walkthrough of personal details, ID upload, address, bank account and review.' },
   { id: 'risk-explained', cat: 'Investing', title: 'Understanding investment risk', excerpt: 'What risk levels mean, how they are assigned, and how to build a diversified portfolio.' },
   { id: 'project-default', cat: 'Safety', title: 'What happens if a project defaults?', excerpt: 'Our recovery process, timelines, and the role of the investment committee.' },
-  { id: 'fees-explained', cat: 'Money', title: 'All fees, explained', excerpt: 'Structuring fee, administration fee, project management fee, performance fee — what each does.' },
+  { id: 'fees-explained', cat: 'Money', title: 'All fees, explained', excerpt: 'Structuring fee, administration fee, project management fee, performance fee â€” what each does.' },
   { id: 'withdrawing', cat: 'Money', title: 'How to withdraw your returns', excerpt: 'Where payouts land, how long they take, and how to update your bank details.' },
   { id: 'taxes', cat: 'Money', title: 'Taxes on your returns', excerpt: 'General guidance on how returns are taxed in Nigeria and what BraveVest reports.' },
   { id: 'security', cat: 'Safety', title: 'How we keep your account secure', excerpt: '256-bit SSL, PCI-DSS-compliant payment processors, 2FA, and how to spot phishing.' },
@@ -23,7 +23,7 @@ const CATEGORIES = ['All', 'Getting started', 'Investing', 'Money', 'Safety', 'A
 
 export default function HelpCenter() {
   useSEO({
-    title: 'Help Center — Guides and answers',
+    title: 'Help Center â€” Guides and answers',
     description: 'Guides on verification, returns, risk, fees, withdrawals and account security on BraveVest.',
     canonical: '/#/help',
   });
@@ -55,7 +55,7 @@ export default function HelpCenter() {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search articles…"
+            placeholder="Search articlesâ€¦"
           />
         </div>
         <div className="help__cats">
@@ -77,7 +77,7 @@ export default function HelpCenter() {
             <div className="help__card-cat">{a.cat}</div>
             <div className="help__card-title">{a.title}</div>
             <p className="help__card-excerpt">{a.excerpt}</p>
-            <div className="help__card-cta">Read article →</div>
+            <div className="help__card-cta">Read article â†’</div>
           </Link>
         ))}
       </div>

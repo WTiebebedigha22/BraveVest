@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import PageHeader from '@/components/shared/PageHeader';
+import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import StatCard from '@/components/investor/StatCard';
 import Button from '@/components/shared/Button';
 import Loader from '@/components/shared/Loader';
@@ -13,17 +13,19 @@ import { paymentsApi } from '@/api/payments';
 import './Dashboard.css';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, refresh } = useAuth();
   const [summary, setSummary] = useState(null);
   const [wallet, setWallet] = useState(null);
   const [investments, setInvestments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    refresh?.();
+
     Promise.all([
       investmentsApi.portfolio().catch(() => null),
       paymentsApi.wallet().catch(() => null),
-      investmentsApi.list({ limit: 5 }).catch(() => ({ data: [] })),
+      investmentsApi.list({ limit: 50 }).catch(() => ({ data: [] })),
     ])
       .then(([s, w, i]) => {
         setSummary(s?.data || null);
@@ -38,9 +40,13 @@ export default function Dashboard() {
 
   return (
     <>
-      <PageHeader
-        title={`Welcome back, ${user?.firstName || 'Investor'}`}
+      <AdminPageHeader
+        eyebrow="Investor"
+        title={'Welcome back, ' + (user?.firstName || 'Investor')}
         subtitle="Here's what's happening with your portfolio today."
+        right={
+          <Button as={Link} to="/marketplace" variant="primary" size="sm">Browse projects</Button>
+        }
       />
 
       {needsKyc && (
@@ -60,7 +66,7 @@ export default function Dashboard() {
           <div className="grid grid-3 mb-4">
             <StatCard label="Total Invested" value={summary?.totalInvested || 0} currency />
             <StatCard label="Expected Returns" value={summary?.totalExpected || 0} currency accent="green" />
-            <StatCard label="Active Investments" value={summary?.activeCount || 0} hint={`${summary?.pendingCount || 0} pending`} />
+            <StatCard label="Active Investments" value={summary?.activeCount || 0} hint={(summary?.pendingCount || 0) + ' pending'} />
           </div>
 
           <div className="mb-4"><PortfolioChart /></div>

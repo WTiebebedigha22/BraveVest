@@ -1,4 +1,4 @@
-import Hero from '@/components/landing/Hero';
+﻿import Hero from '@/components/landing/Hero';
 import SuccessStats from '@/components/landing/SuccessStats';
 import WhySection from '@/components/landing/WhySection';
 import HowItWorks from '@/components/landing/HowItWorks';

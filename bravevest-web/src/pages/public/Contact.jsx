@@ -1,4 +1,4 @@
-export default function Contact() {
+﻿export default function Contact() {
   return (
     <div className="container" style={{ padding: '80px 28px', maxWidth: 700 }}>
       <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '.14em', color: 'var(--gray-600)', marginBottom: 16 }}>

@@ -32,7 +32,7 @@ export default function Footer() {
       </div>
       <div className="footer__base container">
         <span>© {new Date().getFullYear()} BraveVest. All rights reserved.</span>
-        <span>Made in Lagos</span>
+        <span>Dev_Rei</span>
       </div>
     </footer>
   );
