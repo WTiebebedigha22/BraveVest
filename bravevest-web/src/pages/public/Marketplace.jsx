@@ -11,8 +11,7 @@ import './Marketplace.css';
 export default function Marketplace() {
   useSEO({
     title: 'Marketplace — Verified Opportunities',
-    description:
-      'Browse verified investment opportunities in real estate, agriculture, energy and credit products. Transparent terms, curated operators.',
+    description: 'Browse verified investment opportunities in real estate, agriculture, energy and credit products.',
     canonical: '/#/marketplace',
   });
 
@@ -20,19 +19,33 @@ export default function Marketplace() {
   const [category, setCategory] = useState('');
   const [q, setQ] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
+    let cancelled = false;
     setLoading(true);
-    const params = { limit: 24 };
+    setError('');
+
+    const params = { limit: 100 };
     if (category) params.category = category;
-    if (q) params.q = q;
+    if (q.trim().length > 1) params.q = q.trim();
+
     projectsApi
       .list(params)
-      .then((data) => setItems(data.data || []))
-      .catch(() => setItems([]))
-      .finally(() => setLoading(false));
+      .then((res) => {
+        if (!cancelled) {
+          setItems(res.data || []);
+          if (q.trim().length > 2) Analytics.search(q.trim());
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err?.response?.data?.message || 'Failed to load projects');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
 
-    if (q && q.length > 2) Analytics.search(q);
+    return () => { cancelled = true; };
   }, [category, q]);
 
   return (
@@ -54,6 +67,11 @@ export default function Marketplace() {
 
       {loading ? (
         <div className="text-center py-5"><Loader /></div>
+      ) : error ? (
+        <div className="marketplace__empty">
+          <h3>Couldn't load projects</h3>
+          <p className="text-muted">{error}</p>
+        </div>
       ) : items.length === 0 ? (
         <div className="marketplace__empty">
           <h3>No projects found</h3>

@@ -1,13 +1,14 @@
 import axios from 'axios';
-import { ENABLED as FIREBASE_ENABLED } from '@/lib/firebase';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api';
+const USE_FIREBASE = !!import.meta.env.VITE_FIREBASE_API_KEY && !import.meta.env.VITE_FIREBASE_API_KEY.startsWith('REPLACE');
 
 export const api = axios.create({
   baseURL: API_BASE,
   headers: { 'Content-Type': 'application/json' },
 });
 
+/* ── Token storage ── */
 export const tokens = {
   get access() { return localStorage.getItem('bv_access'); },
   get refresh() { return localStorage.getItem('bv_refresh'); },
@@ -21,28 +22,21 @@ export const tokens = {
   },
 };
 
-api.interceptors.request.use(async (config) => {
-  if (FIREBASE_ENABLED) {
-    try {
-      const { fbGetIdToken } = await import('./firebaseAuth');
-      const idToken = await fbGetIdToken(false);
-      if (idToken) config.headers.Authorization = `Bearer ${idToken}`;
-    } catch { /* ignore */ }
-  }
-  if (!config.headers.Authorization) {
-    const t = tokens.access;
-    if (t) config.headers.Authorization = `Bearer ${t}`;
-  }
+/* ── Request: attach access token ── */
+api.interceptors.request.use((config) => {
+  const t = tokens.access;
+  if (t) config.headers.Authorization = 'Bearer ' + t;
   return config;
 });
 
+/* ── Response: auto-refresh JWT on 401 (legacy mode only) ── */
 let refreshing = null;
 api.interceptors.response.use(
   (r) => r,
   async (error) => {
     const original = error.config;
 
-    if (FIREBASE_ENABLED) return Promise.reject(error);
+    if (USE_FIREBASE) return Promise.reject(error);
 
     const isAuthEndpoint =
       original?.url?.includes('/auth/login') ||
@@ -54,7 +48,7 @@ api.interceptors.response.use(
       try {
         if (!refreshing) {
           refreshing = axios
-            .post(`${API_BASE}/auth/refresh`, { refreshToken: tokens.refresh })
+            .post(API_BASE + '/auth/refresh', { refreshToken: tokens.refresh })
             .then((res) => {
               tokens.set(res.data.data);
               return res.data.data.accessToken;
@@ -62,7 +56,7 @@ api.interceptors.response.use(
             .finally(() => { refreshing = null; });
         }
         const newAccess = await refreshing;
-        original.headers.Authorization = `Bearer ${newAccess}`;
+        original.headers.Authorization = 'Bearer ' + newAccess;
         return api(original);
       } catch (refreshErr) {
         tokens.clear();

@@ -1,0 +1,38 @@
+.groups-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+@media (max-width: 1000px) { .groups-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .groups-grid { grid-template-columns: 1fr; } }
+
+.group-card {
+  background: #fff; border: 1px solid var(--line);
+  border-radius: var(--r-lg); padding: 22px;
+  display: flex; flex-direction: column; gap: 12px;
+  color: var(--ink);
+  transition: border-color .15s ease, transform .15s ease;
+}
+.group-card:hover { border-color: var(--ink); transform: translateY(-2px); }
+.group-card__head { display: flex; justify-content: space-between; align-items: flex-start; }
+.group-card__type {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+  background: var(--surface-soft); color: var(--gray-700);
+  padding: 4px 10px; border-radius: var(--r-pill); font-weight: 600;
+}
+.group-card__status {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+  background: #EAF7CE; color: #3a5a10;
+  padding: 4px 10px; border-radius: var(--r-pill); font-weight: 600;
+}
+.group-card__title { font-size: 17px; font-weight: 600; }
+.group-card__desc { font-size: 13px; color: var(--gray-600); line-height: 1.55; }
+.group-card__amounts { display: flex; align-items: baseline; gap: 6px; font-size: 15px; font-weight: 600; }
+.group-card__target { font-size: 12px; color: var(--gray-600); font-weight: 400; }
+.group-card__progress { height: 5px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.group-card__progress-bar { height: 100%; background: linear-gradient(90deg, var(--teal), var(--lime)); }
+.group-card__meta { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--gray-600); }
+
+.groups-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.groups-label { font-size: 12px; color: var(--gray-600); text-transform: uppercase; letter-spacing: .06em; font-weight: 500; }
+.groups-select {
+  padding: 14px 18px; border: 1px solid var(--line);
+  border-radius: var(--r-pill); background: #fff; font-size: 14px; outline: none;
+}
+.groups-select:focus { border-color: var(--ink); }

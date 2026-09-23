@@ -1,4 +1,4 @@
-export default function Resources() {
+﻿export default function Resources() {
   return (
     <div className="container" style={{ padding: '80px 28px' }}>
       <div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '.14em', color: 'var(--gray-600)', marginBottom: 16 }}>

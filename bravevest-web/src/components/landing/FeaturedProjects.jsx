@@ -11,8 +11,8 @@ export default function FeaturedProjects() {
 
   useEffect(() => {
     projectsApi
-      .list({ featured: 'true', limit: 3 })
-      .then((data) => setItems(data.data || []))
+      .featured(3)
+      .then((data) => setItems(data || []))
       .catch(() => setItems([]))
       .finally(() => setLoading(false));
   }, []);
@@ -30,7 +30,7 @@ export default function FeaturedProjects() {
       {loading ? (
         <div className="text-center py-5"><Loader /></div>
       ) : items.length === 0 ? (
-        <div className="featured__empty">No projects yet.</div>
+        <div className="featured__empty">No featured projects yet.</div>
       ) : (
         <div className="grid grid-3">
           {items.map((p) => <ProjectCard key={p.id} project={p} />)}

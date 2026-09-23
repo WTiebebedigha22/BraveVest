@@ -1,20 +1,11 @@
 import { api } from './client';
 
 export const paymentsApi = {
-  async initialize(investmentId) {
-    const res = await api.post('/payments/initialize', { investmentId });
-    return res.data;
-  },
-  async verify(reference) {
-    const res = await api.get(`/payments/verify/${reference}`);
-    return res.data;
-  },
+  async initialize(investmentId) { return (await api.post('/payments/initialize', { investmentId })).data; },
+  async verify(reference) { return (await api.get('/payments/verify/' + reference)).data; },
   async transactions(params = {}) {
-    const res = await api.get('/payments/transactions', { params });
-    return { data: res.data.data, meta: res.data.meta };
+    const r = await api.get('/payments/transactions', { params });
+    return { data: r.data.data, meta: r.data.meta };
   },
-  async wallet() {
-    const res = await api.get('/payments/wallet');
-    return res.data;
-  },
+  async wallet() { return (await api.get('/payments/wallet')).data; },
 };

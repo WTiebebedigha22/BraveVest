@@ -6,25 +6,20 @@ import Loader from '@/components/shared/Loader';
 import Button from '@/components/shared/Button';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/useToast';
-import { authApi } from '@/api/auth';
+import { referralsApi } from '@/api/referrals';
 import './Referral.css';
-
-const REWARDS = [
-  { tier: 'Refer 1 investor', reward: '₦5,000 bonus', note: 'Credited after their first confirmed investment' },
-  { tier: 'Refer 3 investors', reward: '₦20,000 bonus', note: 'Plus priority support' },
-  { tier: 'Refer 5+ investors', reward: '₦50,000 bonus', note: 'Plus Circle eligibility' },
-];
 
 export default function Referral() {
   const { user } = useAuth();
   const toast = useToast();
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ referred: 0, earned: 0, pending: 0 });
 
   useEffect(() => {
-    // Placeholder — replace with /api/users/me/referrals when backend lands
-    setStats({ referred: 0, earned: 0, pending: 0 });
-    setLoading(false);
+    referralsApi.me()
+      .then(setStats)
+      .catch(() => setStats(null))
+      .finally(() => setLoading(false));
   }, []);
 
   const code = user?.email
@@ -32,19 +27,17 @@ export default function Referral() {
     : 'BV-YOURCODE';
 
   const link = typeof window !== 'undefined'
-    ? `${window.location.origin}/#/register?ref=${code}`
+    ? window.location.origin + '/#/register?ref=' + code
     : '';
 
   function copyCode() {
     navigator.clipboard?.writeText(code);
     toast.success('Referral code copied');
   }
-
   function copyLink() {
     navigator.clipboard?.writeText(link);
     toast.success('Referral link copied');
   }
-
   function share() {
     if (navigator.share) {
       navigator.share({
@@ -81,9 +74,9 @@ export default function Referral() {
       </div>
 
       <div className="ref-grid-3 mb-4">
-        <AdminStat label="Investors referred" value={stats.referred} hint="All-time" />
-        <AdminStat label="Rewards earned" value={'₦' + stats.earned.toLocaleString()} hint="Paid out" accent="green" />
-        <AdminStat label="Pending rewards" value={'₦' + stats.pending.toLocaleString()} hint="Awaiting confirmation" accent="gold" />
+        <AdminStat label="Investors referred" value={stats?.referred || 0} hint="All-time" />
+        <AdminStat label="Rewards earned" value={'₦' + (stats?.earned || 0).toLocaleString()} hint="Paid out" accent="green" />
+        <AdminStat label="Pending rewards" value={'₦' + (stats?.pending || 0).toLocaleString()} hint="Awaiting confirmation" accent="gold" />
       </div>
 
       <AdminCard padded={false} className="mb-4">
@@ -119,11 +112,15 @@ export default function Referral() {
         <AdminCard.Header title="Reward tiers" subtitle="More referrals, bigger rewards" />
         <AdminCard.Body>
           <div className="ref-tiers">
-            {REWARDS.map((r) => (
-              <div key={r.tier} className="ref-tier">
-                <div className="ref-tier__tier">{r.tier}</div>
-                <div className="ref-tier__reward">{r.reward}</div>
-                <div className="ref-tier__note">{r.note}</div>
+            {(stats?.tiers || [
+              { threshold: 1, amount: 5000 },
+              { threshold: 3, amount: 20000 },
+              { threshold: 5, amount: 50000 },
+            ]).map((r) => (
+              <div key={r.threshold} className="ref-tier">
+                <div className="ref-tier__tier">Refer {r.threshold} investor{r.threshold > 1 ? 's' : ''}</div>
+                <div className="ref-tier__reward">₦{r.amount.toLocaleString()}</div>
+                <div className="ref-tier__note">Credited after their first confirmed investment</div>
               </div>
             ))}
           </div>
@@ -131,7 +128,7 @@ export default function Referral() {
       </AdminCard>
 
       <div className="ref-note">
-        Rewards are credited to your BraveVest wallet. Terms apply. BraveVest reserves the right to modify the program.
+        Rewards are credited to your BraveVest wallet. Terms apply.
       </div>
     </>
   );

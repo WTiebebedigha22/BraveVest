@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import Button from '@/components/shared/Button';
 import { useSEO } from '@/hooks/useSEO';
 import './Stories.css';
@@ -7,8 +7,8 @@ const STORIES = [
   {
     name: 'Chidinma A.',
     role: 'Product designer, Lagos',
-    quote: 'I started with ₦100,000 in the Projects 001 pilot. Watching the monthly payouts arrive, on time, made me trust the model. I\'ve since added two more projects.',
-    highlight: '₦100k → ₦118k in 6 months',
+    quote: 'I started with â‚¦100,000 in the Projects 001 pilot. Watching the monthly payouts arrive, on time, made me trust the model. I\'ve since added two more projects.',
+    highlight: 'â‚¦100k â†’ â‚¦118k in 6 months',
   },
   {
     name: 'Tunde B.',
@@ -19,13 +19,13 @@ const STORIES = [
   {
     name: 'Amina O.',
     role: 'Cooperative treasurer, Abuja',
-    quote: 'Our 40-member cooperative pooled ₦8M through CoFund. The consolidated reporting made every member feel seen — no more WhatsApp spreadsheets.',
-    highlight: '₦8M pooled via CoFund',
+    quote: 'Our 40-member cooperative pooled â‚¦8M through CoFund. The consolidated reporting made every member feel seen â€” no more WhatsApp spreadsheets.',
+    highlight: 'â‚¦8M pooled via CoFund',
   },
   {
     name: 'Emeka N.',
     role: 'Business owner, Port Harcourt',
-    quote: 'The land review was thorough — they caught a documentation issue the sponsor hadn\'t flagged. That kind of diligence is why I keep coming back.',
+    quote: 'The land review was thorough â€” they caught a documentation issue the sponsor hadn\'t flagged. That kind of diligence is why I keep coming back.',
     highlight: '3 investments, 2 matured',
   },
 ];
@@ -33,7 +33,7 @@ const STORIES = [
 export default function Stories() {
   useSEO({
     title: 'Investor Stories',
-    description: 'Real investors sharing their experience with BraveVest — from ₦100k pilots to ₦8M cooperative pools.',
+    description: 'Real investors sharing their experience with BraveVest â€” from â‚¦100k pilots to â‚¦8M cooperative pools.',
     canonical: '/#/stories',
   });
 
@@ -43,7 +43,7 @@ export default function Stories() {
         <div className="stories__eyebrow">Investor Stories</div>
         <h1 className="stories__title">Real people, real returns.</h1>
         <p className="stories__sub">
-          From first-time investors to cooperatives and diaspora communities — how people are using BraveVest.
+          From first-time investors to cooperatives and diaspora communities â€” how people are using BraveVest.
         </p>
       </header>
 
@@ -67,7 +67,7 @@ export default function Stories() {
       <div className="stories__cta">
         <div>
           <div className="stories__cta-title">Ready to write your own story?</div>
-          <p className="stories__cta-body">Start with as little as ₦50,000 in a verified opportunity.</p>
+          <p className="stories__cta-body">Start with as little as â‚¦50,000 in a verified opportunity.</p>
         </div>
         <div className="stories__cta-actions">
           <Button as={Link} to="/marketplace" variant="secondary" size="lg">Browse projects</Button>

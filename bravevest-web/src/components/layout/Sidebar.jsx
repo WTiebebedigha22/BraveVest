@@ -11,6 +11,9 @@ const investorLinks = [
   { to: '/profile', label: 'Profile' },
   { to: '/year-in-review', label: 'Year in Review' },
   { to: '/referral', label: 'Referrals' },
+  { to: '/groups', label: 'Group Savings' },
+  { to: '/goals', label: 'Goals' },
+  { to: '/gifting', label: 'Gifting' },
 ];
 const adminLinks = [
   { to: '/admin', label: 'Overview' },
@@ -20,6 +23,7 @@ const adminLinks = [
   { to: '/admin/investments', label: 'Investments' },
   { to: '/admin/transactions', label: 'Transactions' },
   { to: '/admin/reports', label: 'Reports' },
+  { to: '/admin/insights', label: 'Insights' },
 ];
 
 export default function Sidebar() {

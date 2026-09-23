@@ -4,6 +4,7 @@ const ApiError = require('../../utils/apiError');
 const logger = require('../../config/logger');
 const { getPagination, paginatedMeta } = require('../../utils/pagination');
 const { decorate: decorateProject } = require('../projects/projects.service');
+const streaksService = require('../streaks/streaks.service');
 
 async function create(userId, { projectId, amount }) {
   const project = await prisma.project.findUnique({ where: { id: projectId } });
