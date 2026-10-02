@@ -8,15 +8,10 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  /* Hydrate from token on mount */
   useEffect(() => {
-    if (!tokens.access) {
-      setLoading(false);
-      return;
-    }
-    authApi
-      .me()
-      .then((data) => setUser(data))
+    if (!tokens.access) { setLoading(false); return; }
+    authApi.me()
+      .then(setUser)
       .catch(() => { tokens.clear(); setUser(null); })
       .finally(() => setLoading(false));
   }, []);
@@ -49,9 +44,7 @@ export function AuthProvider({ children }) {
       const me = await authApi.me();
       setUser(me);
       return me;
-    } catch {
-      return null;
-    }
+    } catch { return null; }
   }, []);
 
   return (

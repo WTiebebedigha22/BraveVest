@@ -8,10 +8,7 @@ export const kycApi = {
     const form = new FormData();
     form.append('file', file);
     form.append('type', type);
-    const res = await api.post('/kyc/documents', form, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return res.data.data;
+    return (await api.post('/kyc/documents', form, { headers: { 'Content-Type': 'multipart/form-data' } })).data.data;
   },
   async submit() { return (await api.post('/kyc/submit')).data.data; },
 };

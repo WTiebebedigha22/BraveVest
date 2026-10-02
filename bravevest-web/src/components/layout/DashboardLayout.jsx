@@ -7,9 +7,7 @@ export default function DashboardLayout() {
     <div className="dash">
       <Sidebar />
       <main className="dash__main">
-        <div className="dash__inner">
-          <Outlet />
-        </div>
+        <div className="dash__inner"><Outlet /></div>
       </main>
     </div>
   );

@@ -13,13 +13,7 @@ export default function ProjectFilters({ value, onChange }) {
   return (
     <div className="filters">
       {cats.map((c) => (
-        <button
-          key={c.v}
-          className={`filters__pill ${value === c.v ? 'is-active' : ''}`}
-          onClick={() => onChange(c.v)}
-        >
-          {c.l}
-        </button>
+        <button key={c.v} className={'filters__pill ' + (value === c.v ? 'is-active' : '')} onClick={() => onChange(c.v)}>{c.l}</button>
       ))}
     </div>
   );

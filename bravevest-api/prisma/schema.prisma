@@ -1,12 +1,9 @@
-// BraveVest Marketplace — Phase 1 & 2 only
-// Proposal No. BV-QT-2026-001
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
@@ -116,6 +113,50 @@ enum AuditAction {
   ADMIN_ACTION
 }
 
+enum GroupType {
+  COOPERATIVE
+  FAMILY
+  DIASPORA
+  CHURCH
+  WORKPLACE
+  FRIENDS
+  CUSTOM
+}
+
+enum GroupStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum GroupRole {
+  ADMIN
+  MEMBER
+}
+
+enum GoalType {
+  RENT
+  BUSINESS
+  EDUCATION
+  RETIREMENT
+  PROPERTY
+  EMERGENCY
+  CUSTOM
+}
+
+enum GoalStatus {
+  ACTIVE
+  ACHIEVED
+  ABANDONED
+}
+
+enum ReferralStatus {
+  PENDING
+  QUALIFIED
+  REWARDED
+  EXPIRED
+}
+
 model User {
   id            String     @id @default(cuid())
   email         String     @unique
@@ -123,10 +164,10 @@ model User {
   passwordHash  String
   firstName     String
   lastName      String
+  image         String?
   role          UserRole   @default(INVESTOR)
   status        UserStatus @default(PENDING_VERIFICATION)
   emailVerified DateTime?
-  image         String?
 
   kyc           KycProfile?
   investments   Investment[]
@@ -134,13 +175,17 @@ model User {
   documents     Document[]
   auditLogs     AuditLog[]
   refreshTokens RefreshToken[]
+  groups        GroupMember[]
+  goals         InvestmentGoal[]
+  streak        InvestorStreak?
+  username      Username?
+  referrals     Referral[]     @relation("Referrer")
+  referredBy    Referral?      @relation("Referee")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([email])
-  @@index([role])
-  @@index([status])
   @@map("users")
 }
 
@@ -189,11 +234,10 @@ model KycProfile {
   reviewedById  String?
   reviewedAt    DateTime?
   rejectionNote String?
-  providerRef   String?
+  submittedAt   DateTime?
 
-  submittedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([status])
   @@map("kyc_profiles")
@@ -209,8 +253,8 @@ model Project {
   status      ProjectStatus   @default(DRAFT)
 
   coverImage String?
-  gallery    String[]        @default([])
-  documents  String[]        @default([])
+  gallery    String[] @default([])
+  documents  String[] @default([])
 
   targetAmount      Decimal @db.Decimal(18, 2)
   minInvestment     Decimal @db.Decimal(18, 2)
@@ -252,9 +296,8 @@ model Investment {
   expectedReturn Decimal @db.Decimal(18, 2)
   actualReturn   Decimal @db.Decimal(18, 2) @default(0)
 
-  investedAt  DateTime?
-  maturesAt   DateTime?
-  withdrawnAt DateTime?
+  investedAt DateTime?
+  maturesAt  DateTime?
 
   transactions Transaction[]
 
@@ -285,7 +328,6 @@ model Transaction {
   currency  String  @default("NGN")
 
   providerRef   String?
-  providerMeta  Json?
   failureReason String?
 
   paidAt    DateTime?
@@ -310,137 +352,105 @@ model Document {
   fileSize Int?
   mimeType String?
 
-  verified   Boolean   @default(false)
-  verifiedAt DateTime?
-
+  verified  Boolean   @default(false)
   createdAt DateTime @default(now())
 
   @@index([userId])
-  @@index([type])
   @@map("documents")
 }
 
 model AuditLog {
-  id       String      @id @default(cuid())
-  userId   String?
-  user     User?       @relation(fields: [userId], references: [id])
-  action   AuditAction
-  entity   String?
-  entityId String?
-  meta     Json?
-  ip       String?
-  userAgent String?
-
-  createdAt DateTime @default(now())
+  id        String      @id @default(cuid())
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id])
+  action    AuditAction
+  entity    String?
+  entityId  String?
+  meta      Json?
+  createdAt DateTime    @default(now())
 
   @@index([userId])
-  @@index([action])
-  @@index([createdAt])
   @@map("audit_logs")
 }
 
-
-// ═══════════════════════════════════════════════════════════
-// COMPETITOR-PARITY FEATURES (Phase 2.5)
-// ═══════════════════════════════════════════════════════════
-
 model SavingsGroup {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  targetAmount Decimal @db.Decimal(18, 2)
-  targetDate  DateTime?
-  type        GroupType @default(CUSTOM)
-  status      GroupStatus @default(ACTIVE)
-  inviteCode  String   @unique
-  createdById String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String      @id @default(cuid())
+  name         String
+  description  String?
+  targetAmount Decimal     @db.Decimal(18, 2)
+  targetDate   DateTime?
+  type         GroupType   @default(CUSTOM)
+  status       GroupStatus @default(ACTIVE)
+  inviteCode   String      @unique
+  createdById  String
 
-  members     GroupMember[]
+  members GroupMember[]
 
-  @@index([createdById])
-  @@index([status])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@map("savings_groups")
 }
 
 model GroupMember {
-  id              String   @id @default(cuid())
-  groupId         String
-  group           SavingsGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  userId          String
-  role            GroupRole @default(MEMBER)
-  contributedAmount Decimal @db.Decimal(18, 2) @default(0)
-  joinedAt        DateTime @default(now())
+  id                String   @id @default(cuid())
+  groupId           String
+  group             SavingsGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  role              GroupRole @default(MEMBER)
+  contributedAmount Decimal  @db.Decimal(18, 2) @default(0)
+  joinedAt          DateTime @default(now())
 
   @@unique([groupId, userId])
-  @@index([userId])
   @@map("group_members")
 }
 
-model GroupContribution {
-  id        String   @id @default(cuid())
-  groupId   String
-  userId    String
-  amount    Decimal  @db.Decimal(18, 2)
-  reference String   @unique
-  status    TransactionStatus @default(PENDING)
-  paidAt    DateTime?
-  createdAt DateTime @default(now())
-
-  @@index([groupId])
-  @@index([userId])
-  @@map("group_contributions")
-}
-
 model InvestmentGoal {
-  id             String   @id @default(cuid())
-  userId         String
-  name           String
-  type           GoalType
-  targetAmount   Decimal  @db.Decimal(18, 2)
-  targetDate     DateTime
-  currentAmount  Decimal  @db.Decimal(18, 2) @default(0)
-  status         GoalStatus @default(ACTIVE)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id])
+  name          String
+  type          GoalType
+  targetAmount  Decimal    @db.Decimal(18, 2)
+  targetDate    DateTime
+  currentAmount Decimal    @db.Decimal(18, 2) @default(0)
+  status        GoalStatus @default(ACTIVE)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
-  @@index([userId])
   @@map("investment_goals")
 }
 
 model InvestorStreak {
-  id              String   @id @default(cuid())
-  userId          String   @unique
-  currentStreak   Int      @default(0)
-  longestStreak   Int      @default(0)
-  lastActivityAt  DateTime?
-  recoveryUsed    Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id])
+  currentStreak  Int      @default(0)
+  longestStreak  Int      @default(0)
+  lastActivityAt DateTime?
 
   @@map("investor_streaks")
 }
 
 model Insight {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   summary     String
-  body        String   @db.Text
+  body        String    @db.Text
   category    String
   coverImage  String?
-  isPublished Boolean  @default(false)
+  isPublished Boolean   @default(false)
   publishedAt DateTime?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 
-  @@index([category])
-  @@index([isPublished])
   @@map("insights")
 }
 
 model Username {
   id        String   @id @default(cuid())
   userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
   handle    String   @unique
   createdAt DateTime @default(now())
 
@@ -448,61 +458,17 @@ model Username {
 }
 
 model Referral {
-  id              String   @id @default(cuid())
-  referrerId      String
-  refereeId       String   @unique
-  code            String
-  status          ReferralStatus @default(PENDING)
-  rewardAmount    Decimal? @db.Decimal(18, 2)
-  qualifiedAt     DateTime?
-  rewardedAt      DateTime?
-  createdAt       DateTime @default(now())
+  id           String         @id @default(cuid())
+  referrerId   String
+  referrer     User           @relation("Referrer", fields: [referrerId], references: [id])
+  refereeId    String         @unique
+  referee      User           @relation("Referee", fields: [refereeId], references: [id])
+  code         String
+  status       ReferralStatus @default(PENDING)
+  rewardAmount Decimal?       @db.Decimal(18, 2)
+  qualifiedAt  DateTime?
+  rewardedAt   DateTime?
+  createdAt    DateTime       @default(now())
 
-  @@index([referrerId])
-  @@index([code])
   @@map("referrals")
-}
-
-enum GroupType {
-  COOPERATIVE
-  FAMILY
-  DIASPORA
-  CHURCH
-  WORKPLACE
-  FRIENDS
-  CUSTOM
-}
-
-enum GroupStatus {
-  ACTIVE
-  COMPLETED
-  CANCELLED
-}
-
-enum GroupRole {
-  ADMIN
-  MEMBER
-}
-
-enum GoalType {
-  RENT
-  BUSINESS
-  EDUCATION
-  RETIREMENT
-  PROPERTY
-  EMERGENCY
-  CUSTOM
-}
-
-enum GoalStatus {
-  ACTIVE
-  ACHIEVED
-  ABANDONED
-}
-
-enum ReferralStatus {
-  PENDING
-  QUALIFIED
-  REWARDED
-  EXPIRED
 }

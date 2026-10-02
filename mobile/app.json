@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "BraveVest",
+    "slug": "bravevest",
+    "scheme": "bravevest",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#0F0F10",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.bravevest.app"
+    },
+    "android": {
+      "package": "com.bravevest.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0F0F10"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-local-authentication",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#B3D941"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "apiBaseUrl": "http://localhost:3001",
+      "apiBaseUrlProd": "https://api.bravevest.com"
+    }
+  }
+}

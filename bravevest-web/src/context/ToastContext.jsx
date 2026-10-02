@@ -23,7 +23,7 @@ export function ToastProvider({ children }) {
       {children}
       <div className="toasts">
         {items.map((i) => (
-          <div key={i.id} className={`toast toast--${i.variant}`}>{i.message}</div>
+          <div key={i.id} className={'toast toast--' + i.variant}>{i.message}</div>
         ))}
       </div>
     </ToastContext.Provider>

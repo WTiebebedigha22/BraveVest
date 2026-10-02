@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import Button from '@/components/shared/Button';
 import CurrencySwitcher from '@/components/shared/CurrencySwitcher';
 import { useAuth } from '@/hooks/useAuth';
@@ -7,15 +7,26 @@ import './Navbar.css';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const close = () => setMenuOpen(false);
+  const [openMenu, setOpenMenu] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const navRef = useRef(null);
+  const location = useLocation();
+
+  useEffect(() => { setOpenMenu(null); setMobileOpen(false); }, [location.pathname]);
+  useEffect(() => {
+    function onClick(e) { if (navRef.current && !navRef.current.contains(e.target)) setOpenMenu(null); }
+    function onKey(e) { if (e.key === 'Escape') setOpenMenu(null); }
+    document.addEventListener('mousedown', onClick);
+    document.addEventListener('keydown', onKey);
+    return () => { document.removeEventListener('mousedown', onClick); document.removeEventListener('keydown', onKey); };
+  }, []);
 
   return (
-    <header className="navbar">
+    <header className="navbar" ref={navRef}>
       <div className="container navbar__inner">
         <div className="navbar__left">
-          <Link to="/" className="navbar__brand" onClick={close}>
-            <BraveMark />
+          <Link to="/" className="navbar__brand" onClick={() => setOpenMenu(null)}>
+            <span className="navbar__mark" />
             <span className="navbar__wordmark">BraveVest</span>
           </Link>
           <div className="navbar__seg">
@@ -25,77 +36,61 @@ export default function Navbar() {
         </div>
 
         <nav className="navbar__nav">
-          <NavLink to="/marketplace" className="navbar__link navbar__link--caret">Marketplace</NavLink>
-          <NavLink to="/how-it-works" className="navbar__link">How It Works</NavLink>
-          <NavLink to="/resources" className="navbar__link">Resources</NavLink>
-          <NavLink to="/help" className="navbar__link">Help Center</NavLink>
-          <NavLink to="/stories" className="navbar__link">Stories</NavLink>
-          <NavLink to="/insights" className="navbar__link">Insights</NavLink>
-          <NavLink to="/about" className="navbar__link">About</NavLink>
+          <NavLink to="/marketplace" className="navbar__link">Marketplace</NavLink>
+          <Dropdown label="Explore" open={openMenu === 'explore'} onOpen={() => setOpenMenu(openMenu === 'explore' ? null : 'explore')} items={[
+            { to: '/how-it-works', label: 'How It Works', desc: 'The full investor journey' },
+            { to: '/stories', label: 'Investor Stories', desc: 'Real outcomes' },
+            { to: '/starter', label: 'Starter Pool', desc: 'Start from ₦5,000' },
+            { to: '/insights', label: 'Insights', desc: 'Market briefs & education' },
+          ]} />
+          <Dropdown label="Resources" open={openMenu === 'resources'} onOpen={() => setOpenMenu(openMenu === 'resources' ? null : 'resources')} items={[
+            { to: '/help', label: 'Help Center', desc: 'Guides and FAQs' },
+            { to: '/about', label: 'About BraveVest', desc: 'Powered by Bravelion Capital' },
+            { to: '/contact', label: 'Contact', desc: 'Get in touch' },
+          ]} />
         </nav>
 
         <div className="navbar__right">
           <div className="navbar__right-desktop">
             <CurrencySwitcher />
-            <a className="navbar__link navbar__link--underlined" href="#download">Download App</a>
             {user ? (
               <>
-                <Link to={user.role === 'ADMIN' ? '/admin' : '/dashboard'} className="navbar__link navbar__link--underlined">
-                  Dashboard
-                </Link>
-                <Button onClick={logout} variant="primary" size="sm">Sign Out</Button>
+                <Link to={user.role === 'ADMIN' ? '/admin' : '/dashboard'} className="navbar__link navbar__link--muted">Dashboard</Link>
+                <Button onClick={logout} variant="secondary" size="sm">Sign out</Button>
               </>
             ) : (
-              <Button as={Link} to="/register" variant="primary" size="sm">Apply Now</Button>
+              <>
+                <Link to="/login" className="navbar__link navbar__link--muted">Log in</Link>
+                <Button as={Link} to="/register" variant="primary" size="sm">Apply Now</Button>
+              </>
             )}
           </div>
-
-          <button
-            className={`navbar__burger ${menuOpen ? 'is-open' : ''}`}
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
-            aria-expanded={menuOpen}
-          >
+          <button className={'navbar__burger ' + (mobileOpen ? 'is-open' : '')} onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle menu">
             <span /><span /><span />
           </button>
         </div>
       </div>
 
-      {/* Mobile drawer */}
-      {menuOpen && (
-        <div className="navbar__drawer" onClick={close}>
+      {mobileOpen && (
+        <div className="navbar__drawer" onClick={() => setMobileOpen(false)}>
           <nav className="navbar__drawer-inner" onClick={(e) => e.stopPropagation()}>
-            <NavLink to="/marketplace" className="navbar__drawer-link" onClick={close}>Marketplace</NavLink>
-            <NavLink to="/how-it-works" className="navbar__drawer-link" onClick={close}>How It Works</NavLink>
-            <NavLink to="/resources" className="navbar__drawer-link" onClick={close}>Resources</NavLink>
-            <NavLink to="/about" className="navbar__drawer-link" onClick={close}>About</NavLink>
-            <a href="#download" className="navbar__drawer-link" onClick={close}>Download App</a>
-
+            <NavLink to="/marketplace" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Marketplace</NavLink>
+            <NavLink to="/how-it-works" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>How It Works</NavLink>
+            <NavLink to="/stories" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Investor Stories</NavLink>
+            <NavLink to="/insights" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Insights</NavLink>
+            <NavLink to="/help" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Help Center</NavLink>
+            <NavLink to="/about" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>About</NavLink>
             <div className="navbar__drawer-divider" />
-
-            <div className="navbar__drawer-cur">
-              <CurrencySwitcher />
-            </div>
-
+            <div className="navbar__drawer-cur"><CurrencySwitcher /></div>
             {user ? (
               <>
-                <NavLink
-                  to={user.role === 'ADMIN' ? '/admin' : '/dashboard'}
-                  className="navbar__drawer-link"
-                  onClick={close}
-                >
-                  Dashboard
-                </NavLink>
-                <Button onClick={() => { logout(); close(); }} variant="primary" size="lg" className="navbar__drawer-cta">
-                  Sign Out
-                </Button>
+                <NavLink to={user.role === 'ADMIN' ? '/admin' : '/dashboard'} className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Dashboard</NavLink>
+                <Button onClick={logout} variant="primary" size="lg" className="navbar__drawer-cta">Sign out</Button>
               </>
             ) : (
               <>
-                <NavLink to="/login" className="navbar__drawer-link" onClick={close}>Login</NavLink>
-                <Button as={Link} to="/register" variant="primary" size="lg" className="navbar__drawer-cta" onClick={close}>
-                  Apply Now
-                </Button>
+                <NavLink to="/login" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Log in</NavLink>
+                <Button as={Link} to="/register" variant="primary" size="lg" className="navbar__drawer-cta" onClick={() => setMobileOpen(false)}>Apply Now</Button>
               </>
             )}
           </nav>
@@ -105,19 +100,20 @@ export default function Navbar() {
   );
 }
 
-function BraveMark() {
+function Dropdown({ label, open, onOpen, items }) {
   return (
-    <span className="navbar__mark" aria-hidden>
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
-        <defs>
-          <linearGradient id="bvg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#3FB8C4" />
-            <stop offset="100%" stopColor="#B3D941" />
-          </linearGradient>
-        </defs>
-        <rect x="2" y="2" width="20" height="20" rx="6" fill="url(#bvg)" />
-        <path d="M8 8l4 8 4-8" stroke="#0F0F10" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </span>
+    <div className={'navbar__dropdown ' + (open ? 'is-open' : '')}>
+      <button className="navbar__link navbar__link--caret" onClick={onOpen}>{label}</button>
+      {open && (
+        <div className="navbar__menu">
+          {items.map((item) => (
+            <NavLink key={item.to} to={item.to} className="navbar__menu-item">
+              <div className="navbar__menu-label">{item.label}</div>
+              <div className="navbar__menu-desc">{item.desc}</div>
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
