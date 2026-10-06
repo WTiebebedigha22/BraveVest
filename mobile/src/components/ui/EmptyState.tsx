@@ -1,17 +1,13 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { colors, fonts, spacing } from '@/theme/tokens';
+import { View, Text } from 'react-native';
+import { useTheme } from '@/theme/ThemeProvider';
+import { fonts, spacing } from '@/theme/tokens';
 
 export function EmptyState({ title, body }: { title: string; body?: string }) {
+  const { colors } = useTheme();
   return (
-    <View style={styles.wrap}>
-      <Text style={styles.title}>{title}</Text>
-      {body ? <Text style={styles.body}>{body}</Text> : null}
+    <View style={{ padding: spacing.xl, alignItems: 'center' }}>
+      <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 16, fontWeight: '600' }}>{title}</Text>
+      {body ? <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 13, marginTop: spacing.sm, textAlign: 'center' }}>{body}</Text> : null}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  wrap: { padding: spacing.xl, alignItems: 'center' },
-  title: { color: colors.white, fontFamily: fonts.serif, fontSize: 18 },
-  body: { color: colors.muted, fontFamily: fonts.sans, fontSize: 13, marginTop: spacing.sm, textAlign: 'center' },
-});

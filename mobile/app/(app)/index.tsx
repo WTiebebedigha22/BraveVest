@@ -1,137 +1,167 @@
-import { ScrollView, Text, View, Pressable, StyleSheet } from 'react-native';
+import { ScrollView, Text, View, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { useCurrency } from '@/context/CurrencyContext';
+import { useTheme } from '@/theme/ThemeProvider';
+import { IconPill } from '@/components/ui/IconPill';
+import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Card } from '@/components/ui/Card';
-import { QuickAction } from '@/components/ui/QuickAction';
-import { colors, fonts, radii, spacing, shadows, gradients } from '@/theme/tokens';
+import { Chip } from '@/components/ui/Chip';
+import { fonts, radii, spacing, shadows } from '@/theme/tokens';
 
-const SAMPLE_PORTFOLIO_NGN = 1_250_000;
-const SAMPLE_CHANGE_PCT = 4.2;
+const SAMPLE_TOTAL_NGN = 8_786_550;
+const SAMPLE_CHANGE_PCT = 2.35;
+
+const CATEGORIES = [
+  { label: 'Solar', icon: '☀', color: 'lime' as const },
+  { label: 'Real Estate', icon: '⌂', color: 'teal' as const },
+  { label: 'Agri', icon: '❦', color: 'lavender' as const },
+  { label: 'SME', icon: '◈', color: 'lime' as const },
+];
+
+const WATCHLIST_FILTERS = ['All', 'Solar', 'Real Estate', 'Agri'];
 
 export default function Home() {
   const router = useRouter();
   const { user } = useAuth();
   const { currency, convert } = useCurrency();
-
+  const { colors } = useTheme();
   const firstName = user?.email?.split('@')[0]?.split('.')[0] ?? 'Investor';
-  const portfolio = convert(SAMPLE_PORTFOLIO_NGN);
+  const total = convert(SAMPLE_TOTAL_NGN);
 
   return (
-    <SafeAreaView style={styles.root} edges={['top']}>
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
+      <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.md }} showsVerticalScrollIndicator={false}>
+
+        {/* Greeting row */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg }}>
           <View>
-            <Text style={styles.greetSub}>Good morning,</Text>
-            <Text style={styles.greetName}>{firstName}</Text>
+            <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 13 }}>Good morning,</Text>
+            <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 18, fontWeight: '700', marginTop: 2 }}>{firstName}</Text>
           </View>
-          <Pressable style={styles.avatar} onPress={() => router.push('/(app)/profile')}>
-            <Text style={styles.avatarText}>{firstName[0]?.toUpperCase()}</Text>
+          <Pressable
+            style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.border }}
+            onPress={() => router.push('/(app)/profile')}
+          >
+            <Text style={{ color: colors.lime, fontFamily: fonts.sans, fontSize: 16, fontWeight: '700' }}>{firstName[0]?.toUpperCase()}</Text>
           </Pressable>
         </View>
 
-        <LinearGradient colors={[...gradients.hero]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.hero}>
-          <Text style={styles.heroLabel}>Portfolio value</Text>
-          <Text style={styles.heroValue}>
-            {currency} {portfolio.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-          </Text>
-          <View style={styles.heroChange}>
-            <Text style={styles.heroChangeText}>▲ {SAMPLE_CHANGE_PCT}% this month</Text>
+        {/* Total asset value — kit's headline section */}
+        <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 13 }}>Total asset value</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 4 }}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: colors.textPrimary, fontFamily: fonts.serif, fontSize: 38, lineHeight: 44 }} numberOfLines={1}>
+              {currency} {total.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: spacing.sm }}>
+              <Text style={{ color: colors.lime, fontFamily: fonts.sans, fontSize: 13, fontWeight: '700' }}>↑ {SAMPLE_CHANGE_PCT}%</Text>
+              <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 13 }}>(+1.50%) from last week</Text>
+            </View>
           </View>
-          <Pressable style={styles.heroCta} onPress={() => router.push('/(app)/portfolio')}>
-            <Text style={styles.heroCtaText}>View portfolio</Text>
+          <Pressable
+            style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: colors.lime + '1F', alignItems: 'center', justifyContent: 'center' }}
+            onPress={() => router.push('/(app)/portfolio')}
+          >
+            <Text style={{ color: colors.lime, fontSize: 22 }}>▤</Text>
           </Pressable>
-        </LinearGradient>
-
-        <Text style={styles.sectionTitle}>Quick actions</Text>
-        <View style={styles.actionsRow}>
-          <QuickAction icon="◈" label="Discover" color={colors.lime} onPress={() => router.push('/(app)/marketplace')} />
-          <QuickAction icon="↗" label="Withdraw" color={colors.teal} onPress={() => {}} />
-          <QuickAction icon="＋" label="Top up" color={colors.lavender} onPress={() => {}} />
-          <QuickAction icon="◎" label="Profile" color={colors.lime} onPress={() => router.push('/(app)/profile')} />
         </View>
 
-        <Text style={styles.sectionTitle}>Spotlight</Text>
-        <Card variant="elevated" style={styles.spotlight}>
-          <Text style={styles.spotlightLabel}>Featured opportunity</Text>
-          <Text style={styles.spotlightTitle}>Lagos Solar Fund II</Text>
-          <Text style={styles.spotlightBody}>14.5% target return · 18-month lock · ₦500k minimum</Text>
-          <Pressable style={styles.spotlightCta} onPress={() => router.push('/(app)/marketplace')}>
-            <Text style={styles.spotlightCtaText}>Browse all</Text>
-          </Pressable>
-        </Card>
+        {/* My Portfolio — kit's stacked cards */}
+        <View style={{ marginTop: spacing.xxl }}>
+          <SectionHeader title="My Portfolio" action="See all" onAction={() => router.push('/(app)/portfolio')} />
+          <View style={{ borderRadius: radii.card, overflow: 'hidden', borderWidth: 1, borderColor: colors.border }}>
+            <View style={{ backgroundColor: colors.surface, padding: spacing.lg, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+                <View style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: colors.tealSoft, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ color: colors.teal, fontSize: 20 }}>◎</Text>
+                </View>
+                <View>
+                  <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 15, fontWeight: '700' }}>Solar</Text>
+                  <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12, marginTop: 2 }}>3 holdings</Text>
+                </View>
+              </View>
+              <View style={{ alignItems: 'flex-end' }}>
+                <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 15, fontWeight: '700' }}>
+                  {currency} {convert(4_500_000).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                </Text>
+                <Text style={{ color: colors.lime, fontFamily: fonts.sans, fontSize: 12, fontWeight: '600', marginTop: 2 }}>▲ 0.24%</Text>
+              </View>
+            </View>
 
-        <Text style={styles.sectionTitle}>Recent activity</Text>
-        <Card style={styles.activity}>
-          <ActivityRow label="Investment" detail="Lagos Solar Fund" amount="-₦250,000" />
-          <Divider />
-          <ActivityRow label="Payout" detail="Real Estate Note" amount="+₦18,400" positive />
-          <Divider />
-          <ActivityRow label="Top up" detail="Wallet" amount="+₦100,000" positive />
-        </Card>
+            <View style={{ backgroundColor: colors.lime, padding: spacing.lg, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+                <View style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: colors.onAccent + '1F', alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ color: colors.onAccent, fontSize: 20 }}>⌂</Text>
+                </View>
+                <View>
+                  <Text style={{ color: colors.onAccent, fontFamily: fonts.sans, fontSize: 15, fontWeight: '700' }}>Real Estate</Text>
+                  <Text style={{ color: colors.onAccent, fontFamily: fonts.sans, fontSize: 12, marginTop: 2, opacity: 0.8 }}>2 holdings</Text>
+                </View>
+              </View>
+              <View style={{ alignItems: 'flex-end' }}>
+                <Text style={{ color: colors.onAccent, fontFamily: fonts.sans, fontSize: 15, fontWeight: '700' }}>
+                  {currency} {convert(2_800_000).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                </Text>
+                <Text style={{ color: colors.onAccent, fontFamily: fonts.sans, fontSize: 12, fontWeight: '600', marginTop: 2, opacity: 0.85 }}>▼ 1.35%</Text>
+              </View>
+            </View>
+
+            <View style={{ backgroundColor: colors.surface, padding: spacing.lg, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View>
+                <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12 }}>Profits</Text>
+                <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 20, fontWeight: '700', marginTop: 4 }}>
+                  {currency} {convert(1_486_550).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                </Text>
+              </View>
+              <Pressable
+                style={{ backgroundColor: colors.lime, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, borderRadius: radii.button }}
+                onPress={() => router.push('/(app)/marketplace')}
+              >
+                <Text style={{ color: colors.onAccent, fontFamily: fonts.sans, fontSize: 13, fontWeight: '700' }}>Invest</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+
+        {/* Category pills */}
+        <View style={{ flexDirection: 'row', gap: spacing.sm, marginTop: spacing.xl }}>
+          {CATEGORIES.map((c) => {
+            const col = c.color === 'lime' ? colors.lime : c.color === 'teal' ? colors.teal : colors.lavender;
+            return <IconPill key={c.label} icon={c.icon} label={c.label} color={col} onPress={() => router.push('/(app)/marketplace')} />;
+          })}
+        </View>
+
+        {/* Watchlist */}
+        <View style={{ marginTop: spacing.xxl }}>
+          <SectionHeader title="Watchlist" action="Edit watchlist" onAction={() => {}} />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: spacing.sm, marginBottom: spacing.md }}>
+            {WATCHLIST_FILTERS.map((f, i) => <Chip key={f} label={f} active={i === 0} />)}
+          </ScrollView>
+
+          <Card style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.lime + '1F', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: colors.lime, fontFamily: fonts.sans, fontSize: 18, fontWeight: '700' }}>₦</Text>
+              </View>
+              <View>
+                <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 15, fontWeight: '700' }}>Lagos Solar Fund II</Text>
+                <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12, marginTop: 2 }}>14.5% target · 18mo</Text>
+              </View>
+            </View>
+            <View style={{ alignItems: 'flex-end' }}>
+              <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 15, fontWeight: '700' }}>
+                {currency} {convert(500_000).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+              </Text>
+              <Text style={{ color: colors.lime, fontFamily: fonts.sans, fontSize: 12, fontWeight: '700', marginTop: 2 }}>▲ 0.35%</Text>
+            </View>
+          </Card>
+        </View>
 
         <View style={{ height: 120 }} />
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-function ActivityRow({ label, detail, amount, positive }: { label: string; detail: string; amount: string; positive?: boolean }) {
-  return (
-    <View style={styles.activityRow}>
-      <View>
-        <Text style={styles.activityLabel}>{label}</Text>
-        <Text style={styles.activityDetail}>{detail}</Text>
-      </View>
-      <Text style={[styles.activityAmount, positive && { color: colors.lime }]}>{amount}</Text>
-    </View>
-  );
-}
-
-const Divider = () => <View style={styles.divider} />;
-
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.ink },
-  scroll: { padding: spacing.lg, paddingTop: spacing.md },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.xl },
-  greetSub: { color: colors.muted, fontFamily: fonts.sans, fontSize: 14 },
-  greetName: { color: colors.white, fontFamily: fonts.serif, fontSize: 26, marginTop: 2 },
-  avatar: {
-    width: 48, height: 48, borderRadius: 24, backgroundColor: colors.inkCard,
-    alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: colors.line + '22',
-  },
-  avatarText: { color: colors.lime, fontFamily: fonts.serif, fontSize: 20 },
-  hero: { borderRadius: radii.card, padding: spacing.xl, marginBottom: spacing.xl, ...shadows.card },
-  heroLabel: { color: colors.ink, fontFamily: fonts.sans, fontSize: 13, opacity: 0.7 },
-  heroValue: { color: colors.ink, fontFamily: fonts.serif, fontSize: 34, marginTop: spacing.sm },
-  heroChange: {
-    alignSelf: 'flex-start', marginTop: spacing.md,
-    backgroundColor: colors.ink + '22', paddingHorizontal: spacing.md,
-    paddingVertical: 6, borderRadius: radii.pill,
-  },
-  heroChangeText: { color: colors.ink, fontFamily: fonts.sans, fontSize: 12, fontWeight: '600' },
-  heroCta: {
-    alignSelf: 'flex-start', marginTop: spacing.lg, backgroundColor: colors.ink,
-    paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderRadius: radii.pill,
-  },
-  heroCtaText: { color: colors.lime, fontFamily: fonts.sans, fontSize: 14, fontWeight: '600' },
-  sectionTitle: { color: colors.white, fontFamily: fonts.serif, fontSize: 18, marginBottom: spacing.md },
-  actionsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.xl },
-  spotlight: { marginBottom: spacing.xl },
-  spotlightLabel: { color: colors.teal, fontFamily: fonts.sans, fontSize: 12, letterSpacing: 0.5 },
-  spotlightTitle: { color: colors.white, fontFamily: fonts.serif, fontSize: 22, marginTop: spacing.sm },
-  spotlightBody: { color: colors.muted, fontFamily: fonts.sans, fontSize: 14, marginTop: spacing.sm },
-  spotlightCta: {
-    alignSelf: 'flex-start', marginTop: spacing.lg, borderWidth: 1, borderColor: colors.lime,
-    paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, borderRadius: radii.pill,
-  },
-  spotlightCtaText: { color: colors.lime, fontFamily: fonts.sans, fontSize: 13, fontWeight: '600' },
-  activity: { marginBottom: spacing.xl },
-  activityRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  activityLabel: { color: colors.white, fontFamily: fonts.sans, fontSize: 14, fontWeight: '600' },
-  activityDetail: { color: colors.muted, fontFamily: fonts.sans, fontSize: 12, marginTop: 2 },
-  activityAmount: { color: colors.white, fontFamily: fonts.sans, fontSize: 14, fontWeight: '600' },
-  divider: { height: 1, backgroundColor: colors.line + '15', marginVertical: spacing.md },
-});

@@ -3,7 +3,7 @@
     "name": "BraveVest",
     "slug": "bravevest",
     "scheme": "bravevest",
-    "version": "0.1.0",
+    "version": "0.4.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -26,14 +26,7 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-local-authentication",
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/notification-icon.png",
-          "color": "#B3D941"
-        }
-      ]
+      "expo-local-authentication"
     ],
     "experiments": {
       "typedRoutes": true

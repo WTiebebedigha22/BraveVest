@@ -5,15 +5,14 @@ import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import { PlayfairDisplay_700Bold } from '@expo-google-fonts/playfair-display';
-import { Inter_400Regular, Inter_600SemiBold } from '@expo-google-fonts/inter';
+import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter';
 import { AuthProvider } from '@/context/AuthContext';
 import { CurrencyProvider } from '@/context/CurrencyContext';
-import { colors, fonts } from '@/theme/tokens';
+import { OnboardingProvider } from '@/context/OnboardingContext';
+import { ThemeProvider, useTheme, _registerExternalSetMode } from '@/theme/ThemeProvider';
+import { fonts } from '@/theme/tokens';
 
-class Boundary extends React.Component<
-  { children: React.ReactNode },
-  { err: Error | null }
-> {
+class Boundary extends React.Component<{ children: React.ReactNode }, { err: Error | null }> {
   state = { err: null as Error | null };
   static getDerivedStateFromError(err: Error) { return { err }; }
   componentDidCatch(err: Error) { console.error('ROOT ERROR:', err); }
@@ -30,52 +29,61 @@ class Boundary extends React.Component<
   }
 }
 
+function ThemeBridge() {
+  const { setMode } = useTheme();
+  React.useEffect(() => { _registerExternalSetMode(setMode); }, [setMode]);
+  return null;
+}
+
+function ThemedStack() {
+  const { colors, resolved } = useTheme();
+  return (
+    <>
+      <StatusBar style={resolved === 'dark' ? 'light' : 'dark'} />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="onboarding" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(app)" />
+      </Stack>
+    </>
+  );
+}
+
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     [fonts.serif]: PlayfairDisplay_700Bold,
     [fonts.sans]: Inter_400Regular,
+    Inter_500Medium,
     Inter_600SemiBold,
   });
-
   const [timedOut, setTimedOut] = React.useState(false);
-  React.useEffect(() => {
-    const t = setTimeout(() => setTimedOut(true), 4000);
-    return () => clearTimeout(t);
-  }, []);
-
+  React.useEffect(() => { const t = setTimeout(() => setTimedOut(true), 4000); return () => clearTimeout(t); }, []);
   if (error) console.error('Font load error:', error);
-
   const ready = loaded || !!error || timedOut;
-
-  if (!ready) {
-    return (
-      <View style={styles.boot}>
-        <ActivityIndicator color={colors.lime} />
-      </View>
-    );
-  }
+  if (!ready) return <View style={styles.boot}><ActivityIndicator color="#B3D941" /></View>;
 
   return (
     <Boundary>
-      <SafeAreaProvider>
-        <AuthProvider>
-          <CurrencyProvider>
-            <StatusBar style="auto" />
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="index" />
-              <Stack.Screen name="(auth)" />
-              <Stack.Screen name="(app)" />
-            </Stack>
-          </CurrencyProvider>
-        </AuthProvider>
-      </SafeAreaProvider>
+      <ThemeProvider>
+        <ThemeBridge />
+        <SafeAreaProvider>
+          <OnboardingProvider>
+            <AuthProvider>
+              <CurrencyProvider>
+                <ThemedStack />
+              </CurrencyProvider>
+            </AuthProvider>
+          </OnboardingProvider>
+        </SafeAreaProvider>
+      </ThemeProvider>
     </Boundary>
   );
 }
 
 const styles = StyleSheet.create({
-  boot: { flex: 1, backgroundColor: colors.ink, alignItems: 'center', justifyContent: 'center' },
-  errorWrap: { flex: 1, backgroundColor: colors.ink, padding: 24, justifyContent: 'center' },
-  errorTitle: { color: colors.lime, fontFamily: fonts.serif, fontSize: 20 },
-  errorBody: { color: colors.white, marginTop: 12, fontFamily: fonts.sans },
+  boot: { flex: 1, backgroundColor: '#0F0F10', alignItems: 'center', justifyContent: 'center' },
+  errorWrap: { flex: 1, backgroundColor: '#0F0F10', padding: 24, justifyContent: 'center' },
+  errorTitle: { color: '#B3D941', fontFamily: fonts.serif, fontSize: 20 },
+  errorBody: { color: '#fff', marginTop: 12, fontFamily: fonts.sans },
 });

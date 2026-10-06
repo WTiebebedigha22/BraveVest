@@ -1,28 +1,30 @@
 # BraveVest Mobile — Handoff
 
-Bootstrap: **v4** (2026-10-02)
-- Auth bypass for dev
-- Marketplace list + detail wired to API
-- Real font loading
-- Root redirect + error boundary
+Bootstrap: **v8** (2026-10-03)
 
-## Backend
-- Dev: `http://localhost:3001`
-- Prod: `https://api.bravevest.com`
-- Auth: JWT access + refresh in `expo-secure-store`
+## What's new
+- **Onboarding carousel** (`app/onboarding.tsx`) — 3 slides, dots, Skip / Continue / Get started. First-run only.
+- **OnboardingContext** — persists `bv.onboarded` in AsyncStorage. Replay from Profile.
+- **Homepage layout** matches the UI kit: Total asset value headline, My Portfolio stacked cards (Solar / Real Estate / Profits + Invest), 4 icon pills, Watchlist with chip filters and a card.
+- **Card** now has a border in both themes for clearer separation.
 
-## DEV AUTH BYPASS
-`app/index.tsx` reads `EXPO_PUBLIC_DEV_AUTH_BYPASS`. When unset or `1`, it redirects
-straight to `/(app)` — no login screen. Set `.env`:
+## Palette
+BraveVest palette preserved:
+- ink `#0F0F10` · lime `#B3D941` · teal `#3FB8C4` · lavender `#C9A6F2`
+- Light theme derived — accents darkened for contrast on white.
+
+## Themes
+- Device default via `useColorScheme()`
+- Override in Profile → Appearance (System / Light / Dark), persisted to AsyncStorage
+- PATCH `/api/users/me { theme }` — needs backend field (see below)
+
+## Backend requirement
+```prisma
+model User {
+  theme String @default("system")
+}
 ```
-EXPO_PUBLIC_DEV_AUTH_BYPASS=0
-```
-before shipping to restore normal auth.
-
-Note: bypassing the login screen means no JWT in SecureStore. Any API call that
-requires auth will 401. To get tokens in dev, navigate manually to `/login`, sign in
-once with the demo account, then navigate back. Tokens persist in SecureStore across
-reloads.
+Migration: `npx prisma migrate dev --name add_user_theme`. PATCH `/api/users/me` should accept `theme`.
 
 ## Demo accounts (password: `DemoPass123!`)
 - `admin@demo.bravevest.test` — admin
@@ -30,31 +32,25 @@ reloads.
 - `investor.pending@demo.bravevest.test` — investor, KYC review
 - `investor.new@demo.bravevest.test` — investor, KYC none
 
-## Tabs
-- `index` — Home (ALAT-style hero, quick actions, spotlight, activity)
-- `marketplace` — Discover (`GET /api/projects`)
-- `portfolio` — stub (wire to `/api/investments/portfolio`)
-- `profile` — stub (wire to `/api/users/me`)
+## Screens
+- Onboarding — 3-slide carousel
+- Home — kit layout (Total asset value, My Portfolio stacked cards, category pills, Watchlist)
+- Discover — chip filters + ProjectCard list
+- Project detail — stats grid + progress + Invest CTA
+- Portfolio — hero + sparkline + holdings
+- Goals — list + floating ＋ → modal
+- Profile — account, appearance, currency, replay onboarding, sign out
 
-## Detail routes
-- `app/(app)/project/[slug].tsx` — project detail (`GET /api/projects/:slug`)
-
-## API hooks
-- `src/api/hooks.ts` — `useApi<T>`, `useProjects()`, `useProject(slug)`
-
-## UI primitives
-- `Card` — default / elevated / outline
-- `QuickAction` — layered ring icon button
-- `ProjectCard` — marketplace tile with return/min/funded stats
-- `EmptyState` — centered empty/error message
+## Run
+```powershell
+node init.js --force
+cd mobile && npm install && npx expo start --clear
+```
 
 ## Next
-1. `cd mobile && npm install && npx expo start --clear`
-2. Tabs are live. Tap **Discover** → pick a project → detail.
-3. Wire portfolio screen to `GET /api/investments/portfolio` + `/portfolio/series`
-4. Build investment flow: `POST /api/investments` → `POST /api/payments/initialize`
-   → Paystack WebView → `GET /api/payments/verify/:ref`
-5. KYC wizard (`/api/kyc/*`)
-6. Profile + currency switcher + logout
-7. Restore auth: set `EXPO_PUBLIC_DEV_AUTH_BYPASS=0`
-8. `npx eas-cli init` when ready to build
+1. `theme` field in Prisma User + PATCH endpoint
+2. Investment flow (Paystack)
+3. KYC wizard
+4. Push notifications + biometrics
+5. Restore auth: `EXPO_PUBLIC_DEV_AUTH_BYPASS=0`
+6. `npx eas-cli init`

@@ -1,13 +1,12 @@
 {
   "name": "bravevest-mobile",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -40,8 +39,6 @@
     "@babel/core": "^7.24.0",
     "@types/react": "~18.2.79",
     "typescript": "~5.3.3",
-    "eslint": "^8.57.0",
-    "eslint-config-expo": "~7.1.2",
     "babel-plugin-module-resolver": "^5.0.3"
   },
   "private": true
