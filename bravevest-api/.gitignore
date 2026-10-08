@@ -1,6 +1,27 @@
-node_modules
+# env
 .env
-logs/*.log
-uploads/**/*
-!uploads/**/.gitkeep
+.env.*
+!.env.example
+
+# node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# build / coverage
+dist/
+coverage/
+build/
+
+# db
+*.db
+*.db-journal
+prisma/migrations/dev.db*
+
+# os / editor
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.log
