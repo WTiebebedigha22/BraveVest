@@ -1,0 +1,45 @@
+# Render blueprint — BraveVest API
+# Push this to your repo, then create a new Blueprint on render.com.
+# Render will provision the service and prompt for the marked secrets.
+
+services:
+  - type: web
+    name: bravevest-api
+    runtime: node
+    plan: free
+    rootDir: bravevest-api
+    buildCommand: npm ci && npx prisma generate
+    startCommand: node src/server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_BASE_URL
+        value: https://bravevest-api.onrender.com
+      - key: FRONTEND_URLS
+        value: http://localhost:5173,https://brave-vest.vercel.app,https://wtiebebedigha22.github.io
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_REFRESH_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - key: PAYMENT_PROVIDER
+        value: paystack
+      - key: PAYMENT_CALLBACK_URL
+        value: https://brave-vest.vercel.app/#/payment/callback
+      - key: PAYSTACK_SECRET_KEY
+        sync: false
+      - key: PAYSTACK_PUBLIC_KEY
+        sync: false
+      - key: UPLOAD_DIR
+        value: uploads
+      - key: MAX_FILE_SIZE_MB
+        value: "20"
+      - key: FRONTEND_URL
+        value: https://brave-vest.vercel.app
