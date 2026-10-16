@@ -1,13 +1,16 @@
 import './StatsBar.css';
+import { useCurrency } from '@/context/CurrencyContext';
 
 const stats = [
   { value: '12,458+', label: 'Active Investors' },
   { value: '96+', label: 'Projects Funded' },
   { value: '18.6%', label: 'Average Returns' },
-  { value: '₦4.2B+', label: 'Total Invested' },
+  { value: '{format(4.2)}B+', label: 'Total Invested' },
 ];
 
 export default function StatsBar() {
+  const { format } = useCurrency();
+
   return (
     <section className="stats">
       <div className="container stats__grid">

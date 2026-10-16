@@ -1,6 +1,7 @@
 ﻿import { useParams, Link } from 'react-router-dom';
 import { useSEO } from '@/hooks/useSEO';
 import './HelpArticle.css';
+import { useCurrency } from '@/context/CurrencyContext';
 
 const CONTENT = {
   'how-verification-works': {
@@ -8,13 +9,13 @@ const CONTENT = {
     title: 'How does BraveVest verify projects?',
     body: [
       'Every project listed on BraveVest goes through a structured verification process before investors can fund it.',
-      '1. Sponsor verification â€” we confirm the identity, track record, and financial capacity of the project sponsor or originator.',
-      '2. Land/title review â€” for property and development projects, we review the title documents, survey plans, and any encumbrances.',
-      '3. Budget review â€” the project budget, cost assumptions, and use-of-funds statement are checked against market rates.',
-      '4. Timeline review â€” the development timeline is assessed for realism given the scope.',
-      '5. Site inspection â€” for construction and development projects, we conduct a physical inspection or send a trusted partner.',
-      '6. Investment committee review â€” the opportunity is approved by our investment committee before it goes live.',
-      '7. Ongoing monitoring â€” after listing, we track progress against milestones and report to investors.',
+      '1. Sponsor verification we confirm the identity, track record, and financial capacity of the project sponsor or originator.',
+      '2. Land/title review for property and development projects, we review the title documents, survey plans, and any encumbrances.',
+      '3. Budget review the project budget, cost assumptions, and use-of-funds statement are checked against market rates.',
+      '4. Timeline review the development timeline is assessed for realism given the scope.',
+      '5. Site inspection for construction and development projects, we conduct a physical inspection or send a trusted partner.',
+      '6. Investment committee review the opportunity is approved by our investment committee before it goes live.',
+      '7. Ongoing monitoring after listing, we track progress against milestones and report to investors.',
       'If you have questions about a specific project, contact investor relations.',
     ],
   },
@@ -23,7 +24,7 @@ const CONTENT = {
     title: 'Understanding your returns and payout schedule',
     body: [
       'Returns on BraveVest are calculated based on the expected annual return % and the tenor of the investment.',
-      'Example: â‚¦1,000,000 invested in a 24-month project at 15% p.a. returns â‚¦300,000 in total (15% Ã— 2 years).',
+      'Example:  {format(1000000)} invested in a 24-month project at 15% p.a. returns  {format(300000)} in total (15% Ã— 2 years).',
       'Payout frequency depends on the product: monthly, quarterly, annually, or bullet (all at maturity).',
       'You can see the exact projected values for any project using the return calculator on the project page.',
       'Important: projected returns are estimates, not guarantees. Actual returns depend on project performance.',
@@ -34,11 +35,11 @@ const CONTENT = {
     title: 'How to complete your KYC',
     body: [
       'BraveVest is required by Nigerian financial regulations to verify the identity of every investor.',
-      'Step 1 â€” Personal details: date of birth, gender, nationality, occupation.',
-      'Step 2 â€” Identity: upload a government-issued ID (NIN, BVN, passport, driver\'s license, or voter\'s card).',
-      'Step 3 â€” Address: provide your residential address.',
-      'Step 4 â€” Bank: provide the bank account where payouts should land.',
-      'Step 5 â€” Review and submit: confirm your details and submit for review.',
+      'Step 1 Personal details: date of birth, gender, nationality, occupation.',
+      'Step 2 Identity: upload a government-issued ID (NIN, BVN, passport, driver\'s license, or voter\'s card).',
+      'Step 3 Address: provide your residential address.',
+      'Step 4 Bank: provide the bank account where payouts should land.',
+      'Step 5 Review and submit: confirm your details and submit for review.',
       'Our compliance team reviews submissions within 24â€“48 hours. You will receive an email when your KYC is approved.',
     ],
   },
@@ -62,11 +63,11 @@ const CONTENT = {
     title: 'What happens if a project defaults?',
     body: [
       'Project default is rare but possible. Our process when a project misses a payment or milestone:',
-      '1. Early warning â€” we contact the operator and escalate to the investment committee.',
-      '2. Cure period â€” the operator has a defined window to catch up or restructure.',
-      '3. Enforcement â€” if cure fails, we activate the security (collateral, guarantees, or legal action).',
-      '4. Recovery â€” funds recovered are distributed to investors proportionally after costs.',
-      '5. Reporting â€” investors receive a written update at each stage.',
+      '1. Early warning we contact the operator and escalate to the investment committee.',
+      '2. Cure period the operator has a defined window to catch up or restructure.',
+      '3. Enforcement if cure fails, we activate the security (collateral, guarantees, or legal action).',
+      '4. Recovery funds recovered are distributed to investors proportionally after costs.',
+      '5. Reporting investors receive a written update at each stage.',
       'Timelines vary. Recovery can take weeks to months depending on the asset backing the project.',
     ],
   },
@@ -80,7 +81,7 @@ const CONTENT = {
       'Â· Project management fee (2â€“5%): paid by the sponsor for monitoring and execution oversight.',
       'Â· Performance fee (10â€“20%): only charged when a project exceeds agreed benchmarks.',
       'Â· Property management fee (5â€“10%): for rental or lease income products.',
-      'Investors see the net return rate on each project page â€” all fees are already accounted for.',
+      'Investors see the net return rate on each project page all fees are already accounted for.',
     ],
   },
   'withdrawing': {
@@ -156,6 +157,8 @@ const CONTENT = {
 };
 
 export default function HelpArticle() {
+  const { format } = useCurrency();
+
   const { slug } = useParams();
   const article = CONTENT[slug];
 

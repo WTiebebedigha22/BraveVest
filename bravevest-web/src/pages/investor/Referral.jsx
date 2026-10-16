@@ -8,8 +8,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { referralsApi } from '@/api/referrals';
 import './Referral.css';
+import { useCurrency } from '@/context/CurrencyContext';
 
 export default function Referral() {
+  const { format } = useCurrency();
+
   const { user } = useAuth();
   const toast = useToast();
   const [stats, setStats] = useState(null);
@@ -119,7 +122,7 @@ export default function Referral() {
             ]).map((r) => (
               <div key={r.threshold} className="ref-tier">
                 <div className="ref-tier__tier">Refer {r.threshold} investor{r.threshold > 1 ? 's' : ''}</div>
-                <div className="ref-tier__reward">₦{r.amount.toLocaleString()}</div>
+                <div className="ref-tier__reward">{format(r.amount.toLocaleString())}</div>
                 <div className="ref-tier__note">Credited after their first confirmed investment</div>
               </div>
             ))}

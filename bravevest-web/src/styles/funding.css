@@ -1,0 +1,18 @@
+.btn {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #0d0d0d;
+}
+.btn.btn-primary {
+  background: #1b5e20;
+  color: #fff;
+}
+.btn.btn-primary:hover { background: #154a19; }
+.btn:disabled { cursor: not-allowed; }

@@ -11,13 +11,25 @@ const ACCESS_KEY = 'bv.access';
 const REFRESH_KEY = 'bv.refresh';
 
 export const tokenStore = {
-  async get() { return { access: await SecureStore.getItemAsync(ACCESS_KEY), refresh: await SecureStore.getItemAsync(REFRESH_KEY) }; },
-  async set(access: string, refresh: string) { await SecureStore.setItemAsync(ACCESS_KEY, access); await SecureStore.setItemAsync(REFRESH_KEY, refresh); },
-  async clear() { await SecureStore.deleteItemAsync(ACCESS_KEY); await SecureStore.deleteItemAsync(REFRESH_KEY); },
+  async get() {
+    return {
+      access: await SecureStore.getItemAsync(ACCESS_KEY),
+      refresh: await SecureStore.getItemAsync(REFRESH_KEY),
+    };
+  },
+  async set(access: string, refresh: string) {
+    await SecureStore.setItemAsync(ACCESS_KEY, access);
+    await SecureStore.setItemAsync(REFRESH_KEY, refresh);
+  },
+  async clear() {
+    await SecureStore.deleteItemAsync(ACCESS_KEY);
+    await SecureStore.deleteItemAsync(REFRESH_KEY);
+  },
 };
 
 export const api: AxiosInstance = axios.create({
-  baseURL: BASE_URL, timeout: 20000,
+  baseURL: BASE_URL,
+  timeout: 20000,
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -55,11 +67,43 @@ api.interceptors.response.use(
 
 export const endpoints = {
   auth: { register: '/api/auth/register', login: '/api/auth/login', refresh: '/api/auth/refresh', logout: '/api/auth/logout', me: '/api/auth/me' },
-  kyc: { get: '/api/kyc', step: (n: number) => `/api/kyc/step/${n}`, documents: '/api/kyc/documents', submit: '/api/kyc/submit' },
-  projects: { list: '/api/projects', detail: (slug: string) => `/api/projects/${slug}` },
-  investments: { create: '/api/investments', list: '/api/investments', portfolio: '/api/investments/portfolio', series: '/api/investments/portfolio/series' },
-  payments: { init: '/api/payments/initialize', verify: (r: string) => `/api/payments/verify/${r}`, transactions: '/api/payments/transactions', wallet: '/api/payments/wallet' },
   users: { me: '/api/users/me', changePassword: '/api/users/change-password' },
+  projects: { list: '/api/projects', detail: (slug: string) => `/api/projects/${slug}` },
+  investments: {
+    create: '/api/investments',
+    list: '/api/investments',
+    portfolio: '/api/investments/portfolio',
+    series: '/api/investments/portfolio/series',
+  },
+  payments: {
+    init: '/api/payments/initialize',
+    verify: (ref: string) => `/api/payments/verify/${ref}`,
+    transactions: '/api/payments/transactions',
+    wallet: '/api/payments/wallet',
+  },
+  funding: {
+    list: '/api/funding/requests',
+    detail: (id: string) => `/api/funding/requests/${id}`,
+    create: '/api/funding/requests',
+    update: (id: string) => `/api/funding/requests/${id}`,
+    submit: (id: string) => `/api/funding/requests/${id}/submit`,
+    mine: '/api/funding/mine',
+    review: '/api/funding/review',
+    approve: (id: string) => `/api/funding/requests/${id}/approve`,
+    reject: (id: string) => `/api/funding/requests/${id}/reject`,
+  },
+  commitments: {
+    create: '/api/funding/commitments',
+    mine: '/api/funding/commitments/mine',
+    forRequest: (id: string) => `/api/funding/requests/${id}/commitments`,
+    cancel: (id: string) => `/api/funding/commitments/${id}/cancel`,
+  },
+  currency: { rates: '/api/currency/rates' },
   goals: { list: '/api/goals', detail: (id: string) => `/api/goals/${id}` },
-  groups: { list: '/api/groups', join: '/api/groups/join', detail: (id: string) => `/api/groups/${id}`, contribute: (id: string) => `/api/groups/${id}/contribute` },
+  groups: {
+    list: '/api/groups',
+    join: '/api/groups/join',
+    detail: (id: string) => `/api/groups/${id}`,
+    contribute: (id: string) => `/api/groups/${id}/contribute`,
+  },
 };

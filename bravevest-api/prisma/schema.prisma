@@ -12,6 +12,7 @@ enum UserRole {
   INVESTOR
   ADMIN
   SUPER_ADMIN
+  BORROWER
 }
 
 enum UserStatus {
@@ -111,6 +112,14 @@ enum AuditAction {
   PAYMENT_INITIALIZED
   PAYMENT_VERIFIED
   ADMIN_ACTION
+  FUNDING_REQUEST_CREATED
+  FUNDING_REQUEST_SUBMITTED
+  FUNDING_REQUEST_APPROVED
+  FUNDING_REQUEST_REJECTED
+  FUNDING_REQUEST_PUBLISHED
+  FUNDING_REQUEST_CANCELLED
+  COMMITMENT_CREATED
+  REPAYMENT_RECORDED
 }
 
 enum GroupType {
@@ -179,11 +188,14 @@ model User {
   goals         InvestmentGoal[]
   streak        InvestorStreak?
   username      Username?
-  referrals     Referral[]     @relation("Referrer")
-  referredBy    Referral?      @relation("Referee")
+  referrals     Referral[]       @relation("Referrer")
+  referredBy    Referral?        @relation("Referee")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  fundingRequests     FundingRequest[]         @relation("BorrowerFundingRequests")
+  reviewedFundingReqs FundingRequest[]         @relation("ReviewedFundingRequests")
+  uploadedFundingDocs FundingRequestDocument[] @relation("UploadedFundingDocuments")
 
   @@index([email])
   @@map("users")
@@ -258,7 +270,7 @@ model Project {
 
   targetAmount      Decimal @db.Decimal(18, 2)
   minInvestment     Decimal @db.Decimal(18, 2)
-  raisedAmount      Decimal @db.Decimal(18, 2) @default(0)
+  raisedAmount      Decimal @default(0) @db.Decimal(18, 2)
   expectedReturnPct Decimal @db.Decimal(5, 2)
   tenorMonths       Int
   payoutFrequency   String?
@@ -294,7 +306,7 @@ model Investment {
   amount         Decimal @db.Decimal(18, 2)
   units          Int     @default(1)
   expectedReturn Decimal @db.Decimal(18, 2)
-  actualReturn   Decimal @db.Decimal(18, 2) @default(0)
+  actualReturn   Decimal @default(0) @db.Decimal(18, 2)
 
   investedAt DateTime?
   maturesAt  DateTime?
@@ -323,7 +335,7 @@ model Transaction {
   provider PaymentProvider   @default(PAYSTACK)
 
   amount    Decimal @db.Decimal(18, 2)
-  fee       Decimal @db.Decimal(18, 2) @default(0)
+  fee       Decimal @default(0) @db.Decimal(18, 2)
   netAmount Decimal @db.Decimal(18, 2)
   currency  String  @default("NGN")
 
@@ -331,8 +343,8 @@ model Transaction {
   failureReason String?
 
   paidAt    DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@index([userId])
   @@index([investmentId])
@@ -352,7 +364,7 @@ model Document {
   fileSize Int?
   mimeType String?
 
-  verified  Boolean   @default(false)
+  verified  Boolean  @default(false)
   createdAt DateTime @default(now())
 
   @@index([userId])
@@ -393,14 +405,14 @@ model SavingsGroup {
 }
 
 model GroupMember {
-  id                String   @id @default(cuid())
+  id                String       @id @default(cuid())
   groupId           String
   group             SavingsGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
   userId            String
-  user              User     @relation(fields: [userId], references: [id])
-  role              GroupRole @default(MEMBER)
-  contributedAmount Decimal  @db.Decimal(18, 2) @default(0)
-  joinedAt          DateTime @default(now())
+  user              User         @relation(fields: [userId], references: [id])
+  role              GroupRole    @default(MEMBER)
+  contributedAmount Decimal      @default(0) @db.Decimal(18, 2)
+  joinedAt          DateTime     @default(now())
 
   @@unique([groupId, userId])
   @@map("group_members")
@@ -414,7 +426,7 @@ model InvestmentGoal {
   type          GoalType
   targetAmount  Decimal    @db.Decimal(18, 2)
   targetDate    DateTime
-  currentAmount Decimal    @db.Decimal(18, 2) @default(0)
+  currentAmount Decimal    @default(0) @db.Decimal(18, 2)
   status        GoalStatus @default(ACTIVE)
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
@@ -423,11 +435,11 @@ model InvestmentGoal {
 }
 
 model InvestorStreak {
-  id             String   @id @default(cuid())
-  userId         String   @unique
-  user           User     @relation(fields: [userId], references: [id])
-  currentStreak  Int      @default(0)
-  longestStreak  Int      @default(0)
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id])
+  currentStreak  Int       @default(0)
+  longestStreak  Int       @default(0)
   lastActivityAt DateTime?
 
   @@map("investor_streaks")
@@ -471,4 +483,107 @@ model Referral {
   createdAt    DateTime       @default(now())
 
   @@map("referrals")
+}
+
+// ============================================================
+// MVP Phase 1 — Funding requests
+// ============================================================
+
+enum FundingRequestStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  PUBLISHED
+  FUNDED
+  CANCELLED
+  REJECTED
+  DEFAULTED
+  CLOSED
+}
+
+model FundingRequest {
+  id         String @id @default(cuid())
+  reference  String @unique
+  borrowerId String
+  borrower   User   @relation("BorrowerFundingRequests", fields: [borrowerId], references: [id], onDelete: Cascade)
+
+  title       String
+  summary     String?
+  description String?         @db.Text
+  category    ProjectCategory @default(SME)
+  currency    String          @default("NGN")
+
+  amountRequested Decimal  @db.Decimal(18, 2)
+  amountFunded    Decimal  @default(0) @db.Decimal(18, 2)
+  minCommitment   Decimal? @db.Decimal(18, 2)
+  maxCommitment   Decimal? @db.Decimal(18, 2)
+
+  proposedReturnPct  Decimal? @db.Decimal(5, 2)
+  durationMonths     Int?
+  repaymentFrequency String? // "monthly" | "quarterly" | "bullet"
+
+  status          FundingRequestStatus @default(DRAFT)
+  rejectionReason String?
+  reviewedById    String?
+  reviewedBy      User?                @relation("ReviewedFundingRequests", fields: [reviewedById], references: [id])
+  reviewedAt      DateTime?
+  publishedAt     DateTime?
+  fundingDeadline DateTime?
+
+  documents FundingRequestDocument[]
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
+
+  @@index([borrowerId])
+  @@index([status])
+  @@index([category])
+  @@index([publishedAt])
+  @@map("funding_requests")
+}
+
+model FundingRequestDocument {
+  id           String         @id @default(cuid())
+  requestId    String
+  request      FundingRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  kind         String // "pitch" | "financials" | "collateral" | "identity" | "other"
+  fileName     String
+  fileUrl      String
+  fileSize     Int?
+  mimeType     String?
+  uploadedById String
+  uploadedBy   User           @relation("UploadedFundingDocuments", fields: [uploadedById], references: [id])
+  createdAt    DateTime       @default(now())
+
+  @@index([requestId])
+  @@map("funding_request_documents")
+}
+
+enum ContactStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+model ContactMessage {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String        @db.Text
+  status    ContactStatus @default(NEW)
+  ip        String?
+  userAgent String?
+  repliedAt DateTime?
+  repliedBy String?
+  notes     String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([status])
+  @@index([email])
+  @@index([createdAt])
+  @@map("contact_messages")
 }

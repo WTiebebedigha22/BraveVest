@@ -2,6 +2,7 @@
 import Button from '@/components/shared/Button';
 import './About.css';
 import { useSEO } from '@/hooks/useSEO';
+import { useCurrency } from '@/context/CurrencyContext';
 
 /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    Content pulled from BraveVest Marketplace brand document.
@@ -23,7 +24,7 @@ const productCategories = [
   { name: 'BraveVest BuildFund', blurb: 'Construction and infrastructure funding from foundation to finishing stages.' },
   { name: 'BraveVest LandBank',  blurb: 'Land acquisition, title processing, survey, layout, allocation and appreciation opportunities.' },
   { name: 'BraveVest Credit',    blurb: 'Credit-backed opportunities: SME, salary-backed, asset-backed, invoice-backed and trade finance.' },
-  { name: 'BraveVest Prime',     blurb: 'Premium private opportunities for selected investors â€” larger deals, co-investments, institutional-style offers.' },
+  { name: 'BraveVest Prime',     blurb: 'Premium private opportunities for selected investors larger deals, co-investments, institutional-style offers.' },
   { name: 'BraveVest Circle',    blurb: 'Private investment community with early access, briefings, site inspections and priority allocation.' },
   { name: 'BraveVest CoFund',    blurb: 'Group investment structure for cooperatives, associations, families, churches and diaspora groups.' },
 ];
@@ -139,8 +140,10 @@ const advantages = [
 ];
 
 export default function About() {
+  const { format } = useCurrency();
+
   useSEO({
-    title: 'About â€” Powered by Bravelion Capital',
+    title: 'About Powered by Bravelion Capital',
     description: 'BraveVest Marketplace is a multi-opportunity investment platform powered by Bravelion Capital, a Bravelion Holdings company.',
     canonical: '/#/about',
   });
@@ -299,11 +302,11 @@ export default function About() {
             onboarding, project reporting structure and payout administration.
           </p>
           <div className="about-pilot__grid">
-            <PilotFact k="Target raise"            v="â‚¦5,000,000" />
-            <PilotFact k="Unit price"              v="â‚¦50,000" />
+            <PilotFact k="Target raise"            v=" {format(5000000)}" />
+            <PilotFact k="Unit price"              v=" {format(50000)}" />
             <PilotFact k="Total units"             v="100" />
-            <PilotFact k="Minimum investment"      v="â‚¦50,000" />
-            <PilotFact k="Maximum per investor"    v="â‚¦500,000 â€“ â‚¦1,000,000" />
+            <PilotFact k="Minimum investment"      v=" {format(50000)}" />
+            <PilotFact k="Maximum per investor"    v=" {format(500000)} â€“  {format(1000000)}" />
             <PilotFact k="Tenor"                   v="3 â€“ 6 months" />
             <PilotFact k="Projected return"        v="Up to 3% monthly equivalent" wide />
           </div>

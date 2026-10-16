@@ -1,56 +1,67 @@
-# BraveVest Mobile — Handoff
+# BraveVest Mobile — Handoff (Phase 3)
 
-Bootstrap: **v8** (2026-10-03)
+Updated 2026-10-16.
 
-## What's new
-- **Onboarding carousel** (`app/onboarding.tsx`) — 3 slides, dots, Skip / Continue / Get started. First-run only.
-- **OnboardingContext** — persists `bv.onboarded` in AsyncStorage. Replay from Profile.
-- **Homepage layout** matches the UI kit: Total asset value headline, My Portfolio stacked cards (Solar / Real Estate / Profits + Invest), 4 icon pills, Watchlist with chip filters and a card.
-- **Card** now has a border in both themes for clearer separation.
+## What's new in this phase
 
-## Palette
-BraveVest palette preserved:
-- ink `#0F0F10` · lime `#B3D941` · teal `#3FB8C4` · lavender `#C9A6F2`
-- Light theme derived — accents darkened for contrast on white.
+### Funding
+- `app/(app)/funding/index.tsx` — list of published funding requests, category filter
+- `app/(app)/funding/[id].tsx` — detail page + commit modal
+- `src/components/ui/FundingCard.tsx` — card with progress bar and return %
 
-## Themes
-- Device default via `useColorScheme()`
-- Override in Profile → Appearance (System / Light / Dark), persisted to AsyncStorage
-- PATCH `/api/users/me { theme }` — needs backend field (see below)
+### Credit (borrower side)
+- `app/(app)/credit.tsx` — tab replaced Goals. Shows own requests + create modal.
+- Explains "you're requesting funding from individual investors... peer-to-peer loan"
 
-## Backend requirement
-```prisma
-model User {
-  theme String @default("system")
-}
+### Commitments (investor side)
+- Folded into Portfolio as a tab: Holdings | Commitments
+- Data from `GET /api/funding/commitments/mine`
+
+### Real endpoints (replacing placeholders)
+- Home: portfolio value, funding featured, uses `useMe()` for name
+- Portfolio: real `/api/investments/portfolio` + `/series` + commitments tab
+- Profile: real `/api/users/me`, roles display, theme + currency persist
+
+### Tabs now
+Home · Discover · Portfolio · Credit · Profile
+
+(Goals removed — replaced by Credit.)
+
+## API endpoints consumed
+
 ```
-Migration: `npx prisma migrate dev --name add_user_theme`. PATCH `/api/users/me` should accept `theme`.
-
-## Demo accounts (password: `DemoPass123!`)
-- `admin@demo.bravevest.test` — admin
-- `investor@demo.bravevest.test` — investor, KYC approved
-- `investor.pending@demo.bravevest.test` — investor, KYC review
-- `investor.new@demo.bravevest.test` — investor, KYC none
-
-## Screens
-- Onboarding — 3-slide carousel
-- Home — kit layout (Total asset value, My Portfolio stacked cards, category pills, Watchlist)
-- Discover — chip filters + ProjectCard list
-- Project detail — stats grid + progress + Invest CTA
-- Portfolio — hero + sparkline + holdings
-- Goals — list + floating ＋ → modal
-- Profile — account, appearance, currency, replay onboarding, sign out
-
-## Run
-```powershell
-node init.js --force
-cd mobile && npm install && npx expo start --clear
+GET  /api/users/me
+GET  /api/investments/portfolio
+GET  /api/investments/portfolio/series
+GET  /api/funding/requests
+GET  /api/funding/requests/:id
+POST /api/funding/requests
+POST /api/funding/requests/:id/submit
+GET  /api/funding/mine
+POST /api/funding/commitments
+GET  /api/funding/commitments/mine
+GET  /api/currency/rates
 ```
 
-## Next
-1. `theme` field in Prisma User + PATCH endpoint
-2. Investment flow (Paystack)
-3. KYC wizard
-4. Push notifications + biometrics
-5. Restore auth: `EXPO_PUBLIC_DEV_AUTH_BYPASS=0`
-6. `npx eas-cli init`
+## Role handling
+
+`getRoles(me)` returns `string[]` — checks `me.roles[]` first, then `me.role`.
+`hasRole(me, ...roles)` — helper. Used to gate the Credit create button and Commit button.
+
+## Still stubbed
+- KYC wizard (routes to placeholder)
+- Investment flow (Paystack WebView)
+- Push notifications
+- Biometric login
+
+## Environment
+
+Set `EXPO_PUBLIC_API_BASE_URL` in `mobile/.env`:
+- Simulator: `http://localhost:3001`
+- Physical device: `http://<LAN-IP>:3001`
+
+## Next phase
+- KYC wizard screens wired to `/api/kyc/*`
+- Investment flow: `POST /api/investments` → `POST /api/payments/initialize` → Paystack WebView → verify
+- Push notifications via expo-notifications
+- Biometric login via expo-local-authentication

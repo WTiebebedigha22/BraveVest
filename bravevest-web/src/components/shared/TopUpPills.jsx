@@ -13,7 +13,7 @@ export default function TopUpPills({ average = 100000, onSelect }) {
     Math.round(average * 0.5),
     average,
     Math.round(average * 2),
-  ].map((a) => Math.round(a / 1000) * 1000); // round to nearest ₦1,000
+  ].map((a) => Math.round(a / 1000) * 1000); // round to nearest {format(1000)}
 
   return (
     <div className="topup">

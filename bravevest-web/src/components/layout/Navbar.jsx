@@ -4,8 +4,11 @@ import Button from '@/components/shared/Button';
 import CurrencySwitcher from '@/components/shared/CurrencySwitcher';
 import { useAuth } from '@/hooks/useAuth';
 import './Navbar.css';
+import { useCurrency } from '@/context/CurrencyContext';
 
 export default function Navbar() {
+  const { format } = useCurrency();
+
   const { user, logout } = useAuth();
   const [openMenu, setOpenMenu] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -40,7 +43,7 @@ export default function Navbar() {
           <Dropdown label="Explore" open={openMenu === 'explore'} onOpen={() => setOpenMenu(openMenu === 'explore' ? null : 'explore')} items={[
             { to: '/how-it-works', label: 'How It Works', desc: 'The full investor journey' },
             { to: '/stories', label: 'Investor Stories', desc: 'Real outcomes' },
-            { to: '/starter', label: 'Starter Pool', desc: 'Start from ₦5,000' },
+            { to: '/starter', label: 'Starter Pool', desc: 'Start from {format(5000)}' },
             { to: '/insights', label: 'Insights', desc: 'Market briefs & education' },
           ]} />
           <Dropdown label="Resources" open={openMenu === 'resources'} onOpen={() => setOpenMenu(openMenu === 'resources' ? null : 'resources')} items={[

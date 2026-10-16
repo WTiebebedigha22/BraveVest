@@ -1,15 +1,14 @@
 import { ScrollView, Text, View, ActivityIndicator, Pressable, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useMe } from '@/api/hooks';
+import { useMe, getRoles } from '@/api/hooks';
 import { useAuth } from '@/context/AuthContext';
 import { useCurrency } from '@/context/CurrencyContext';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useOnboarding } from '@/context/OnboardingContext';
-import { api } from '@/api/client';
+import { api, endpoints } from '@/api/client';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Button } from '@/components/ui/Button';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { Chip } from '@/components/ui/Chip';
 import { currencies, Currency, ThemeMode, fonts, radii, spacing } from '@/theme/tokens';
@@ -25,9 +24,10 @@ export default function Profile() {
   const email = me?.email ?? user?.email ?? '—';
   const name = [me?.firstName, me?.lastName].filter(Boolean).join(' ') || email.split('@')[0];
   const kyc = me?.kycStatus ?? user?.kycStatus ?? 'unknown';
+  const roles = getRoles(me ?? (user as any));
 
   async function onLogout() { await logout(); router.replace('/(auth)/login'); }
-  async function pickTheme(next: ThemeMode) { setMode(next); try { await api.patch('/api/users/me', { theme: next }); } catch {} }
+  async function pickTheme(next: ThemeMode) { setMode(next); try { await api.patch(endpoints.users.me, { theme: next }); } catch {} }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
@@ -45,12 +45,12 @@ export default function Profile() {
         </Card>
 
         {loading && !me ? <View style={{ paddingVertical: spacing.xxl, alignItems: 'center' }}><ActivityIndicator color={colors.lime} /></View>
-        : error ? <><EmptyState title="Couldn't load profile" body={error.message} /><Button label="Retry" variant="ghost" onPress={refetch} style={{ alignSelf: 'center', marginTop: spacing.md }} /></>
+        : error ? <EmptyState title="Couldn't load profile" body={error.message} />
         : (
           <>
             <SectionHeader title="Account" />
             <Card style={{ marginBottom: spacing.xl }}>
-              <Row label="Role" value={me?.role ?? user?.role ?? '—'} />
+              <Row label="Roles" value={roles.length ? roles.join(', ') : '—'} />
               <Divider />
               <Row label="KYC status" value={String(kyc)} accent={kyc === 'approved' ? colors.lime : colors.lavender} />
               <Divider />
@@ -68,23 +68,40 @@ export default function Profile() {
 
             <SectionHeader title="Currency" />
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.xl }}>
-              {currencies.map((c) => <Chip key={c} label={c} active={c === currency} onPress={() => setCurrency(c as Currency)} />)}
+              {currencies.map((c) => (
+                <Chip key={c} label={c} active={c === currency} onPress={() => setCurrency(c as Currency)} />
+              ))}
             </View>
 
             <SectionHeader title="Actions" />
-            <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: colors.surface, paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderRadius: radii.card, marginBottom: spacing.sm, borderWidth: 1, borderColor: colors.border }} onPress={() => Alert.alert('KYC', 'Wire to /api/kyc wizard next')}>
+            <Pressable
+              style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: colors.surface, paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderRadius: radii.card, marginBottom: spacing.sm, borderWidth: 1, borderColor: colors.border }}
+              onPress={() => router.push('/(app)/funding')}
+            >
+              <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 14, fontWeight: '600' }}>Browse funding</Text>
+              <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 20 }}>›</Text>
+            </Pressable>
+            <Pressable
+              style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: colors.surface, paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderRadius: radii.card, marginBottom: spacing.sm, borderWidth: 1, borderColor: colors.border }}
+              onPress={() => Alert.alert('KYC', 'Wire to /api/kyc wizard next')}
+            >
               <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 14, fontWeight: '600' }}>Complete KYC</Text>
               <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 20 }}>›</Text>
             </Pressable>
-            <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: colors.surface, paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderRadius: radii.card, marginBottom: spacing.sm, borderWidth: 1, borderColor: colors.border }} onPress={() => Alert.alert('Change password', 'Wire to POST /api/users/change-password')}>
-              <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 14, fontWeight: '600' }}>Change password</Text>
-              <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 20 }}>›</Text>
-            </Pressable>
-            <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: colors.surface, paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderRadius: radii.card, marginBottom: spacing.sm, borderWidth: 1, borderColor: colors.border }} onPress={() => { resetOnboarding(); router.replace('/onboarding'); }}>
+            <Pressable
+              style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: colors.surface, paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderRadius: radii.card, marginBottom: spacing.sm, borderWidth: 1, borderColor: colors.border }}
+              onPress={() => { resetOnboarding(); router.replace('/onboarding'); }}
+            >
               <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 14, fontWeight: '600' }}>Replay onboarding</Text>
               <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 20 }}>›</Text>
             </Pressable>
-            <Button label="Sign out" variant="ghost" onPress={onLogout} full style={{ marginTop: spacing.lg }} />
+
+            <Pressable
+              style={{ alignItems: 'center', paddingVertical: spacing.md, borderRadius: radii.card, marginTop: spacing.md, borderWidth: 1, borderColor: colors.lavender + '55' }}
+              onPress={onLogout}
+            >
+              <Text style={{ color: colors.lavender, fontFamily: fonts.sans, fontSize: 14, fontWeight: '600' }}>Sign out</Text>
+            </Pressable>
           </>
         )}
 

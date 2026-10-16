@@ -25,6 +25,17 @@ const RiskDisclosurePage = lazy(() => import('@/pages/public/RiskDisclosurePage'
 const Insights      = lazy(() => import('@/pages/public/Insights'));
 const InsightDetail = lazy(() => import('@/pages/public/InsightDetail'));
 
+/* Funding — public */
+const FundingList   = lazy(() => import('@/pages/funding/FundingList'));
+const FundingDetail = lazy(() => import('@/pages/funding/FundingDetail'));
+
+/* Funding — protected (borrower) */
+const FundingNew    = lazy(() => import('@/pages/funding/FundingNew'));
+const FundingMine   = lazy(() => import('@/pages/funding/FundingMine'));
+
+/* Funding — admin */
+const AdminFundingReview = lazy(() => import('@/pages/funding/AdminReview'));
+
 /* Auth */
 const Login          = lazy(() => import('@/pages/auth/Login'));
 const Register       = lazy(() => import('@/pages/auth/Register'));
@@ -103,6 +114,10 @@ export default function AppRoutes() {
           <Route path="/disclosures" element={<Disclosures />} />
           <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
           <Route path="/insights/:id" element={<InsightDetail />} />
+
+          {/* Funding — public */}
+          <Route path="/funding" element={<FundingList />} />
+          <Route path="/funding/:id" element={<FundingDetail />} />
         </Route>
 
         <Route path="/login" element={<Login />} />
@@ -131,6 +146,10 @@ export default function AppRoutes() {
           <Route path="/goals" element={<Goals />} />
           <Route path="/goals/:id" element={<GoalDetail />} />
           <Route path="/gifting" element={<Gifting />} />
+
+          {/* Funding — borrower (behind auth; role enforced server-side) */}
+          <Route path="/funding/new" element={<FundingNew />} />
+          <Route path="/funding/mine" element={<FundingMine />} />
         </Route>
 
         <Route path="/payment/callback" element={<ProtectedRoute><PaymentCallback /></ProtectedRoute>} />
@@ -150,6 +169,9 @@ export default function AppRoutes() {
           <Route path="/admin/insights" element={<AdminInsights />} />
           <Route path="/admin/insights/new" element={<InsightEditor />} />
           <Route path="/admin/insights/:id/edit" element={<InsightEditor />} />
+
+          {/* Funding — admin */}
+          <Route path="/admin/funding/review" element={<AdminFundingReview />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />
