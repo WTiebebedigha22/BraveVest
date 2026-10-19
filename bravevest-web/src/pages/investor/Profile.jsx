@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { usersApi } from '@/api/users';
 import './Profile.css';
+import KycBanner from '@/components/kyc/KycBanner';
 
 export default function Profile() {
   const { user, setUser } = useAuth();
@@ -104,6 +105,8 @@ export default function Profile() {
   const initials = `${profile.firstName?.[0] || ''}${profile.lastName?.[0] || ''}`.toUpperCase() || 'U';
 
   return (
+    <>
+    <KycBanner />
     <>
       <AdminPageHeader
         eyebrow="Account"
@@ -247,6 +250,7 @@ export default function Profile() {
           </AdminCard.Body>
         </AdminCard>
       </div>
+    </>
     </>
   );
 }

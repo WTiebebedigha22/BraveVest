@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { commitmentsApi } from '../../api/commitments';
+import { useKyc } from '@/hooks/useKyc';
 
 function fmt(n, currency = 'NGN') {
-  return `${currency} ${Number(n || 0).toLocaleString()}`;
+  const { profile: kycProfile } = useKyc();
+  const kycOk = kycProfile?.status === 'APPROVED';
+
+  return {format(Number(n || 0).toLocaleString())};
 }
 
 export default function CommitModal({ request, open, onClose, onCommitted }) {

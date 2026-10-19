@@ -25,8 +25,8 @@ export default function StarterPool() {
             Start with {format(MIN)}.
           </h1>
           <p className="starter__sub">
-            A diversified entry into BraveVest's curated pipeline — real estate,
-            agriculture, and SME lending — so your first investment isn't a bet
+            A diversified entry into BraveVest's curated pipeline of real estate,
+            agriculture, and SME lending so your first investment isn't a gamble
             on one outcome.
           </p>
           <div className="starter__actions">
@@ -54,15 +54,15 @@ export default function StarterPool() {
         <div className="starter__card">
           <div className="starter__card-title">Diversified by default</div>
           <div className="starter__card-body">
-            Your {format(MIN)} is split across a curated bundle — real estate,
-            agriculture, and SME lending — so no single outcome decides your return.
+            Your {format(MIN)} is split across a curated bundle real estate,
+            agriculture, and SME lending, so no single outcome decides your return.
           </div>
         </div>
         <div className="starter__card">
           <div className="starter__card-title">Same vetted pipeline</div>
           <div className="starter__card-body">
             Starter Pool draws from the same opportunities full investors see.
-            You're not getting a lesser tier — just a smaller entry.
+            You're not getting a lesser tier, just a smaller entry.
           </div>
         </div>
         <div className="starter__card">

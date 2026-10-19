@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { ScrollView, Text, View, RefreshControl, ActivityIndicator, Pressable, Modal, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { ScrollView, Text, View, Pressable, RefreshControl, ActivityIndicator, Modal, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useMyFunding, useMe, hasRole } from '@/api/hooks';
 import { useCurrency } from '@/context/CurrencyContext';
@@ -29,11 +30,11 @@ export default function Credit() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
       <ScrollView
-        contentContainerStyle={{ padding: spacing.lg, paddingTop: spacing.md }}
+        contentContainerStyle={{ paddingBottom: 120 }}
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={loading && items.length > 0} onRefresh={refetch} tintColor={colors.lime} />}
       >
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: spacing.lg }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', paddingHorizontal: spacing.lg, paddingTop: spacing.md, marginBottom: spacing.lg }}>
           <View>
             <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 24, fontWeight: '700' }}>Credit</Text>
             <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 13, marginTop: 4 }}>
@@ -41,23 +42,20 @@ export default function Credit() {
             </Text>
           </View>
           {canBorrow ? (
-            <Pressable onPress={() => setModal(true)} style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.lime, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ color: colors.onAccent, fontFamily: fonts.sans, fontSize: 22, lineHeight: 24 }}>＋</Text>
+            <Pressable onPress={() => setModal(true)} style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.lime, alignItems: 'center', justifyContent: 'center' }}>
+              <Feather name="plus" size={20} color={colors.onAccent} />
             </Pressable>
           ) : null}
         </View>
 
         {!canBorrow ? (
-          <EmptyState
-            title="Credit isn't enabled"
-            body="Contact support to request credit access on your account."
-          />
+          <EmptyState title="Credit isn't enabled" body="Contact support to request credit access on your account." />
         ) : loading && items.length === 0 ? (
           <View style={{ paddingVertical: spacing.xxl, alignItems: 'center' }}><ActivityIndicator color={colors.lime} /></View>
         ) : error ? (
-          <EmptyState title="Couldn't load requests" body={error.message} />
+          <EmptyState title="Couldn't load" body={error.message} />
         ) : items.length === 0 ? (
-          <EmptyState title="No requests yet" body="Tap ＋ to submit your first funding request." />
+          <EmptyState title="No requests yet" body="Tap + to submit your first funding request." />
         ) : (
           items.map((r) => {
             const req = Number(r.amountRequested ?? 0);
@@ -67,15 +65,13 @@ export default function Credit() {
               <Pressable
                 key={r.id}
                 onPress={() => router.push(`/(app)/funding/${r.id}`)}
-                style={{ backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: radii.card, padding: spacing.lg, marginBottom: spacing.md }}
+                style={{ paddingHorizontal: spacing.lg, paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border }}
               >
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: spacing.md }}>
-                  <Text style={{ flex: 1, color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 15, fontWeight: '600' }} numberOfLines={2}>
-                    {r.title}
-                  </Text>
+                  <Text style={{ flex: 1, color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 15, fontWeight: '600' }} numberOfLines={2}>{r.title}</Text>
                   <StatusBadge status={r.status} />
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.md }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.sm }}>
                   <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12 }}>{format(req)} requested</Text>
                   <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12 }}>{pct}% funded</Text>
                 </View>
@@ -83,17 +79,15 @@ export default function Credit() {
                 {r.status === 'DRAFT' ? (
                   <Pressable
                     onPress={() => submit(r.id)}
-                    style={{ marginTop: spacing.md, alignSelf: 'flex-start', backgroundColor: colors.lime, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, borderRadius: radii.button }}
+                    style={{ marginTop: spacing.md, alignSelf: 'flex-start', backgroundColor: colors.lime, paddingHorizontal: spacing.lg, paddingVertical: 8, borderRadius: radii.button }}
                   >
-                    <Text style={{ color: colors.onAccent, fontFamily: fonts.sans, fontSize: 13, fontWeight: '700' }}>Submit for review</Text>
+                    <Text style={{ color: colors.onAccent, fontFamily: fonts.sans, fontSize: 12, fontWeight: '700' }}>Submit for review</Text>
                   </Pressable>
                 ) : null}
               </Pressable>
             );
           })
         )}
-
-        <View style={{ height: 120 }} />
       </ScrollView>
 
       <NewRequestModal open={modal} onClose={() => setModal(false)} onDone={() => { setModal(false); refetch(); }} />
@@ -112,10 +106,7 @@ function NewRequestModal({ open, onClose, onDone }: { open: boolean; onClose: ()
 
   async function submit() {
     const amt = Number(amount);
-    if (!title.trim() || !Number.isFinite(amt) || amt <= 0) {
-      Alert.alert('Missing fields', 'Enter a title and a valid amount.');
-      return;
-    }
+    if (!title.trim() || !Number.isFinite(amt) || amt <= 0) { Alert.alert('Missing fields', 'Enter a title and a valid amount.'); return; }
     setBusy(true);
     try {
       await api.post(endpoints.funding.create, {
@@ -130,18 +121,18 @@ function NewRequestModal({ open, onClose, onDone }: { open: boolean; onClose: ()
       Alert.alert('Saved', 'Draft created. Open it to submit for review.');
       setTitle(''); setSummary(''); setAmount(''); setReturnPct(''); setDuration('');
       onDone();
-    } catch (e: any) {
-      Alert.alert('Could not create', e?.response?.data?.message ?? e?.message);
-    } finally { setBusy(false); }
+    } catch (e: any) { Alert.alert('Could not create', e?.response?.data?.message ?? e?.message); }
+    finally { setBusy(false); }
   }
 
   return (
     <Modal visible={open} animationType="slide" transparent onRequestClose={onClose}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, backgroundColor: colors.scrim, justifyContent: 'flex-end' }}>
         <ScrollView style={{ maxHeight: '85%' }} contentContainerStyle={{ backgroundColor: colors.surface, borderTopLeftRadius: radii.card, borderTopRightRadius: radii.card, padding: spacing.xl, ...shadows.floating }}>
-          <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 20, fontWeight: '700', marginBottom: spacing.lg }}>
-            New credit request
-          </Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.lg }}>
+            <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 20, fontWeight: '700' }}>New credit request</Text>
+            <Pressable onPress={onClose}><Feather name="x" size={22} color={colors.textSecondary} /></Pressable>
+          </View>
 
           <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12, lineHeight: 18, marginBottom: spacing.md }}>
             You're requesting funding from individual investors. Each commitment is a peer-to-peer loan — you'll receive the capital upfront and repay it over the agreed term.
@@ -155,9 +146,6 @@ function NewRequestModal({ open, onClose, onDone }: { open: boolean; onClose: ()
 
           <Pressable onPress={submit} disabled={busy} style={{ backgroundColor: colors.lime, paddingVertical: spacing.md, borderRadius: radii.button, alignItems: 'center', marginTop: spacing.lg }}>
             {busy ? <ActivityIndicator color={colors.onAccent} /> : <Text style={{ color: colors.onAccent, fontFamily: fonts.sans, fontSize: 15, fontWeight: '700' }}>Save draft</Text>}
-          </Pressable>
-          <Pressable onPress={onClose} style={{ alignItems: 'center', paddingVertical: spacing.md, marginTop: spacing.sm }}>
-            <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 14 }}>Cancel</Text>
           </Pressable>
         </ScrollView>
       </KeyboardAvoidingView>

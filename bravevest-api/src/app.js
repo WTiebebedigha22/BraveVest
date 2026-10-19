@@ -68,6 +68,7 @@ app.use('/api/insights', require('./modules/insights/insights.routes'));
 app.use('/api/referrals', require('./modules/referrals/referrals.routes'));
 app.use('/api/admin', require('./modules/admin/admin.routes'));
 
+app.use('/api/funding', require('./modules/funding/commitment.routes'));
 app.use('/api/funding', require('./modules/funding/funding.routes'));
 
 app.use('/api/contact', require('./modules/contact/contact.routes'));

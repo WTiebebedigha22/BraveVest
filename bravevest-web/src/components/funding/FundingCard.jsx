@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function fmt(n, currency = 'NGN') {
   if (n == null) return '—';
-  return `${currency} ${Number(n).toLocaleString()}`;
+  return {format(Number(n).toLocaleString())};
 }
 
 export default function FundingCard({ request }) {

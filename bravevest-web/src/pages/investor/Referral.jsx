@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/useToast';
 import { referralsApi } from '@/api/referrals';
 import './Referral.css';
 import { useCurrency } from '@/context/CurrencyContext';
+import KycBanner from '@/components/kyc/KycBanner';
 
 export default function Referral() {
   const { format } = useCurrency();
@@ -56,6 +57,8 @@ export default function Referral() {
   if (loading) return <div className="text-center py-5"><Loader /></div>;
 
   return (
+    <>
+    <KycBanner />
     <>
       <AdminPageHeader
         eyebrow="Referrals"
@@ -133,6 +136,7 @@ export default function Referral() {
       <div className="ref-note">
         Rewards are credited to your BraveVest wallet. Terms apply.
       </div>
+    </>
     </>
   );
 }

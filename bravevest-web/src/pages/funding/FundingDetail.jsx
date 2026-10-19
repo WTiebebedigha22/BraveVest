@@ -3,10 +3,14 @@ import { useParams, Link } from 'react-router-dom';
 import { fundingApi } from '../../api/funding';
 import StatusBadge from '../../components/funding/StatusBadge';
 import { useAuth } from '../../hooks/useAuth';
+import { useKyc } from '@/hooks/useKyc';
 
 function fmt(n, currency = 'NGN') {
+  const { profile: kycProfile } = useKyc();
+  const kycOk = kycProfile?.status === 'APPROVED';
+
   if (n == null) return '—';
-  return `${currency} ${Number(n).toLocaleString()}`;
+  return {format(Number(n).toLocaleString())};
 }
 
 export default function FundingDetail() {

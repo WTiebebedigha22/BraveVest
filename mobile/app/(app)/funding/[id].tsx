@@ -79,6 +79,34 @@ export default function FundingDetail() {
           </>
         ) : null}
 
+        {/* Match status (placeholder until Phase 6) */}
+        <View style={{ marginTop: spacing.xl, padding: spacing.lg, borderRadius: radii.card, borderWidth: 1, borderColor: colors.border }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 15, fontWeight: '700' }}>Match status</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, backgroundColor: colors.surfaceMuted }}>
+              <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.lime }} />
+              <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 11, fontWeight: '700' }}>AWAITING</Text>
+            </View>
+          </View>
+          <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12, lineHeight: 18 }}>
+            When creditors commit, funds transfer within a 5-minute window. Disbursement is verified within 5 minutes of transfer.
+          </Text>
+        </View>
+
+        {/* Match status (placeholder until Phase 6) */}
+        <View style={{ marginTop: spacing.xl, padding: spacing.lg, borderRadius: radii.card, borderWidth: 1, borderColor: colors.border }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 15, fontWeight: '700' }}>Match status</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, backgroundColor: colors.surfaceMuted }}>
+              <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.lime }} />
+              <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 11, fontWeight: '700' }}>AWAITING</Text>
+            </View>
+          </View>
+          <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12, lineHeight: 18 }}>
+            When creditors commit, funds transfer within a 5-minute window. Disbursement is verified within 5 minutes of transfer.
+          </Text>
+        </View>
+
         <View style={{ marginTop: spacing.xl, padding: spacing.md, backgroundColor: colors.surfaceMuted, borderRadius: radii.card }}>
           <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12, lineHeight: 18 }}>
             <Text style={{ fontWeight: '700', color: colors.textPrimary }}>About commitments: </Text>

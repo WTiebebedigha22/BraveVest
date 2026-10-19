@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fundingApi } from '../../api/funding';
 import FundingCard from '../../components/funding/FundingCard';
+import { useKyc } from '@/hooks/useKyc';
 
 const CATEGORIES = ['ALL', 'REAL_ESTATE', 'AGRICULTURE', 'ENERGY', 'SME', 'INFRASTRUCTURE'];
 
 export default function FundingList() {
+  const { profile: kycProfile } = useKyc();
+  const kycOk = kycProfile?.status === 'APPROVED';
+
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

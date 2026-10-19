@@ -10,6 +10,7 @@ import Modal from '@/components/shared/Modal';
 import { groupsApi } from '@/api/groups';
 import { useToast } from '@/hooks/useToast';
 import './Groups.css';
+import KycBanner from '@/components/kyc/KycBanner';
 
 export default function Groups() {
   const nav = useNavigate();
@@ -62,6 +63,8 @@ export default function Groups() {
   }
 
   return (
+    <>
+    <KycBanner />
     <>
       <AdminPageHeader
         eyebrow="Investor"
@@ -146,6 +149,7 @@ export default function Groups() {
           </div>
         </form>
       </Modal>
+    </>
     </>
   );
 }

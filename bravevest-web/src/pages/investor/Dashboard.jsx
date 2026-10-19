@@ -4,9 +4,10 @@ import { commitmentsApi } from '../../api/commitments';
 import { fundingApi } from '../../api/funding';
 import { useAuth } from '../../hooks/useAuth';
 import StatusBadge from '../../components/funding/StatusBadge';
+import KycBanner from '../../components/kyc/KycBanner';
 
 function fmt(n, currency = 'NGN') {
-  return `${currency} ${Number(n || 0).toLocaleString()}`;
+  return Number(n || 0).toLocaleString();
 }
 
 function hasRole(user, ...roles) {
@@ -55,102 +56,106 @@ export default function Dashboard() {
   const activeRequests = myRequests.filter((r) => !['CANCELLED', 'REJECTED', 'CLOSED'].includes(r.status)).length;
 
   return (
-    <div className="page" style={{ padding: '32px 16px', maxWidth: 1000, margin: '0 auto' }}>
-      <h1 style={{ margin: 0, fontSize: 28 }}>Dashboard</h1>
+    <>
+      <KycBanner />
+      <div className="page" style={{ padding: '32px 16px', maxWidth: 1000, margin: '0 auto' }}>
+        <h1 style={{ margin: 0, fontSize: 28 }}>Dashboard</h1>
 
-      {showToggle && (
-        <div style={{ display: 'inline-flex', gap: 4, padding: 4, background: '#f0f0f0', borderRadius: 999, margin: '20px 0' }}>
-          {['investing', 'credit'].map((m) => (
-            <button
-              key={m}
-              onClick={() => setMode(m)}
-              style={{
-                padding: '8px 18px', borderRadius: 999, border: 0, cursor: 'pointer',
-                background: mode === m ? '#1b5e20' : 'transparent',
-                color: mode === m ? '#fff' : '#333',
-                fontWeight: 600, fontSize: 13, 
-              }}
-            >
-              {m === 'credit' ? 'Credit' : 'Investing'}</button>
-          ))}
-        </div>
-      )}
+        {showToggle && (
+          <div style={{ display: 'inline-flex', gap: 4, padding: 4, background: '#f0f0f0', borderRadius: 999, margin: '20px 0' }}>
+            {['investing', 'credit'].map((m) => (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                style={{
+                  padding: '8px 18px', borderRadius: 999, border: 0, cursor: 'pointer',
+                  background: mode === m ? '#1b5e20' : 'transparent',
+                  color: mode === m ? '#fff' : '#333',
+                  fontWeight: 600, fontSize: 13,
+                }}
+              >
+                {m === 'credit' ? 'Credit' : 'Investing'}
+              </button>
+            ))}
+          </div>
+        )}
 
-      {loading && <div style={{ padding: 40, textAlign: 'center' }}>Loading…</div>}
+        {loading && <div style={{ padding: 40, textAlign: 'center' }}>Loading…</div>}
 
-      {!loading && mode === 'investing' && (
-        <>
-          {!hasInvesting ? (
-            <Empty
-              title="You haven’t committed to anything yet"
-              body="Back a funding request to start building your portfolio."
-              cta={{ to: '/funding', label: 'Browse opportunities' }}
-            />
-          ) : (
-            <>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 16, marginBottom: 24 }}>
-                <Card label="Total committed" value={fmt(totalCommitted)} />
-                <Card label="Active commitments" value={activeCommitments} />
-              </div>
+        {!loading && mode === 'investing' && (
+          <>
+            {!hasInvesting ? (
+              <Empty
+                title="You haven’t committed to anything yet"
+                body="Back a funding request to start building your portfolio."
+                cta={{ to: '/funding', label: 'Browse opportunities' }}
+              />
+            ) : (
+              <>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 16, marginBottom: 24 }}>
+                  <Card label="Total committed" value={fmt(totalCommitted)} />
+                  <Card label="Active commitments" value={activeCommitments} />
+                </div>
 
-              <h2 style={{ fontSize: 18 }}>Recent commitments</h2>
-              <div style={{ display: 'grid', gap: 10, marginBottom: 24 }}>
-                {commitments.slice(0, 5).map((c) => (
-                  <Row
-                    key={c.id}
-                    to={`/funding/${c.request?.id}`}
-                    title={c.request?.title ?? '—'}
-                    meta={`${fmt(c.amount, c.currency)} · ${c.status}`}
-                  />
-                ))}
-              </div>
+                <h2 style={{ fontSize: 18 }}>Recent commitments</h2>
+                <div style={{ display: 'grid', gap: 10, marginBottom: 24 }}>
+                  {commitments.slice(0, 5).map((c) => (
+                    <Row
+                      key={c.id}
+                      to={`/funding/${c.request?.id}`}
+                      title={c.request?.title ?? '—'}
+                      meta={`${fmt(c.amount, c.currency)} · ${c.status}`}
+                    />
+                  ))}
+                </div>
 
-              <Link to="/commitments" className="btn">View all commitments</Link>
-            </>
-          )}
-        </>
-      )}
+                <Link to="/commitments" className="btn">View all commitments</Link>
+              </>
+            )}
+          </>
+        )}
 
-      {!loading && mode === 'credit' && (
-        <>
-          {!hasBorrowing && !canBorrow ? (
-            <Empty title="You’re not set up for credit yet" body="Contact support to enable credit on your account." />
-          ) : !hasBorrowing ? (
-            <Empty
-              title="No credit requests yet"
-              body="Submit a request to raise capital from investors."
-              cta={{ to: '/funding/new', label: 'Create a credit request' }}
-            />
-          ) : (
-            <>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 16, marginBottom: 24 }}>
-                <Card label="Total requested" value={fmt(totalRequested)} />
-                <Card label="Total funded" value={fmt(totalFunded)} />
-                <Card label="Active requests" value={activeRequests} />
-              </div>
+        {!loading && mode === 'credit' && (
+          <>
+            {!hasBorrowing && !canBorrow ? (
+              <Empty title="You’re not set up for credit yet" body="Contact support to enable credit on your account." />
+            ) : !hasBorrowing ? (
+              <Empty
+                title="No credit requests yet"
+                body="Submit a request to raise capital from investors."
+                cta={{ to: '/funding/new', label: 'Create a credit request' }}
+              />
+            ) : (
+              <>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 16, marginBottom: 24 }}>
+                  <Card label="Total requested" value={fmt(totalRequested)} />
+                  <Card label="Total funded" value={fmt(totalFunded)} />
+                  <Card label="Active requests" value={activeRequests} />
+                </div>
 
-              <h2 style={{ fontSize: 18 }}>Your requests</h2>
-              <div style={{ display: 'grid', gap: 10, marginBottom: 24 }}>
-                {myRequests.slice(0, 5).map((r) => (
-                  <Row
-                    key={r.id}
-                    to={`/funding/${r.id}`}
-                    title={r.title}
-                    meta={`${fmt(r.amountRequested, r.currency)} · ${r.status}`}
-                    badge={<StatusBadge status={r.status} />}
-                  />
-                ))}
-              </div>
+                <h2 style={{ fontSize: 18 }}>Your requests</h2>
+                <div style={{ display: 'grid', gap: 10, marginBottom: 24 }}>
+                  {myRequests.slice(0, 5).map((r) => (
+                    <Row
+                      key={r.id}
+                      to={`/funding/${r.id}`}
+                      title={r.title}
+                      meta={`${fmt(r.amountRequested, r.currency)} · ${r.status}`}
+                      badge={<StatusBadge status={r.status} />}
+                    />
+                  ))}
+                </div>
 
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <Link to="/funding/mine" className="btn">View all requests</Link>
-                {canBorrow && <Link to="/funding/new" className="btn btn-primary">New request</Link>}
-              </div>
-            </>
-          )}
-        </>
-      )}
-    </div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <Link to="/funding/mine" className="btn">View all requests</Link>
+                  {canBorrow && <Link to="/funding/new" className="btn btn-primary">New request</Link>}
+                </div>
+              </>
+            )}
+          </>
+        )}
+      </div>
+    </>
   );
 }
 

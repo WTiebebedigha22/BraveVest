@@ -8,8 +8,12 @@ import { paymentsApi } from '@/api/payments';
 import { formatNaira } from '@/utils/format';
 import { useToast } from '@/hooks/useToast';
 import './InvestModal.css';
+import { useKyc } from '@/hooks/useKyc';
 
 export default function InvestModal({ open, onClose, project, defaultAmount, onSuccess }) {
+  const { profile: kycProfile } = useKyc();
+  const kycOk = kycProfile?.status === 'APPROVED';
+
   const nav = useNavigate();
   const toast = useToast();
   const [amount, setAmount] = useState('');

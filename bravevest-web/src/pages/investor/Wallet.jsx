@@ -6,6 +6,7 @@ import Currency from '@/components/shared/Currency';
 import AdminEmpty from '@/components/admin/AdminEmpty';
 import { paymentsApi } from '@/api/payments';
 import './Wallet.css';
+import KycBanner from '@/components/kyc/KycBanner';
 
 const statusLabel = { PENDING: 'Pending', SUCCESS: 'Success', FAILED: 'Failed', REVERSED: 'Reversed' };
 
@@ -27,6 +28,8 @@ export default function Wallet() {
   }, []);
 
   return (
+    <>
+    <KycBanner />
     <>
       <AdminPageHeader eyebrow="Investor" title="Wallet" subtitle="Every deposit and investment in one place." />
 
@@ -62,6 +65,7 @@ export default function Wallet() {
           )}
         </>
       )}
+    </>
     </>
   );
 }

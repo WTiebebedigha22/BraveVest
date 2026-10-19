@@ -10,6 +10,7 @@ import GoalCard from '@/components/investor/GoalCard';
 import { goalsApi } from '@/api/goals';
 import { useToast } from '@/hooks/useToast';
 import './Goals.css';
+import KycBanner from '@/components/kyc/KycBanner';
 
 const GOAL_TYPES = [
   { value: 'RENT', label: 'Rent' },
@@ -67,6 +68,8 @@ export default function Goals() {
 
   return (
     <>
+    <KycBanner />
+    <>
       <AdminPageHeader
         eyebrow="Investor"
         title="Investment Goals"
@@ -105,6 +108,7 @@ export default function Goals() {
           </div>
         </form>
       </Modal>
+    </>
     </>
   );
 }

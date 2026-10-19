@@ -1,0 +1,92 @@
+import { useState } from 'react';
+import { ScrollView, Text, View, Pressable, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useCurrency } from '@/context/CurrencyContext';
+import { useTheme } from '@/theme/ThemeProvider';
+import { FormRow } from '@/components/ui/FormRow';
+import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { fonts, radii, spacing } from '@/theme/tokens';
+
+const QUICK = [5000, 10000, 25000, 50000, 100000];
+
+export default function Deposit() {
+  const router = useRouter();
+  const { colors } = useTheme();
+  const { format, currency } = useCurrency();
+  const [amount, setAmount] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  async function submit() {
+    const n = Number(amount);
+    if (!Number.isFinite(n) || n < 1000) { Alert.alert('Minimum deposit', 'Minimum deposit is ' + format(1000)); return; }
+    setBusy(true);
+    // TODO: POST /api/payments/initialize -> Paystack checkout URL
+    setTimeout(() => {
+      setBusy(false);
+      Alert.alert('Deposit initialised', 'Paystack checkout would open next. (Backend integration pending.)');
+    }, 600);
+  }
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
+      <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
+        <Pressable onPress={() => router.back()} style={{ marginBottom: spacing.lg }}>
+          <Feather name="arrow-left" size={22} color={colors.textPrimary} />
+        </Pressable>
+
+        <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 26, fontWeight: '700' }}>Deposit</Text>
+        <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 13, marginTop: 6 }}>
+          Fund your wallet to invest in vetted opportunities.
+        </Text>
+
+        <View style={{ marginTop: spacing.xl, padding: spacing.lg, borderRadius: radii.card, backgroundColor: colors.surfaceMuted }}>
+          <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12 }}>Available balance</Text>
+          <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 26, fontWeight: '700', marginTop: 4 }}>{format(0, { decimals: 2 })}</Text>
+        </View>
+
+        <FormRow label={`Amount (${currency})`} value={amount} onChange={setAmount} placeholder="50000" numeric />
+
+        <View style={{ flexDirection: 'row', gap: 8, marginTop: spacing.md, flexWrap: 'wrap' }}>
+          {QUICK.map((q) => (
+            <Pressable
+              key={q}
+              onPress={() => setAmount(String(q))}
+              style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999, backgroundColor: colors.surfaceMuted }}
+            >
+              <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12, fontWeight: '600' }}>{format(q)}</Text>
+            </Pressable>
+          ))}
+        </View>
+
+        <View style={{ marginTop: spacing.xl, padding: spacing.lg, borderRadius: radii.card, backgroundColor: colors.surfaceMuted }}>
+          <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 14, fontWeight: '700', marginBottom: 10 }}>Payment methods</Text>
+          <Row icon="credit-card" label="Card" sub="Visa and Mastercard accepted" />
+          <Row icon="repeat" label="Bank transfer" sub="Instant transfer via Paystack" />
+          <Row icon="smartphone" label="USSD" sub="Dial from any Nigerian number" />
+        </View>
+
+        <PrimaryButton label={busy ? 'Initialising…' : `Deposit ${amount ? format(Number(amount)) : ''}`} onPress={submit} loading={busy} style={{ marginTop: spacing.xl }} />
+        <Text style={{ color: colors.textTertiary, fontFamily: fonts.sans, fontSize: 11, marginTop: spacing.md, textAlign: 'center' }}>
+          Deposits are processed via Paystack. No hidden fees.
+        </Text>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+function Row({ icon, label, sub }: { icon: any; label: string; sub: string }) {
+  const { colors } = useTheme();
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10 }}>
+      <View style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' }}>
+        <Feather name={icon} size={16} color={colors.textPrimary} />
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 13, fontWeight: '600' }}>{label}</Text>
+        <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 11, marginTop: 2 }}>{sub}</Text>
+      </View>
+    </View>
+  );
+}

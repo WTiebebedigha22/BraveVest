@@ -174,7 +174,7 @@ model User {
   firstName     String
   lastName      String
   image         String?
-  role          UserRole   @default(INVESTOR)
+  roles         UserRole[] @default([INVESTOR])
   status        UserStatus @default(PENDING_VERIFICATION)
   emailVerified DateTime?
 
@@ -196,6 +196,7 @@ model User {
   fundingRequests     FundingRequest[]         @relation("BorrowerFundingRequests")
   reviewedFundingReqs FundingRequest[]         @relation("ReviewedFundingRequests")
   uploadedFundingDocs FundingRequestDocument[] @relation("UploadedFundingDocuments")
+  commitments         Commitment[]             @relation("InvestorCommitments")
 
   @@index([email])
   @@map("users")
@@ -531,9 +532,10 @@ model FundingRequest {
   publishedAt     DateTime?
   fundingDeadline DateTime?
 
-  documents FundingRequestDocument[]
-  createdAt DateTime                 @default(now())
-  updatedAt DateTime                 @updatedAt
+  documents   FundingRequestDocument[]
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  commitments Commitment[]
 
   @@index([borrowerId])
   @@index([status])
@@ -586,4 +588,36 @@ model ContactMessage {
   @@index([email])
   @@index([createdAt])
   @@map("contact_messages")
+}
+
+enum CommitmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  REFUNDED
+}
+
+model Commitment {
+  id         String         @id @default(cuid())
+  reference  String         @unique
+  requestId  String
+  request    FundingRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  investorId String
+  investor   User           @relation("InvestorCommitments", fields: [investorId], references: [id], onDelete: Cascade)
+
+  amount   Decimal          @db.Decimal(18, 2)
+  currency String           @default("NGN")
+  status   CommitmentStatus @default(PENDING)
+
+  confirmedAt  DateTime?
+  cancelledAt  DateTime?
+  cancelReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([requestId])
+  @@index([investorId])
+  @@index([status])
+  @@map("commitments")
 }

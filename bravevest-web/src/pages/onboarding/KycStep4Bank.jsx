@@ -1,36 +1,53 @@
-import Stepper from '@/components/kyc/Stepper';
-import Button from '@/components/shared/Button';
-import Input from '@/components/shared/Input';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { kycApi } from '@/api/kyc';
-import './Kyc.css';
+import KycShell from '@/components/kyc/KycShell';
+import BankResolveInput from '@/components/kyc/BankResolveInput';
+import { useKyc } from '@/hooks/useKyc';
 
 export default function KycStep4Bank() {
   const nav = useNavigate();
-  const [form, setForm] = useState({ bankName: '', bankCode: '', accountNumber: '', accountName: '' });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const update = (k) => (e) => setForm({ ...form, [k]: e.target.value });
-  async function submit(e) {
-    e.preventDefault(); setLoading(true); setError('');
-    try { await kycApi.saveStep(4, form); nav('/kyc/review'); }
-    catch (err) { setError(err?.response?.data?.message || 'Failed'); }
-    finally { setLoading(false); }
+  const { profile, saveStep } = useKyc();
+  const [bank, setBank] = useState({
+    bankCode: '', bankName: '', accountNumber: '', accountName: '',
+  });
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (profile) setBank({
+      bankCode: profile.bankCode ?? '',
+      bankName: profile.bankName ?? '',
+      accountNumber: profile.accountNumber ?? '',
+      accountName: profile.accountName ?? '',
+    });
+  }, [profile]);
+
+  const onChange = useCallback((v) => setBank(v), []);
+
+  async function next() {
+    if (!bank.bankName || !bank.accountNumber || !bank.accountName) { setError('Complete all bank details'); return; }
+    if (bank.accountNumber.length !== 10) { setError('Account number must be 10 digits'); return; }
+    setError(null); setBusy(true);
+    try {
+      await saveStep(4, bank);
+      nav('/kyc/review');
+    } catch (e) {
+      setError(e?.response?.data?.message ?? e.message);
+    } finally { setBusy(false); }
   }
+
   return (
-    <div className="kyc">
-      <Stepper current={4} />
-      <h1 className="kyc__title">Bank account</h1>
-      <p className="kyc__sub">Where payouts and returns will land.</p>
-      <form onSubmit={submit} className="kyc__form">
-        <Input label="Bank name" value={form.bankName} onChange={update('bankName')} required />
-        <Input label="Bank code" value={form.bankCode} onChange={update('bankCode')} required hint="e.g. 058 for GTBank" />
-        <Input label="Account number" value={form.accountNumber} onChange={update('accountNumber')} required hint="10 digits" />
-        <Input label="Account name" value={form.accountName} onChange={update('accountName')} required />
-        {error && <div className="auth__error">{error}</div>}
-        <div className="kyc__actions"><Button type="submit" variant="primary" size="lg" disabled={loading}>{loading ? 'Saving…' : 'Continue'}</Button></div>
-      </form>
-    </div>
+    <KycShell step={4} title="Bank account" subtitle="Where should we send your returns? We'll verify the account name automatically.">
+      <BankResolveInput value={bank} onChange={onChange} />
+
+      {error && <div style={{ color: '#C0363A', fontSize: 13, marginTop: 12 }}>{error}</div>}
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
+        <button className="btn" onClick={() => nav('/kyc/address')}>← Back</button>
+        <button className="btn btn-primary" disabled={busy} onClick={next}>
+          {busy ? 'Saving…' : 'Save & continue'}
+        </button>
+      </div>
+    </KycShell>
   );
 }

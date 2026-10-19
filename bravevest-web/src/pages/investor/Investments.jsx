@@ -7,6 +7,7 @@ import AdminEmpty from '@/components/admin/AdminEmpty';
 import Button from '@/components/shared/Button';
 import { investmentsApi } from '@/api/investments';
 import './Investments.css';
+import KycBanner from '@/components/kyc/KycBanner';
 
 export default function Investments() {
   const [items, setItems] = useState([]);
@@ -20,6 +21,8 @@ export default function Investments() {
   }, []);
 
   return (
+    <>
+    <KycBanner />
     <>
       <AdminPageHeader
         eyebrow="Investor"
@@ -53,6 +56,7 @@ export default function Investments() {
           </div>
         </div>
       )}
+    </>
     </>
   );
 }

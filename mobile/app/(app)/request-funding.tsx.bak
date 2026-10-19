@@ -1,0 +1,102 @@
+import { useState } from 'react';
+import { ScrollView, Text, View, Pressable, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useTheme } from '@/theme/ThemeProvider';
+import { useCurrency } from '@/context/CurrencyContext';
+import { api, endpoints } from '@/api/client';
+import { FormRow } from '@/components/ui/FormRow';
+import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { fonts, radii, spacing } from '@/theme/tokens';
+
+const CATEGORIES = ['REAL_ESTATE', 'AGRICULTURE', 'ENERGY', 'SME', 'INFRASTRUCTURE'];
+
+export default function RequestFunding() {
+  const router = useRouter();
+  const { colors } = useTheme();
+  const { currency } = useCurrency();
+  const [title, setTitle] = useState('');
+  const [summary, setSummary] = useState('');
+  const [description, setDescription] = useState('');
+  const [amount, setAmount] = useState('');
+  const [returnPct, setReturnPct] = useState('');
+  const [duration, setDuration] = useState('');
+  const [category, setCategory] = useState(CATEGORIES[3]);
+  const [busy, setBusy] = useState(false);
+
+  async function submit() {
+    const amt = Number(amount);
+    if (!title.trim() || title.trim().length < 5) { Alert.alert('Missing title', 'Title must be at least 5 characters.'); return; }
+    if (!Number.isFinite(amt) || amt <= 0) { Alert.alert('Invalid amount', 'Enter a valid amount.'); return; }
+    setBusy(true);
+    try {
+      await api.post(endpoints.funding.create, {
+        title: title.trim(),
+        summary: summary.trim() || null,
+        description: description.trim() || null,
+        category,
+        amountRequested: amt,
+        proposedReturnPct: returnPct ? Number(returnPct) : null,
+        durationMonths: duration ? Number(duration) : null,
+        repaymentFrequency: 'monthly',
+      });
+      Alert.alert('Draft saved', 'Open your Credit tab to submit it for review.');
+      router.replace('/(app)/credit');
+    } catch (e: any) {
+      Alert.alert('Could not save', e?.response?.data?.message ?? e?.message ?? 'Unknown error');
+    } finally { setBusy(false); }
+  }
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
+      <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
+        <Pressable onPress={() => router.back()} style={{ marginBottom: spacing.lg }}>
+          <Feather name="arrow-left" size={22} color={colors.textPrimary} />
+        </Pressable>
+
+        <Text style={{ color: colors.textPrimary, fontFamily: fonts.sans, fontSize: 26, fontWeight: '700' }}>Request funding</Text>
+        <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 13, marginTop: 6, lineHeight: 19 }}>
+          Raise capital from individual investors. Each commitment is a peer-to-peer loan — you'll receive the capital upfront and repay it over the agreed term.
+        </Text>
+
+        <View style={{ marginTop: spacing.lg, padding: spacing.md, borderRadius: radii.card, backgroundColor: colors.surfaceMuted }}>
+          <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12, lineHeight: 18 }}>
+            Admin review takes 1–2 business days. Approved requests are published on the Funding marketplace.
+          </Text>
+        </View>
+
+        <FormRow label="Title" value={title} onChange={setTitle} placeholder="Cold storage expansion" />
+        <FormRow label="Summary" value={summary} onChange={setSummary} placeholder="One-line description" />
+        <FormRow label="Full description" value={description} onChange={setDescription} placeholder="What is this for? How will it be repaid?" />
+
+        <Text style={{ color: colors.textSecondary, fontFamily: fonts.sans, fontSize: 12, marginTop: spacing.lg, marginBottom: 8 }}>Category</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+          {CATEGORIES.map((c) => {
+            const active = category === c;
+            return (
+              <Pressable
+                key={c}
+                onPress={() => setCategory(c)}
+                style={{ paddingHorizontal: 14, paddingVertical: 8, borderRadius: 999, backgroundColor: active ? colors.lime : colors.surfaceMuted }}
+              >
+                <Text style={{ color: active ? colors.onAccent : colors.textSecondary, fontFamily: fonts.sans, fontSize: 12, fontWeight: '600' }}>
+                  {c.replace('_', ' ')}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
+
+        <FormRow label={`Amount requested (${currency})`} value={amount} onChange={setAmount} placeholder="4500000" numeric />
+        <FormRow label="Return %" value={returnPct} onChange={setReturnPct} placeholder="16.5" numeric />
+        <FormRow label="Duration (months)" value={duration} onChange={setDuration} placeholder="18" numeric />
+
+        <PrimaryButton label={busy ? 'Saving…' : 'Save as draft'} onPress={submit} loading={busy} style={{ marginTop: spacing.xl }} />
+        <Text style={{ color: colors.textTertiary, fontFamily: fonts.sans, fontSize: 11, marginTop: spacing.md, textAlign: 'center' }}>
+          You can edit the draft before submitting for review.
+        </Text>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}

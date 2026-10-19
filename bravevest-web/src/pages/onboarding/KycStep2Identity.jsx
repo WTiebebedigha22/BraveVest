@@ -1,72 +1,100 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Stepper from '@/components/kyc/Stepper';
-import Button from '@/components/shared/Button';
-import Input from '@/components/shared/Input';
-import DocumentUpload from '@/components/kyc/DocumentUpload';
-import { kycApi } from '@/api/kyc';
-import './Kyc.css';
+import KycShell from '@/components/kyc/KycShell';
+import FileUpload from '@/components/kyc/FileUpload';
+import { useKyc } from '@/hooks/useKyc';
+
+const ID_TYPES = [
+  { v: 'NIN', label: 'NIN (National Identity Number)' },
+  { v: 'BVN', label: 'BVN (Bank Verification Number)' },
+  { v: 'PASSPORT', label: 'International passport' },
+  { v: 'DRIVERS_LICENSE', label: "Driver's license" },
+  { v: 'VOTERS_CARD', label: "Voter's card" },
+];
 
 export default function KycStep2Identity() {
   const nav = useNavigate();
-  const [form, setForm] = useState({ idType: 'NIN', idNumber: '' });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [docs, setDocs] = useState([]);
+  const { profile, documents, saveStep } = useKyc();
+  const [form, setForm] = useState({
+    idType: '', idNumber: '', idIssuedDate: '', idExpiryDate: '',
+  });
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(null);
 
-  useEffect(() => { kycApi.me().then((d) => setDocs(d.documents || [])).catch(() => {}); }, []);
+  useEffect(() => {
+    if (profile) setForm({
+      idType: profile.idType ?? '',
+      idNumber: profile.idNumber ?? '',
+      idIssuedDate: profile.idIssuedDate?.slice(0, 10) ?? '',
+      idExpiryDate: profile.idExpiryDate?.slice(0, 10) ?? '',
+    });
+  }, [profile]);
 
-  const update = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+  const existingIdDoc = documents.find((d) => d.type === 'ID_CARD' || d.type === 'PASSPORT');
 
-  async function submit(e) {
-    e.preventDefault();
-    setLoading(true); setError('');
-    try { await kycApi.saveStep(2, form); nav('/kyc/address'); }
-    catch (err) { setError(err?.response?.data?.message || 'Failed'); }
-    finally { setLoading(false); }
+  function upd(k, v) { setForm((f) => ({ ...f, [k]: v })); }
+
+  async function next() {
+    if (!form.idType || !form.idNumber) { setError('Select ID type and enter the number'); return; }
+    if (!existingIdDoc) { setError('Upload a scan of your ID'); return; }
+    setError(null); setBusy(true);
+    try {
+      await saveStep(2, form);
+      nav('/kyc/address');
+    } catch (e) {
+      setError(e?.response?.data?.message ?? e.message);
+    } finally { setBusy(false); }
   }
 
   return (
-    <div className="kyc">
-      <Stepper current={2} />
-      <h1 className="kyc__title">Identity verification</h1>
-      <p className="kyc__sub">Provide a valid means of identification and upload a clear photo or PDF.</p>
-
-      <form onSubmit={submit} className="kyc__form">
-        <div className="kyc__field">
-          <label className="kyc__label">ID type</label>
-          <select className="kyc__select" value={form.idType} onChange={update('idType')}>
-            <option value="NIN">NIN</option>
-            <option value="BVN">BVN</option>
-            <option value="PASSPORT">Passport</option>
-            <option value="DRIVERS_LICENSE">Driver's License</option>
-            <option value="VOTERS_CARD">Voter's Card</option>
+    <KycShell step={2} title="Identity verification" subtitle="Confirm who you are. Details are encrypted and only used for verification.">
+      <div style={{ display: 'grid', gap: 16 }}>
+        <Field label="ID type" required>
+          <select value={form.idType} onChange={(e) => upd('idType', e.target.value)} style={input}>
+            <option value="">Select ID type</option>
+            {ID_TYPES.map((t) => <option key={t.v} value={t.v}>{t.label}</option>)}
           </select>
+        </Field>
+        <Field label="ID number" required>
+          <input value={form.idNumber} onChange={(e) => upd('idNumber', e.target.value)} placeholder="Enter the number exactly" style={input} />
+        </Field>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <Field label="Issue date">
+            <input type="date" value={form.idIssuedDate} onChange={(e) => upd('idIssuedDate', e.target.value)} style={input} />
+          </Field>
+          <Field label="Expiry date">
+            <input type="date" value={form.idExpiryDate} onChange={(e) => upd('idExpiryDate', e.target.value)} style={input} />
+          </Field>
         </div>
 
-        <Input label="ID number" value={form.idNumber} onChange={update('idNumber')} required />
-
-        <div className="kyc__docs">
-          <div className="kyc__docs-title">Upload documents</div>
-          <DocumentUpload type="ID_CARD" label="Government-issued ID" onUploaded={(d) => setDocs((x) => [d, ...x])} />
-          <DocumentUpload type="PASSPORT_PHOTO" label="Passport photo" onUploaded={(d) => setDocs((x) => [d, ...x])} />
+        <div style={{ marginTop: 8 }}>
+          <FileUpload
+            type="ID_CARD"
+            label="Upload ID scan (PDF or image) *"
+            existingUrl={existingIdDoc?.fileUrl}
+          />
         </div>
+      </div>
 
-        {docs.length > 0 && (
-          <div className="kyc__doc-list">
-            <div className="kyc__docs-title">Uploaded</div>
-            {docs.map((d) => (
-              <div key={d.id} className="kyc__doc-row">
-                <span>{d.fileName}</span>
-                <span className="text-muted">{d.type}</span>
-              </div>
-            ))}
-          </div>
-        )}
+      {error && <div style={{ color: '#C0363A', fontSize: 13, marginTop: 12 }}>{error}</div>}
 
-        {error && <div className="auth__error">{error}</div>}
-        <div className="kyc__actions"><Button type="submit" variant="primary" size="lg" disabled={loading}>{loading ? 'Saving…' : 'Continue'}</Button></div>
-      </form>
-    </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
+        <button className="btn" onClick={() => nav('/kyc')}>← Back</button>
+        <button className="btn btn-primary" disabled={busy} onClick={next}>
+          {busy ? 'Saving…' : 'Save & continue'}
+        </button>
+      </div>
+    </KycShell>
+  );
+}
+
+const input = { width: '100%', padding: '11px 14px', border: '1px solid #e3e3e3', borderRadius: 10, fontSize: 15 };
+
+function Field({ label, required, children }) {
+  return (
+    <label style={{ display: 'block' }}>
+      <div style={{ fontSize: 12, fontWeight: 600, color: '#666', marginBottom: 6 }}>{label}{required ? ' *' : ''}</div>
+      {children}
+    </label>
   );
 }

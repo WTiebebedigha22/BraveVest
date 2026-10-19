@@ -43,7 +43,7 @@ export default function Navbar() {
           <Dropdown label="Explore" open={openMenu === 'explore'} onOpen={() => setOpenMenu(openMenu === 'explore' ? null : 'explore')} items={[
             { to: '/how-it-works', label: 'How It Works', desc: 'The full investor journey' },
             { to: '/stories', label: 'Investor Stories', desc: 'Real outcomes' },
-            { to: '/starter', label: 'Starter Pool', desc: 'Start from {format(5000)}' },
+            { to: '/starter', label: 'Starter Pool', desc: 'Start Your investing iourney with us' },
             { to: '/insights', label: 'Insights', desc: 'Market briefs & education' },
           ]} />
           <Dropdown label="Resources" open={openMenu === 'resources'} onOpen={() => setOpenMenu(openMenu === 'resources' ? null : 'resources')} items={[

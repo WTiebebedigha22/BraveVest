@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { commitmentsApi } from '../../api/commitments';
+import KycBanner from '@/components/kyc/KycBanner';
 
 function fmt(n, currency = 'NGN') {
-  return `${currency} ${Number(n || 0).toLocaleString()}`;
+  return {format(Number(n || 0).toLocaleString())};
 }
 
 export default function Commitments() {
@@ -23,6 +24,8 @@ export default function Commitments() {
   const total = items.reduce((s, c) => s + Number(c.amount || 0), 0);
 
   return (
+    <>
+    <KycBanner />
     <div className="page" style={{ padding: '32px 16px', maxWidth: 1000, margin: '0 auto' }}>
       <h1 style={{ margin: 0, fontSize: 28 }}>My commitments</h1>
       <p style={{ color: '#666' }}>Funding requests you’ve backed.</p>
@@ -58,6 +61,7 @@ export default function Commitments() {
         ))}
       </div>
     </div>
+    </>
   );
 }
 
