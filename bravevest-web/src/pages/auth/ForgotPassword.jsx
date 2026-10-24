@@ -26,7 +26,7 @@ export default function ForgotPassword() {
     <div className="auth">
       <div className="auth__mesh" aria-hidden />
       <div className="auth__card">
-        <Link to="/" className="auth__brand"><span className="auth__mark" /> BraveVest</Link>
+        <Link to="/" className="auth__brand"><img src="/logo.png" alt="BraveVest" style={{ height: 36, width: 'auto', marginBottom: 8 }} /></Link>
         {sent ? (
           <>
             <h1 className="auth__title">Check your email.</h1>

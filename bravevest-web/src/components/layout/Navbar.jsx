@@ -4,11 +4,8 @@ import Button from '@/components/shared/Button';
 import CurrencySwitcher from '@/components/shared/CurrencySwitcher';
 import { useAuth } from '@/hooks/useAuth';
 import './Navbar.css';
-import { useCurrency } from '@/context/CurrencyContext';
 
 export default function Navbar() {
-  const { format } = useCurrency();
-
   const { user, logout } = useAuth();
   const [openMenu, setOpenMenu] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -29,13 +26,9 @@ export default function Navbar() {
       <div className="container navbar__inner">
         <div className="navbar__left">
           <Link to="/" className="navbar__brand" onClick={() => setOpenMenu(null)}>
-            <span className="navbar__mark" />
-            <span className="navbar__wordmark">BraveVest</span>
+            <img src="/icon.png" alt="" className="navbar__mark" style={{ width: 28, height: 28, borderRadius: 6 }} />
+            <img src="/logo.png" alt="BraveVest" className="navbar__wordmark" style={{ height: 24, width: 'auto' }} />
           </Link>
-          <div className="navbar__seg">
-            <button className="navbar__seg-btn is-active">Individual</button>
-            <button className="navbar__seg-btn">Business</button>
-          </div>
         </div>
 
         <nav className="navbar__nav">
@@ -43,7 +36,7 @@ export default function Navbar() {
           <Dropdown label="Explore" open={openMenu === 'explore'} onOpen={() => setOpenMenu(openMenu === 'explore' ? null : 'explore')} items={[
             { to: '/how-it-works', label: 'How It Works', desc: 'The full investor journey' },
             { to: '/stories', label: 'Investor Stories', desc: 'Real outcomes' },
-            { to: '/starter', label: 'Starter Pool', desc: 'Start Your investing iourney with us' },
+            { to: '/starter', label: 'Starter Pool', desc: 'Start from ₦5,000' },
             { to: '/insights', label: 'Insights', desc: 'Market briefs & education' },
           ]} />
           <Dropdown label="Resources" open={openMenu === 'resources'} onOpen={() => setOpenMenu(openMenu === 'resources' ? null : 'resources')} items={[

@@ -77,7 +77,7 @@ export default function HelpCenter() {
             <div className="help__card-cat">{a.cat}</div>
             <div className="help__card-title">{a.title}</div>
             <p className="help__card-excerpt">{a.excerpt}</p>
-            <div className="help__card-cta">Read article â†’</div>
+            <div className="help__card-cta">Read article →</div>
           </Link>
         ))}
       </div>

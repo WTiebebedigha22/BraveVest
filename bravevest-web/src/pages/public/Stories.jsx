@@ -9,7 +9,7 @@ const STORIES = [
     name: 'Chidinma A.',
     role: 'Product designer, Lagos',
     quote: 'I started with  ₦100,000 in the Projects 001 pilot. Watching the monthly payouts arrive, on time, made me trust the model. I\'ve since added two more projects.',
-    highlight: ' ₦100k â†’  ₦118k in 6 months',
+    highlight: ' ₦100k →  ₦118k in 6 months',
   },
   {
     name: 'Tunde B.',

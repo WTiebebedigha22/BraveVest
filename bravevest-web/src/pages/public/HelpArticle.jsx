@@ -91,7 +91,7 @@ const CONTENT = {
       'Returns are automatically paid to the bank account on file for your account.',
       'For monthly or quarterly payouts, funds arrive on or within 3 business days of the scheduled payout date.',
       'For bullet payouts, funds arrive at maturity.',
-      'To change your bank account, go to Profile â†’ Bank details and submit the update. Changes are verified within 24 hours.',
+      'To change your bank account, go to Profile → Bank details and submit the update. Changes are verified within 24 hours.',
       'Withdrawal fees: none. Transfers are handled by our payment partner.',
     ],
   },
@@ -194,7 +194,7 @@ export default function HelpArticle() {
 
       <div className="help-article__foot">
         <div className="help-article__foot-title">Still need help?</div>
-        <Link to="/contact" className="help-article__foot-link">Contact support â†’</Link>
+        <Link to="/contact" className="help-article__foot-link">Contact support →</Link>
       </div>
     </article>
   );

@@ -7,8 +7,7 @@ export default function Footer() {
       <div className="container footer__inner">
         <div className="footer__brand">
           <div className="footer__brand-row">
-            <span className="footer__mark" />
-            <span className="footer__wordmark">BraveVest</span>
+            <img src="/logo.png" alt="BraveVest" style={{ height: 28, width: 'auto' }} />
           </div>
           <p className="text-muted mt-2">Curated investment opportunities. Made for Nigeria.</p>
           <p className="footer__tagline">Powered by Bravelion Capital · A Bravelion Holdings Company</p>

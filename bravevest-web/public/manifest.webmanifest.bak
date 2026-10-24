@@ -1,0 +1,28 @@
+{
+  "name": "BraveVest",
+  "short_name": "BraveVest",
+  "description": "BraveVest Marketplace gives investors access to verified investment opportunities across real estate, agriculture, energy and credit-backed products. Powered by Bravelion Capital.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0F0F10",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

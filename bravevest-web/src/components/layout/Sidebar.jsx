@@ -47,8 +47,7 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <Link to="/" className="sidebar__brand">
-        <span className="sidebar__mark" />
-        BraveVest
+        <img src="/logo.png" alt="BraveVest" style={{ height: 28, width: 'auto' }} />
       </Link>
       <div className="sidebar__scroll">
         {groups.map((group) => (
