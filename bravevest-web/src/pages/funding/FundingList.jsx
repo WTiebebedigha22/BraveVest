@@ -34,7 +34,7 @@ export default function FundingList() {
           <h1 style={{ margin: 0, fontSize: 32 }}>Funding opportunities</h1>
           <p style={{ margin: '4px 0 0', color: '#666' }}>Curated opportunities from verified borrowers. Each is a peer-to-peer loan.</p>
         </div>
-        <Link to="/funding/new" className="btn btn-primary">Request funding<//Link>
+        <Link to="/funding/new" className="btn btn-primary">Request funding</Link>
       </div>
 
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', margin: '24px 0' }}>

@@ -4,7 +4,7 @@ import { fundingApi } from '../../api/funding';
 import StatusBadge from '../../components/funding/StatusBadge';
 
 function fmt(n, currency = 'NGN') {
-  return {format(Number(n || 0).toLocaleString())};
+  return Number(n || 0).toLocaleString();
 }
 
 export default function FundingMine() {

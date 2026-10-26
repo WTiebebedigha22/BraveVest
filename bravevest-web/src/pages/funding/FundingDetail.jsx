@@ -10,7 +10,7 @@ function fmt(n, currency = 'NGN') {
   const kycOk = kycProfile?.status === 'APPROVED';
 
   if (n == null) return '—';
-  return {format(Number(n).toLocaleString())};
+  return Number(n).toLocaleString();
 }
 
 export default function FundingDetail() {
