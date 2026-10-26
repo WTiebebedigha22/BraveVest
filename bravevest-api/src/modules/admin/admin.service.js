@@ -30,7 +30,7 @@ async function listInvestors(query) {
 }
 
 async function getInvestor(id) {
-  const user = await prisma.user.findUnique({ where: { id }, select: { id: true, email: true, phone: true, firstName: true, lastName: true, role: true, status: true, createdAt: true, kyc: true, investments: { include: { project: { select: { id: true, title: true, category: true } } }, take: 20 }, transactions: { take: 20 } } });
+  const user = await prisma.user.findUnique({ where: { id }, select: { id: true, email: true, phone: true, firstName: true, lastName: true, roles: true, status: true, createdAt: true, kyc: true, investments: { include: { project: { select: { id: true, title: true, category: true } } }, take: 20 }, transactions: { take: 20 } } });
   if (!user) return null;
   return { ...user, investments: user.investments.map(investmentsService.serialize), totalInvested: user.investments.filter((i) => ['CONFIRMED', 'ACTIVE', 'MATURED'].includes(i.status)).reduce((s, i) => s + Number(i.amount), 0) };
 }

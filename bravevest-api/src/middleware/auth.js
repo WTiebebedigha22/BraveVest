@@ -15,12 +15,25 @@ async function authRequired(req, res, next) {
     }
     const user = await prisma.user.findUnique({
       where: { id: payload.sub },
-      select: { id: true, email: true, firstName: true, lastName: true, role: true, status: true, createdAt: true },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        roles: true,        // Phase 3: array of UserRole
+        status: true,
+        createdAt: true,
+      },
     });
     if (!user) throw ApiError.unauthorized('User not found');
     if (user.status === 'SUSPENDED' || user.status === 'DEACTIVATED') throw ApiError.forbidden('Account inactive');
-    req.user = user;
+
+    req.user = {
+      ...user,
+      role: user.roles?.[0] ?? null,
+    };
     next();
   } catch (err) { next(err); }
 }
+
 module.exports = { authRequired };

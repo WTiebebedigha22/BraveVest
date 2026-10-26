@@ -3,8 +3,8 @@ import './SuccessStats.css';
 
 /* Bar heights relative to max. Values in NGN base. */
 const BARS = [
-  { year: '2021/22', value: 18500000000, color: '#ffffff', textDark: true, height: 22 },
-  { year: '2022/23', value: 32000000000, color: '#ffffff', textDark: true, height: 38 },
+  { year: '2021/22', value: 18500000000, color: '#1E9305', textDark: true, height: 22 },
+  { year: '2022/23', value: 32000000000, color: '#1E90FF', textDark: true, height: 38 },
   { year: '2023/24', value: 55300000000, color: '#C9A6F2', textDark: true, height: 62 },
   { year: '2024/25', value: 78600000000, color: '#B3D941', textDark: true, height: 88 },
 ];

@@ -3,7 +3,7 @@ const { hashPassword, comparePassword } = require('../../utils/password');
 const ApiError = require('../../utils/apiError');
 
 async function getProfile(userId) {
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true, phone: true, firstName: true, lastName: true, image: true, role: true, status: true, createdAt: true, kyc: { select: { status: true } } } });
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true, phone: true, firstName: true, lastName: true, image: true, roles: true, status: true, createdAt: true, kyc: { select: { status: true } } } });
   if (!user) throw ApiError.notFound('Not found');
   return user;
 }

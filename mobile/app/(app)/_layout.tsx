@@ -74,6 +74,7 @@ export default function AppLayout() {
       <Tabs.Screen name="project/[slug]" options={{ href: null }} />
 
       <Tabs.Screen name="deposit" options={{ href: null }} />
+      <Tabs.Screen name="wallet" options={{ href: null }} />
       <Tabs.Screen name="withdraw" options={{ href: null }} />
       <Tabs.Screen name="reinvest" options={{ href: null }} />
       <Tabs.Screen name="statements" options={{ href: null }} />

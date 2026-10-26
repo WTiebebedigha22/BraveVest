@@ -73,6 +73,10 @@ app.use('/api/funding', require('./modules/funding/funding.routes'));
 
 app.use('/api/contact', require('./modules/contact/contact.routes'));
 
+app.use('/api/wallet', require('./modules/wallet/wallet.routes'));
+
+app.use('/api/currency', require('./modules/currency/currency.routes'));
+
 app.use(notFound);
 app.use(errorHandler);
 

@@ -1,36 +1,33 @@
-import { useState, useRef, useEffect } from 'react';
-import { CURRENCIES, useCurrency } from '@/context/CurrencyContext';
-import './CurrencySwitcher.css';
+import { useCurrency, CURRENCIES } from '@/context/CurrencyContext';
 
 export default function CurrencySwitcher() {
-  const { code, setCode } = useCurrency();
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+  const { currency, setCurrency, currencies } = useCurrency();
 
-  useEffect(() => {
-    function onClick(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
-    document.addEventListener('mousedown', onClick);
-    return () => document.removeEventListener('mousedown', onClick);
-  }, []);
+  // Use the context's currencies array if available, else fall back to the exported map
+  const options = Array.isArray(currencies) && currencies.length > 0
+    ? currencies
+    : Object.values(CURRENCIES || {});
+
+  const active = CURRENCIES?.[currency];
 
   return (
-    <div className="cur" ref={ref}>
-      <button className="cur__btn" onClick={() => setOpen(!open)}>
-        <span className="cur__symbol">{CURRENCIES[code].symbol}</span>
-        <span className="cur__code">{code}</span>
-        <span className="cur__caret">▾</span>
-      </button>
-      {open && (
-        <div className="cur__menu">
-          {Object.values(CURRENCIES).map((c) => (
-            <button key={c.code} className={'cur__item ' + (c.code === code ? 'is-active' : '')} onClick={() => { setCode(c.code); setOpen(false); }}>
-              <span className="cur__item-symbol">{c.symbol}</span>
-              <span className="cur__item-code">{c.code}</span>
-              <span className="cur__item-label">{c.label}</span>
-            </button>
-          ))}
-        </div>
-      )}
+    <div className="currency-switcher">
+      <select
+        value={currency}
+        onChange={(e) => setCurrency(e.target.value)}
+        className="currency-switcher__select"
+        aria-label="Change currency"
+      >
+        {options.map((c) => {
+          const info = typeof c === 'string' ? CURRENCIES?.[c] : c;
+          if (!info) return null;
+          return (
+            <option key={info.code} value={info.code}>
+              {info.symbol} {info.code}
+            </option>
+          );
+        })}
+      </select>
     </div>
   );
 }

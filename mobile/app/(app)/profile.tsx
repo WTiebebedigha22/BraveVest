@@ -148,6 +148,10 @@ export default function Profile() {
 
             {/* ─── Service grid 2×3 ─── */}
             <SectionLabel label="Your account" />
+            <View style={{ flexDirection: 'row', gap: spacing.md, marginHorizontal: spacing.lg, marginTop: spacing.lg }}>
+              <ServiceCard icon="briefcase" title="Wallet" sub="Balance & activity" onPress={() => router.push('/(app)/wallet')} />
+              <ServiceCard icon="clock" title="Obligations" sub="Repayments due" onPress={() => router.push('/(app)/obligations')} />
+            </View>
             <View style={{ flexDirection: 'row', gap: spacing.md, marginHorizontal: spacing.lg, marginTop: spacing.md }}>
               <ServiceCard icon="plus-circle" title="Deposit" sub="Fund wallet" onPress={() => router.push('/(app)/deposit')} />
               <ServiceCard icon="arrow-up-circle" title="Withdraw" sub="To bank" onPress={() => router.push('/(app)/withdraw')} />

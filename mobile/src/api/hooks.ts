@@ -188,3 +188,31 @@ export function useGoals() {
     return Array.isArray(data) ? data : data?.goals ?? data?.items ?? [];
   });
 }
+
+// ---------- wallet ----------
+export type Wallet = { balance: number; held: number; currency: string };
+export type LedgerRow = {
+  id: string;
+  reference: string;
+  type: string;
+  direction: 'credit' | 'debit';
+  amount: number;
+  balanceAfter: number | null;
+  description?: string;
+  createdAt: string;
+};
+
+export function useWallet() {
+  return useApi<Wallet>(async () => {
+    const { data } = await api.get('/api/wallet');
+    return data?.data ?? data;
+  });
+}
+
+export function useWalletLedger(limit = 30) {
+  return useApi<LedgerRow[]>(async () => {
+    const { data } = await api.get('/api/wallet/ledger', { params: { limit } });
+    const items = data?.data ?? data ?? [];
+    return Array.isArray(items) ? items : [];
+  });
+}

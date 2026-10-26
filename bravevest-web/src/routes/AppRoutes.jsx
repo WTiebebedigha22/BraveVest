@@ -55,7 +55,9 @@ const InvestorDashboard = lazy(() => import('@/pages/investor/Dashboard'));
 const Investments       = lazy(() => import('@/pages/investor/Investments'));
 const InvestmentDetail  = lazy(() => import('@/pages/investor/InvestmentDetail'));
 const Portfolio         = lazy(() => import('@/pages/investor/Portfolio'));
-const Wallet            = lazy(() => import('@/pages/investor/Wallet'));
+const Wallet = lazy(() => import('@/pages/investor/Wallet'));
+const Deposit = lazy(() => import('@/pages/investor/Deposit'));
+const Withdraw = lazy(() => import('@/pages/investor/Withdraw'));
 const Documents         = lazy(() => import('@/pages/investor/Documents'));
 const Profile           = lazy(() => import('@/pages/investor/Profile'));
 const YearInReview      = lazy(() => import('@/pages/investor/YearInReview'));
@@ -137,6 +139,8 @@ export default function AppRoutes() {
           <Route path="/investments/:id" element={<InvestmentDetail />} />
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/wallet" element={<Wallet />} />
+          <Route path="/deposit" element={<Deposit />} />
+          <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/documents" element={<Documents />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/year-in-review" element={<YearInReview />} />

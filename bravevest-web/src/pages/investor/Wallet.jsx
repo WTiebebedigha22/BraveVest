@@ -1,63 +1,126 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import AdminPageHeader from '@/components/admin/AdminPageHeader';
 import StatCard from '@/components/investor/StatCard';
 import Loader from '@/components/shared/Loader';
-import Currency from '@/components/shared/Currency';
 import AdminEmpty from '@/components/admin/AdminEmpty';
-import { paymentsApi } from '@/api/payments';
-import './Wallet.css';
+import { walletApi } from '@/api/wallet';
+import { useCurrency } from '@/context/CurrencyContext';
 import KycBanner from '@/components/kyc/KycBanner';
+import './Wallet.css';
 
-const statusLabel = { PENDING: 'Pending', SUCCESS: 'Success', FAILED: 'Failed', REVERSED: 'Reversed' };
+const TYPE_LABEL = {
+  deposit: 'Deposit',
+  withdrawal: 'Withdrawal',
+  commitment: 'Investment',
+  repayment: 'Repayment',
+  payout: 'Payout',
+  fee: 'Fee',
+  refund: 'Refund',
+  manual: 'Manual credit',
+};
 
 export default function Wallet() {
+  const { format } = useCurrency();
   const [wallet, setWallet] = useState(null);
-  const [transactions, setTransactions] = useState([]);
+  const [ledger, setLedger] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     Promise.all([
-      paymentsApi.wallet().catch(() => null),
-      paymentsApi.transactions({ limit: 50 }).catch(() => ({ data: [] })),
+      walletApi.get().catch(() => null),
+      walletApi.ledger(50).catch(() => []),
     ])
-      .then(([w, t]) => {
-        setWallet(w?.data || null);
-        setTransactions(t?.data || []);
+      .then(([w, l]) => {
+        setWallet(w);
+        setLedger(l);
       })
+      .catch(setError)
       .finally(() => setLoading(false));
   }, []);
 
+  // Derive totals from the ledger
+  const totalDeposited = ledger
+    .filter((e) => e.type === 'deposit' && e.direction === 'credit')
+    .reduce((s, e) => s + Number(e.amount || 0), 0);
+  const totalInvested = ledger
+    .filter((e) => e.type === 'commitment' && e.direction === 'debit')
+    .reduce((s, e) => s + Number(e.amount || 0), 0);
+
   return (
     <>
-    <KycBanner />
-    <>
-      <AdminPageHeader eyebrow="Investor" title="Wallet" subtitle="Every deposit and investment in one place." />
+      <KycBanner />
+      <AdminPageHeader
+        eyebrow="Investor"
+        title="Wallet"
+        subtitle="Every deposit, withdrawal, and investment in one place."
+      />
 
       {loading ? (
         <div className="text-center py-5"><Loader /></div>
+      ) : error ? (
+        <AdminEmpty title="Couldn't load wallet" body={error.message} />
       ) : (
         <>
           <div className="grid grid-3 mb-4">
-            <StatCard label="Balance" value={wallet?.balance || 0} currency accent="green" />
-            <StatCard label="Total Deposited" value={wallet?.totalDeposited || 0} currency />
-            <StatCard label="Total Invested" value={wallet?.totalInvested || 0} currency />
+            <StatCard
+              label="Available balance"
+              value={wallet?.balance ?? 0}
+              currency
+              accent="green"
+            />
+            <StatCard label="Total deposited" value={totalDeposited} currency />
+            <StatCard label="Total invested" value={totalInvested} currency />
           </div>
 
-          {transactions.length === 0 ? (
-            <AdminEmpty title="No transactions yet" body="Your deposits and investments will appear here." />
+          <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+            <Link to="/deposit" className="btn btn--primary">Deposit</Link>
+            <Link to="/withdraw" className="btn btn--ghost">Withdraw</Link>
+          </div>
+
+          {wallet?.held ? (
+            <p style={{ fontSize: 13, color: '#6b6b6b', marginBottom: 16 }}>
+              {format(wallet.held)} currently on hold (committed to pending transfers).
+            </p>
+          ) : null}
+
+          {ledger.length === 0 ? (
+            <AdminEmpty
+              title="No transactions yet"
+              body="Your deposits and investments will appear here."
+            />
           ) : (
             <div className="wallet-table-wrap">
               <div className="wallet-table">
                 <div className="wallet-table__head">
-                  <span>Reference</span><span>Type</span><span>Amount</span><span>Status</span><span>Date</span>
+                  <span>Reference</span>
+                  <span>Type</span>
+                  <span>Description</span>
+                  <span>Amount</span>
+                  <span>Balance</span>
+                  <span>Date</span>
                 </div>
-                {transactions.map((t) => (
-                  <div key={t.id} className="wallet-table__row">
-                    <span className="wallet-table__ref">{t.reference}</span>
-                    <span>{t.type}</span>
-                    <span><Currency value={t.amount} /></span>
-                    <span className={'wallet-table__status is-' + t.status.toLowerCase()}>{statusLabel[t.status] || t.status}</span>
-                    <span className="wallet-table__date">{new Date(t.createdAt).toLocaleDateString()}</span>
+                {ledger.map((e) => (
+                  <div key={e.id} className="wallet-table__row">
+                    <span className="wallet-table__ref">{e.reference}</span>
+                    <span>{TYPE_LABEL[e.type] || e.type}</span>
+                    <span style={{ color: '#666', fontSize: 13 }}>{e.description || '—'}</span>
+                    <span
+                      style={{
+                        color: e.direction === 'credit' ? '#1b5e20' : '#b71c1c',
+                        fontWeight: 600,
+                      }}
+                    >
+                      {e.direction === 'credit' ? '+' : '−'}
+                      {format(e.amount)}
+                    </span>
+                    <span style={{ color: '#666', fontSize: 13 }}>
+                      {e.balanceAfter != null ? format(e.balanceAfter) : '—'}
+                    </span>
+                    <span className="wallet-table__date">
+                      {new Date(e.createdAt).toLocaleDateString()}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -65,7 +128,6 @@ export default function Wallet() {
           )}
         </>
       )}
-    </>
     </>
   );
 }
