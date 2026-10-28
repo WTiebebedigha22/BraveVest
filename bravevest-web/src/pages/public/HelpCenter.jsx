@@ -55,7 +55,7 @@ export default function HelpCenter() {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search articlesâ€¦"
+            placeholder="Search articles…"
           />
         </div>
         <div className="help__cats">

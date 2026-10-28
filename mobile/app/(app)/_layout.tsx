@@ -33,9 +33,7 @@ export default function AppLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <Feather name="home" size={22} color={color} style={{ opacity: focused ? 1 : 0.85 }} />
-          ),
+          tabBarIcon: ({ color }) => <Feather name="home" size={22} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -67,22 +65,20 @@ export default function AppLayout() {
         }}
       />
 
-      {/* Hidden from tab bar — still routable via router.push */}
+      {/* Hidden Routes */}
       <Tabs.Screen name="profile" options={{ href: null }} />
-      <Tabs.Screen name="funding/[id]" options={{ href: null }} />
-      <Tabs.Screen name="funding/marketplace" options={{ href: null }} />
-      <Tabs.Screen name="project/[slug]" options={{ href: null }} />
-
-      <Tabs.Screen name="deposit" options={{ href: null }} />
       <Tabs.Screen name="wallet" options={{ href: null }} />
+      <Tabs.Screen name="deposit" options={{ href: null }} />
       <Tabs.Screen name="withdraw" options={{ href: null }} />
-      <Tabs.Screen name="reinvest" options={{ href: null }} />
-      <Tabs.Screen name="statements" options={{ href: null }} />
-      <Tabs.Screen name="rewards" options={{ href: null }} />
-      <Tabs.Screen name="request-funding" options={{ href: null }} />
       <Tabs.Screen name="settings" options={{ href: null }} />
       <Tabs.Screen name="support" options={{ href: null }} />
       <Tabs.Screen name="notifications" options={{ href: null }} />
+      <Tabs.Screen name="request-funding" options={{ href: null }} />
+      <Tabs.Screen name="obligations" options={{ href: null }} />
+      <Tabs.Screen name="receivables" options={{ href: null }} />
+      <Tabs.Screen name="statements" options={{ href: null }} />
+      <Tabs.Screen name="rewards" options={{ href: null }} />
+      <Tabs.Screen name="funding/[id]" options={{ href: null }} />
     </Tabs>
   );
 }

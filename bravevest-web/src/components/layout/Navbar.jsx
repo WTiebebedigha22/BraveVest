@@ -12,14 +12,31 @@ export default function Navbar() {
   const navRef = useRef(null);
   const location = useLocation();
 
-  useEffect(() => { setOpenMenu(null); setMobileOpen(false); }, [location.pathname]);
+  // Close menus on route change
   useEffect(() => {
-    function onClick(e) { if (navRef.current && !navRef.current.contains(e.target)) setOpenMenu(null); }
-    function onKey(e) { if (e.key === 'Escape') setOpenMenu(null); }
+    setOpenMenu(null);
+    setMobileOpen(false);
+  }, [location.pathname]);
+
+  // Handle outside clicks and keyboard navigation
+  useEffect(() => {
+    function onClick(e) {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        setOpenMenu(null);
+      }
+    }
+    function onKey(e) {
+      if (e.key === 'Escape') setOpenMenu(null);
+    }
     document.addEventListener('mousedown', onClick);
     document.addEventListener('keydown', onKey);
-    return () => { document.removeEventListener('mousedown', onClick); document.removeEventListener('keydown', onKey); };
+    return () => {
+      document.removeEventListener('mousedown', onClick);
+      document.removeEventListener('keydown', onKey);
+    };
   }, []);
+
+  const dashboardPath = user?.role === 'ADMIN' ? '/admin' : '/dashboard';
 
   return (
     <header className="navbar" ref={navRef}>
@@ -33,27 +50,41 @@ export default function Navbar() {
 
         <nav className="navbar__nav">
           <NavLink to="/marketplace" className="navbar__link">Marketplace</NavLink>
-          <Dropdown label="Explore" open={openMenu === 'explore'} onOpen={() => setOpenMenu(openMenu === 'explore' ? null : 'explore')} items={[
-            { to: '/how-it-works', label: 'How It Works', desc: 'The full investor journey' },
-            { to: '/stories', label: 'Investor Stories', desc: 'Real outcomes' },
-            { to: '/starter', label: 'Starter Pool', desc: 'Start from ₦5,000' },
-            { to: '/insights', label: 'Insights', desc: 'Market briefs & education' },
-          ]} />
-          <Dropdown label="Resources" open={openMenu === 'resources'} onOpen={() => setOpenMenu(openMenu === 'resources' ? null : 'resources')} items={[
-            { to: '/help', label: 'Help Center', desc: 'Guides and FAQs' },
-            { to: '/about', label: 'About BraveVest', desc: 'Powered by Bravelion Capital' },
-            { to: '/contact', label: 'Contact', desc: 'Get in touch' },
-          ]} />
+          <Dropdown 
+            label="Explore" 
+            open={openMenu === 'explore'} 
+            onOpen={() => setOpenMenu(openMenu === 'explore' ? null : 'explore')} 
+            items={[
+              { to: '/how-it-works', label: 'How It Works', desc: 'The full investor journey' },
+              { to: '/stories', label: 'Investor Stories', desc: 'Real outcomes' },
+              { to: '/starter', label: 'Starter Pool', desc: 'Start from ₦5,000' },
+              { to: '/insights', label: 'Insights', desc: 'Market briefs & education' },
+            ]} 
+          />
+          <Dropdown 
+            label="Resources" 
+            open={openMenu === 'resources'} 
+            onOpen={() => setOpenMenu(openMenu === 'resources' ? null : 'resources')} 
+            items={[
+              { to: '/help', label: 'Help Center', desc: 'Guides and FAQs' },
+              { to: '/about', label: 'About BraveVest', desc: 'Powered by Bravelion Capital' },
+              { to: '/contact', label: 'Contact', desc: 'Get in touch' },
+            ]} 
+          />
         </nav>
 
         <div className="navbar__right">
           <div className="navbar__right-desktop">
             <CurrencySwitcher />
+            
             {user ? (
-              <>
-                <Link to={user.role === 'ADMIN' ? '/admin' : '/dashboard'} className="navbar__link navbar__link--muted">Dashboard</Link>
-                <Button onClick={logout} variant="secondary" size="sm">Sign out</Button>
-              </>
+              <UserProfileMenu 
+                user={user} 
+                dashboardPath={dashboardPath}
+                open={openMenu === 'profile'} 
+                onOpen={() => setOpenMenu(openMenu === 'profile' ? null : 'profile')} 
+                onLogout={logout} 
+              />
             ) : (
               <>
                 <Link to="/login" className="navbar__link navbar__link--muted">Log in</Link>
@@ -61,12 +92,18 @@ export default function Navbar() {
               </>
             )}
           </div>
-          <button className={'navbar__burger ' + (mobileOpen ? 'is-open' : '')} onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle menu">
+
+          <button 
+            className={`navbar__burger ${mobileOpen ? 'is-open' : ''}`} 
+            onClick={() => setMobileOpen(!mobileOpen)} 
+            aria-label="Toggle menu"
+          >
             <span /><span /><span />
           </button>
         </div>
       </div>
 
+      {/* Mobile Drawer */}
       {mobileOpen && (
         <div className="navbar__drawer" onClick={() => setMobileOpen(false)}>
           <nav className="navbar__drawer-inner" onClick={(e) => e.stopPropagation()}>
@@ -76,30 +113,50 @@ export default function Navbar() {
             <NavLink to="/insights" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Insights</NavLink>
             <NavLink to="/help" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Help Center</NavLink>
             <NavLink to="/about" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>About</NavLink>
+            
             <div className="navbar__drawer-divider" />
             <div className="navbar__drawer-cur"><CurrencySwitcher /></div>
+
             {user ? (
-              <>
-                <NavLink to={user.role === 'ADMIN' ? '/admin' : '/dashboard'} className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Dashboard</NavLink>
-                <Button onClick={logout} variant="primary" size="lg" className="navbar__drawer-cta">Sign out</Button>
-              </>
+              <div className="navbar__drawer-user">
+                <div className="navbar__drawer-user-info">
+                  <span className="navbar__avatar">{user.firstName?.[0] || user.name?.[0] || 'U'}</span>
+                  <div>
+                    <div className="navbar__drawer-user-name">{user.name || `${user.firstName || ''} ${user.lastName || ''}`}</div>
+                    <div className="navbar__drawer-user-email">{user.email}</div>
+                  </div>
+                </div>
+                <NavLink to={dashboardPath} className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>
+                  Go to Dashboard
+                </NavLink>
+                <NavLink to="/profile" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>
+                  My Profile
+                </NavLink>
+                <Button onClick={logout} variant="secondary" size="lg" className="navbar__drawer-cta">
+                  Sign out
+                </Button>
+              </div>
             ) : (
               <>
                 <NavLink to="/login" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Log in</NavLink>
-                <Button as={Link} to="/register" variant="primary" size="lg" className="navbar__drawer-cta" onClick={() => setMobileOpen(false)}>Apply Now</Button>
+                <Button as={Link} to="/register" variant="primary" size="lg" className="navbar__drawer-cta" onClick={() => setMobileOpen(false)}>
+                  Apply Now
+                </Button>
               </>
             )}
           </nav>
         </div>
       )}
-    </header>
+            </header>
   );
 }
 
 function Dropdown({ label, open, onOpen, items }) {
   return (
-    <div className={'navbar__dropdown ' + (open ? 'is-open' : '')}>
-      <button className="navbar__link navbar__link--caret" onClick={onOpen}>{label}</button>
+    <div className={`navbar__dropdown ${open ? 'is-open' : ''}`}>
+      <button className="navbar__link navbar__link--caret" onClick={onOpen} aria-expanded={open}>
+        {label}
+      </button>
       {open && (
         <div className="navbar__menu">
           {items.map((item) => (
@@ -108,6 +165,41 @@ function Dropdown({ label, open, onOpen, items }) {
               <div className="navbar__menu-desc">{item.desc}</div>
             </NavLink>
           ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function UserProfileMenu({ user, dashboardPath, open, onOpen, onLogout }) {
+  const initial = user.firstName?.[0] || user.name?.[0] || 'U';
+
+  return (
+    <div className={`navbar__dropdown navbar__profile-dropdown ${open ? 'is-open' : ''}`}>
+      <button className="navbar__profile-btn" onClick={onOpen} aria-expanded={open}>
+        <span className="navbar__avatar">{initial}</span>
+        <span className="navbar__profile-name">{user.firstName || user.name || 'Account'}</span>
+      </button>
+
+      {open && (
+        <div className="navbar__menu navbar__menu--right">
+          <div className="navbar__profile-header">
+            <div className="navbar__profile-title">{user.name || `${user.firstName || ''} ${user.lastName || ''}`}</div>
+            <div className="navbar__profile-sub">{user.email}</div>
+          </div>
+          <div className="navbar__drawer-divider" />
+          <NavLink to={dashboardPath} className="navbar__menu-item">
+            <div className="navbar__menu-label">Dashboard</div>
+            <div className="navbar__menu-desc">View investments & payouts</div>
+          </NavLink>
+          <NavLink to="/profile" className="navbar__menu-item">
+            <div className="navbar__menu-label">My Profile</div>
+            <div className="navbar__menu-desc">KYC, security & settings</div>
+          </NavLink>
+          <div className="navbar__drawer-divider" />
+          <button onClick={onLogout} className="navbar__menu-item navbar__menu-item--danger">
+            <div className="navbar__menu-label">Sign out</div>
+          </button>
         </div>
       )}
     </div>

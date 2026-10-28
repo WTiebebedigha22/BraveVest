@@ -4,29 +4,29 @@ import './About.css';
 import { useSEO } from '@/hooks/useSEO';
 import { useCurrency } from '@/context/CurrencyContext';
 
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+/* ─────────────────────────────────────────────────────────────
    Content pulled from BraveVest Marketplace brand document.
    All copy is verbatim or lightly tightened from the source.
-   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+   ───────────────────────────────────────────────────────────── */
 
 const corporateStructure = [
-  { entity: 'Bravelion Holdings',        role: 'Mother company and corporate group owner.' },
-  { entity: 'Bravelion Capital',         role: 'Proposed investment arm for structuring, coordinating and administering opportunities.' },
+  { entity: 'Bravelion Holdings',         role: 'Mother company and corporate group owner.' },
+  { entity: 'Bravelion Capital',          role: 'Proposed investment arm for structuring, coordinating and administering opportunities.' },
   { entity: 'BraveVest Marketplace',     role: 'Platform brand where investors access verified opportunities.' },
   { entity: 'Bravelion Estates & Development', role: 'Originator, sponsor or executor of property and development opportunities.' },
 ];
 
 const productCategories = [
-  { name: 'BraveVest Projects',  blurb: 'Project-backed opportunities across construction milestones, estate infrastructure, site clearing, road works and materials procurement.' },
-  { name: 'BraveVest Property',  blurb: 'Real estate-backed opportunities: residential, commercial, mixed-use, acquisition, renovation and buy-build-sell.' },
-  { name: 'BraveVest Income',    blurb: 'Income-generating assets: rentals, short-lets, shops, warehouses, offices, student and staff housing.' },
-  { name: 'BraveVest Notes',     blurb: 'Short-term structured products tied to projects, assets or business transactions.' },
+  { name: 'BraveVest Projects',   blurb: 'Project-backed opportunities across construction milestones, estate infrastructure, site clearing, road works and materials procurement.' },
+  { name: 'BraveVest Property',   blurb: 'Real estate-backed opportunities: residential, commercial, mixed-use, acquisition, renovation and buy-build-sell.' },
+  { name: 'BraveVest Income',     blurb: 'Income-generating assets: rentals, short-lets, shops, warehouses, offices, student and staff housing.' },
+  { name: 'BraveVest Notes',      blurb: 'Short-term structured products tied to projects, assets or business transactions.' },
   { name: 'BraveVest BuildFund', blurb: 'Construction and infrastructure funding from foundation to finishing stages.' },
   { name: 'BraveVest LandBank',  blurb: 'Land acquisition, title processing, survey, layout, allocation and appreciation opportunities.' },
-  { name: 'BraveVest Credit',    blurb: 'Credit-backed opportunities: SME, salary-backed, asset-backed, invoice-backed and trade finance.' },
-  { name: 'BraveVest Prime',     blurb: 'Premium private opportunities for selected investors larger deals, co-investments, institutional-style offers.' },
-  { name: 'BraveVest Circle',    blurb: 'Private investment community with early access, briefings, site inspections and priority allocation.' },
-  { name: 'BraveVest CoFund',    blurb: 'Group investment structure for cooperatives, associations, families, churches and diaspora groups.' },
+  { name: 'BraveVest Credit',     blurb: 'Credit-backed opportunities: SME, salary-backed, asset-backed, invoice-backed and trade finance.' },
+  { name: 'BraveVest Prime',      blurb: 'Premium private opportunities for selected investors larger deals, co-investments, institutional-style offers.' },
+  { name: 'BraveVest Circle',     blurb: 'Private investment community with early access, briefings, site inspections and priority allocation.' },
+  { name: 'BraveVest CoFund',     blurb: 'Group investment structure for cooperatives, associations, families, churches and diaspora groups.' },
 ];
 
 const marketSteps = [
@@ -145,11 +145,12 @@ export default function About() {
   useSEO({
     title: 'About Powered by Bravelion Capital',
     description: 'BraveVest Marketplace is a multi-opportunity investment platform powered by Bravelion Capital, a Bravelion Holdings company.',
-    canonical: '/#/about',
+    canonical: '/about',
   });
+
   return (
     <article className="about">
-      {/* â”€â”€ Hero â”€â”€ */}
+      {/* ── Hero ── */}
       <section className="about-hero">
         <div className="about-hero__mesh" aria-hidden />
         <div className="container about-hero__inner">
@@ -176,7 +177,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ Core promise â”€â”€ */}
+      {/* ── Core promise ── */}
       <section className="about-promise container">
         <div className="about-promise__label">Core promise</div>
         <h2 className="about-promise__title">
@@ -185,7 +186,7 @@ export default function About() {
         </h2>
       </section>
 
-      {/* â”€â”€ Brand meaning â”€â”€ */}
+      {/* ── Brand meaning ── */}
       <section className="about-section container">
         <div className="about-grid about-grid--2">
           <div>
@@ -199,14 +200,14 @@ export default function About() {
             </p>
           </div>
           <div className="about-factcard">
-            <FactRow k="Platform"   v="BraveVest Marketplace" />
+            <FactRow k="Platform"     v="BraveVest Marketplace" />
             <FactRow k="Tagline"    v="Access Verified Investment Opportunities" />
             <FactRow k="Brand flow" v="Powered by Bravelion Capital, A Bravelion Holdings Company" />
           </div>
         </div>
       </section>
 
-      {/* â”€â”€ Vision & Mission â”€â”€ */}
+      {/* ── Vision & Mission ── */}
       <section className="about-section container">
         <div className="about-grid about-grid--2">
           <div className="about-vm">
@@ -229,7 +230,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ Corporate structure â”€â”€ */}
+      {/* ── Corporate structure ── */}
       <section className="about-section container">
         <SectionEyebrow>Corporate structure</SectionEyebrow>
         <h2 className="about-h2 about-h2--lg">The Bravelion group.</h2>
@@ -244,7 +245,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ Marketplace model â”€â”€ */}
+      {/* ── Marketplace model ── */}
       <section className="about-section container">
         <div className="about-grid about-grid--2">
           <div>
@@ -273,7 +274,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ Product categories â”€â”€ */}
+      {/* ── Product categories ── */}
       <section className="about-section container">
         <SectionEyebrow>Investment opportunities &amp; packages</SectionEyebrow>
         <h2 className="about-h2 about-h2--lg">Ten product families.</h2>
@@ -292,7 +293,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ Pilot package â”€â”€ */}
+      {/* ── Pilot package ── */}
       <section className="about-pilot container">
         <div className="about-pilot__card">
           <div className="about-pilot__eyebrow">First launch package</div>
@@ -302,18 +303,18 @@ export default function About() {
             onboarding, project reporting structure and payout administration.
           </p>
           <div className="about-pilot__grid">
-            <PilotFact k="Target raise"            v=" {format(5000000)}" />
-            <PilotFact k="Unit price"              v=" {format(50000)}" />
-            <PilotFact k="Total units"             v="100" />
-            <PilotFact k="Minimum investment"      v=" {format(50000)}" />
-            <PilotFact k="Maximum per investor"    v=" {format(500000)} â€“  {format(1000000)}" />
-            <PilotFact k="Tenor"                   v="3 â€“ 6 months" />
-            <PilotFact k="Projected return"        v="Up to 3% monthly equivalent" wide />
+            <PilotFact k="Target raise"           v={format(5000000)} />
+            <PilotFact k="Unit price"             v={format(50000)} />
+            <PilotFact k="Total units"            v="100" />
+            <PilotFact k="Minimum investment"     v={format(50000)} />
+            <PilotFact k="Maximum per investor"   v={`${format(500000)} – ${format(1000000)}`} />
+            <PilotFact k="Tenor"                  v="3 – 6 months" />
+            <PilotFact k="Projected return"       v="Up to 3% monthly equivalent" wide />
           </div>
         </div>
       </section>
 
-      {/* â”€â”€ Investor journey â”€â”€ */}
+      {/* ── Investor journey ── */}
       <section className="about-section container">
         <SectionEyebrow>Investor journey</SectionEyebrow>
         <h2 className="about-h2 about-h2--lg">From access to returns.</h2>
@@ -329,7 +330,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ Due diligence â”€â”€ */}
+      {/* ── Due diligence ── */}
       <section className="about-section container">
         <SectionEyebrow>Due diligence</SectionEyebrow>
         <h2 className="about-h2 about-h2--lg">What we check before we list.</h2>
@@ -350,7 +351,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ Risk â”€â”€ */}
+      {/* ── Risk ── */}
       <section className="about-section container">
         <SectionEyebrow>Risk management</SectionEyebrow>
         <h2 className="about-h2 about-h2--lg">Risk areas we name openly.</h2>
@@ -364,7 +365,7 @@ export default function About() {
         </p>
       </section>
 
-      {/* â”€â”€ Compliance â”€â”€ */}
+      {/* ── Compliance ── */}
       <section className="about-section container">
         <SectionEyebrow>Compliance &amp; regulatory framework</SectionEyebrow>
         <h2 className="about-h2 about-h2--lg">Built inside the rules.</h2>
@@ -383,7 +384,7 @@ export default function About() {
         </p>
       </section>
 
-      {/* â”€â”€ Governance â”€â”€ */}
+      {/* ── Governance ── */}
       <section className="about-section container">
         <div className="about-grid about-grid--2">
           <div>
@@ -403,7 +404,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ Roadmap â”€â”€ */}
+      {/* ── Roadmap ── */}
       <section className="about-section container">
         <SectionEyebrow>First-year roadmap</SectionEyebrow>
         <h2 className="about-h2 about-h2--lg">From pilot to platform.</h2>
@@ -418,7 +419,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ Advantage â”€â”€ */}
+      {/* ── Advantage ── */}
       <section className="about-section container">
         <SectionEyebrow>Competitive advantage</SectionEyebrow>
         <h2 className="about-h2 about-h2--lg">Why BraveVest.</h2>
@@ -427,14 +428,14 @@ export default function About() {
         </div>
       </section>
 
-      {/* â”€â”€ Closing CTA â”€â”€ */}
+      {/* ── Closing CTA ── */}
       <section className="about-cta container">
         <div className="about-cta__card">
           <div className="about-cta__mesh" aria-hidden />
           <div className="about-cta__eyebrow">Access Verified Investment Opportunities</div>
           <h2 className="about-cta__title">Ready to invest?</h2>
           <p className="about-cta__sub">
-            BraveVest Marketplace Â· Powered by Bravelion Capital Â· A Bravelion Holdings Company
+            BraveVest Marketplace · Powered by Bravelion Capital · A Bravelion Holdings Company
           </p>
           <div className="about-cta__actions">
             <Button as={Link} to="/register" variant="primary" size="lg">Create your account</Button>
@@ -446,7 +447,7 @@ export default function About() {
   );
 }
 
-/* â”€â”€ Small presentational helpers â”€â”€ */
+/* ── Small presentational helpers ── */
 
 function SectionEyebrow({ children }) {
   return <div className="about-eyebrow">{children}</div>;

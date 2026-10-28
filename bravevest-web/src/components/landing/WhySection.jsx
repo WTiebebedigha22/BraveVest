@@ -20,7 +20,14 @@ export default function WhySection() {
                 <span>Status</span>
                 <span className="why__mini-tag">Your loan is approved</span>
               </div>
-              <div className="why__mini-img" />
+              {/* Replace placeholder background with a real image or dashboard graphic */}
+              <div className="why__mini-img">
+                <img 
+                  src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=600&q=80" 
+                  alt="Business Analytics Preview" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '14px' }}
+                />
+              </div>
             </div>
             <div className="why__badge-card">
               <span className="why__badge-icon">B</span>
@@ -58,7 +65,13 @@ export default function WhySection() {
         <div className="why__media">
           <div className="why__media-mesh why__media-mesh--purple" />
           <div className="why__media-inner why__media-inner--right">
-            <div className="why__photo-card" />
+            <div className="why__photo-card">
+              <img 
+                src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=800&q=80" 
+                alt="Investment Portfolio Dashboard" 
+                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '20px' }}
+              />
+            </div>
             <div className="why__badge-card why__badge-card--offset">
               <span className="why__badge-icon why__badge-icon--purple">P</span>
               <div>
