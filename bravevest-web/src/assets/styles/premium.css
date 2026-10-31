@@ -1,0 +1,732 @@
+/* ============================================================
+   BRAVEVEST — EXCLUSIVE PREMIUM LAYER
+   Refines institutional.css. Import AFTER institutional.css.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Deeper, more saturated navy — closer to ink than slate */
+  --ink-1000: #03060F;
+  --ink-950:  #050A18;
+  --ink-900:  #070D1E;
+  --ink-850:  #0A1224;
+  --ink-800:  #0D1628;
+  --ink-700:  #14203A;
+  --ink-600:  #1C2A48;
+
+  /* Refined gold — three stops for foil gradients */
+  --gold-1: #E8CFA0;
+  --gold-2: #C9A961;
+  --gold-3: #8E7038;
+  --gold-foil: linear-gradient(135deg, #E8CFA0 0%, #C9A961 45%, #8E7038 100%);
+
+  /* Paper / vellum for premium contrast */
+  --vellum: #F2EDE3;
+  --vellum-dim: #C9C2B2;
+
+  /* Ink text */
+  --ink-text: #E8E4DB;
+  --ink-mute: #8A8678;
+  --ink-faint: #4A4750;
+
+  /* Hairlines */
+  --hairline: rgba(232, 207, 160, 0.08);
+  --hairline-2: rgba(232, 207, 160, 0.18);
+
+  /* Typography scale */
+  --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  --tracking-tight: -0.02em;
+  --tracking-wide: 0.24em;
+  --tracking-mega: 0.4em;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   GLOBAL REFINEMENTS
+   ============================================================ */
+html { background: var(--ink-1000); }
+
+body {
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(201, 169, 97, 0.06), transparent 60%),
+    radial-gradient(900px 500px at 100% 100%, rgba(63, 184, 196, 0.03), transparent 60%),
+    var(--ink-950);
+  color: var(--ink-text);
+  font-family: var(--font-body);
+  font-weight: 300;
+  letter-spacing: 0.005em;
+}
+
+/* Film grain — subtle, sells the "printed prospectus" feel */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* ============================================================
+   TYPOGRAPHY — serif-dominant, editorial
+   ============================================================ */
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: var(--tracking-tight);
+  color: var(--ink-text);
+}
+
+h1 {
+  font-size: clamp(52px, 6.5vw, 104px);
+  line-height: 0.98;
+  font-weight: 300;
+}
+
+h2 {
+  font-size: clamp(36px, 4.5vw, 64px);
+  line-height: 1.05;
+}
+
+h3 {
+  font-size: clamp(22px, 2vw, 30px);
+  line-height: 1.2;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Gold foil on emphasized words */
+.gold-foil {
+  background: var(--gold-foil);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-style: italic;
+}
+
+/* Micro-label — MICRO-LETTER-SPACED, all caps */
+.micro-label,
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-mega);
+  text-transform: uppercase;
+  color: var(--gold-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--gold-2);
+}
+
+/* Drop-cap lede */
+.lede {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 1.6vw, 24px);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--vellum-dim);
+  max-width: 620px;
+}
+
+.lede--drop::first-letter {
+  font-size: 4.2em;
+  line-height: 0.8;
+  float: left;
+  margin: 0.08em 0.12em 0 -0.04em;
+  color: var(--gold-2);
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* Mono utility */
+.mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--ink-mute);
+  font-feature-settings: 'tnum';
+}
+
+/* Numerals — tabular, serif */
+.numeral {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+}
+
+.numeral--hero {
+  font-size: clamp(64px, 10vw, 160px);
+  color: var(--ink-text);
+}
+
+.numeral--big {
+  font-size: clamp(40px, 5vw, 72px);
+}
+
+.numeral--mid {
+  font-size: 32px;
+}
+
+.numeral--gold {
+  background: var(--gold-foil);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ============================================================
+   LAYOUT — editorial, asymmetric
+   ============================================================ */
+.container { max-width: 1360px; padding: 0 clamp(24px, 5vw, 72px); }
+
+section { padding: 140px 0; border-top: 1px solid var(--hairline); }
+section:first-of-type { border-top: none; }
+
+/* Big editorial grid: 5/4/3 columns */
+.editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+}
+.col-1-5 { grid-column: span 5; }
+.col-6-9 { grid-column: 6 / span 4; }
+.col-10-12 { grid-column: 10 / span 3; }
+.col-1-7 { grid-column: span 7; }
+.col-8-12 { grid-column: 8 / span 5; }
+.col-1-4 { grid-column: span 4; }
+.col-5-8 { grid-column: 5 / span 4; }
+.col-9-12 { grid-column: 9 / span 4; }
+
+/* ============================================================
+   CARD — matte, no glass, hairline
+   ============================================================ */
+.card {
+  background: linear-gradient(180deg, var(--ink-850) 0%, var(--ink-900) 100%);
+  border: 1px solid var(--hairline-2);
+  border-radius: 0;
+  padding: 48px;
+  position: relative;
+  transition: border-color 0.5s var(--ease), transform 0.5s var(--ease);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(400px 200px at 0% 0%, rgba(232, 207, 160, 0.04), transparent 70%);
+}
+
+.card:hover {
+  border-color: rgba(232, 207, 160, 0.32);
+}
+
+.card--accent {
+  border-left: 2px solid transparent;
+  border-image: var(--gold-foil) 1;
+  border-image-slice: 0 0 0 100%;
+}
+
+.card--plain {
+  background: transparent;
+  border: 1px solid var(--hairline-2);
+}
+
+/* ============================================================
+   BUTTONS — refined, one bold gesture
+   ============================================================ */
+.btn {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-mega);
+  text-transform: uppercase;
+  padding: 18px 36px;
+  border-radius: 0;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s var(--ease);
+}
+
+.btn--primary {
+  background: var(--gold-foil);
+  color: var(--ink-950);
+  border-color: transparent;
+}
+
+.btn--primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #F4E3BD 0%, #D9BC7E 45%, #A8843F 100%);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+}
+
+.btn--primary:hover::before { opacity: 1; }
+.btn--primary > * { position: relative; z-index: 1; }
+
+.btn--outline {
+  background: transparent;
+  color: var(--ink-text);
+  border: 1px solid var(--hairline-2);
+}
+
+.btn--outline:hover {
+  border-color: var(--gold-2);
+  color: var(--gold-1);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink-mute);
+  padding: 12px 0;
+  border: none;
+  border-bottom: 1px solid transparent;
+}
+
+.btn--ghost:hover {
+  color: var(--gold-1);
+  border-bottom-color: var(--gold-2);
+}
+
+/* ============================================================
+   HERO — the signature gesture
+   ============================================================ */
+.hero {
+  padding: 160px 0 140px;
+  position: relative;
+  overflow: hidden;
+  border-top: none;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -10%;
+  width: 70%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 30%, rgba(201, 169, 97, 0.08), transparent 50%);
+  pointer-events: none;
+}
+
+.hero__display {
+  font-family: var(--font-display);
+  font-size: clamp(64px, 9vw, 148px);
+  font-weight: 300;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  margin: 32px 0 40px;
+  color: var(--ink-text);
+}
+
+.hero__display em {
+  font-style: italic;
+  background: var(--gold-foil);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero__lede {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(18px, 1.5vw, 22px);
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--vellum-dim);
+  max-width: 520px;
+  margin-bottom: 48px;
+}
+
+/* Hero side panel — "brief" like a private bank term sheet */
+.term-sheet {
+  border: 1px solid var(--hairline-2);
+  background: linear-gradient(180deg, rgba(13, 22, 40, 0.9) 0%, rgba(7, 13, 30, 0.9) 100%);
+  padding: 40px;
+  position: relative;
+}
+
+.term-sheet__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--hairline-2);
+  margin-bottom: 32px;
+}
+
+.term-sheet__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.term-sheet__row:last-child { border-bottom: none; }
+
+.term-sheet__label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.term-sheet__value {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ink-text);
+}
+
+/* ============================================================
+   SECTION HEADER — editorial, numbered
+   ============================================================ */
+.section-head {
+  max-width: 780px;
+  margin-bottom: 96px;
+}
+
+.section-head__num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gold-2);
+  letter-spacing: var(--tracking-wide);
+  margin-bottom: 20px;
+  display: block;
+}
+
+.section-head h2 {
+  margin-bottom: 24px;
+}
+
+/* ============================================================
+   PRINCIPLES — big serif callouts (not cards)
+   ============================================================ */
+.principle {
+  padding: 56px 0;
+  border-top: 1px solid var(--hairline-2);
+  display: grid;
+  grid-template-columns: 60px 1fr 2fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.principle__num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--gold-2);
+  letter-spacing: 0.1em;
+  padding-top: 12px;
+}
+
+.principle__title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3vw, 44px);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--ink-text);
+}
+
+.principle__body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--vellum-dim);
+  max-width: 480px;
+  padding-top: 12px;
+}
+
+/* ============================================================
+   DATA TABLE — institutional ledger, hairlines
+   ============================================================ */
+.fin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+}
+
+.fin-table thead {
+  border-bottom: 1px solid var(--hairline-2);
+}
+
+.fin-table th {
+  padding: 20px 24px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  border-bottom: 1px solid var(--hairline-2);
+}
+
+.fin-table td {
+  padding: 28px 24px;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ink-text);
+  border-bottom: 1px solid var(--hairline);
+  transition: background 0.4s var(--ease);
+}
+
+.fin-table tbody tr:hover td {
+  background: rgba(232, 207, 160, 0.03);
+}
+
+.fin-table td.num {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.fin-table td.num.positive { color: var(--gold-1); }
+.fin-table td.num.negative { color: #C0363A; }
+
+/* ============================================================
+   PILL / BADGE
+   ============================================================ */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  border: 1px solid var(--hairline-2);
+  color: var(--ink-mute);
+}
+
+.pill--gold { color: var(--gold-1); border-color: rgba(232, 207, 160, 0.4); }
+.pill--success { color: #9BD4AE; border-color: rgba(155, 212, 174, 0.3); }
+.pill--danger { color: #D66C6F; border-color: rgba(214, 108, 111, 0.3); }
+
+/* ============================================================
+   FOOTER — vellum statement
+   ============================================================ */
+.footer {
+  background: var(--ink-1000);
+  border-top: 1px solid var(--hairline-2);
+  padding: 100px 0 40px;
+}
+
+.footer__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 72px;
+  margin-bottom: 80px;
+}
+
+.footer__brand img {
+  height: 30px;
+  filter: brightness(0) invert(1);
+  margin-bottom: 24px;
+  opacity: 0.9;
+}
+
+.footer__tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--vellum-dim);
+  max-width: 320px;
+}
+
+.footer__h {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-mega);
+  text-transform: uppercase;
+  color: var(--gold-2);
+  margin-bottom: 24px;
+}
+
+.footer__links a {
+  display: block;
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--ink-mute);
+  padding: 8px 0;
+  transition: color 0.3s var(--ease);
+}
+
+.footer__links a:hover { color: var(--gold-1); }
+
+.footer__base {
+  border-top: 1px solid var(--hairline);
+  padding-top: 32px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   NAVBAR — minimal, gold mark
+   ============================================================ */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(5, 10, 24, 0.75);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border-bottom: 1px solid var(--hairline);
+  padding: 24px 0;
+}
+
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar__logo img {
+  height: 26px;
+  filter: brightness(0) invert(1);
+}
+
+.navbar__links { display: flex; gap: 48px; }
+
+.navbar__links a {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  position: relative;
+  transition: color 0.3s var(--ease);
+}
+
+.navbar__links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold-2);
+  transition: width 0.4s var(--ease);
+}
+
+.navbar__links a:hover,
+.navbar__links a.active {
+  color: var(--gold-1);
+  opacity: 1;
+}
+
+.navbar__links a:hover::after,
+.navbar__links a.active::after {
+  width: 100%;
+}
+
+/* ============================================================
+   INPUTS — underline-only, private-bank form
+   ============================================================ */
+input.form-input,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+select,
+textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--hairline-2);
+  padding: 14px 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--ink-text);
+  border-radius: 0;
+  transition: border-color 0.3s var(--ease);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-bottom-color: var(--gold-2);
+}
+
+.form-label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 4px;
+}
+
+/* ============================================================
+   REVEAL — slow, staggered
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 1.2s var(--ease), transform 1.2s var(--ease);
+}
+
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  section { padding: 96px 0; }
+  .editorial-grid { display: block; }
+  .col-1-5, .col-6-9, .col-10-12, .col-1-7, .col-8-12,
+  .col-1-4, .col-5-8, .col-9-12 { grid-column: auto; margin-bottom: 32px; }
+  .principle { grid-template-columns: 1fr; gap: 16px; padding: 40px 0; }
+  .footer__grid { grid-template-columns: 1fr 1fr; gap: 48px; }
+  .navbar__links { display: none; }
+}
+
+@media (max-width: 640px) {
+  section { padding: 64px 0; }
+  .hero { padding: 80px 0 60px; }
+  .card { padding: 32px; }
+  .footer__grid { grid-template-columns: 1fr; }
+  .footer__base { flex-direction: column; gap: 12px; }
+}

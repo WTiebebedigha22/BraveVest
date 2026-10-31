@@ -1,123 +1,39 @@
-import LegalLayout from '@/components/shared/LegalLayout';
+import { Link } from 'react-router-dom';
 
-export default function Privacy() {
-  const sections = [
-    {
-      id: 'overview',
-      heading: '1. Overview',
-      body: [
-        'BraveVest Marketplace ("BraveVest", "we", "us") is committed to protecting your privacy. This Privacy Policy explains what personal information we collect, why we collect it, how we use it, and the rights you have over your data.',
-        'We comply with the Nigeria Data Protection Act (NDPA) 2023 and applicable data protection regulations in the jurisdictions where we operate.',
-      ],
-    },
-    {
-      id: 'data-we-collect',
-      heading: '2. Information We Collect',
-      body: [
-        'Identity information: name, date of birth, gender, nationality, and government-issued identification details provided during KYC.',
-        'Contact information: email address, phone number, and residential address.',
-        'Financial information: bank account details, investment history, transaction records, and payment method information.',
-        'Technical information: IP address, device type, browser, and usage patterns collected automatically when you use the Platform.',
-        'Communications: correspondence with our support team, recorded calls (with notice), and messages sent through the Platform.',
-      ],
-    },
-    {
-      id: 'how-we-use',
-      heading: '3. How We Use Your Information',
-      body: [
-        'To verify your identity and comply with AML/KYC obligations under Nigerian law.',
-        'To process investments, distributions, and withdrawals.',
-        'To communicate with you about your account, transactions, and material platform changes.',
-        'To detect and prevent fraud, money laundering, and other illegal activity.',
-        'To improve the Platform, develop new features, and conduct internal analytics.',
-        'To comply with legal and regulatory obligations, including responding to lawful requests from regulators and law enforcement.',
-      ],
-    },
-    {
-      id: 'sharing',
-      heading: '4. When We Share Your Information',
-      body: [
-        'With payment processors (Paystack, Flutterwave) to process transactions.',
-        'With KYC/identity verification providers (Smile Identity, VerifyMe) to verify your identity.',
-        'With credit bureaus where relevant to credit-backed products.',
-        'With regulators, auditors, and law enforcement when legally required.',
-        'With service providers who process data on our behalf under contract (cloud hosting, email, analytics).',
-        'In the event of a merger, acquisition, or sale of assets, your data may be transferred as part of the transaction. We will notify you before this occurs.',
-      ],
-    },
-    {
-      id: 'retention',
-      heading: '5. Data Retention',
-      body: [
-        'We retain your personal information for as long as your account is active and for a minimum of 7 years after account closure, as required by Nigerian anti-money-laundering regulations.',
-        'Some data (e.g., transaction records) may be retained longer if required by other legal obligations.',
-      ],
-    },
-    {
-      id: 'security',
-      heading: '6. Security',
-      body: [
-        'We use industry-standard security measures including: 256-bit SSL encryption in transit, encrypted storage at rest, restricted access controls, two-factor authentication for staff, and regular security audits.',
-        'Payment card information is handled by PCI-DSS-compliant processors and never stored on our servers.',
-        'While we take security seriously, no system is impenetrable. If we become aware of a data breach affecting your information, we will notify you and the relevant regulator as required by law.',
-      ],
-    },
-    {
-      id: 'your-rights',
-      heading: '7. Your Rights',
-      body: [
-        'Under the NDPA and similar laws, you have the right to: access the personal data we hold about you; request correction of inaccurate data; request deletion of data we are not legally required to retain; object to certain processing activities; and lodge a complaint with the Nigeria Data Protection Commission (NDPC).',
-        'To exercise any of these rights, email privacy@bravevest.com. We will respond within 30 days.',
-      ],
-    },
-    {
-      id: 'cookies',
-      heading: '8. Cookies and Tracking',
-      body: [
-        'We use essential cookies to keep you logged in and secure your session. These are required for the Platform to function.',
-        'We use analytics cookies (Google Analytics) to understand how the Platform is used. These can be disabled in your browser settings.',
-        'We do not use cookies for cross-site advertising or sell cookie data to third parties.',
-      ],
-    },
-    {
-      id: 'children',
-      heading: '9. Children',
-      body: [
-        'The Platform is not intended for anyone under 18. We do not knowingly collect data from minors. If you believe we have collected such data, contact privacy@bravevest.com and we will delete it.',
-      ],
-    },
-    {
-      id: 'international',
-      heading: '10. International Transfers',
-      body: [
-        'Your data is primarily stored in Nigeria and the European Union (Supabase infrastructure). Where we transfer data outside Nigeria, we ensure appropriate safeguards are in place under the NDPA.',
-      ],
-    },
-    {
-      id: 'changes',
-      heading: '11. Changes to This Policy',
-      body: [
-        'We may update this Policy from time to time. Material changes will be communicated to you by email or through the Platform at least 14 days before they take effect.',
-      ],
-    },
-    {
-      id: 'contact',
-      heading: '12. Contact Us',
-      body: [
-        'For privacy questions or to exercise your rights, contact our Data Protection Officer at privacy@bravevest.com.',
-        'You may also write to us at: BraveVest Marketplace, c/o Bravelion Capital, Lagos, Nigeria.',
-      ],
-    },
-  ];
-
+export default function Page() {
   return (
-    <LegalLayout
-      title="Privacy Policy"
-      subtitle="How we collect, use, and protect your personal information."
-      lastUpdated="September 23, 2026"
-      description="BraveVest Marketplace Privacy Policy — data we collect, how we use it, and your rights under the NDPA."
-      canonical="/#/privacy"
-      sections={sections}
-    />
+    <div style={{ background: 'var(--navy-900)', minHeight: '100vh' }}>
+      <section className="hero-split container" style={{ padding: '80px 0', borderBottom: '1px solid var(--line)' }}>
+        <div className="hero-split__content" style={{ maxWidth: '780px' }}>
+          <span className="eyebrow">Legal</span>
+          <h1 style={{ margin: '16px 0 24px' }}>Privacy Policy</h1>
+          <p className="lede" style={{ marginBottom: '40px' }}>How BraveVest collects, uses, and protects your personal information under NDPA 2023.</p>
+        </div>
+      </section>
+      <div className="container container--narrow" style={{ padding: '80px 24px' }}>
+        
+    <h2 style="margin-top: 32px; margin-bottom: 16px;">1. Information We Collect</h2>
+    <p style="margin-bottom: 24px;">We collect identity data (name, DOB, ID numbers), contact data (email, phone), financial data (bank account, transaction history), and technical data (IP address, device information) to operate the Platform, comply with regulations, and prevent fraud.</p>
+
+    <h2 style="margin-top: 32px; margin-bottom: 16px;">2. How We Use Your Data</h2>
+    <p style="margin-bottom: 24px;">Your data is used to verify identity (KYC), process transactions, comply with anti-money-laundering laws, and communicate about your account. We do not sell your personal data to third parties.</p>
+
+    <h2 style="margin-top: 32px; margin-bottom: 16px;">3. Data Sharing</h2>
+    <p style="margin-bottom: 24px;">We share data with identity verification providers (Smile Identity, Sumsub), payment processors (Paystack), and regulatory bodies where legally required. All partners are contractually bound to protect your data.</p>
+
+    <h2 style="margin-top: 32px; margin-bottom: 16px;">4. Data Retention</h2>
+    <p style="margin-bottom: 24px;">We retain your data for 7 years after account closure, as required by CBN regulations. You may request deletion after this period.</p>
+
+    <h2 style="margin-top: 32px; margin-bottom: 16px;">5. Your Rights (NDPA 2023)</h2>
+    <p style="margin-bottom: 24px;">You have the right to access, correct, port, and request deletion of your data. You may also object to processing and lodge a complaint with the Nigeria Data Protection Commission. Requests can be made from your account settings.</p>
+
+    <h2 style="margin-top: 32px; margin-bottom: 16px;">6. Security</h2>
+    <p style="margin-bottom: 24px;">All data is encrypted in transit (TLS 1.3) and at rest (AES-256). We run quarterly third-party security audits and maintain SOC 2-aligned controls.</p>
+
+    <h2 style="margin-top: 32px; margin-bottom: 16px;">7. Contact</h2>
+    <p style="margin-bottom: 24px;">For privacy requests, contact our Data Protection Officer at <a href="mailto:dpo@bravevest.com" style="color: var(--gold);">dpo@bravevest.com</a>.</p>
+  
+      </div>
+    </div>
   );
 }

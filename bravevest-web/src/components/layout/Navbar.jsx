@@ -1,207 +1,159 @@
-import { useState, useRef, useEffect } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
-import Button from '@/components/shared/Button';
-import CurrencySwitcher from '@/components/shared/CurrencySwitcher';
+import { useState } from 'react';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { Wallet, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import './Navbar.css';
+
+const LINKS = [
+  { to: '/marketplace', label: 'Markets' },
+  { to: '/how-it-works', label: 'How It Works' },
+  { to: '/about', label: 'About' },
+  { to: '/faq', label: 'FAQ' },
+];
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
-  const [openMenu, setOpenMenu] = useState(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const navRef = useRef(null);
+  const { user, logout, loading } = useAuth();
+  const nav = useNavigate();
   const location = useLocation();
+  const isHome = location.pathname === '/';
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Close menus on route change
-  useEffect(() => {
-    setOpenMenu(null);
-    setMobileOpen(false);
-  }, [location.pathname]);
+  function handleLogout() {
+    logout?.();
+    setSidebarOpen(false);
+    nav('/', { replace: true });
+  }
 
-  // Handle outside clicks and keyboard navigation
-  useEffect(() => {
-    function onClick(e) {
-      if (navRef.current && !navRef.current.contains(e.target)) {
-        setOpenMenu(null);
-      }
-    }
-    function onKey(e) {
-      if (e.key === 'Escape') setOpenMenu(null);
-    }
-    document.addEventListener('mousedown', onClick);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('mousedown', onClick);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, []);
-
-  const dashboardPath = user?.role === 'ADMIN' ? '/admin' : '/dashboard';
+  // Do not flash unauthenticated state while loading
+  if (loading) return null;
 
   return (
-    <header className="navbar" ref={navRef}>
+    <>
+      <header className="navbar" style={{ background: '#000000', borderBottom: '1px solid #2A2A2A' }}>
       <div className="container navbar__inner">
-        <div className="navbar__left">
-          <Link to="/" className="navbar__brand" onClick={() => setOpenMenu(null)}>
-            <img src="/icon.png" alt="" className="navbar__mark" style={{ width: 28, height: 28, borderRadius: 6 }} />
-            <img src="/logo.png" alt="BraveVest" className="navbar__wordmark" style={{ height: 24, width: 'auto' }} />
-          </Link>
-        </div>
-
-        <nav className="navbar__nav">
-          <NavLink to="/marketplace" className="navbar__link">Marketplace</NavLink>
-          <Dropdown 
-            label="Explore" 
-            open={openMenu === 'explore'} 
-            onOpen={() => setOpenMenu(openMenu === 'explore' ? null : 'explore')} 
-            items={[
-              { to: '/how-it-works', label: 'How It Works', desc: 'The full investor journey' },
-              { to: '/stories', label: 'Investor Stories', desc: 'Real outcomes' },
-              { to: '/starter', label: 'Starter Pool', desc: 'Start from ₦5,000' },
-              { to: '/insights', label: 'Insights', desc: 'Market briefs & education' },
-            ]} 
+        <Link to="/" className="navbar__logo">
+          <img
+            src="/icons/logo-dark.png"
+            alt="BraveVest"
+            style={{ height: '32px', width: 'auto', display: 'block' }}
           />
-          <Dropdown 
-            label="Resources" 
-            open={openMenu === 'resources'} 
-            onOpen={() => setOpenMenu(openMenu === 'resources' ? null : 'resources')} 
-            items={[
-              { to: '/help', label: 'Help Center', desc: 'Guides and FAQs' },
-              { to: '/about', label: 'About BraveVest', desc: 'Powered by Bravelion Capital' },
-              { to: '/contact', label: 'Contact', desc: 'Get in touch' },
-            ]} 
-          />
-        </nav>
+        </Link>
 
-        <div className="navbar__right">
-          <div className="navbar__right-desktop">
-            <CurrencySwitcher />
-            
-            {user ? (
-              <UserProfileMenu 
-                user={user} 
-                dashboardPath={dashboardPath}
-                open={openMenu === 'profile'} 
-                onOpen={() => setOpenMenu(openMenu === 'profile' ? null : 'profile')} 
-                onLogout={logout} 
-              />
-            ) : (
-              <>
-                <Link to="/login" className="navbar__link navbar__link--muted">Log in</Link>
-                <Button as={Link} to="/register" variant="primary" size="sm">Apply Now</Button>
-              </>
-            )}
-          </div>
-
-          <button 
-            className={`navbar__burger ${mobileOpen ? 'is-open' : ''}`} 
-            onClick={() => setMobileOpen(!mobileOpen)} 
-            aria-label="Toggle menu"
-          >
-            <span /><span /><span />
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Drawer */}
-      {mobileOpen && (
-        <div className="navbar__drawer" onClick={() => setMobileOpen(false)}>
-          <nav className="navbar__drawer-inner" onClick={(e) => e.stopPropagation()}>
-            <NavLink to="/marketplace" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Marketplace</NavLink>
-            <NavLink to="/how-it-works" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>How It Works</NavLink>
-            <NavLink to="/stories" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Investor Stories</NavLink>
-            <NavLink to="/insights" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Insights</NavLink>
-            <NavLink to="/help" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Help Center</NavLink>
-            <NavLink to="/about" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>About</NavLink>
-            
-            <div className="navbar__drawer-divider" />
-            <div className="navbar__drawer-cur"><CurrencySwitcher /></div>
-
-            {user ? (
-              <div className="navbar__drawer-user">
-                <div className="navbar__drawer-user-info">
-                  <span className="navbar__avatar">{user.firstName?.[0] || user.name?.[0] || 'U'}</span>
-                  <div>
-                    <div className="navbar__drawer-user-name">{user.name || `${user.firstName || ''} ${user.lastName || ''}`}</div>
-                    <div className="navbar__drawer-user-email">{user.email}</div>
-                  </div>
-                </div>
-                <NavLink to={dashboardPath} className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>
-                  Go to Dashboard
-                </NavLink>
-                <NavLink to="/profile" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>
-                  My Profile
-                </NavLink>
-                <Button onClick={logout} variant="secondary" size="lg" className="navbar__drawer-cta">
-                  Sign out
-                </Button>
-              </div>
-            ) : (
-              <>
-                <NavLink to="/login" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>Log in</NavLink>
-                <Button as={Link} to="/register" variant="primary" size="lg" className="navbar__drawer-cta" onClick={() => setMobileOpen(false)}>
-                  Apply Now
-                </Button>
-              </>
-            )}
-          </nav>
-        </div>
-      )}
-            </header>
-  );
-}
-
-function Dropdown({ label, open, onOpen, items }) {
-  return (
-    <div className={`navbar__dropdown ${open ? 'is-open' : ''}`}>
-      <button className="navbar__link navbar__link--caret" onClick={onOpen} aria-expanded={open}>
-        {label}
-      </button>
-      {open && (
-        <div className="navbar__menu">
-          {items.map((item) => (
-            <NavLink key={item.to} to={item.to} className="navbar__menu-item">
-              <div className="navbar__menu-label">{item.label}</div>
-              <div className="navbar__menu-desc">{item.desc}</div>
+        <nav className="navbar__links">
+          {LINKS.map((l) => (
+            <NavLink
+              key={l.to}
+              to={l.to}
+              style={({ isActive }) => ({
+                color: isActive ? '#fff' : 'rgba(255,255,255,0.6)',
+                fontWeight: isActive ? '600' : '500',
+              })}
+            >
+              {l.label}
             </NavLink>
           ))}
+        </nav>
+
+        <div className="navbar__actions">
+          {user ? (
+            <>
+              <Link to="/wallet/deposit" className="btn btn--primary btn--sm" style={{ borderRadius: '20px' }}>Deposit</Link>
+              <button onClick={() => nav('/wallet')} style={{ background: 'none', border: 'none', color: '#fff', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: '600', fontFamily: 'inherit' }}>
+                <Wallet size={18} /> Assets
+              </button>
+              <button onClick={() => setSidebarOpen(true)} style={{ background: '#F6A500', border: 'none', color: '#fff', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontWeight: 'bold', fontFamily: 'inherit' }}>
+                {user.firstName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="btn btn--ghost btn--sm" style={{ color: 'rgba(255,255,255,0.7)' }}>Log In</Link>
+              <Link to="/register" className="btn btn--primary btn--sm">Sign Up</Link>
+            </>
+          )}
         </div>
-      )}
-    </div>
-  );
-}
+      </div>
+    </header>
 
-function UserProfileMenu({ user, dashboardPath, open, onOpen, onLogout }) {
-  const initial = user.firstName?.[0] || user.name?.[0] || 'U';
+      {/* PROFILE SIDEBAR */}
+      {sidebarOpen && user && (
+        <>
+          <div className="profile-sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+          <div className="profile-sidebar">
+            <div className="profile-header">
+              <div className="profile-avatar">
+                {user.firstName?.charAt(0).toUpperCase() ||
+                  user.email?.charAt(0).toUpperCase() ||
+                  'U'}
+              </div>
+              <div style={{ overflow: 'hidden' }}>
+                <div
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: '600',
+                    color: '#fff',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {user.email || 'user@bravevest.com'}
+                </div>
+                <div style={{ fontSize: '12px', color: '#F6A500' }}>
+                  {user.roles?.includes('ADMIN') ? 'Admin Account' : 'Main Account'}
+                  <span style={{ color: '#888', marginLeft: '8px' }}>
+                    UID: {user.id?.substring(0, 8) || '59197723'}
+                  </span>
+                </div>
+              </div>
+            </div>
 
-  return (
-    <div className={`navbar__dropdown navbar__profile-dropdown ${open ? 'is-open' : ''}`}>
-      <button className="navbar__profile-btn" onClick={onOpen} aria-expanded={open}>
-        <span className="navbar__avatar">{initial}</span>
-        <span className="navbar__profile-name">{user.firstName || user.name || 'Account'}</span>
-      </button>
+            <div className="profile-actions">
+              <button
+                onClick={() => {
+                  setSidebarOpen(false);
+                  nav('/wallet/deposit');
+                }}
+              >
+                Deposit
+              </button>
+              <button
+                onClick={() => {
+                  setSidebarOpen(false);
+                  nav('/wallet/withdraw');
+                }}
+              >
+                Withdraw
+              </button>
+            </div>
 
-      {open && (
-        <div className="navbar__menu navbar__menu--right">
-          <div className="navbar__profile-header">
-            <div className="navbar__profile-title">{user.name || `${user.firstName || ''} ${user.lastName || ''}`}</div>
-            <div className="navbar__profile-sub">{user.email}</div>
+            <div className="profile-nav">
+              <div
+                className="profile-nav__item"
+                onClick={() => {
+                  setSidebarOpen(false);
+                  nav('/dashboard');
+                }}
+              >
+                Overview
+              </div>
+              <div className="profile-nav__item">Account</div>
+              <div className="profile-nav__item">My Events</div>
+              <div className="profile-nav__item">Referral Program</div>
+              <div className="profile-nav__item">Preference Settings</div>
+              <div className="profile-nav__item">API</div>
+            </div>
+
+            <div className="profile-footer">
+              <button
+                className="logout-btn"
+                onClick={handleLogout}
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <LogOut size={16} /> Logout
+              </button>
+            </div>
           </div>
-          <div className="navbar__drawer-divider" />
-          <NavLink to={dashboardPath} className="navbar__menu-item">
-            <div className="navbar__menu-label">Dashboard</div>
-            <div className="navbar__menu-desc">View investments & payouts</div>
-          </NavLink>
-          <NavLink to="/profile" className="navbar__menu-item">
-            <div className="navbar__menu-label">My Profile</div>
-            <div className="navbar__menu-desc">KYC, security & settings</div>
-          </NavLink>
-          <div className="navbar__drawer-divider" />
-          <button onClick={onLogout} className="navbar__menu-item navbar__menu-item--danger">
-            <div className="navbar__menu-label">Sign out</div>
-          </button>
-        </div>
+        </>
       )}
-    </div>
+    </>
   );
 }

@@ -1,0 +1,518 @@
+/* ═══════════════════════════════════════════════════════════════════
+   BraveVest — Global Responsive Layer
+   Covers: Home, Marketplace, About, FAQ, HowItWorks, Login, Register,
+           Dashboard, Wallet, Portfolio, Profile, Commitments,
+           Settings, ContactInbox, NotFound, Deposit, Withdraw
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   1. GLOBAL SAFETY NETS
+   ═══════════════════════════════════════════════════════════════════ */
+
+html, body {
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+*, *::before, *::after {
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Tables always scroll horizontally on small screens instead of breaking layout */
+table {
+  max-width: 100%;
+}
+
+/* Container fits viewport on mobile */
+.container {
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+
+/* ── Base grid collapse ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+@media (max-width: 1024px) {
+  .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   2. NAVBAR
+   ═══════════════════════════════════════════════════════════════════ */
+
+.navbar__links {
+  display: flex;
+  gap: 24px;
+}
+
+@media (max-width: 1024px) {
+  .navbar__links { display: none; }
+  .navbar__inner { gap: 16px; }
+}
+
+@media (max-width: 640px) {
+  .navbar__actions .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  .navbar__logo img { height: 26px !important; }
+}
+
+/* Profile sidebar — full width on mobile */
+.profile-sidebar {
+  width: 320px;
+}
+
+@media (max-width: 480px) {
+  .profile-sidebar { width: 100%; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   3. HOME PAGE
+   ═══════════════════════════════════════════════════════════════════ */
+
+.home-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .home-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  .home-hero-grid > div:first-child > div:first-child {
+    justify-content: center;
+  }
+}
+
+/* H1 scale down */
+@media (max-width: 768px) {
+  h1[style*="fontSize: '64px'"],
+  h1[style*="font-size: 64px"] {
+    font-size: 40px !important;
+  }
+}
+@media (max-width: 480px) {
+  h1[style*="fontSize: '64px'"],
+  h1[style*="font-size: 64px"] {
+    font-size: 32px !important;
+  }
+}
+
+/* Hide floating widget cluster on tablet/mobile */
+@media (max-width: 1024px) {
+  .home-widget-cluster { display: none !important; }
+}
+
+/* Stats strip — wrap into 2 columns on tablet, 1 on mobile */
+@media (max-width: 900px) {
+  .stats-strip {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px !important;
+    padding: 32px 16px !important;
+  }
+  .stats-strip > div { text-align: center; }
+}
+@media (max-width: 480px) {
+  .stats-strip {
+    grid-template-columns: 1fr;
+  }
+  .stats-strip > div > div:first-child {
+    font-size: 32px !important;
+  }
+}
+
+/* Bento grid collapse */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+@media (max-width: 1024px) {
+  .bento-grid { grid-template-columns: repeat(2, 1fr); }
+  .bento-grid > [style*="span 2"] { grid-column: span 2 !important; }
+}
+@media (max-width: 640px) {
+  .bento-grid { grid-template-columns: 1fr; }
+  .bento-grid > [style*="span 2"] { grid-column: auto !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4. MARKETPLACE
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Market row — collapse the wide flex layout into cards on mobile */
+@media (max-width: 768px) {
+  .market-row {
+    display: grid !important;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "star icon title"
+      "star icon meta"
+      "tags tags tags"
+      "yield yield yield";
+    gap: 12px !important;
+    padding: 20px 16px !important;
+    align-items: start !important;
+  }
+  .market-row > *:nth-child(1) { grid-area: star; align-self: start; padding-top: 4px; }
+  .market-row > *:nth-child(2) { grid-area: icon; }
+  .market-row > *:nth-child(3) { grid-area: title; }
+  .market-row > *:nth-child(4) { grid-area: tags; }
+  .market-row > *:nth-child(5) { grid-area: yield; text-align: left !important; }
+
+  /* Hide table header on mobile (rows become cards) */
+  .market-table-header { display: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5. AUTH (Login / Register)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.auth-split {
+  display: flex;
+  min-height: 100vh;
+}
+
+.auth-split > .auth-promo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 64px;
+}
+
+.auth-split > .auth-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+@media (max-width: 900px) {
+  .auth-split { flex-direction: column; }
+  .auth-split > .auth-promo {
+    padding: 32px 24px;
+    min-height: auto;
+  }
+  .auth-split > .auth-promo .auth-promo-card {
+    display: none;
+  }
+  .auth-split > .auth-promo .auth-promo-stats {
+    gap: 24px !important;
+    margin-top: 24px;
+  }
+  .auth-split > .auth-form { padding: 32px 16px; }
+}
+
+@media (max-width: 480px) {
+  .auth-split > .auth-promo h1 { font-size: 22px !important; }
+  .auth-split > .auth-promo p { font-size: 13px !important; }
+  .auth-split > .auth-form { padding: 24px 16px; }
+}
+
+/* Form cards scale down */
+@media (max-width: 480px) {
+  .auth-split form,
+  .auth-split [style*="maxWidth: '400px'"],
+  .auth-split [style*="maxWidth: '420px'"] {
+    max-width: 100% !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   6. TABLES (Wallet, Portfolio, Commitments, ContactInbox, Marketplace)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Wrap tables in a horizontal scroll container on mobile */
+@media (max-width: 768px) {
+  table {
+    font-size: 13px;
+  }
+  table th,
+  table td {
+    padding: 10px 12px !important;
+    white-space: nowrap;
+  }
+}
+
+/* If tables live inside a card with `overflow: hidden`, swap to scroll */
+@media (max-width: 768px) {
+  .table-scroll-wrapper,
+  [style*="borderRadius: '12px'"][style*="overflow: 'hidden'"] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   7. DASHBOARD / WALLET / PORTFOLIO
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Page header flex — stack on mobile */
+@media (max-width: 640px) {
+  [style*="justifyContent: 'space-between'"][style*="alignItems: 'flex-end'"] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
+
+/* 2-column layouts (Wallet form + FAQ, Withdraw form + sidebar) */
+@media (max-width: 900px) {
+  [style*="gridTemplateColumns: '2fr 1fr'"],
+  [style*="gridTemplateColumns: '1.5fr 1fr'"],
+  [style*="gridTemplateColumns: '400px 1fr'"],
+  [style*="gridTemplateColumns: '240px 1fr'"],
+  [style*="gridTemplateColumns: '1fr 1fr'"] {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+}
+
+/* Withdraw — the form rows with side label */
+@media (max-width: 640px) {
+  .form-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px;
+  }
+  .form-row label {
+    width: auto !important;
+    padding-top: 0 !important;
+  }
+  .form-row > div { margin-left: 0 !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   8. PROFILE
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .profile-field-grid,
+  [style*="gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))'"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Security rows and editable fields */
+@media (max-width: 640px) {
+  [style*="display: 'flex'"][style*="gap: '16px'"][style*="padding: '16px 0'"] {
+    flex-wrap: wrap;
+    gap: 12px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   9. FAQ
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Sidebar + content layout */
+@media (max-width: 768px) {
+  .faq-layout,
+  [style*="gridTemplateColumns: '240px 1fr'"] {
+    grid-template-columns: 1fr !important;
+  }
+  .faq-layout aside,
+  [style*="position: 'sticky'"][style*="top: '96px'"] {
+    position: static !important;
+  }
+}
+
+/* FAQ search header */
+@media (max-width: 640px) {
+  h1[style*="fontSize: '48px'"] { font-size: 32px !important; }
+  h1[style*="fontSize: '68px'"] { font-size: 40px !important; }
+  p[style*="fontSize: '17px'"] { font-size: 15px !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   10. ABOUT PAGE
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  .about-hero__title { font-size: 46px !important; }
+  .about-hero__sub { font-size: 16px !important; }
+  .about-h2--lg { font-size: 32px !important; }
+  .about-promise__title { font-size: 28px !important; }
+  .about-pilot__title { font-size: 34px !important; }
+  .about-pilot__card { padding: 40px 28px !important; }
+  .about-cta__title { font-size: 34px !important; }
+}
+
+@media (max-width: 640px) {
+  .about-hero { padding: 64px 0 48px !important; }
+  .about-hero__title { font-size: 32px !important; }
+  .about-hero__meta { flex-wrap: wrap; gap: 8px !important; }
+  .about-entities,
+  .about-journey,
+  .about-compliance,
+  .about-pilot__grid {
+    grid-template-columns: 1fr !important;
+  }
+  .about-pilot__fact--wide { grid-column: auto !important; }
+  .about-roadmap__row { grid-template-columns: 1fr !important; gap: 8px !important; }
+  .about-roadmap__q { font-size: 22px !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   11. HOW IT WORKS
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  /* Steps grid collapse */
+  [style*="gridTemplateColumns: 'repeat(4, 1fr)'"],
+  .how-steps-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* Deep dive split */
+  [style*="gridTemplateColumns: '1fr 1fr'"][style*="gap: '48px'"] {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  [style*="gridTemplateColumns: 'repeat(4, 1fr)'"],
+  .how-steps-grid {
+    grid-template-columns: 1fr !important;
+  }
+  h1[style*="fontSize: '48px'"] { font-size: 32px !important; }
+  h2[style*="fontSize: '32px'"] { font-size: 24px !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   12. DEPOSIT / WITHDRAW
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  /* Buy/sell split */
+  [style*="gridTemplateColumns: '1.5fr 1fr'"] {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .wallet-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .wallet-tab {
+    white-space: nowrap;
+    font-size: 14px;
+    padding: 12px 0;
+  }
+  /* Hide the "Orders / User Center" right side on mobile */
+  .wallet-tabs > div:last-child {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   13. CONTACT INBOX (Admin)
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  [style*="gridTemplateColumns: '400px 1fr'"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* Stack message list above detail */
+  [style*="maxHeight: 'calc(100vh - 200px)'"] {
+    max-height: 400px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   14. FOOTER
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  .footer__grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
+}
+@media (max-width: 640px) {
+  .footer__grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .footer__base { flex-direction: column; gap: 8px; text-align: center; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   15. NOT FOUND
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  [style*="fontSize: 'clamp(120px'"] { font-size: 96px !important; }
+  [style*="fontSize: '32px'"][style*="fontWeight: '700'"] { font-size: 24px !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   16. FLOATING HELP BUTTONS (Home)
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  [style*="position: 'fixed'"][style*="bottom: '24px'"][style*="right: '24px'"] {
+    bottom: 16px !important;
+    right: 16px !important;
+  }
+  [style*="position: 'fixed'"][style*="bottom: '24px'"][style*="right: '24px'"] button {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   17. TYPOGRAPHY SCALE DOWN ON MOBILE
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  h1 { font-size: clamp(24px, 8vw, 36px) !important; }
+  h2 { font-size: clamp(20px, 6vw, 28px) !important; }
+  .data-value { font-size: clamp(20px, 5vw, 28px) !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   18. TOUCH TARGETS — minimum 44x44 for accessibility
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  button,
+  a.btn,
+  .btn {
+    min-height: 40px;
+  }
+  input, select, textarea {
+    font-size: 16px !important; /* prevents iOS zoom on focus */
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   19. SAFE AREAS (iOS notch)
+   ═══════════════════════════════════════════════════════════════════ */
+
+@supports (padding: env(safe-area-inset-left)) {
+  .navbar__inner {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  .profile-sidebar {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

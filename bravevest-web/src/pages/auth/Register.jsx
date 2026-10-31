@@ -1,196 +1,177 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Input from '@/components/shared/Input';
-import Button from '@/components/shared/Button';
+import { Globe, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { COUNTRIES, findByIso, DEFAULT_COUNTRY, DEFAULT_COUNTRY_OBJ } from '@/constants/countries';
-import './Auth.css';
-
-const INITIAL = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  countryIso: DEFAULT_COUNTRY,
-  password: '',
-  role: 'INVESTOR',
-  acceptedTerms: false,
-};
-
-function normalizeNational(raw) {
-  return raw.replace(/\D/g, '');
-}
-
-function toE164(nationalDigits, dialCode) {
-  const clean = nationalDigits.replace(/^0+/, '');
-  return `+${dialCode}${clean}`;
-}
 
 export default function Register() {
+  const nav = useNavigate();
   const { register } = useAuth();
-  const navigate = useNavigate();
-  const [form, setForm] = useState(INITIAL);
+  
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState({ email: '', password: '', firstName: '', lastName: '' });
+  const [err, setErr] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [fieldErrors, setFieldErrors] = useState({});
 
-  const country = useMemo(() => findByIso(form.countryIso) || DEFAULT_COUNTRY_OBJ(), [form.countryIso]);
-
-  const update = (k) => (e) => {
-    const v = k === 'acceptedTerms' ? e.target.checked : e.target.value;
-    setForm((f) => ({ ...f, [k]: v }));
-    if (fieldErrors[k]) setFieldErrors((fe) => ({ ...fe, [k]: undefined }));
-  };
-
-  function validate() {
-    const fe = {};
-    if (!form.firstName.trim() || form.firstName.trim().length < 2) fe.firstName = 'Enter your first name';
-    if (!form.lastName.trim() || form.lastName.trim().length < 2) fe.lastName = 'Enter your last name';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) fe.email = 'Enter a valid email';
-
-    const digits = normalizeNational(form.phone);
-    if (digits) {
-      const nationalDigits = digits.replace(/^0+/, '');
-      if (nationalDigits.length < country.minNational || nationalDigits.length > country.maxNational) {
-        fe.phone = `Enter a valid ${country.name} number (${country.minNational}–${country.maxNational} digits)`;
-      }
-    }
-
-    if (form.password.length < 8) fe.password = 'At least 8 characters';
-    else if (!/[A-Z]/.test(form.password)) fe.password = 'Include an uppercase letter';
-    else if (!/[a-z]/.test(form.password)) fe.password = 'Include a lowercase letter';
-    else if (!/\d/.test(form.password)) fe.password = 'Include a number';
-
-    if (!form.acceptedTerms) fe.acceptedTerms = 'You must accept the terms to continue';
-
-    setFieldErrors(fe);
-    return Object.keys(fe).length === 0;
+  // Step 1 -> Step 2
+  function handleInitialSubmit(e) {
+    e.preventDefault();
+    setErr('');
+    if (!form.email || !form.password) return setErr('Email and password are required.');
+    if (form.password.length < 8) return setErr('Password must be at least 8 characters.');
+    setStep(2);
   }
 
-  async function submit(e) {
+  // Step 2 -> API Call -> Step 3
+  async function handleProfileSubmit(e) {
     e.preventDefault();
-    setError('');
-    if (!validate()) return;
-
+    setErr('');
+    if (!form.firstName || !form.lastName) return setErr('Please enter your full name.');
+    
     setLoading(true);
     try {
-      const digits = normalizeNational(form.phone);
-      const phoneE164 = digits ? toE164(digits, country.dial) : undefined;
-
-      await register({
-        firstName: form.firstName.trim(),
-        lastName: form.lastName.trim(),
-        email: form.email.trim().toLowerCase(),
-        phone: phoneE164,
-        countryIso: country.iso,
-        password: form.password,
-        role: form.role,
-      });
-      navigate('/kyc');
-    } catch (err) {
-      const data = err?.response?.data;
-      if (data?.details && typeof data.details === 'object') {
-        const fe = {};
-        for (const [k, v] of Object.entries(data.details)) {
-          fe[k] = Array.isArray(v) ? v[0] : String(v);
-        }
-        setFieldErrors(fe);
-        setError(data.message || 'Please check the highlighted fields');
-      } else if (data?.code === 'EMAIL_EXISTS') {
-        setFieldErrors({ email: 'An account with this email already exists' });
-        setError('An account with this email already exists');
-      } else {
-        setError(data?.message || err.message || 'Something went wrong. Try again.');
-      }
+      await register(form);
+      setStep(3); // Show "Verify Later" success screen
+    } catch (e) {
+      setErr(e?.response?.data?.message || 'Registration failed.');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="auth">
-      <div className="auth__mesh" aria-hidden />
-      <div className="auth__card auth__card--wide">
-        <Link to="/" className="auth__brand" aria-label="BraveVest home">
-          <span className="auth__mark" aria-hidden /> BraveVest
-        </Link>
-        <h1 className="auth__title">Create your account.</h1>
-        <p className="auth__sub">Start in under 5 minutes.</p>
-
-        <form onSubmit={submit} noValidate>
-          <fieldset className="auth__roles">
-            <legend className="auth__roles-label">I want to</legend>
-            <div className="auth__roles-row">
-              {[
-                { value: 'INVESTOR', label: 'Invest', hint: 'Fund vetted opportunities' },
-                { value: 'BORROWER', label: 'Request funding', hint: 'Raise capital from investors' },
-              ].map((r) => (
-                <label key={r.value} className={`auth__role ${form.role === r.value ? 'auth__role--active' : ''}`}>
-                  <input type="radio" name="role" value={r.value} checked={form.role === r.value} onChange={update('role')} />
-                  <span className="auth__role-title">{r.label}</span>
-                  <span className="auth__role-hint">{r.hint}</span>
-                </label>
-              ))}
-            </div>
-            <p className="auth__roles-note">You can do both — this just sets up your starting dashboard.</p>
-          </fieldset>
-
-          <div className="auth__row">
-            <Input label="First name" value={form.firstName} onChange={update('firstName')} autoComplete="given-name" error={fieldErrors.firstName} required />
-            <Input label="Last name" value={form.lastName} onChange={update('lastName')} autoComplete="family-name" error={fieldErrors.lastName} required />
-          </div>
-
-          <Input label="Email" type="email" value={form.email} onChange={update('email')} autoComplete="email" inputMode="email" error={fieldErrors.email} required />
-
-          <div className="auth__phone">
-            <label className="auth__country">
-              <span className="auth__country-label">Country</span>
-              <select value={form.countryIso} onChange={update('countryIso')} aria-label="Country" className="auth__country-select">
-                {COUNTRIES.map((c) => (
-                  <option key={c.iso} value={c.iso}>{c.name} (+{c.dial})</option>
-                ))}
-              </select>
-            </label>
-            <div className="auth__phone-input">
-              <Input
-                label="Phone (optional)"
-                type="tel"
-                value={form.phone}
-                onChange={update('phone')}
-                autoComplete="tel-national"
-                inputMode="tel"
-                hint={`${country.example} — ${country.minNational}–${country.maxNational} digits`}
-                error={fieldErrors.phone}
-                prefix={`+${country.dial}`}
-              />
-            </div>
-          </div>
-
-          <Input label="Password" type="password" value={form.password} onChange={update('password')} autoComplete="new-password" hint="Min 8 chars, with uppercase, lowercase, and a number" error={fieldErrors.password} required />
-
-          <label className="auth__terms">
-            <input type="checkbox" checked={form.acceptedTerms} onChange={update('acceptedTerms')} />
-            <span>
-              I agree to the <Link to="/terms" target="_blank" rel="noreferrer">Terms</Link>{' '}
-              and <Link to="/privacy" target="_blank" rel="noreferrer">Privacy Policy</Link>
-            </span>
-          </label>
-          {fieldErrors.acceptedTerms && <div className="auth__field-error" role="alert">{fieldErrors.acceptedTerms}</div>}
-
-          {error && <div className="auth__error" role="alert">{error}</div>}
-
-          <Button type="submit" variant="primary" size="lg" disabled={loading}>
-            {loading ? 'Creating…' : 'Create account'}
-          </Button>
-
-          <p className="auth__legal">
-            BraveVest does not provide investment advice. All investments carry risk, including the risk of capital loss.
-            Read our <Link to="/risk-disclosure" target="_blank" rel="noreferrer">Risk Disclosure</Link>.
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#F7F7F7', fontFamily: 'var(--font-sans)' }}>
+      
+      {/* ── Left Promo (Same as Login) ── */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '48px 64px', background: 'linear-gradient(135deg, #F0F0F0 0%, #E8E8E8 100%)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'relative', zIndex: 10 }}>
+          <h1 style={{ fontSize: '32px', fontWeight: '600', color: '#111', lineHeight: 1.3 }}>
+            Start investing<br />in Africa's future.
+          </h1>
+          <p style={{ fontSize: '15px', color: '#666', marginTop: '12px', maxWidth: '340px', lineHeight: 1.6 }}>
+            Join 52,000+ investors earning fixed returns from 12% to 18%.
           </p>
-        </form>
+        </div>
 
-        <div className="auth__foot">
-          <span>Already have an account? <Link to="/login">Sign in</Link></span>
+        {/* Abstract Card Stack */}
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', height: '60%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1 }}>
+          <div style={{ position: 'absolute', width: '280px', height: '180px', background: '#E0E0E0', borderRadius: '12px', transform: 'rotate(-15deg) translateY(-60px) translateX(-20px)', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', border: '1px solid #D0D0D0' }} />
+          <div style={{ position: 'absolute', width: '280px', height: '180px', background: '#F5F5F5', borderRadius: '12px', transform: 'rotate(-5deg) translateY(-20px) translateX(10px)', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', border: '1px solid #D0D0D0' }} />
+          <div style={{ position: 'absolute', width: '280px', height: '180px', background: 'linear-gradient(135deg, #F6A500 0%, #E09000 100%)', borderRadius: '12px', transform: 'rotate(5deg) translateY(20px) translateX(-10px)', boxShadow: '0 15px 30px rgba(246, 165, 0, 0.3)' }}>
+            <div style={{ width: '40px', height: '40px', background: '#fff', borderRadius: '50%', margin: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontWeight: 'bold', color: '#F6A500', fontSize: '18px' }}>B</span>
+            </div>
+            <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: '#fff', fontSize: '11px', letterSpacing: '2px', fontWeight: '600', opacity: 0.85 }}>
+              BRAVEVEST
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '48px', position: 'relative', zIndex: 10 }}>
+          <div><div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>₦184B+</div><div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>Assets Under Management</div></div>
+          <div><div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>14.2%</div><div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>Average Yield</div></div>
+        </div>
+      </div>
+
+      {/* ── Right Auth Flow ── */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#F7F7F7', padding: '40px 24px' }}>
+        <div style={{ width: '100%', maxWidth: '420px' }}>
+          
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+            <Link to="/" style={{ display: 'inline-block', textDecoration: 'none' }}>
+              <img
+                src="/icons/logo-dark.png"
+                alt="BraveVest"
+                style={{ height: '36px', width: 'auto', display: 'block', objectFit: 'contain'  }}
+              />
+            </Link>
+            <button type="button" style={{ background: 'none', border: 'none', color: '#111', cursor: 'pointer', padding: '8px' }}><Globe size={20} /></button>
+          </div>
+
+          <div style={{ background: '#fff', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid #EAEAEA' }}>
+            
+            {/* Header */}
+            <div style={{ marginBottom: '24px' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: '0 0 4px', color: '#111' }}>
+                {step === 1 && 'Create your account'}
+                {step === 2 && 'Tell us about yourself'}
+                {step === 3 && 'Account created'}
+              </h2>
+              <p style={{ fontSize: '13px', color: '#666', margin: 0 }}>
+                {step === 1 && 'Start investing in minutes'}
+                {step === 2 && 'This helps us personalize your experience'}
+                {step === 3 && 'Verify your identity when you are ready.'}
+              </p>
+            </div>
+
+            {/* Step 1: Email & Password */}
+            {step === 1 && (
+              <form onSubmit={handleInitialSubmit}>
+                <div style={{ marginBottom: '16px' }}>
+                  <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="Email address" style={{ width: '100%', padding: '14px 16px', background: '#F5F5F5', border: '1px solid transparent', borderRadius: '8px', fontSize: '15px', color: '#111', outline: 'none', fontFamily: 'inherit' }} />
+                </div>
+                <div style={{ marginBottom: '16px' }}>
+                  <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Create a password (min 8 chars)" style={{ width: '100%', padding: '14px 16px', background: '#F5F5F5', border: '1px solid transparent', borderRadius: '8px', fontSize: '15px', color: '#111', outline: 'none', fontFamily: 'inherit' }} />
+                </div>
+                {err && <div style={{ padding: '10px', background: 'rgba(246,70,93,0.1)', color: '#F6465D', fontSize: '13px', borderRadius: '6px', marginBottom: '16px' }}>{err}</div>}
+                <button type="submit" style={{ width: '100%', padding: '14px', background: '#F6A500', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', cursor: 'pointer', fontFamily: 'inherit' }}>Continue</button>
+              </form>
+            )}
+
+            {/* Step 2: Name */}
+            {step === 2 && (
+              <form onSubmit={handleProfileSubmit}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+                  <input value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} placeholder="First name" style={{ width: '100%', padding: '14px 16px', background: '#F5F5F5', border: '1px solid transparent', borderRadius: '8px', fontSize: '15px', color: '#111', outline: 'none', fontFamily: 'inherit' }} />
+                  <input value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} placeholder="Last name" style={{ width: '100%', padding: '14px 16px', background: '#F5F5F5', border: '1px solid transparent', borderRadius: '8px', fontSize: '15px', color: '#111', outline: 'none', fontFamily: 'inherit' }} />
+                </div>
+                {err && <div style={{ padding: '10px', background: 'rgba(246,70,93,0.1)', color: '#F6465D', fontSize: '13px', borderRadius: '6px', marginBottom: '16px' }}>{err}</div>}
+                <button type="submit" disabled={loading} style={{ width: '100%', padding: '14px', background: '#F6A500', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1, fontFamily: 'inherit' }}>
+                  {loading ? 'Creating account…' : 'Create Account'}
+                </button>
+                <button type="button" onClick={() => setStep(1)} style={{ width: '100%', padding: '10px', background: 'none', border: 'none', color: '#666', fontSize: '13px', cursor: 'pointer', marginTop: '12px', fontFamily: 'inherit' }}>Back</button>
+              </form>
+            )}
+
+            {/* Step 3: Verify Later (Bybit Flow) */}
+            {step === 3 && (
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ width: '64px', height: '64px', background: 'rgba(14,203,129,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                  <CheckCircle2 size={32} color="#0ECB81" />
+                </div>
+                <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '12px', color: '#111' }}>You're in!</h3>
+                <p style={{ fontSize: '14px', color: '#666', marginBottom: '24px', lineHeight: 1.6 }}>
+                  Your account is ready. To unlock full investing limits and withdrawals, you'll need to verify your identity.
+                </p>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <Link to="/dashboard" style={{ width: '100%', padding: '14px', background: '#F6A500', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '600', textDecoration: 'none', textAlign: 'center' }}>
+                    Verify Identity Now
+                  </Link>
+                  <Link to="/dashboard" style={{ width: '100%', padding: '14px', background: '#F5F5F5', color: '#111', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '600', textDecoration: 'none', textAlign: 'center' }}>
+                    Skip for now
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {/* Footer (Only show on Step 1 and 2) */}
+            {step !== 3 && (
+              <div style={{ textAlign: 'center', borderTop: '1px solid #EAEAEA', paddingTop: '24px', marginTop: '24px' }}>
+                <p style={{ fontSize: '13px', color: '#666', margin: 0 }}>
+                  Already have an account? <Link to="/login" style={{ color: '#F6A500', fontWeight: '600', textDecoration: 'none' }}>Sign in</Link>
+                </p>
+              </div>
+            )}
+
+          </div>
+          
+          {/* Legal Footer */}
+          {step !== 3 && (
+            <p style={{ textAlign: 'center', fontSize: '12px', color: '#888', marginTop: '24px', lineHeight: 1.6 }}>
+              By continuing, you agree to BraveVest's <a href="/terms" style={{ color: '#111', textDecoration: 'underline' }}>Terms</a> and <a href="/privacy" style={{ color: '#111', textDecoration: 'underline' }}>Privacy Policy</a>.
+            </p>
+          )}
+
         </div>
       </div>
     </div>

@@ -1,0 +1,582 @@
+/* ============================================================
+   BRAVEVEST INSTITUTIONAL DESIGN SYSTEM
+   Elite Private Banking / Wealth Management Aesthetic
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Palette — Deep Midnight Navy + Champagne Gold */
+  --navy-950: #060B18;
+  --navy-900: #0A1128;
+  --navy-800: #0B192C;
+  --navy-700: #142440;
+  --navy-600: #1E3151;
+  
+  --gold: #C5A059;
+  --gold-light: #D9BC7E;
+  --gold-dark: #A8843F;
+  
+  --ivory: #F8F5EF;
+  --ivory-muted: #D4CFC4;
+  --slate: #8B95A5;
+  --slate-dark: #5A6678;
+  
+  --teal: #3FB8C4; /* Data highlights only */
+  --danger: #C0363A;
+  --success: #4ADE80;
+  
+  --line: rgba(197, 160, 89, 0.15);
+  --line-strong: rgba(197, 160, 89, 0.3);
+  --glass: rgba(11, 25, 44, 0.65);
+  
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, sans-serif;
+  
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--ivory);
+  background: var(--navy-900);
+  overflow-x: hidden;
+  letter-spacing: 0.01em;
+}
+#root { min-height: 100vh; display: flex; flex-direction: column; }
+a { color: inherit; text-decoration: none; transition: opacity 0.2s; }
+a:hover { opacity: 0.8; }
+button, input, select, textarea { font-family: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  color: var(--ivory);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+h1 { font-size: clamp(48px, 6vw, 88px); }
+h2 { font-size: clamp(32px, 4vw, 56px); }
+h3 { font-size: clamp(24px, 2.5vw, 36px); }
+h4 { font-size: 22px; }
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 20px;
+}
+.lede {
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--slate);
+  line-height: 1.7;
+  max-width: 640px;
+}
+.data-value {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 3.5vw, 48px);
+  font-weight: 500;
+  color: var(--ivory);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.data-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+.data-mono {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--slate);
+  letter-spacing: 0.02em;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 5vw, 64px);
+}
+.container--narrow { max-width: 1000px; }
+section { padding: 120px 0; position: relative; }
+.section--tight { padding: 80px 0; }
+
+/* Asymmetric grid: 2/3 + 1/3 */
+.asymmetric-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.asymmetric-grid--reversed { grid-template-columns: 1fr 2fr; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+
+/* ============================================================
+   CARDS — Glassmorphism with 1px gold border
+   ============================================================ */
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 40px;
+  position: relative;
+  transition: border-color 0.3s var(--ease-out-expo), transform 0.3s var(--ease-out-expo);
+}
+.card:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-2px);
+}
+.card--filled {
+  background: var(--navy-800);
+  border: 1px solid var(--line);
+}
+.card--accent {
+  border-left: 2px solid var(--gold);
+}
+
+/* ============================================================
+   BUTTONS — Sharp, editorial, gold-accented
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 32px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out-expo);
+  border: 1px solid transparent;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn--primary {
+  background: var(--gold);
+  color: var(--navy-900);
+  border-color: var(--gold);
+}
+.btn--primary:hover {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+  opacity: 1;
+}
+.btn--outline {
+  background: transparent;
+  color: var(--ivory);
+  border-color: var(--line-strong);
+}
+.btn--outline:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  opacity: 1;
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--slate);
+  padding: 12px 20px;
+}
+.btn--ghost:hover {
+  color: var(--gold);
+}
+
+/* ============================================================
+   FORM INPUTS
+   ============================================================ */
+.form-field {
+  margin-bottom: 24px;
+}
+.form-label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin-bottom: 10px;
+}
+.form-input, input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="tel"], select, textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  color: var(--ivory);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 300;
+  transition: border-color 0.2s;
+}
+.form-input:focus, input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+/* ============================================================
+   TABLES — High-density financial data
+   ============================================================ */
+.fin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+}
+.fin-table thead {
+  border-bottom: 1px solid var(--line-strong);
+}
+.fin-table th {
+  text-align: left;
+  padding: 16px 20px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--slate);
+  border-bottom: 1px solid var(--line);
+}
+.fin-table td {
+  padding: 22px 20px;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ivory);
+  border-bottom: 1px solid var(--line);
+  transition: background 0.2s;
+}
+.fin-table tbody tr:hover td {
+  background: rgba(197, 160, 89, 0.04);
+}
+.fin-table td.num {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 500;
+  text-align: right;
+  letter-spacing: -0.01em;
+}
+.fin-table td.num.positive { color: var(--success); }
+.fin-table td.num.negative { color: var(--danger); }
+
+/* ============================================================
+   BADGES / PILLS
+   ============================================================ */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  color: var(--slate);
+}
+.pill--gold { color: var(--gold); border-color: var(--gold); }
+.pill--success { color: var(--success); border-color: rgba(74, 222, 128, 0.3); }
+.pill--danger { color: var(--danger); border-color: rgba(192, 54, 58, 0.3); }
+
+/* ============================================================
+   SECTION HEADERS
+   ============================================================ */
+.section-head {
+  margin-bottom: 64px;
+  max-width: 720px;
+}
+.section-head .eyebrow { margin-bottom: 16px; }
+.section-head h2 { margin-bottom: 20px; }
+.section-head p { font-size: 17px; font-weight: 300; color: var(--slate); line-height: 1.7; }
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 17, 40, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--line);
+  padding: 20px 0;
+}
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.navbar__logo img { height: 28px; width: auto; filter: brightness(0) invert(1); }
+.navbar__links { display: flex; gap: 40px; }
+.navbar__links a {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+.navbar__links a:hover, .navbar__links a.active { color: var(--gold); opacity: 1; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  background: var(--navy-950);
+  border-top: 1px solid var(--line);
+  padding: 80px 0 32px;
+  margin-top: auto;
+}
+.footer__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+.footer__brand img { height: 28px; filter: brightness(0) invert(1); margin-bottom: 20px; }
+.footer__tagline { font-size: 13px; font-weight: 300; color: var(--slate); line-height: 1.7; max-width: 320px; }
+.footer__h {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+.footer__links a {
+  display: block;
+  font-size: 13px;
+  color: var(--slate);
+  padding: 6px 0;
+  transition: color 0.2s;
+}
+.footer__links a:hover { color: var(--ivory); }
+.footer__base {
+  border-top: 1px solid var(--line);
+  padding-top: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--slate-dark);
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  padding: 160px 0 120px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+}
+.hero__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 80px;
+  align-items: center;
+}
+.hero h1 {
+  margin: 20px 0 32px;
+  font-weight: 400;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+.hero .lede { margin-bottom: 40px; }
+.hero__meta {
+  display: flex;
+  gap: 48px;
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid var(--line);
+}
+.hero__meta-item .data-label { margin-bottom: 8px; }
+.hero__meta-item .data-value { font-size: 32px; }
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+.text-gold { color: var(--gold); }
+.text-slate { color: var(--slate); }
+.text-center { text-align: center; }
+.divider { height: 1px; background: var(--line); margin: 60px 0; }
+.divider--vertical { width: 1px; height: auto; margin: 0 40px; }
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+}
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .hero__grid, .asymmetric-grid, .asymmetric-grid--reversed { grid-template-columns: 1fr; gap: 48px; }
+  .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .footer__grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .navbar__links { display: none; }
+}
+@media (max-width: 640px) {
+  section { padding: 64px 0; }
+  .hero { padding: 80px 0 60px; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .footer__grid { grid-template-columns: 1fr; }
+  .card { padding: 24px; }
+  .hero__meta { flex-direction: column; gap: 24px; }
+}
+
+
+/* Dashboard responsive sidebar */
+@media (max-width: 1024px) {
+  .mobile-top-bar { display: flex !important; }
+  aside[style*="position: sticky"] { display: none !important; }
+}
+
+
+/* ============================================================
+   MODERN UI UPGRADES
+   ============================================================ */
+
+/* --- 1. Magnetic Gradient Buttons --- */
+.btn {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+.btn--primary {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  border: none;
+  box-shadow: 0 8px 24px -8px rgba(197, 160, 89, 0.5);
+}
+.btn--primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: all 0.5s ease;
+  z-index: -1;
+}
+.btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -8px rgba(197, 160, 89, 0.7);
+}
+.btn--primary:hover::before {
+  left: 100%;
+}
+.btn--outline {
+  background: rgba(197, 160, 89, 0.05);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+}
+.btn--outline:hover {
+  background: rgba(197, 160, 89, 0.15);
+  box-shadow: 0 0 20px rgba(197, 160, 89, 0.2);
+}
+
+/* --- 2. Glassmorphism Cards --- */
+.card {
+  background: rgba(11, 25, 44, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(197, 160, 89, 0.15);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s var(--ease-out-expo);
+}
+.card:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: rgba(197, 160, 89, 0.4);
+  box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.5), 0 0 30px rgba(197, 160, 89, 0.1);
+}
+
+/* --- 3. Split Hero Layout --- */
+.hero-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  padding: 120px 0;
+}
+.hero-split__content {
+  max-width: 600px;
+}
+.hero-split__visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* The glow behind the image */
+.hero-split__visual::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(197, 160, 89, 0.2) 0%, transparent 60%);
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  z-index: 0;
+  filter: blur(40px);
+}
+.hero-split__visual img {
+  position: relative;
+  z-index: 1;
+  border-radius: 4px;
+  box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 1024px) {
+  .hero-split {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding: 80px 0;
+    text-align: center;
+  }
+  .hero-split__content {
+    margin: 0 auto;
+  }
+  .hero-split__visual img {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+}

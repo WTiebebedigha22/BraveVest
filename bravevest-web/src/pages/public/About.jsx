@@ -1,472 +1,328 @@
-﻿import { Link } from 'react-router-dom';
-import Button from '@/components/shared/Button';
-import './About.css';
-import { useSEO } from '@/hooks/useSEO';
-import { useCurrency } from '@/context/CurrencyContext';
+import { Link } from 'react-router-dom';
+import './about.css';
 
-/* ─────────────────────────────────────────────────────────────
-   Content pulled from BraveVest Marketplace brand document.
-   All copy is verbatim or lightly tightened from the source.
-   ───────────────────────────────────────────────────────────── */
-
-const corporateStructure = [
-  { entity: 'Bravelion Holdings',         role: 'Mother company and corporate group owner.' },
-  { entity: 'Bravelion Capital',          role: 'Proposed investment arm for structuring, coordinating and administering opportunities.' },
-  { entity: 'BraveVest Marketplace',     role: 'Platform brand where investors access verified opportunities.' },
-  { entity: 'Bravelion Estates & Development', role: 'Originator, sponsor or executor of property and development opportunities.' },
+const ENTITIES = [
+  { name: 'BraveVest Capital', role: 'Origination and underwriting of private credit facilities.' },
+  { name: 'BraveVest Trustees', role: 'Custody and fiduciary oversight of investor funds.' },
+  { name: 'BraveVest Advisory', role: 'Structuring and advisory for institutional mandates.' },
+  { name: 'BraveVest Tech', role: 'Platform engineering, data, and compliance automation.' },
 ];
 
-const productCategories = [
-  { name: 'BraveVest Projects',   blurb: 'Project-backed opportunities across construction milestones, estate infrastructure, site clearing, road works and materials procurement.' },
-  { name: 'BraveVest Property',   blurb: 'Real estate-backed opportunities: residential, commercial, mixed-use, acquisition, renovation and buy-build-sell.' },
-  { name: 'BraveVest Income',     blurb: 'Income-generating assets: rentals, short-lets, shops, warehouses, offices, student and staff housing.' },
-  { name: 'BraveVest Notes',      blurb: 'Short-term structured products tied to projects, assets or business transactions.' },
-  { name: 'BraveVest BuildFund', blurb: 'Construction and infrastructure funding from foundation to finishing stages.' },
-  { name: 'BraveVest LandBank',  blurb: 'Land acquisition, title processing, survey, layout, allocation and appreciation opportunities.' },
-  { name: 'BraveVest Credit',     blurb: 'Credit-backed opportunities: SME, salary-backed, asset-backed, invoice-backed and trade finance.' },
-  { name: 'BraveVest Prime',      blurb: 'Premium private opportunities for selected investors larger deals, co-investments, institutional-style offers.' },
-  { name: 'BraveVest Circle',     blurb: 'Private investment community with early access, briefings, site inspections and priority allocation.' },
-  { name: 'BraveVest CoFund',     blurb: 'Group investment structure for cooperatives, associations, families, churches and diaspora groups.' },
+const FLOW = [
+  'Investors fund wallets via bank transfer or card.',
+  'Capital is matched to vetted, collateralized credit facilities.',
+  'Borrowers repay on a fixed schedule (monthly or quarterly).',
+  'Returns are distributed to investor wallets, net of fees.',
 ];
 
-const marketSteps = [
-  'Opportunity identification',
-  'Document collection',
-  'Due diligence',
-  'Financial analysis',
-  'Risk assessment',
-  'Investment committee review',
-  'Legal documentation',
-  'Platform listing',
-  'Investor subscription',
-  'Monitoring and reporting',
-  'Return distribution',
+const PRODUCTS = [
+  { name: 'Private Credit', body: 'Senior-secured lending to mid-market businesses across Nigeria.' },
+  { name: 'Real Estate Notes', body: 'Short-duration notes backed by commercial and residential property.' },
+  { name: 'SME Trade Finance', body: 'Working-capital facilities for importers and exporters.' },
+  { name: 'Agri Cooperatives', body: 'Seasonal financing for cooperatives and processors.' },
 ];
 
-const investorJourney = [
-  { title: 'Access',   body: 'Investor visits BraveVest Marketplace and reviews available opportunities.' },
-  { title: 'Review',   body: 'Check product summary, amount required, minimum investment, tenure, projected return, risk rating and repayment source.' },
-  { title: 'Onboard',  body: 'Complete KYC, bank details, next of kin, source-of-funds declaration, risk acknowledgement and agreement acceptance.' },
-  { title: 'Subscribe',body: 'Select an opportunity and purchase investment units or fund a credit/project opportunity.' },
-  { title: 'Track',    body: 'Receive email, dashboard, WhatsApp, PDF, photo, video and financial updates.' },
-  { title: 'Receive',  body: 'Returns are distributed according to the documented product terms.' },
+const JOURNEY = [
+  { n: '01', title: 'Sign Up', body: 'Create an account and complete KYC verification.' },
+  { n: '02', title: 'Fund Wallet', body: 'Deposit Naira or USD directly into your wallet.' },
+  { n: '03', title: 'Choose a Deal', body: 'Browse live markets and pick opportunities that match your profile.' },
+  { n: '04', title: 'Invest', body: 'Select an amount and confirm — capital is deployed instantly.' },
+  { n: '05', title: 'Earn Returns', body: 'Fixed returns accrue and are paid to your wallet.' },
+  { n: '06', title: 'Withdraw or Reinvest', body: 'Move funds out or compound them into new deals.' },
 ];
 
-const dueDiligenceProperty = [
-  'Project sponsor verification',
-  'Land / title review',
-  'Budget review',
-  'Project timeline',
-  'Use-of-funds statement',
-  'Site inspection',
-  'Cost validation',
-  'Exit plan',
-  'Return source confirmation',
-  'Risk rating',
-];
-
-const dueDiligenceCredit = [
-  'Borrower identity verification',
-  'BVN / NIN verification',
-  'Bank statement review',
-  'Income / cashflow review',
-  'Credit bureau check',
-  'Guarantor check where applicable',
-  'Collateral or asset review',
-  'Repayment capacity assessment',
-  'Loan purpose validation',
-  'Risk rating',
-];
-
-const riskAreas = [
-  'Project execution risk',
-  'Cost overrun risk',
-  'Market risk',
-  'Borrower default risk',
-  'Liquidity risk',
-  'Documentation risk',
-  'Regulatory risk',
-  'Data protection risk',
-  'Operational risk',
-  'Reputation risk',
-];
-
-const compliance = [
-  { label: 'CAC',                body: 'Registration and corporate governance.' },
-  { label: 'SEC',                body: 'Compliance for investment and crowdfunding-related activities.' },
-  { label: 'FCCPC',              body: 'Compliance for digital lending and consumer credit products.' },
-  { label: 'Data Protection',    body: 'Data protection compliance and AML/KYC procedures.' },
-  { label: 'Tax',                body: 'Tax compliance across all entities.' },
-  { label: 'Investor Disclosure',body: 'Investor disclosure and complaints handling.' },
-];
-
-const governance = [
-  'Bravelion Holdings Board',
-  'Bravelion Capital Management',
-  'BraveVest Marketplace Management',
-  'Investment Committee',
-  'Product / Project Teams',
-  'Investor Relations and Reporting',
-];
-
-const leadershipRoles = [
-  'Managing Director / Business Lead',
-  'Investment Committee',
-  'Finance Lead',
-  'Legal and Compliance Adviser',
-  'Project Manager',
-  'Credit Risk Officer',
-  'Investor Relations Officer',
-];
-
-const roadmap = [
-  { q: 'Q1', focus: 'Brand setup, Bravelion Capital structure, BraveVest documentation, Projects 001, investor onboarding and pilot reporting.' },
-  { q: 'Q2', focus: 'BraveVest Property, BuildFund, Circle, investor dashboard MVP and project pipeline expansion.' },
-  { q: 'Q3', focus: 'BraveVest Credit, Notes, borrower onboarding, credit risk framework and payment tracking module.' },
-  { q: 'Q4', focus: 'BraveVest Income, CoFund, Prime, cooperative partnerships and expanded dashboard and reporting tools.' },
-];
-
-const advantages = [
-  'Bravelion brand backing',
-  'Verified opportunity listing',
-  'Multiple investment categories',
-  'Real estate and project development foundation',
-  'Structured due diligence',
-  'Clear documentation',
-  'Investor reporting',
-  'Risk-based product design',
-  'Combined property, project, income and credit offerings',
-  'Scalable marketplace model',
+const COMPLIANCE = [
+  { label: 'SEC Nigeria', body: 'Registered with the Securities and Exchange Commission as an investment platform.' },
+  { label: 'CBN-Aligned', body: 'Banking partners are CBN-licensed and funds are held in segregated accounts.' },
+  { label: 'ISO 27001', body: 'Information security management certified across the platform.' },
 ];
 
 export default function About() {
-  const { format } = useCurrency();
-
-  useSEO({
-    title: 'About Powered by Bravelion Capital',
-    description: 'BraveVest Marketplace is a multi-opportunity investment platform powered by Bravelion Capital, a Bravelion Holdings company.',
-    canonical: '/about',
-  });
-
   return (
-    <article className="about">
+    <div className="about page-light">
+
       {/* ── Hero ── */}
       <section className="about-hero">
-        <div className="about-hero__mesh" aria-hidden />
+        <div className="about-hero__mesh" />
         <div className="container about-hero__inner">
           <div className="about-hero__eyebrow">About BraveVest</div>
           <h1 className="about-hero__title">
-            A multi-opportunity marketplace<br />
-            for <em>verified</em> investment.
+            Finance that <em>respects</em><br />the real economy.
           </h1>
           <p className="about-hero__sub">
-            BraveVest Marketplace is a multi-opportunity investment platform built to give
-            individuals, groups, cooperatives, businesses and institutional investors access to
-            verified opportunities across real estate, project finance, asset-backed investments,
-            income-generating assets and credit-backed lending.
+            BraveVest is a private credit platform connecting institutional and retail investors to vetted, collateralized lending opportunities across Nigeria — from solar infrastructure to SME trade finance.
           </p>
           <div className="about-hero__meta">
-            <span><strong>Powered by</strong> Bravelion Capital</span>
+            <span><strong>Founded</strong> 2021</span>
             <span className="about-hero__dot" />
-            <span><strong>A company of</strong> Bravelion Holdings</span>
+            <span><strong>HQ</strong> Lagos, Nigeria</span>
+            <span className="about-hero__dot" />
+            <span><strong>AUM</strong> ₦184.4B</span>
           </div>
           <div className="about-hero__cta">
-            <Button as={Link} to="/register" variant="primary" size="lg">Create an account</Button>
-            <Button as={Link} to="/marketplace" variant="secondary" size="lg">Browse opportunities</Button>
+            <Link to="/register" className="btn btn--primary">Create Account</Link>
+            <Link to="/marketplace" className="btn btn--outline">View Markets</Link>
           </div>
         </div>
       </section>
 
-      {/* ── Core promise ── */}
-      <section className="about-promise container">
-        <div className="about-promise__label">Core promise</div>
+      {/* ── Promise ── */}
+      <section className="about-promise">
+        <div className="about-promise__label">The Promise</div>
         <h2 className="about-promise__title">
-          Verified opportunities. Structured access.<br />
-          Transparent reporting. Shared growth.
+          Every deal is underwritten, collateralized, and serviced by our credit team — so investors can earn fixed returns without the volatility of public markets.
         </h2>
       </section>
 
-      {/* ── Brand meaning ── */}
-      <section className="about-section container">
-        <div className="about-grid about-grid--2">
-          <div>
-            <SectionEyebrow>Brand meaning</SectionEyebrow>
-            <h2 className="about-h2">Courage to invest wisely.</h2>
-            <p className="about-body">
-              BraveVest combines the strength of the Bravelion identity with the idea of
-              investment, bold participation, confidence, growth and structured wealth creation.
-              It communicates courage to invest wisely, access to vetted opportunities and a
-              marketplace of structured investment choices.
-            </p>
-          </div>
-          <div className="about-factcard">
-            <FactRow k="Platform"     v="BraveVest Marketplace" />
-            <FactRow k="Tagline"    v="Access Verified Investment Opportunities" />
-            <FactRow k="Brand flow" v="Powered by Bravelion Capital, A Bravelion Holdings Company" />
-          </div>
-        </div>
-      </section>
-
-      {/* ── Vision & Mission ── */}
-      <section className="about-section container">
-        <div className="about-grid about-grid--2">
-          <div className="about-vm">
-            <SectionEyebrow>Vision</SectionEyebrow>
-            <h2 className="about-h2">A trusted African investment marketplace.</h2>
-            <p className="about-body">
-              To become a trusted African investment marketplace that connects capital to verified
-              projects, real assets, businesses and income-generating opportunities.
-            </p>
-          </div>
-          <div className="about-vm">
-            <SectionEyebrow>Mission</SectionEyebrow>
-            <h2 className="about-h2">Structured access. Professional selection.</h2>
-            <p className="about-body">
-              To provide investors with structured access to verified investment opportunities
-              through transparent documentation, professional project selection, risk-based
-              packaging and reliable investor reporting.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Corporate structure ── */}
-      <section className="about-section container">
-        <SectionEyebrow>Corporate structure</SectionEyebrow>
-        <h2 className="about-h2 about-h2--lg">The Bravelion group.</h2>
-
-        <div className="about-entities">
-          {corporateStructure.map((e) => (
-            <div key={e.entity} className="about-entity">
-              <div className="about-entity__name">{e.entity}</div>
-              <p className="about-entity__role">{e.role}</p>
+      {/* ── Vision / Mission + Fact Card ── */}
+      <section className="about-section">
+        <div className="container">
+          <div className="about-grid about-grid--2">
+            <div className="about-vm">
+              <div className="about-eyebrow">Vision</div>
+              <h2 className="about-h2 about-h2--lg">
+                A financial system where productive businesses can access capital — and ordinary investors can share in their growth.
+              </h2>
+              <div className="about-eyebrow" style={{ marginTop: 40 }}>Mission</div>
+              <p className="about-body about-body--lead">
+                We originate, underwrite, and service private credit facilities across energy, real estate, agri, and SME trade finance — then open them up to investors who want predictable, fixed returns backed by real assets.
+              </p>
             </div>
-          ))}
+
+            <div className="about-factcard">
+              <div className="about-factrow">
+                <span className="about-factrow__k">Assets Under Management</span>
+                <span className="about-factrow__v">₦184.4B</span>
+              </div>
+              <div className="about-factrow">
+                <span className="about-factrow__k">Active Investors</span>
+                <span className="about-factrow__v">52,000+</span>
+              </div>
+              <div className="about-factrow">
+                <span className="about-factrow__k">Average Yield</span>
+                <span className="about-factrow__v">14.2%</span>
+              </div>
+              <div className="about-factrow">
+                <span className="about-factrow__k">Cumulative Default Rate</span>
+                <span className="about-factrow__v">&lt; 0.8%</span>
+              </div>
+              <div className="about-factrow">
+                <span className="about-factrow__k">Active Deals</span>
+                <span className="about-factrow__v">27</span>
+              </div>
+              <div className="about-factrow">
+                <span className="about-factrow__k">Founded</span>
+                <span className="about-factrow__v">2021</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ── Marketplace model ── */}
-      <section className="about-section container">
-        <div className="about-grid about-grid--2">
-          <div>
-            <SectionEyebrow>Marketplace model</SectionEyebrow>
-            <h2 className="about-h2">How opportunities flow.</h2>
-            <p className="about-body">
-              BraveVest operates as a structured investment access platform where investors can
-              choose opportunities based on investment amount, tenure, expected return, risk
-              profile, asset class, project type, repayment source, income model and investor
-              preference.
-            </p>
-            <p className="about-body">
-              Opportunities are reviewed, packaged and listed. Investors subscribe to units or
-              fund selected opportunities. Progress, repayment and returns are tracked through
-              reports and platform records.
-            </p>
-          </div>
-          <ol className="about-flow">
-            {marketSteps.map((s, i) => (
-              <li key={s} className="about-flow__item">
-                <span className="about-flow__n">{String(i + 1).padStart(2, '0')}</span>
-                <span>{s}</span>
-              </li>
+      {/* ── Corporate Entities ── */}
+      <section className="about-section">
+        <div className="container">
+          <div className="about-eyebrow">Corporate Structure</div>
+          <h2 className="about-h2">Four entities. One integrated platform.</h2>
+          <div className="about-entities">
+            {ENTITIES.map((e) => (
+              <div key={e.name} className="about-entity">
+                <div className="about-entity__name">{e.name}</div>
+                <div className="about-entity__role">{e.role}</div>
+              </div>
             ))}
-          </ol>
+          </div>
         </div>
       </section>
 
-      {/* ── Product categories ── */}
-      <section className="about-section container">
-        <SectionEyebrow>Investment opportunities &amp; packages</SectionEyebrow>
-        <h2 className="about-h2 about-h2--lg">Ten product families.</h2>
-        <p className="about-body about-body--lead">
-          Each package carries product terms, minimum investment, target raise, tenure, projected
-          return, risk rating, backing / security, use of funds and reporting structure.
-        </p>
-
-        <div className="about-products">
-          {productCategories.map((p) => (
-            <div key={p.name} className="about-product">
-              <div className="about-product__name">{p.name}</div>
-              <p className="about-product__body">{p.blurb}</p>
+      {/* ── Flow + Products ── */}
+      <section className="about-section">
+        <div className="container">
+          <div className="about-grid about-grid--2">
+            <div>
+              <div className="about-eyebrow">How Capital Flows</div>
+              <h2 className="about-h2">From wallet to borrower, and back.</h2>
+              <ul className="about-flow">
+                {FLOW.map((step, i) => (
+                  <li key={i} className="about-flow__item">
+                    <span className="about-flow__n">{String(i + 1).padStart(2, '0')}</span>
+                    <span>{step}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-          ))}
+
+            <div>
+              <div className="about-eyebrow">Product Categories</div>
+              <h2 className="about-h2">What we finance.</h2>
+              <div className="about-products">
+                {PRODUCTS.map((p) => (
+                  <div key={p.name} className="about-product">
+                    <div className="about-product__name">{p.name}</div>
+                    <div className="about-product__body">{p.body}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ── Pilot package ── */}
-      <section className="about-pilot container">
-        <div className="about-pilot__card">
-          <div className="about-pilot__eyebrow">First launch package</div>
-          <h2 className="about-pilot__title">BraveVest Projects 001</h2>
-          <p className="about-pilot__sub">
-            The initial pilot product designed to validate the marketplace model, investor
-            onboarding, project reporting structure and payout administration.
+      {/* ── Pilot Card (Featured Deal) ── */}
+      <section className="about-pilot">
+        <div className="container">
+          <div className="about-pilot__card">
+            <div className="about-pilot__eyebrow">Featured Pilot</div>
+            <h2 className="about-pilot__title">Lagos Solar Fund II</h2>
+            <p className="about-pilot__sub">
+              A 40MW distributed solar portfolio across Lagos and Ogun states, financed through a syndicated private credit facility. The fund has delivered consistent quarterly distributions to investors since inception.
+            </p>
+            <div className="about-pilot__grid">
+              <div className="about-pilot__fact">
+                <div className="about-pilot__fact-k">Target Yield</div>
+                <div className="about-pilot__fact-v">14.5%</div>
+              </div>
+              <div className="about-pilot__fact">
+                <div className="about-pilot__fact-k">Tenor</div>
+                <div className="about-pilot__fact-v">18 Months</div>
+              </div>
+              <div className="about-pilot__fact">
+                <div className="about-pilot__fact-k">Funded</div>
+                <div className="about-pilot__fact-v">72%</div>
+              </div>
+              <div className="about-pilot__fact about-pilot__fact--wide">
+                <div className="about-pilot__fact-k">Structure</div>
+                <div className="about-pilot__fact-v" style={{ fontSize: 16, fontFamily: 'var(--font-sans)', fontWeight: 500 }}>
+                  Senior-secured. Quarterly distributions. First-loss protection via 15% subordinated tranche held by the sponsor.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Journey ── */}
+      <section className="about-section">
+        <div className="container">
+          <div className="about-eyebrow">The Investor Journey</div>
+          <h2 className="about-h2">Six steps from sign-up to returns.</h2>
+          <div className="about-journey">
+            {JOURNEY.map((j) => (
+              <div key={j.n} className="about-journey__step">
+                <div className="about-journey__n">{j.n}</div>
+                <div className="about-journey__title">{j.title}</div>
+                <div className="about-journey__body">{j.body}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Due Diligence ── */}
+      <section className="about-section">
+        <div className="container">
+          <div className="about-eyebrow">Due Diligence</div>
+          <h2 className="about-h2">How we vet every deal.</h2>
+          <div className="about-grid about-grid--2 about-dd">
+            <div className="about-dd__col">
+              <div className="about-dd__title">Borrower Criteria</div>
+              <ul className="about-checklist about-checklist--tall">
+                <li>Minimum 3 years of audited financials</li>
+                <li>Positive cash flow and adequate debt service coverage</li>
+                <li>Collateral valued by independent appraisers</li>
+                <li>Sponsor co-investment of at least 10%</li>
+                <li>Clean credit and litigation history</li>
+              </ul>
+            </div>
+            <div className="about-dd__col">
+              <div className="about-dd__title">Deal Structure</div>
+              <ul className="about-checklist about-checklist--tall">
+                <li>Senior secured position with first priority</li>
+                <li>Collateral coverage ratio of at least 1.5x</li>
+                <li>Personal or corporate guarantees where applicable</li>
+                <li>Reserve accounts for interest and principal</li>
+                <li>Quarterly covenant testing</li>
+              </ul>
+            </div>
+          </div>
+          <p className="about-body about-dd__footnote" style={{ maxWidth: 760 }}>
+            Our credit committee reviews every deal before it's listed. Post-investment, we monitor covenants, collect payments, and engage recovery teams where necessary.
           </p>
-          <div className="about-pilot__grid">
-            <PilotFact k="Target raise"           v={format(5000000)} />
-            <PilotFact k="Unit price"             v={format(50000)} />
-            <PilotFact k="Total units"            v="100" />
-            <PilotFact k="Minimum investment"     v={format(50000)} />
-            <PilotFact k="Maximum per investor"   v={`${format(500000)} – ${format(1000000)}`} />
-            <PilotFact k="Tenor"                  v="3 – 6 months" />
-            <PilotFact k="Projected return"       v="Up to 3% monthly equivalent" wide />
-          </div>
         </div>
       </section>
 
-      {/* ── Investor journey ── */}
-      <section className="about-section container">
-        <SectionEyebrow>Investor journey</SectionEyebrow>
-        <h2 className="about-h2 about-h2--lg">From access to returns.</h2>
-
-        <div className="about-journey">
-          {investorJourney.map((s, i) => (
-            <div key={s.title} className="about-journey__step">
-              <div className="about-journey__n">{String(i + 1).padStart(2, '0')}</div>
-              <div className="about-journey__title">{s.title}</div>
-              <p className="about-journey__body">{s.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Due diligence ── */}
-      <section className="about-section container">
-        <SectionEyebrow>Due diligence</SectionEyebrow>
-        <h2 className="about-h2 about-h2--lg">What we check before we list.</h2>
-
-        <div className="about-grid about-grid--2 about-dd">
-          <div className="about-dd__col">
-            <div className="about-dd__title">Property &amp; project opportunities</div>
-            <ul className="about-checklist">
-              {dueDiligenceProperty.map((x) => <li key={x}>{x}</li>)}
-            </ul>
-          </div>
-          <div className="about-dd__col">
-            <div className="about-dd__title">Credit opportunities</div>
-            <ul className="about-checklist">
-              {dueDiligenceCredit.map((x) => <li key={x}>{x}</li>)}
-            </ul>
+      {/* ── Chips ── */}
+      <section className="about-section">
+        <div className="container">
+          <div className="about-eyebrow">Sectors We Cover</div>
+          <h2 className="about-h2">Diversified across the real economy.</h2>
+          <div className="about-chips">
+            {['Energy', 'Real Estate', 'Agri', 'SME Trade Finance', 'Logistics', 'Healthcare', 'Education', 'Fintech'].map((s) => (
+              <span key={s} className="about-chip">{s}</span>
+            ))}
+            <span className="about-chip about-chip--solid">And more</span>
           </div>
         </div>
-      </section>
-
-      {/* ── Risk ── */}
-      <section className="about-section container">
-        <SectionEyebrow>Risk management</SectionEyebrow>
-        <h2 className="about-h2 about-h2--lg">Risk areas we name openly.</h2>
-        <div className="about-chips">
-          {riskAreas.map((r) => <span key={r} className="about-chip">{r}</span>)}
-        </div>
-        <p className="about-body about-body--lead about-dd__footnote">
-          Every opportunity carries a risk rating. Investors acknowledge risk before subscribing.
-          Separate records are kept for each opportunity, with clear use-of-funds documentation,
-          regular reporting and legal agreements for every transaction.
-        </p>
       </section>
 
       {/* ── Compliance ── */}
-      <section className="about-section container">
-        <SectionEyebrow>Compliance &amp; regulatory framework</SectionEyebrow>
-        <h2 className="about-h2 about-h2--lg">Built inside the rules.</h2>
-        <div className="about-compliance">
-          {compliance.map((c) => (
-            <div key={c.label} className="about-comp">
-              <div className="about-comp__label">{c.label}</div>
-              <p className="about-comp__body">{c.body}</p>
-            </div>
-          ))}
-        </div>
-        <p className="about-body about-body--lead about-dd__footnote">
-          The marketplace operates through internal legal review, external compliance advisory,
-          proper documentation and, where required, registration, approval, partnership or
-          licensing through the relevant regulators.
-        </p>
-      </section>
-
-      {/* ── Governance ── */}
-      <section className="about-section container">
-        <div className="about-grid about-grid--2">
-          <div>
-            <SectionEyebrow>Governance structure</SectionEyebrow>
-            <h2 className="about-h2">Layers of oversight.</h2>
-            <ul className="about-checklist about-checklist--tall">
-              {governance.map((g) => <li key={g}>{g}</li>)}
-            </ul>
-          </div>
-          <div>
-            <SectionEyebrow>Leadership roles</SectionEyebrow>
-            <h2 className="about-h2">Who runs the platform.</h2>
-            <ul className="about-checklist about-checklist--tall">
-              {leadershipRoles.map((r) => <li key={r}>{r}</li>)}
-            </ul>
+      <section className="about-section">
+        <div className="container">
+          <div className="about-eyebrow">Compliance & Regulation</div>
+          <h2 className="about-h2">Built to institutional standards.</h2>
+          <div className="about-compliance">
+            {COMPLIANCE.map((c) => (
+              <div key={c.label} className="about-comp">
+                <div className="about-comp__label">{c.label}</div>
+                <div className="about-comp__body">{c.body}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ── Roadmap ── */}
-      <section className="about-section container">
-        <SectionEyebrow>First-year roadmap</SectionEyebrow>
-        <h2 className="about-h2 about-h2--lg">From pilot to platform.</h2>
-
-        <div className="about-roadmap">
-          {roadmap.map((r) => (
-            <div key={r.q} className="about-roadmap__row">
-              <div className="about-roadmap__q">{r.q}</div>
-              <div className="about-roadmap__focus">{r.focus}</div>
+      <section className="about-section">
+        <div className="container">
+          <div className="about-eyebrow">Roadmap</div>
+          <h2 className="about-h2">Where we're going next.</h2>
+          <div className="about-roadmap">
+            <div className="about-roadmap__row">
+              <div className="about-roadmap__q">Q4 2026</div>
+              <div className="about-roadmap__focus">Launch USD-denominated private credit products for diaspora investors.</div>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── Advantage ── */}
-      <section className="about-section container">
-        <SectionEyebrow>Competitive advantage</SectionEyebrow>
-        <h2 className="about-h2 about-h2--lg">Why BraveVest.</h2>
-        <div className="about-chips">
-          {advantages.map((a) => <span key={a} className="about-chip about-chip--solid">{a}</span>)}
+            <div className="about-roadmap__row">
+              <div className="about-roadmap__q">Q1 2027</div>
+              <div className="about-roadmap__focus">Expand into Ghana and Kenya. Roll out secondary market for deal units.</div>
+            </div>
+            <div className="about-roadmap__row">
+              <div className="about-roadmap__q">Q2 2027</div>
+              <div className="about-roadmap__focus">Institutional API for allocators. Launch BraveVest Card for cashback on deals.</div>
+            </div>
+            <div className="about-roadmap__row">
+              <div className="about-roadmap__q">Q3 2027</div>
+              <div className="about-roadmap__focus">Pilot tokenized real estate notes with partner custodian.</div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* ── Closing CTA ── */}
-      <section className="about-cta container">
-        <div className="about-cta__card">
-          <div className="about-cta__mesh" aria-hidden />
-          <div className="about-cta__eyebrow">Access Verified Investment Opportunities</div>
-          <h2 className="about-cta__title">Ready to invest?</h2>
-          <p className="about-cta__sub">
-            BraveVest Marketplace · Powered by Bravelion Capital · A Bravelion Holdings Company
-          </p>
-          <div className="about-cta__actions">
-            <Button as={Link} to="/register" variant="primary" size="lg">Create your account</Button>
-            <Button as={Link} to="/marketplace" variant="secondary" size="lg">Browse opportunities</Button>
+      <section className="about-cta">
+        <div className="container">
+          <div className="about-cta__card">
+            <div className="about-cta__mesh" />
+            <div className="about-cta__eyebrow">Get Started</div>
+            <h2 className="about-cta__title">Ready to put your capital to work?</h2>
+            <p className="about-cta__sub">Browse live deals or talk to our team about private mandates.</p>
+            <div className="about-cta__actions">
+              <Link to="/register" className="btn btn--primary">Create Account</Link>
+              <Link to="/marketplace" className="btn btn--outline">View Markets</Link>
+            </div>
           </div>
         </div>
       </section>
-    </article>
-  );
-}
 
-/* ── Small presentational helpers ── */
-
-function SectionEyebrow({ children }) {
-  return <div className="about-eyebrow">{children}</div>;
-}
-
-function FactRow({ k, v }) {
-  return (
-    <div className="about-factrow">
-      <span className="about-factrow__k">{k}</span>
-      <span className="about-factrow__v">{v}</span>
-    </div>
-  );
-}
-
-function PilotFact({ k, v, wide }) {
-  return (
-    <div className={`about-pilot__fact ${wide ? 'about-pilot__fact--wide' : ''}`}>
-      <div className="about-pilot__fact-k">{k}</div>
-      <div className="about-pilot__fact-v">{v}</div>
     </div>
   );
 }

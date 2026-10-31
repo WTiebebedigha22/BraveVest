@@ -85,6 +85,13 @@ const InsightEditor       = lazy(() => import('@/pages/admin/InsightEditor'));
 
 /* Misc */
 const NotFound = lazy(() => import('@/pages/NotFound'));
+const AdminContactInbox = lazy(() => import('@/pages/admin/ContactInbox'));
+const AdminSettings = lazy(() => import('@/pages/admin/Settings'));
+const InvestorCommitments = lazy(() => import('@/pages/investor/Commitments'));
+const KycReview = lazy(() => import('@/pages/onboarding/KycReview'));
+const Faq = lazy(() => import('@/pages/public/Faq'));
+const RiskDisclosure = lazy(() => import('@/pages/public/RiskDisclosure'));
+const Support = lazy(() => import('@/pages/public/Support'));
 
 function Loading() {
   return (
@@ -178,6 +185,11 @@ export default function AppRoutes() {
           <Route path="/admin/funding/review" element={<AdminFundingReview />} />
         </Route>
 
+        <Route path="/admin/contact" element={<AdminContactInbox />} />
+        <Route path="/admin/settings" element={<AdminSettings />} />
+        <Route path="/commitments" element={<InvestorCommitments />} />
+        <Route path="/faq" element={<Faq />} />
+        <Route path="/support" element={<Support />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

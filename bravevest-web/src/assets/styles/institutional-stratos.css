@@ -1,0 +1,165 @@
+/* ============================================================
+   STRATOS INSTITUTIONAL DESIGN SYSTEM
+   Applies to all pages for a high-trust, wealth-management look.
+   ============================================================ */
+
+:root {
+  --ink: #0F0F10;
+  --gray-600: #6B6B6B;
+  --gray-400: #A8A8AB;
+  --line: #E5E5E5;
+  --surface: #FFFFFF;
+  --surface-soft: #F9F9F8;
+  
+  --lime: #B3D941;
+  --teal: #3FB8C4;
+  --lavender: #C9A6F2;
+  
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, sans-serif;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6, .page-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+h1, .page-title { font-size: clamp(40px, 5vw, 64px); margin-bottom: 24px; }
+h2 { font-size: clamp(32px, 4vw, 48px); margin-bottom: 16px; }
+h3 { font-size: clamp(24px, 3vw, 32px); margin-bottom: 12px; }
+
+/* Layouts */
+.page-wrapper { padding: 80px 0; background: var(--surface); }
+.section-soft { background: var(--surface-soft); }
+
+/* Sections with Accent Line */
+.section-header { margin-bottom: 48px; }
+.section-header::before {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: var(--teal);
+  margin-bottom: 24px;
+}
+
+/* Cards & Content Blocks */
+.inst-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  padding: 40px;
+  transition: all 0.3s ease;
+}
+.inst-card:hover {
+  border-color: var(--ink);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.03);
+}
+
+/* Tables (Wallet, Admin) */
+.inst-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+}
+.inst-table th {
+  text-align: left;
+  padding: 20px 24px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-400);
+  border-bottom: 1px solid var(--line);
+}
+.inst-table td {
+  padding: 24px;
+  font-size: 15px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.inst-table tr:hover td {
+  background: var(--surface-soft);
+}
+
+/* Forms */
+.inst-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  background: var(--surface);
+  transition: border-color 0.2s;
+}
+.inst-input:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+
+/* Buttons */
+.inst-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+.inst-btn--primary {
+  background: var(--ink);
+  color: var(--surface);
+}
+.inst-btn--primary:hover {
+  background: #2a2a2c;
+}
+.inst-btn--outline {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.inst-btn--outline:hover {
+  background: var(--ink);
+  color: var(--surface);
+}
+
+/* Navbar */
+.navbar {
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  padding: 24px 0;
+}
+.navbar__logo img { height: 32px; width: auto; }
+
+/* Footer */
+.footer {
+  background: var(--ink);
+  color: var(--surface);
+  padding: 80px 0 40px;
+}
+.footer__inner { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; }
+.footer__brand-row img { height: 32px; filter: brightness(0) invert(1); margin-bottom: 24px; }
+.footer p { color: var(--gray-400); line-height: 1.7; }
+.footer__h { color: var(--surface); font-weight: 600; margin-bottom: 24px; }
+.footer__cols a { display: block; color: var(--gray-400); text-decoration: none; margin-bottom: 12px; font-size: 14px; }
+.footer__cols a:hover { color: var(--teal); }
+.footer__base { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 60px; padding-top: 32px; display: flex; justify-content: space-between; color: var(--gray-400); font-size: 13px; }
+
+/* Responsive Overrides */
+@media (max-width: 900px) {
+  .footer__inner { grid-template-columns: 1fr; gap: 40px; }
+  .footer__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .page-wrapper { padding: 48px 0; }
+}
