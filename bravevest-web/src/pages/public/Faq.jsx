@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, ChevronUp, Search, MessageCircle, FileText, Shield, Wallet, TrendingUp, Globe, Layers } from 'lucide-react';
+import { ChevronDown, ChevronUp, Search, MessageCircle, FileText, Shield, Wallet, TrendingUp, Globe, Layers, ArrowLeft } from 'lucide-react';
 
 const CATEGORIES = [
   { id: 'general', label: 'General', icon: MessageCircle },
@@ -90,18 +90,74 @@ export default function FAQ() {
   return (
     <div className="page-light" style={{ minHeight: '100vh', background: '#FAFAFA' }}>
       
-      {/* Header */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #EAEAEA', padding: '64px 0 48px' }}>
-        <div className="container" style={{ maxWidth: '1200px', textAlign: 'center' }}>
+      {/* ── RESPONSIVE STYLING ── */}
+      <style>{`
+        .faq-layout {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 48px 20px;
+          display: grid;
+          grid-template-columns: 260px 1fr;
+          gap: 40px;
+          align-items: flex-start;
+        }
+
+        .faq-sidebar {
+          position: sticky;
+          top: 32px;
+        }
+
+        .faq-categories-scroll {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        @media (max-width: 900px) {
+          .faq-layout {
+            grid-template-columns: 1fr;
+            padding: 32px 16px;
+            gap: 24px;
+          }
+          .faq-sidebar {
+            position: relative;
+            top: 0;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+          }
+          .faq-categories-scroll {
+            flex-direction: row;
+            gap: 8px;
+            min-width: max-content;
+          }
+        }
+      `}</style>
+
+      {/* Top Navigation Bar Helper */}
+      <div style={{ background: '#fff', borderBottom: '1px solid #EAEAEA', padding: '16px 20px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '600', color: '#111', textDecoration: 'none' }}>
+            <ArrowLeft size={16} /> Back to Home
+          </Link>
+          <div style={{ fontSize: '13px', color: '#888' }}>
+            BraveVest Help Center
+          </div>
+        </div>
+      </div>
+
+      {/* Hero Header */}
+      <div style={{ background: '#fff', borderBottom: '1px solid #EAEAEA', padding: '48px 20px' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
           <span style={{ fontSize: '12px', fontWeight: '600', color: '#F6A500', textTransform: 'uppercase', letterSpacing: '0.16em' }}>Support</span>
-          <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.02em', color: '#111', margin: '16px 0 12px' }}>
+          <h1 style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: '700', letterSpacing: '-0.02em', color: '#111', margin: '12px 0 12px' }}>
             How can we help?
           </h1>
-          <p style={{ fontSize: '17px', color: '#666', maxWidth: '540px', margin: '0 auto' }}>
-            Everything you need to know about investing with BraveVest.
+          <p style={{ fontSize: '16px', color: '#666', maxWidth: '500px', margin: '0 auto', lineHeight: 1.5 }}>
+            Everything you need to know about investing and managing your portfolio with BraveVest.
           </p>
 
-          <div style={{ position: 'relative', maxWidth: '480px', margin: '32px auto 0' }}>
+          <div style={{ position: 'relative', maxWidth: '480px', margin: '28px auto 0' }}>
             <Search size={18} color="#888" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)' }} />
             <input
               type="text"
@@ -114,48 +170,49 @@ export default function FAQ() {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="container" style={{ maxWidth: '1200px', padding: '48px 16px', display: 'grid', gridTemplateColumns: '240px 1fr', gap: '48px', alignItems: 'flex-start' }}>
+      {/* Main Content Grid */}
+      <div className="faq-layout">
         
         {/* Category Sidebar */}
-        <aside style={{ position: 'sticky', top: '96px' }}>
-          <div style={{ fontSize: '12px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px', paddingLeft: '12px' }}>
+        <aside className="faq-sidebar">
+          <div style={{ fontSize: '12px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px', paddingLeft: '4px' }}>
             Categories
           </div>
-          {CATEGORIES.map((cat) => {
-            const Icon = cat.icon;
-            const isActive = activeCat === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => handleCatChange(cat.id)}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: '12px 16px',
-                  background: isActive ? '#fff' : 'transparent',
-                  border: isActive ? '1px solid #EAEAEA' : '1px solid transparent',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: isActive ? '600' : '500',
-                  color: isActive ? '#111' : '#666',
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  marginBottom: '4px',
-                  fontFamily: 'inherit',
-                  transition: 'all 0.15s',
-                }}
-              >
-                <Icon size={16} color={isActive ? '#F6A500' : '#888'} />
-                {cat.label}
-                {isActive && <ChevronDown size={14} style={{ marginLeft: 'auto', color: '#F6A500' }} />}
-              </button>
-            );
-          })}
+          <div className="faq-categories-scroll">
+            {CATEGORIES.map((cat) => {
+              const Icon = cat.icon;
+              const isActive = activeCat === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => handleCatChange(cat.id)}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '12px 16px',
+                    background: isActive ? '#fff' : 'transparent',
+                    border: isActive ? '1px solid #EAEAEA' : '1px solid transparent',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: isActive ? '600' : '500',
+                    color: isActive ? '#111' : '#666',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    fontFamily: 'inherit',
+                    transition: 'all 0.15s',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  <Icon size={16} color={isActive ? '#F6A500' : '#888'} />
+                  <span>{cat.label}</span>
+                </button>
+              );
+            })}
+          </div>
 
-          <div style={{ marginTop: '32px', padding: '20px', background: '#fff', border: '1px solid #EAEAEA', borderRadius: '12px' }}>
+          <div style={{ marginTop: '32px', padding: '20px', background: '#fff', border: '1px solid #EAEAEA', borderRadius: '12px' }} className="hide-on-mobile">
             <div style={{ fontSize: '14px', fontWeight: '600', color: '#111', marginBottom: '8px' }}>Still need help?</div>
             <p style={{ fontSize: '13px', color: '#666', lineHeight: 1.5, marginBottom: '16px' }}>
               Our team responds within 2 hours on business days.
@@ -167,12 +224,12 @@ export default function FAQ() {
         </aside>
 
         {/* FAQ List */}
-        <div>
+        <main>
           {filtered.length === 0 ? (
             <div style={{ padding: '64px 24px', textAlign: 'center', background: '#fff', borderRadius: '12px', border: '1px solid #EAEAEA' }}>
               <Search size={32} color="#CCC" style={{ margin: '0 auto 16px' }} />
               <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#111', marginBottom: '8px' }}>No results found</h3>
-              <p style={{ fontSize: '14px', color: '#666' }}>Try a different search term or browse the categories on the left.</p>
+              <p style={{ fontSize: '14px', color: '#666' }}>Try a different search term or choose another category.</p>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -182,13 +239,13 @@ export default function FAQ() {
                     onClick={() => setOpen(open === i ? -1 : i)}
                     style={{ width: '100%', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}
                   >
-                    <span style={{ fontSize: '15px', fontWeight: '600', color: '#111' }}>{faq.q}</span>
+                    <span style={{ fontSize: '15px', fontWeight: '600', color: '#111', lineHeight: 1.4 }}>{faq.q}</span>
                     <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: open === i ? 'rgba(246,165,0,0.1)' : '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all 0.15s' }}>
                       {open === i ? <ChevronUp size={16} color="#F6A500" /> : <ChevronDown size={16} color="#888" />}
                     </div>
                   </button>
                   {open === i && (
-                    <div style={{ padding: '0 24px 24px', color: '#555', fontSize: '14.5px', lineHeight: 1.7 }}>
+                    <div style={{ padding: '0 24px 24px', color: '#555', fontSize: '14.5px', lineHeight: 1.7, borderTop: '1px solid #F9F9F9', paddingTop: '12px' }}>
                       {faq.a}
                     </div>
                   )}
@@ -196,7 +253,8 @@ export default function FAQ() {
               ))}
             </div>
           )}
-        </div>
+        </main>
+
       </div>
 
     </div>
