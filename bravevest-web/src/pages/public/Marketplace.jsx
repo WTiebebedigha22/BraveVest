@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Star, Zap, Building2, Sprout, Briefcase, Sun } from 'lucide-react';
+import { Search, Star, Zap, Building2, Sprout, Briefcase, Sun, ChevronRight } from 'lucide-react';
 
 const MAIN_TABS = ['Favorites', 'Private Credit', 'Real Estate'];
 const SUB_TABS = ['Active Deals', 'Funding', 'Closed'];
@@ -38,35 +38,118 @@ export default function Marketplace() {
   });
 
   return (
-    <div style={{ padding: '32px 0', background: '#FAFAFA', minHeight: '100vh', fontFamily: 'var(--font-sans)' }}>
-      <div className="container" style={{ maxWidth: '1200px' }}>
+    <div className="marketplace" style={{ background: '#FAFAFA', minHeight: '100vh', fontFamily: 'var(--font-sans)' }}>
+      <style>{`
+        .marketplace { padding: clamp(20px, 4vw, 48px) clamp(16px, 4vw, 24px); }
+        
+        .marketplace__header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 24px;
+          gap: 16px;
+          flex-wrap: wrap;
+        }
+
+        .marketplace__search-wrapper {
+          position: relative;
+          width: 300px;
+        }
+
+        .marketplace__search {
+          padding: 12px 16px 12px 46px;
+          border: 1px solid var(--line, #EAEAEA);
+          border-radius: var(--r-pill, 9999px);
+          font-size: 14px;
+          width: 100%;
+          outline: none;
+          background: #fff;
+          color: #111;
+          transition: border-color 0.2s ease;
+        }
+        .marketplace__search:focus { border-color: var(--ink, #111); }
+
+        .marketplace__empty { text-align: center; padding: 60px 0; }
+        .marketplace__empty h3 { font-family: var(--font-serif); font-size: 26px; margin-bottom: 8px; }
+
+        /* Main Tabs Scrollable on Mobile */
+        .marketplace__main-tabs {
+          display: flex;
+          gap: 6px;
+          margin-bottom: 16px;
+          border-bottom: 1px solid var(--line, #EAEAEA);
+          overflow-x: auto;
+          scrollbar-width: none;
+        }
+        .marketplace__main-tabs::-webkit-scrollbar { display: none; }
+
+        /* Table Desktop Layout vs Mobile Flex Card */
+        .market-row {
+          display: flex;
+          align-items: center;
+          padding: 20px 16px;
+          border-bottom: 1px solid var(--line, #EAEAEA);
+          cursor: pointer;
+          transition: background-color 0.15s ease;
+          border-radius: 8px;
+        }
+        .market-row:hover {
+          background-color: #F8F9FA;
+        }
+
+        .market-desktop-header {
+          display: flex;
+          font-size: 13px;
+          color: #888;
+          padding: 0 16px 12px;
+          border-bottom: 1px solid var(--line, #EAEAEA);
+          margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+          .market-desktop-header { display: none; }
+          .market-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: #fff;
+            border: 1px solid var(--line, #EAEAEA);
+            margin-bottom: 12px;
+            border-radius: 12px;
+          }
+          .marketplace__search-wrapper { width: 100%; }
+        }
+      `}</style>
+
+      <div className="container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
         
         {/* Header & Search */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h1 style={{ fontSize: '28px', fontWeight: '700', margin: 0, color: '#111' }}>Markets</h1>
-          <div style={{ position: 'relative', width: '300px' }}>
+        <div className="marketplace__header">
+          <h1 style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: '700', margin: 0, color: '#111' }}>Markets</h1>
+          <div className="marketplace__search-wrapper">
             <Search size={18} color="#888" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)' }} />
             <input 
               type="text" 
-              placeholder="Search deals" 
+              placeholder="Search deals..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{ width: '100%', padding: '12px 16px 12px 48px', background: '#fff', border: '1px solid #EAEAEA', borderRadius: '8px', fontSize: '14px', color: '#111', outline: 'none' }} 
+              className="marketplace__search" 
             />
           </div>
         </div>
 
         {/* Main Tabs */}
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', borderBottom: '1px solid #EAEAEA' }}>
+        <div className="marketplace__main-tabs">
           {MAIN_TABS.map(tab => (
             <button 
               key={tab} 
               onClick={() => setMainTab(tab)} 
               style={{ 
-                padding: '12px 24px', fontSize: '15px', fontWeight: '600', cursor: 'pointer',
+                padding: '12px 20px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap',
                 background: mainTab === tab ? '#fff' : 'transparent',
                 color: mainTab === tab ? '#111' : '#666',
-                border: mainTab === tab ? '1px solid #EAEAEA' : '1px solid transparent',
+                border: mainTab === tab ? '1px solid var(--line, #EAEAEA)' : '1px solid transparent',
                 borderBottom: mainTab === tab ? '1px solid #fff' : '1px solid transparent',
                 borderRadius: '8px 8px 0 0', marginBottom: '-1px'
               }}
@@ -77,16 +160,16 @@ export default function Marketplace() {
         </div>
 
         {/* Inner Content Box */}
-        <div style={{ background: '#fff', border: '1px solid #EAEAEA', borderRadius: '0 8px 8px 8px', padding: '32px' }}>
+        <div style={{ background: '#fff', border: '1px solid var(--line, #EAEAEA)', borderRadius: '0 12px 12px 12px', padding: 'clamp(16px, 3vw, 32px)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
           
           {/* Sub Tabs */}
-          <div style={{ display: 'flex', gap: '24px', borderBottom: '1px solid #EAEAEA', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', gap: '20px', borderBottom: '1px solid var(--line, #EAEAEA)', marginBottom: '24px', overflowX: 'auto' }}>
             {SUB_TABS.map(tab => (
               <button 
                 key={tab} 
                 onClick={() => setSubTab(tab)}
                 style={{ 
-                  padding: '0 0 16px', fontSize: '15px', fontWeight: '500', cursor: 'pointer', background: 'none', border: 'none',
+                  padding: '0 0 14px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', background: 'none', border: 'none', whiteSpace: 'nowrap',
                   color: subTab === tab ? '#111' : '#888',
                   borderBottom: subTab === tab ? '2px solid #F6A500' : '2px solid transparent'
                 }}
@@ -97,15 +180,16 @@ export default function Marketplace() {
           </div>
 
           {/* Filter Tags */}
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '32px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '28px', flexWrap: 'wrap' }}>
             {FILTER_TAGS.map(tag => (
               <button 
                 key={tag} 
                 onClick={() => setFilter(tag)}
                 style={{ 
-                  padding: '6px 16px', borderRadius: '4px', fontSize: '13px', fontWeight: '500', cursor: 'pointer', border: 'none',
-                  background: filter === tag ? 'rgba(246,165,0,0.1)' : '#F5F5F5',
-                  color: filter === tag ? '#F6A500' : '#666'
+                  padding: '6px 14px', borderRadius: '6px', fontSize: '13px', fontWeight: '500', cursor: 'pointer', border: 'none',
+                  background: filter === tag ? 'rgba(246,165,0,0.12)' : '#F5F5F5',
+                  color: filter === tag ? '#B87800' : '#666',
+                  transition: 'all 0.15s ease'
                 }}
               >
                 {tag}
@@ -114,56 +198,76 @@ export default function Marketplace() {
           </div>
 
           {/* Info Banner */}
-          <div style={{ background: '#F8F8F8', borderRadius: '8px', padding: '24px', marginBottom: '32px' }}>
-            <div style={{ fontSize: '16px', fontWeight: '600', color: '#111', marginBottom: '8px' }}>
+          <div style={{ background: '#F8F9FA', borderRadius: '10px', padding: '20px', marginBottom: '28px', border: '1px solid #EFEFEF' }}>
+            <div style={{ fontSize: '15px', fontWeight: '600', color: '#111', marginBottom: '6px' }}>
               All Active Private Credit Deals on BraveVest
             </div>
-            <div style={{ fontSize: '14px', color: '#666', lineHeight: 1.6 }}>
-              Explore vetted, collateralized lending opportunities. View live funding progress, expected yields, and risk ratings, sortable by any column.
+            <div style={{ fontSize: '13.5px', color: '#666', lineHeight: 1.5 }}>
+              Explore vetted, collateralized lending opportunities. View live funding progress, expected yields, and risk ratings.
             </div>
           </div>
 
-          {/* Table Header */}
-          <div style={{ display: 'flex', fontSize: '13px', color: '#888', paddingBottom: '16px', borderBottom: '1px solid #EAEAEA', marginBottom: '8px' }}>
+          {/* Desktop Table Header */}
+          <div className="market-desktop-header">
             <span style={{ flex: 1, fontWeight: '500' }}>Asset / Project</span>
-            <span style={{ width: '200px', fontWeight: '500' }}>Tags</span>
-            <span style={{ width: '150px', textAlign: 'right', fontWeight: '500' }}>Expected Yield / Tenor</span>
+            <span style={{ width: '180px', fontWeight: '500' }}>Tags & Risk</span>
+            <span style={{ width: '160px', textAlign: 'right', fontWeight: '500' }}>Expected Yield / Tenor</span>
           </div>
 
           {/* Market List */}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {filteredMarkets.length === 0 ? (
-              <div style={{ padding: '64px', textAlign: 'center', color: '#888' }}>No active deals found.</div>
+              <div className="marketplace__empty">
+                <h3>No active deals found</h3>
+                <p style={{ color: '#888', fontSize: '14px' }}>Try adjusting your search criteria or filter tags.</p>
+              </div>
             ) : (
               filteredMarkets.map((asset) => (
-                <div key={asset.id} style={{ display: 'flex', alignItems: 'center', padding: '20px 0', borderBottom: '1px solid #EAEAEA', cursor: 'pointer' }} className="market-row">
-                  <div style={{ width: '48px', display: 'flex', justifyContent: 'center' }}>
-                    <Star 
-                      size={20} 
-                      color={starred.includes(asset.id) ? '#F6A500' : '#CCC'} 
-                      fill={starred.includes(asset.id) ? '#F6A500' : 'none'} 
-                      onClick={(e) => { e.stopPropagation(); toggleStar(asset.id); }} 
-                    />
+                <div key={asset.id} className="market-row">
+                  
+                  {/* Top / Left Section: Icon & Details */}
+                  <div style={{ display: 'flex', alignItems: 'center', flex: 1, width: '100%', gap: '14px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                      <Star 
+                        size={18} 
+                        color={starred.includes(asset.id) ? '#F6A500' : '#CCC'} 
+                        fill={starred.includes(asset.id) ? '#F6A500' : 'none'} 
+                        onClick={(e) => { e.stopPropagation(); toggleStar(asset.id); }} 
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </div>
+                    
+                    <div style={{ width: '40px', height: '40px', background: asset.color, borderRadius: '8px', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {asset.icon}
+                    </div>
+                    
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: '15px', fontWeight: '600', color: '#111', marginBottom: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{asset.title}</div>
+                      <div style={{ fontSize: '12.5px', color: '#888' }}>{asset.type} · Min ₦{asset.min.toLocaleString()}</div>
+                    </div>
                   </div>
                   
-                  <div style={{ width: '40px', height: '40px', background: asset.color, borderRadius: '8px', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: '16px' }}>
-                    {asset.icon}
+                  {/* Tags Section */}
+                  <div style={{ width: '180px', display: 'flex', gap: '6px', alignItems: 'center', width: '100%', justifyContent: 'space-between', '@media (min-width: 768px)': { width: '180px', justifyContent: 'flex-start' } }}>
+                    <span style={{ fontSize: '12px', color: '#666', display: 'inline-block', md: { display: 'none' } }} className="mobile-label">Details:</span>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <span style={{ background: 'rgba(246,165,0,0.1)', color: '#B87800', padding: '3px 8px', borderRadius: '4px', fontSize: '11.5px', fontWeight: '600' }}>Risk {asset.risk}</span>
+                      <span style={{ background: 'rgba(14,203,129,0.1)', color: '#099250', padding: '3px 8px', borderRadius: '4px', fontSize: '11.5px', fontWeight: '600' }}>{asset.tenor}</span>
+                    </div>
                   </div>
                   
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '16px', fontWeight: '600', color: '#111', marginBottom: '4px' }}>{asset.title}</div>
-                    <div style={{ fontSize: '13px', color: '#888' }}>{asset.type} · Min ₦{asset.min.toLocaleString()}</div>
+                  {/* Yield & Funding Section */}
+                  <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px', borderTop: '1px solid #F1F1F1', md: { borderTop: 'none', paddingTop: '0', width: '160px', textAlign: 'right', display: 'block' } }}>
+                    <div style={{ fontSize: '12px', color: '#888', display: 'block', '@media(min-width: 768px)': { display: 'none' } }}>Yield / Progress</div>
+                    <div style={{ textAlign: 'left', width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'block' }}>
+                        <div style={{ fontSize: '16px', fontWeight: '700', color: '#111' }}>{asset.apy}</div>
+                        <div style={{ fontSize: '12px', fontWeight: '500', color: asset.funded > 80 ? '#F6465D' : '#099250' }}>{asset.funded}% Funded</div>
+                      </div>
+                      <ChevronRight size={18} color="#CCC" style={{ display: 'none', '@media(max-width: 768px)': { display: 'block' } }} />
+                    </div>
                   </div>
-                  
-                  <div style={{ width: '200px', display: 'flex', gap: '8px' }}>
-                    <span style={{ background: 'rgba(246,165,0,0.1)', color: '#F6A500', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>Risk {asset.risk}</span>
-                    <span style={{ background: 'rgba(14,203,129,0.1)', color: '#0ECB81', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>{asset.tenor}</span>
-                  </div>
-                  
-                  <div style={{ width: '150px', textAlign: 'right' }}>
-                    <div style={{ fontSize: '16px', fontWeight: '600', color: '#111', marginBottom: '4px' }}>{asset.apy}</div>
-                    <div style={{ fontSize: '13px', fontWeight: '500', color: asset.funded > 80 ? '#F6465D' : '#0ECB81' }}>{asset.funded}% Funded</div>
-                  </div>
+
                 </div>
               ))
             )}
