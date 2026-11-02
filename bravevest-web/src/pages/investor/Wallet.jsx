@@ -46,10 +46,10 @@ export default function Wallet() {
               <p style={{ fontSize: '15px', color: '#666', margin: 0 }}>Your cash position and full transaction ledger.</p>
             </div>
             <div style={{ display: 'flex', gap: '12px' }}>
-              <Link to="/wallet/deposit" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#F6A500', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
+              <Link to="/deposit" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#F6A500', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
                 <ArrowDownRight size={16} /> Deposit
               </Link>
-              <Link to="/wallet/withdraw" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#fff', color: '#111', border: '1px solid #EAEAEA', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
+              <Link to="/withdraw" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#fff', color: '#111', border: '1px solid #EAEAEA', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
                 <ArrowUpRight size={16} /> Withdraw
               </Link>
             </div>
@@ -156,7 +156,7 @@ export default function Wallet() {
                 {data.ledger.length === 0 ? 'Your ledger will populate once you make your first deposit.' : 'Try a different filter.'}
               </p>
               {data.ledger.length === 0 && (
-                <Link to="/wallet/deposit" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '12px 24px', background: '#F6A500', color: '#fff', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
+                <Link to="/deposit" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '12px 24px', background: '#F6A500', color: '#fff', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
                   Make a Deposit
                 </Link>
               )}

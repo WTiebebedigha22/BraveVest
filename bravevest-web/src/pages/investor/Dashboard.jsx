@@ -30,7 +30,7 @@ export default function Dashboard() {
             <p style={{ color: '#666', margin: '4px 0 0', fontSize: '14px' }}>Welcome back, {user?.firstName || 'Investor'}</p>
           </div>
           <div style={{ display: 'flex', gap: '12px' }}>
-            <Link to="/wallet/deposit" className="btn btn--outline">Deposit</Link>
+            <Link to="/deposit" className="btn btn--outline">Deposit</Link>
             <Link to="/marketplace" className="btn btn--primary">Invest Now</Link>
           </div>
         </div>
@@ -91,8 +91,8 @@ export default function Dashboard() {
             <h3 style={{ margin: 0, fontSize: '16px', color: '#111' }}>Available Cash</h3>
             <div style={{ fontSize: '36px', fontWeight: '700', color: '#F6A500' }}>{loading ? '—' : format(wallet.balance)}</div>
             <div style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
-              <Link to="/wallet/deposit" className="btn btn--primary" style={{ flex: 1 }}><Wallet size={16} /> Deposit</Link>
-              <Link to="/wallet/withdraw" className="btn btn--outline" style={{ flex: 1 }}>Withdraw</Link>
+              <Link to="/deposit" className="btn btn--primary" style={{ flex: 1 }}><Wallet size={16} /> Deposit</Link>
+              <Link to="/withdraw" className="btn btn--outline" style={{ flex: 1 }}>Withdraw</Link>
             </div>
           </div>
         </div>

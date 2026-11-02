@@ -8,7 +8,7 @@ export default function Footer() {
           <div className="footer__brand">
             <Link to="/" style={{ display: 'inline-block', marginBottom: '16px', textDecoration: 'none' }}>
               <img
-                src="/icons/logo-dark.png"
+                src="/icons/logo-light.png"
                 alt="BraveVest"
                 style={{ height: '32px', width: 'auto', display: 'block' }}
               />

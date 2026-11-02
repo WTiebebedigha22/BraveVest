@@ -10,8 +10,8 @@ import FAQ from '@/pages/public/FAQ';
 import HowItWorks from '@/pages/public/HowItWorks';
 
 // Wallet
-import Deposit from '@/pages/wallet/Deposit';
-import Withdraw from '@/pages/wallet/Withdraw';
+import Deposit from '@/pages/deposit';
+import Withdraw from '@/pages/withdraw';
 
 // Auth
 import Login from '@/pages/auth/Login';

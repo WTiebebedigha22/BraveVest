@@ -39,8 +39,8 @@ export default function DashboardLayout() {
         flexDirection: 'column',
         flexShrink: 0,
       }}>
-        <Link to="/dashboard" style={{ marginBottom: '48px', display: 'block' }}>
-          <img src="/logo.png" alt="BraveVest" style={{ height: '28px', filter: 'brightness(0) invert(1)' }} />
+        <Link to="/" style={{ marginBottom: '48px', display: 'block' }}>
+          <img src="/icons/logo-dark.png" alt="BraveVest" style={{ height: '28px'}} />
         </Link>
 
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
@@ -97,7 +97,7 @@ export default function DashboardLayout() {
           justifyContent: 'space-between',
         }} className="mobile-top-bar">
           <Link to="/dashboard">
-            <img src="/logo.png" alt="BraveVest" style={{ height: '24px', filter: 'brightness(0) invert(1)' }} />
+            <img src="/logo.png" alt="BraveVest" style={{ height: '24px'}} />
           </Link>
           <button
             onClick={() => setMenuOpen(!menuOpen)}

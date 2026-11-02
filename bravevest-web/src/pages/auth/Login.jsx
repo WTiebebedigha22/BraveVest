@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Globe, ArrowRight, Smartphone, Mail } from 'lucide-react';
+import { Globe, ArrowRight, Smartphone, Mail, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function Login() {
@@ -8,6 +8,7 @@ export default function Login() {
   const { login } = useAuth();
   const [authMethod, setAuthMethod] = useState('email');
   const [form, setForm] = useState({ email: '', password: '', phone: '', countryCode: '+234' });
+  const [showPassword, setShowPassword] = useState(false);
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -15,7 +16,6 @@ export default function Login() {
     e.preventDefault();
     setErr('');
 
-    // Build the credential payload based on active tab
     let credentials;
     if (authMethod === 'email') {
       if (!form.email.trim()) return setErr('Please enter your email.');
@@ -39,20 +39,85 @@ export default function Login() {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#F7F7F7', fontFamily: 'var(--font-sans)' }}>
-      {/* ── Left Promo ── */}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: '48px 64px',
-          background: 'linear-gradient(135deg, #F0F0F0 0%, #E8E8E8 100%)',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#F7F7F7', fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+      
+      {/* ── RESPONSIVE STYLES ── */}
+      <style>{`
+        .login-left-promo {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 48px 64px;
+          background: linear-gradient(135deg, #F0F0F0 0%, #E8E8E8 100%);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .login-right-auth {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background: #F7F7F7;
+          padding: 40px 24px;
+        }
+
+        .auth-input {
+          width: 100%;
+          padding: 14px 16px;
+          background: #F5F5F5;
+          border: 1px solid transparent;
+          border-radius: 8px;
+          font-size: 15px;
+          color: #111;
+          outline: none;
+          font-family: inherit;
+          transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .auth-input:focus {
+          background: #FFFFFF;
+          border-color: #F6A500;
+        }
+
+        .social-btn {
+          flex: 1;
+          padding: 11px;
+          background: #FFF;
+          border: 1px solid #EAEAEA;
+          border-radius: 8px;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          color: #111;
+          font-family: inherit;
+          transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .social-btn:hover:not(:disabled) {
+          background-color: #FAF9F6;
+          border-color: #DDD;
+        }
+
+        @media (max-width: 900px) {
+          .login-left-promo {
+            display: none;
+          }
+          .login-right-auth {
+            flex: 1;
+            width: 100%;
+          }
+        }
+      `}</style>
+
+      {/* ── Left Promo Section ── */}
+      <div className="login-left-promo">
         <div style={{ position: 'relative', zIndex: 10 }}>
           <h1 style={{ fontSize: '32px', fontWeight: '600', color: '#111', lineHeight: 1.3 }}>
             Invest directly<br />in Africa's real economy.
@@ -62,7 +127,7 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Abstract Card Stack */}
+        {/* Abstract Card Stack Visual */}
         <div
           style={{
             position: 'absolute',
@@ -99,6 +164,7 @@ export default function Login() {
           </div>
         </div>
 
+        {/* Stats Strip */}
         <div style={{ display: 'flex', gap: '48px', position: 'relative', zIndex: 10 }}>
           <div>
             <div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>₦184B+</div>
@@ -111,15 +177,17 @@ export default function Login() {
         </div>
       </div>
 
-      {/* ── Right Auth ── */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#F7F7F7', padding: '40px 24px' }}>
+      {/* ── Right Auth Section ── */}
+      <div className="login-right-auth">
         <div style={{ width: '100%', maxWidth: '400px' }}>
+          
+          {/* Header & Logo */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
             <Link to="/" style={{ display: 'inline-block', textDecoration: 'none' }}>
               <img
-                src="/icons/logo-dark.png"
-                alt="BraveVest"
-                style={{ height: '36px', width: 'auto', display: 'block', objectFit: 'contain'  }}
+                src="/icons/logo-light.png"
+                alt="BraveVest Logo"
+                style={{ height: '36px', width: 'auto', display: 'block', objectFit: 'contain' }}
               />
             </Link>
             <button
@@ -131,18 +199,16 @@ export default function Login() {
             </button>
           </div>
 
+          {/* Form Card */}
           <div style={{ background: '#fff', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid #EAEAEA' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
               <h2 style={{ fontSize: '20px', fontWeight: '600', margin: 0, color: '#111' }}>Welcome back</h2>
               <Link to="/register" style={{ fontSize: '13px', color: '#F6A500', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />
-                </svg>
                 Sign up
               </Link>
             </div>
 
-            {/* Auth method tabs */}
+            {/* Auth Method Tabs */}
             <div style={{ display: 'flex', borderBottom: '1px solid #EAEAEA', marginBottom: '24px' }}>
               {['email', 'mobile'].map((m) => (
                 <button
@@ -173,6 +239,7 @@ export default function Login() {
             </div>
 
             <form onSubmit={submit}>
+              {/* Credentials Field */}
               <div style={{ marginBottom: '16px' }}>
                 {authMethod === 'email' ? (
                   <input
@@ -181,14 +248,15 @@ export default function Login() {
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     placeholder="Email address"
                     autoComplete="email"
-                    style={{ width: '100%', padding: '14px 16px', background: '#F5F5F5', border: '1px solid transparent', borderRadius: '8px', fontSize: '15px', color: '#111', outline: 'none', fontFamily: 'inherit' }}
+                    className="auth-input"
                   />
                 ) : (
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <select
                       value={form.countryCode}
                       onChange={(e) => setForm({ ...form, countryCode: e.target.value })}
-                      style={{ width: '90px', padding: '14px 8px', background: '#F5F5F5', border: '1px solid transparent', borderRadius: '8px', fontSize: '15px', color: '#111', outline: 'none', fontFamily: 'inherit' }}
+                      className="auth-input"
+                      style={{ width: '90px', padding: '14px 8px' }}
                     >
                       <option value="+234">+234</option>
                       <option value="+1">+1</option>
@@ -200,71 +268,119 @@ export default function Login() {
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       placeholder="Phone number"
                       autoComplete="tel"
-                      style={{ flex: 1, padding: '14px 16px', background: '#F5F5F5', border: '1px solid transparent', borderRadius: '8px', fontSize: '15px', color: '#111', outline: 'none', fontFamily: 'inherit' }}
+                      className="auth-input"
+                      style={{ flex: 1 }}
                     />
                   </div>
                 )}
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
+              {/* Password Input with Visibility Toggle */}
+              <div style={{ marginBottom: '12px', position: 'relative' }}>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                   placeholder="Password"
                   autoComplete="current-password"
-                  style={{ width: '100%', padding: '14px 16px', background: '#F5F5F5', border: '1px solid transparent', borderRadius: '8px', fontSize: '15px', color: '#111', outline: 'none', fontFamily: 'inherit' }}
+                  className="auth-input"
+                  style={{ paddingRight: '44px' }}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  style={{
+                    position: 'absolute',
+                    right: '12px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    color: '#888',
+                    cursor: 'pointer',
+                    padding: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
 
+              {/* Forgot Password Link */}
+              <div style={{ textAlign: 'right', marginBottom: '16px' }}>
+                <Link to="/forgot-password" style={{ fontSize: '12px', color: '#666', textDecoration: 'none', fontWeight: '500' }}>
+                  Forgot password?
+                </Link>
+              </div>
+
+              {/* Error Alert */}
               {err && (
                 <div style={{ padding: '10px 12px', background: 'rgba(246,70,93,0.1)', color: '#F6465D', fontSize: '13px', borderRadius: '6px', marginBottom: '16px' }}>
                   {err}
                 </div>
               )}
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                style={{ width: '100%', padding: '14px', background: '#F6A500', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', cursor: loading ? 'not-allowed' : 'pointer', marginBottom: '16px', opacity: loading ? 0.7 : 1, fontFamily: 'inherit' }}
+                style={{
+                  width: '100%',
+                  padding: '14px',
+                  background: '#F6A500',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  marginBottom: '20px',
+                  opacity: loading ? 0.7 : 1,
+                  fontFamily: 'inherit',
+                  transition: 'opacity 0.2s',
+                }}
               >
-                {loading ? 'Processing…' : 'Log In'}
+                {loading ? 'Signing in…' : 'Log In'}
               </button>
             </form>
 
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
+            {/* Divider */}
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
               <div style={{ flex: 1, height: '1px', background: '#EAEAEA' }} />
               <span style={{ padding: '0 12px', fontSize: '12px', color: '#888' }}>or continue with</span>
               <div style={{ flex: 1, height: '1px', background: '#EAEAEA' }} />
             </div>
 
+            {/* Social Auth Options */}
             <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
-              {['Google', 'Apple'].map((provider) => (
-                <button
-                  key={provider}
-                  type="button"
-                  disabled={loading}
-                  style={{ flex: 1, padding: '10px', background: '#fff', border: '1px solid #EAEAEA', borderRadius: '8px', fontSize: '13px', fontWeight: '500', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', color: '#111', fontFamily: 'inherit', opacity: loading ? 0.6 : 1 }}
-                >
-                  {provider === 'Google' && <span style={{ color: '#DB4437', fontWeight: 'bold' }}>G</span>}
-                  {provider === 'Apple' && <span style={{ fontWeight: 'bold' }}></span>}
-                  {provider}
-                </button>
-              ))}
+              <button type="button" disabled={loading} className="social-btn" style={{ opacity: loading ? 0.6 : 1 }}>
+                <span style={{ color: '#DB4437', fontWeight: 'bold', fontSize: '15px' }}>G</span>
+                Google
+              </button>
+              <button type="button" disabled={loading} className="social-btn" style={{ opacity: loading ? 0.6 : 1 }}>
+                <span style={{ fontWeight: 'bold', fontSize: '15px' }}></span>
+                Apple
+              </button>
             </div>
 
-            <div style={{ textAlign: 'center', borderTop: '1px solid #EAEAEA', paddingTop: '24px' }}>
-              <Link to="/register" style={{ fontSize: '13px', color: '#F6A500', fontWeight: '500', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', textDecoration: 'none' }}>
+            {/* Footer Navigation Link */}
+            <div style={{ textAlign: 'center', borderTop: '1px solid #EAEAEA', paddingTop: '20px' }}>
+              <Link to="/register" style={{ fontSize: '13px', color: '#F6A500', fontWeight: '500', display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
                 Need an account? Sign up <ArrowRight size={14} />
               </Link>
             </div>
           </div>
 
+          {/* Legal / Terms */}
           <p style={{ textAlign: 'center', fontSize: '12px', color: '#888', marginTop: '24px', lineHeight: 1.6 }}>
             By continuing, you agree to BraveVest's <a href="/terms" style={{ color: '#111', textDecoration: 'underline' }}>Terms</a> and <a href="/privacy" style={{ color: '#111', textDecoration: 'underline' }}>Privacy Policy</a>.
           </p>
+
         </div>
       </div>
+
     </div>
   );
 }

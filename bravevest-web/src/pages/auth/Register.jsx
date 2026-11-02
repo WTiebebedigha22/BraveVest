@@ -79,7 +79,7 @@ export default function Register() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
             <Link to="/" style={{ display: 'inline-block', textDecoration: 'none' }}>
               <img
-                src="/icons/logo-dark.png"
+                src="/icons/logo-light.png"
                 alt="BraveVest"
                 style={{ height: '36px', width: 'auto', display: 'block', objectFit: 'contain'  }}
               />
