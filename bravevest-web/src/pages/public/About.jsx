@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import './about.css';
+import './About.css';
 
 const ENTITIES = [
   { name: 'BraveVest Capital', role: 'Origination and underwriting of private credit facilities.' },
