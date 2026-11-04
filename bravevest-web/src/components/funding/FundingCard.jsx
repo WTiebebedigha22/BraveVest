@@ -16,7 +16,7 @@ export default function FundingCard({ request }) {
     <Link to={`/funding/${request.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <article
         style={{
-          background: '#fff',
+          background: 'var(--bv-surface)',
           border: '1px solid #e3e3e3',
           borderRadius: 16,
           padding: 20,

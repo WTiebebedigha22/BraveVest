@@ -135,9 +135,9 @@ export default function FAQ() {
       `}</style>
 
       {/* Top Navigation Bar Helper */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #EAEAEA', padding: '16px 20px' }}>
+      <div style={{ background: 'var(--bv-surface)', borderBottom: '1px solid #EAEAEA', padding: '16px 20px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '600', color: '#111', textDecoration: 'none' }}>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: '600', color: 'var(--bv-text)', textDecoration: 'none' }}>
             <ArrowLeft size={16} /> Back to Home
           </Link>
           <div style={{ fontSize: '13px', color: '#888' }}>
@@ -147,10 +147,10 @@ export default function FAQ() {
       </div>
 
       {/* Hero Header */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #EAEAEA', padding: '48px 20px' }}>
+      <div style={{ background: 'var(--bv-surface)', borderBottom: '1px solid #EAEAEA', padding: '48px 20px' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
           <span style={{ fontSize: '12px', fontWeight: '600', color: '#F6A500', textTransform: 'uppercase', letterSpacing: '0.16em' }}>Support</span>
-          <h1 style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: '700', letterSpacing: '-0.02em', color: '#111', margin: '12px 0 12px' }}>
+          <h1 style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: '700', letterSpacing: '-0.02em', color: 'var(--bv-text)', margin: '12px 0 12px' }}>
             How can we help?
           </h1>
           <p style={{ fontSize: '16px', color: '#666', maxWidth: '500px', margin: '0 auto', lineHeight: 1.5 }}>
@@ -164,7 +164,7 @@ export default function FAQ() {
               value={search}
               onChange={(e) => { setSearch(e.target.value); setOpen(0); }}
               placeholder="Search for answers..."
-              style={{ width: '100%', padding: '14px 16px 14px 48px', background: '#F5F5F5', border: '1px solid transparent', borderRadius: '10px', fontSize: '15px', color: '#111', outline: 'none', fontFamily: 'inherit' }}
+              style={{ width: '100%', padding: '14px 16px 14px 48px', background: '#F5F5F5', border: '1px solid transparent', borderRadius: '10px', fontSize: '15px', color: 'var(--bv-text)', outline: 'none', fontFamily: 'inherit' }}
             />
           </div>
         </div>
@@ -192,12 +192,12 @@ export default function FAQ() {
                     alignItems: 'center',
                     gap: '12px',
                     padding: '12px 16px',
-                    background: isActive ? '#fff' : 'transparent',
+                    background: isActive ? 'var(--bv-surface)' : 'transparent',
                     border: isActive ? '1px solid #EAEAEA' : '1px solid transparent',
                     borderRadius: '8px',
                     fontSize: '14px',
                     fontWeight: isActive ? '600' : '500',
-                    color: isActive ? '#111' : '#666',
+                    color: isActive ? 'var(--bv-text)' : '#666',
                     cursor: 'pointer',
                     textAlign: 'left',
                     fontFamily: 'inherit',
@@ -212,8 +212,8 @@ export default function FAQ() {
             })}
           </div>
 
-          <div style={{ marginTop: '32px', padding: '20px', background: '#fff', border: '1px solid #EAEAEA', borderRadius: '12px' }} className="hide-on-mobile">
-            <div style={{ fontSize: '14px', fontWeight: '600', color: '#111', marginBottom: '8px' }}>Still need help?</div>
+          <div style={{ marginTop: '32px', padding: '20px', background: 'var(--bv-surface)', border: '1px solid #EAEAEA', borderRadius: '12px' }} className="hide-on-mobile">
+            <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--bv-text)', marginBottom: '8px' }}>Still need help?</div>
             <p style={{ fontSize: '13px', color: '#666', lineHeight: 1.5, marginBottom: '16px' }}>
               Our team responds within 2 hours on business days.
             </p>
@@ -226,20 +226,20 @@ export default function FAQ() {
         {/* FAQ List */}
         <main>
           {filtered.length === 0 ? (
-            <div style={{ padding: '64px 24px', textAlign: 'center', background: '#fff', borderRadius: '12px', border: '1px solid #EAEAEA' }}>
+            <div style={{ padding: '64px 24px', textAlign: 'center', background: 'var(--bv-surface)', borderRadius: '12px', border: '1px solid #EAEAEA' }}>
               <Search size={32} color="#CCC" style={{ margin: '0 auto 16px' }} />
-              <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#111', marginBottom: '8px' }}>No results found</h3>
+              <h3 style={{ fontSize: '18px', fontWeight: '600', color: 'var(--bv-text)', marginBottom: '8px' }}>No results found</h3>
               <p style={{ fontSize: '14px', color: '#666' }}>Try a different search term or choose another category.</p>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {filtered.map((faq, i) => (
-                <div key={i} style={{ background: '#fff', border: '1px solid #EAEAEA', borderRadius: '12px', overflow: 'hidden' }}>
+                <div key={i} style={{ background: 'var(--bv-surface)', border: '1px solid #EAEAEA', borderRadius: '12px', overflow: 'hidden' }}>
                   <button
                     onClick={() => setOpen(open === i ? -1 : i)}
                     style={{ width: '100%', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit' }}
                   >
-                    <span style={{ fontSize: '15px', fontWeight: '600', color: '#111', lineHeight: 1.4 }}>{faq.q}</span>
+                    <span style={{ fontSize: '15px', fontWeight: '600', color: 'var(--bv-text)', lineHeight: 1.4 }}>{faq.q}</span>
                     <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: open === i ? 'rgba(246,165,0,0.1)' : '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all 0.15s' }}>
                       {open === i ? <ChevronUp size={16} color="#F6A500" /> : <ChevronDown size={16} color="#888" />}
                     </div>

@@ -46,10 +46,10 @@ export default function Profile() {
     <div className="page-light" style={{ minHeight: '100vh', background: '#FAFAFA', paddingBottom: '64px' }}>
       
       {/* Header */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #EAEAEA', padding: '48px 0' }}>
+      <div style={{ background: 'var(--bv-surface)', borderBottom: '1px solid #EAEAEA', padding: '48px 0' }}>
         <div className="container" style={{ maxWidth: '900px' }}>
           <span style={{ fontSize: '12px', fontWeight: '600', color: '#F6A500', textTransform: 'uppercase', letterSpacing: '0.16em' }}>Account</span>
-          <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#111', margin: '8px 0 4px' }}>Profile</h1>
+          <h1 style={{ fontSize: '32px', fontWeight: '700', color: 'var(--bv-text)', margin: '8px 0 4px' }}>Profile</h1>
           <p style={{ fontSize: '15px', color: '#666', margin: 0 }}>Your verified identity and account settings.</p>
         </div>
       </div>
@@ -57,7 +57,7 @@ export default function Profile() {
       <div className="container" style={{ maxWidth: '900px', paddingTop: '32px' }}>
 
         {/* ── KYC Status Card ── */}
-        <div style={{ background: '#fff', border: '1px solid #EAEAEA', borderRadius: '16px', padding: '28px', marginBottom: '24px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bv-surface)', border: '1px solid #EAEAEA', borderRadius: '16px', padding: '28px', marginBottom: '24px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: `linear-gradient(90deg, transparent, ${statusMeta.color}, transparent)` }} />
           
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '24px', flexWrap: 'wrap' }}>
@@ -70,7 +70,7 @@ export default function Profile() {
                   <StatusIcon size={20} color={statusMeta.color} strokeWidth={2} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '20px', fontWeight: '700', color: '#111' }}>{statusMeta.label}</div>
+                  <div style={{ fontSize: '20px', fontWeight: '700', color: 'var(--bv-text)' }}>{statusMeta.label}</div>
                   <div style={{ fontSize: '13px', color: '#666', marginTop: '2px' }}>
                     {isApproved && 'Your identity has been confirmed against official records.'}
                     {isPending && 'Our compliance team is reviewing your submission (1–2 business days).'}
@@ -81,7 +81,7 @@ export default function Profile() {
               </div>
             </div>
             {!isApproved && (
-              <Link to="/kyc" style={{ padding: '12px 24px', background: '#F6A500', color: '#fff', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
+              <Link to="/kyc" style={{ padding: '12px 24px', background: '#F6A500', color: 'var(--bv-surface)', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
                 {isRejected ? 'Resubmit KYC' : isPending ? 'View Submission' : 'Start KYC'}
               </Link>
             )}
@@ -92,7 +92,7 @@ export default function Profile() {
               <div style={{ fontSize: '11px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#F6465D', marginBottom: '6px', fontWeight: '600' }}>
                 Rejection Reason
               </div>
-              <div style={{ fontSize: '13px', color: '#111', lineHeight: 1.6 }}>{kyc.rejectionNote}</div>
+              <div style={{ fontSize: '13px', color: 'var(--bv-text)', lineHeight: 1.6 }}>{kyc.rejectionNote}</div>
             </div>
           )}
 
@@ -100,12 +100,12 @@ export default function Profile() {
             <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #EAEAEA', display: 'flex', gap: '40px', fontSize: '13px', flexWrap: 'wrap' }}>
               <div>
                 <div style={{ fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>Verified On</div>
-                <div style={{ color: '#111', fontWeight: '500' }}>{new Date(kyc.reviewedAt).toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+                <div style={{ color: 'var(--bv-text)', fontWeight: '500' }}>{new Date(kyc.reviewedAt).toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
               </div>
               {kyc.reviewedById && (
                 <div>
                   <div style={{ fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>Approver Reference</div>
-                  <div style={{ fontFamily: 'monospace', color: '#111', fontSize: '12px' }}>{kyc.reviewedById.slice(-8)}</div>
+                  <div style={{ fontFamily: 'monospace', color: 'var(--bv-text)', fontSize: '12px' }}>{kyc.reviewedById.slice(-8)}</div>
                 </div>
               )}
             </div>
@@ -218,7 +218,7 @@ export default function Profile() {
         </SectionCard>
 
         {/* ── Danger Zone ── */}
-        <div style={{ background: '#fff', border: '1px solid rgba(246,70,93,0.3)', borderRadius: '16px', padding: '28px', marginBottom: '24px' }}>
+        <div style={{ background: 'var(--bv-surface)', border: '1px solid rgba(246,70,93,0.3)', borderRadius: '16px', padding: '28px', marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
             <AlertTriangle size={18} color="#F6465D" />
             <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#F6465D', margin: 0 }}>Account Closure</h3>
@@ -250,9 +250,9 @@ export default function Profile() {
 
 function SectionCard({ title, locked, children, footer }) {
   return (
-    <div style={{ background: '#fff', border: '1px solid #EAEAEA', borderRadius: '16px', padding: '28px', marginBottom: '24px' }}>
+    <div style={{ background: 'var(--bv-surface)', border: '1px solid #EAEAEA', borderRadius: '16px', padding: '28px', marginBottom: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#111', margin: 0 }}>{title}</h3>
+        <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--bv-text)', margin: 0 }}>{title}</h3>
         {locked && (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: '#F5F5F5', color: '#666', borderRadius: '4px', fontSize: '11px', fontWeight: '600' }}>
             <Lock size={10} /> Locked
@@ -273,7 +273,7 @@ function Field({ label, value, locked, masked }) {
   return (
     <div>
       <div style={{ fontSize: '11px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '6px' }}>{label}</div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: masked ? 'monospace' : 'inherit', fontSize: '14px', color: value && value !== '—' ? '#111' : '#AAA', fontWeight: '500' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: masked ? 'monospace' : 'inherit', fontSize: '14px', color: value && value !== '—' ? 'var(--bv-text)' : '#AAA', fontWeight: '500' }}>
         {value || '—'}
         {locked && <Lock size={12} color="#AAA" />}
       </div>
@@ -296,10 +296,10 @@ function EditableField({ icon: Icon, label, value, verified, note }) {
             </span>
           )}
         </div>
-        <div style={{ fontSize: '14px', color: '#111', fontWeight: '500', overflow: 'hidden', textOverflow: 'ellipsis' }}>{value}</div>
+        <div style={{ fontSize: '14px', color: 'var(--bv-text)', fontWeight: '500', overflow: 'hidden', textOverflow: 'ellipsis' }}>{value}</div>
         <div style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>{note}</div>
       </div>
-      <button style={{ padding: '8px 16px', background: 'transparent', color: '#111', border: '1px solid #EAEAEA', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', fontFamily: 'inherit' }}>
+      <button style={{ padding: '8px 16px', background: 'transparent', color: 'var(--bv-text)', border: '1px solid #EAEAEA', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', fontFamily: 'inherit' }}>
         Change
       </button>
     </div>
@@ -313,7 +313,7 @@ function SecurityRow({ icon: Icon, label, description, action, href, status, sta
         <Icon size={18} color="#666" strokeWidth={1.75} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: '14px', color: '#111', fontWeight: '600' }}>{label}</div>
+        <div style={{ fontSize: '14px', color: 'var(--bv-text)', fontWeight: '600' }}>{label}</div>
         <div style={{ fontSize: '12px', color: '#888', marginTop: '2px' }}>{description}</div>
       </div>
       {status && (
@@ -321,7 +321,7 @@ function SecurityRow({ icon: Icon, label, description, action, href, status, sta
           {status}
         </span>
       )}
-      <Link to={href} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '8px 14px', background: 'transparent', color: '#111', border: '1px solid #EAEAEA', borderRadius: '6px', fontSize: '12px', fontWeight: '600', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+      <Link to={href} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '8px 14px', background: 'transparent', color: 'var(--bv-text)', border: '1px solid #EAEAEA', borderRadius: '6px', fontSize: '12px', fontWeight: '600', textDecoration: 'none', whiteSpace: 'nowrap' }}>
         {action} <ArrowRight size={12} />
       </Link>
     </div>

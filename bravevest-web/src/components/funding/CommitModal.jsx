@@ -40,7 +40,7 @@ export default function CommitModal({ request, open, onClose, onCommitted }) {
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 100 }}>
-      <div style={{ background: '#fff', borderRadius: 16, padding: 24, maxWidth: 480, width: '100%' }}>
+      <div style={{ background: 'var(--bv-surface)', borderRadius: 16, padding: 24, maxWidth: 480, width: '100%' }}>
         <h3 style={{ marginTop: 0 }}>Commit to {request.title}</h3>
         <p style={{ color: '#666', fontSize: 14 }}>
           {fmt(remaining, request.currency)} remains · min {fmt(min, request.currency)} · max {fmt(max, request.currency)}

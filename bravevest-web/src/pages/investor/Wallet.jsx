@@ -37,19 +37,19 @@ export default function Wallet() {
     <div className="page-light" style={{ minHeight: '100vh', background: '#FAFAFA', paddingBottom: '64px' }}>
       
       {/* Header */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #EAEAEA', padding: '48px 0' }}>
+      <div style={{ background: 'var(--bv-surface)', borderBottom: '1px solid #EAEAEA', padding: '48px 0' }}>
         <div className="container" style={{ maxWidth: '1200px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '24px' }}>
             <div>
               <span style={{ fontSize: '12px', fontWeight: '600', color: '#F6A500', textTransform: 'uppercase', letterSpacing: '0.16em' }}>Account</span>
-              <h1 style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.02em', color: '#111', margin: '8px 0 4px' }}>Wallet</h1>
+              <h1 style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.02em', color: 'var(--bv-text)', margin: '8px 0 4px' }}>Wallet</h1>
               <p style={{ fontSize: '15px', color: '#666', margin: 0 }}>Your cash position and full transaction ledger.</p>
             </div>
             <div style={{ display: 'flex', gap: '12px' }}>
-              <Link to="/deposit" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#F6A500', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
+              <Link to="/deposit" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#F6A500', color: 'var(--bv-surface)', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
                 <ArrowDownRight size={16} /> Deposit
               </Link>
-              <Link to="/withdraw" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#fff', color: '#111', border: '1px solid #EAEAEA', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
+              <Link to="/withdraw" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'var(--bv-surface)', color: 'var(--bv-text)', border: '1px solid #EAEAEA', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
                 <ArrowUpRight size={16} /> Withdraw
               </Link>
             </div>
@@ -62,7 +62,7 @@ export default function Wallet() {
         <div className="grid-3" style={{ marginBottom: '32px' }}>
 
           {/* Total Balance */}
-          <div style={{ padding: '28px', background: 'linear-gradient(135deg, #111 0%, #1A1A1A 100%)', borderRadius: '16px', color: '#fff', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ padding: '28px', background: 'linear-gradient(135deg, #111 0%, #1A1A1A 100%)', borderRadius: '16px', color: 'var(--bv-surface)', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, transparent, #F6A500, transparent)' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: '600', color: '#F6A500', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
               <WalletIcon size={14} /> Total Balance
@@ -74,18 +74,18 @@ export default function Wallet() {
           </div>
 
           {/* Available */}
-          <div style={{ padding: '28px', background: '#fff', border: '1px solid #EAEAEA', borderRadius: '16px' }}>
+          <div style={{ padding: '28px', background: 'var(--bv-surface)', border: '1px solid #EAEAEA', borderRadius: '16px' }}>
             <div style={{ fontSize: '12px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
               Available
             </div>
-            <div style={{ fontSize: '32px', fontWeight: '700', letterSpacing: '-0.02em', color: '#111' }}>
+            <div style={{ fontSize: '32px', fontWeight: '700', letterSpacing: '-0.02em', color: 'var(--bv-text)' }}>
               {loading ? '—' : format(data.balance)}
             </div>
             <div style={{ fontSize: '13px', color: '#0ECB81', marginTop: '8px', fontWeight: '500' }}>Ready to deploy</div>
           </div>
 
           {/* Held */}
-          <div style={{ padding: '28px', background: '#fff', border: '1px solid #EAEAEA', borderRadius: '16px' }}>
+          <div style={{ padding: '28px', background: 'var(--bv-surface)', border: '1px solid #EAEAEA', borderRadius: '16px' }}>
             <div style={{ fontSize: '12px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
               Held in Escrow
             </div>
@@ -103,12 +103,12 @@ export default function Wallet() {
         {/* Header row */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#111', margin: 0 }}>Transaction Ledger</h3>
+            <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--bv-text)', margin: 0 }}>Transaction Ledger</h3>
             <span style={{ background: '#F5F5F5', color: '#666', padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: '600' }}>
               {data.ledger.length}
             </span>
           </div>
-          <button style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: '#fff', border: '1px solid #EAEAEA', borderRadius: '6px', fontSize: '13px', fontWeight: '500', color: '#111', cursor: 'pointer', fontFamily: 'inherit' }}>
+          <button style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: 'var(--bv-surface)', border: '1px solid #EAEAEA', borderRadius: '6px', fontSize: '13px', fontWeight: '500', color: 'var(--bv-text)', cursor: 'pointer', fontFamily: 'inherit' }}>
             <Download size={14} /> Export CSV
           </button>
         </div>
@@ -143,20 +143,20 @@ export default function Wallet() {
         </div>
 
         {/* Table */}
-        <div style={{ background: '#fff', border: '1px solid #EAEAEA', borderRadius: '12px', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--bv-surface)', border: '1px solid #EAEAEA', borderRadius: '12px', overflow: 'hidden' }}>
           {loading ? (
             <div style={{ padding: '64px', textAlign: 'center', color: '#888' }}>Loading transactions…</div>
           ) : filteredLedger.length === 0 ? (
             <div style={{ padding: '64px 24px', textAlign: 'center' }}>
               <WalletIcon size={32} color="#CCC" style={{ margin: '0 auto 16px' }} />
-              <h4 style={{ fontSize: '16px', fontWeight: '600', color: '#111', marginBottom: '8px' }}>
+              <h4 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--bv-text)', marginBottom: '8px' }}>
                 {data.ledger.length === 0 ? 'No transactions yet' : 'No matching transactions'}
               </h4>
               <p style={{ fontSize: '14px', color: '#666', marginBottom: '24px' }}>
                 {data.ledger.length === 0 ? 'Your ledger will populate once you make your first deposit.' : 'Try a different filter.'}
               </p>
               {data.ledger.length === 0 && (
-                <Link to="/deposit" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '12px 24px', background: '#F6A500', color: '#fff', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
+                <Link to="/deposit" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '12px 24px', background: '#F6A500', color: 'var(--bv-surface)', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
                   Make a Deposit
                 </Link>
               )}
@@ -192,7 +192,7 @@ export default function Wallet() {
                       <td style={{ padding: '16px 20px', fontSize: '13px', color: '#666' }}>
                         {tx.description || '—'}
                       </td>
-                      <td style={{ padding: '16px 20px', fontSize: '14px', fontWeight: '600', textAlign: 'right', color: tx.direction === 'credit' ? '#0ECB81' : '#111' }}>
+                      <td style={{ padding: '16px 20px', fontSize: '14px', fontWeight: '600', textAlign: 'right', color: tx.direction === 'credit' ? '#0ECB81' : 'var(--bv-text)' }}>
                         {tx.direction === 'credit' ? '+' : '−'}{format(tx.amount)}
                       </td>
                       <td style={{ padding: '16px 20px', fontSize: '13px', textAlign: 'right', color: '#666', fontFamily: 'monospace' }}>

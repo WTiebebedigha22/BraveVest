@@ -1,158 +1,117 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import AdminPageHeader from '@/components/admin/AdminPageHeader';
-import AdminCard from '@/components/admin/AdminCard';
-import AdminTable from '@/components/admin/AdminTable';
-import AdminEmpty from '@/components/admin/AdminEmpty';
-import Loader from '@/components/shared/Loader';
-import Button from '@/components/shared/Button';
+import { useParams, useNavigate } from 'react-router-dom';
+import { CheckCircle, XCircle } from 'lucide-react';
 import { adminApi } from '@/api/admin';
-import './KycDetail.css';
 
 export default function AdminKycDetail() {
   const { id } = useParams();
   const nav = useNavigate();
-  const [data, setData] = useState(null);
+  const [kyc, setKyc] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [showReject, setShowReject] = useState(false);
+  const [reason, setReason] = useState('');
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
-    adminApi.getKyc(id).then(setData).catch(() => {}).finally(() => setLoading(false));
-  }, [id]);
+    adminApi.kycGet(id).then(setKyc).catch(() => nav('/admin/kyc')).finally(() => setLoading(false));
+  }, [id, nav]);
 
   async function approve() {
-    setSubmitting(true); setError('');
-    try { await adminApi.approveKyc(id); nav('/admin/kyc'); }
-    catch (err) { setError(err?.response?.data?.message || 'Failed'); }
-    finally { setSubmitting(false); }
+    if (!confirm('Approve this KYC submission?')) return;
+    setActionLoading(true);
+    try {
+      await adminApi.kycApprove(id);
+      alert('Approved');
+      nav('/admin/kyc');
+    } catch (e) { alert('Failed'); }
+    finally { setActionLoading(false); }
   }
 
   async function reject() {
-    const reason = window.prompt('Rejection reason:');
-    if (!reason) return;
-    setSubmitting(true); setError('');
-    try { await adminApi.rejectKyc(id, reason); nav('/admin/kyc'); }
-    catch (err) { setError(err?.response?.data?.message || 'Failed'); }
-    finally { setSubmitting(false); }
+    if (!reason.trim()) return alert('Reason required');
+    setActionLoading(true);
+    try {
+      await adminApi.kycReject(id, reason);
+      alert('Rejected');
+      nav('/admin/kyc');
+    } catch (e) { alert('Failed'); }
+    finally { setActionLoading(false); }
   }
 
-  if (loading) return <div className="text-center py-5"><Loader /></div>;
-  if (!data) return <AdminEmpty title="KYC not found" body="This submission may have been deleted." />;
-
-  const p = data.profile;
-  const user = p.user;
-
-  const docCols = [
-    { key: 'name', label: 'File', render: (d) => d.fileName },
-    { key: 'type', label: 'Type', render: (d) => <span className="text-muted">{d.type.replace(/_/g, ' ')}</span> },
-    {
-      key: 'uploaded', label: 'Uploaded',
-      render: (d) => new Date(d.createdAt).toLocaleDateString(),
-    },
-    {
-      key: 'view', label: '', align: 'right',
-      render: (d) => (
-        <a href={d.fileUrl} target="_blank" rel="noreferrer" className="kycdoc-view">View →</a>
-      ),
-    },
-  ];
+  if (loading) return <div style={{ padding: '48px', textAlign: 'center', color: 'var(--bybit-text-muted)' }}>Loading…</div>;
+  if (!kyc) return <div style={{ padding: '48px', textAlign: 'center' }}>Not found</div>;
 
   return (
-    <>
-      <Link to="/admin/kyc" className="admin-back">← All KYC submissions</Link>
+    <div style={{ padding: '32px 0' }}>
+      <div className="container container--narrow">
+        <button onClick={() => nav('/admin/kyc')} className="btn btn--ghost" style={{ marginBottom: '16px' }}>← Back to queue</button>
 
-      <AdminPageHeader
-        eyebrow="KYC Review"
-        title={`${user.firstName} ${user.lastName}`}
-        subtitle={user.email}
-        right={<AdminTable.Status status={p.status} />}
-      />
-
-      {error && <div className="admin-error">{error}</div>}
-
-      <div className="admin-grid-2 mb-4">
-        <AdminCard padded={false}>
-          <AdminCard.Header title="Personal" subtitle="Step 1 details" />
-          <AdminCard.Body>
-            <Row k="Date of birth" v={p.dateOfBirth ? new Date(p.dateOfBirth).toLocaleDateString() : '—'} />
-            <Row k="Gender" v={p.gender || '—'} />
-            <Row k="Nationality" v={p.nationality || '—'} />
-            <Row k="Occupation" v={p.occupation || '—'} />
-          </AdminCard.Body>
-        </AdminCard>
-
-        <AdminCard padded={false}>
-          <AdminCard.Header title="Identity" subtitle="Step 2 details" />
-          <AdminCard.Body>
-            <Row k="ID type" v={p.idType || '—'} />
-            <Row k="ID number" v={p.idNumber || '—'} />
-            <Row k="Issued" v={p.idIssuedDate ? new Date(p.idIssuedDate).toLocaleDateString() : '—'} />
-            <Row k="Expires" v={p.idExpiryDate ? new Date(p.idExpiryDate).toLocaleDateString() : '—'} />
-          </AdminCard.Body>
-        </AdminCard>
-
-        <AdminCard padded={false}>
-          <AdminCard.Header title="Address" subtitle="Step 3 details" />
-          <AdminCard.Body>
-            <Row k="Line 1" v={p.addressLine1 || '—'} />
-            <Row k="Line 2" v={p.addressLine2 || '—'} />
-            <Row k="City" v={p.city || '—'} />
-            <Row k="State" v={p.state || '—'} />
-            <Row k="Country" v={p.country || '—'} />
-          </AdminCard.Body>
-        </AdminCard>
-
-        <AdminCard padded={false}>
-          <AdminCard.Header title="Bank" subtitle="Step 4 details" />
-          <AdminCard.Body>
-            <Row k="Bank name" v={p.bankName || '—'} />
-            <Row k="Bank code" v={p.bankCode || '—'} />
-            <Row k="Account number" v={p.accountNumber || '—'} />
-            <Row k="Account name" v={p.accountName || '—'} />
-          </AdminCard.Body>
-        </AdminCard>
-      </div>
-
-      <AdminCard padded={false} className="mb-4">
-        <AdminCard.Header title="Documents" subtitle={`${data.documents.length} uploaded`} />
-        <AdminCard.Body>
-          <AdminTable
-            columns={docCols}
-            rows={data.documents}
-            empty="No documents uploaded."
-          />
-        </AdminCard.Body>
-      </AdminCard>
-
-      {p.rejectionNote && (
-        <AdminCard padded={false} className="mb-4">
-          <AdminCard.Header title="Rejection note" />
-          <AdminCard.Body>
-            <div className="kycdoc-note">{p.rejectionNote}</div>
-          </AdminCard.Body>
-        </AdminCard>
-      )}
-
-      {p.status === 'UNDER_REVIEW' && (
-        <div className="kycdoc-actions">
-          <Button variant="secondary" size="lg" onClick={reject} disabled={submitting}>
-            Reject
-          </Button>
-          <Button variant="primary" size="lg" onClick={approve} disabled={submitting}>
-            {submitting ? 'Approving…' : 'Approve'}
-          </Button>
+        <div style={{ marginBottom: '24px' }}>
+          <h1 style={{ margin: 0, fontSize: '24px' }}>KYC Review</h1>
+          <p style={{ color: 'var(--bybit-text-muted)', margin: '4px 0 0', fontSize: '13px' }}>{kyc.user?.email} · {kyc.user?.firstName} {kyc.user?.lastName}</p>
         </div>
-      )}
-    </>
+
+        <div className="card" style={{ marginBottom: '16px' }}>
+          <h3 style={{ margin: 0, fontSize: '16px', marginBottom: '16px' }}>Personal Info</h3>
+          <Grid>
+            <Field label="Full Name" value={`${kyc.user?.firstName || ''} ${kyc.user?.lastName || ''}`} />
+            <Field label="Date of Birth" value={kyc.dateOfBirth ? new Date(kyc.dateOfBirth).toLocaleDateString() : '—'} />
+            <Field label="Gender" value={kyc.gender || '—'} />
+            <Field label="Nationality" value={kyc.nationality || '—'} />
+            <Field label="ID Type" value={kyc.idType || '—'} />
+            <Field label="ID Number" value={kyc.idNumber ? '••••' + kyc.idNumber.slice(-4) : '—'} />
+          </Grid>
+        </div>
+
+        <div className="card" style={{ marginBottom: '16px' }}>
+          <h3 style={{ margin: 0, fontSize: '16px', marginBottom: '16px' }}>Address</h3>
+          <Grid>
+            <Field label="Street" value={[kyc.addressLine1, kyc.addressLine2].filter(Boolean).join(', ') || '—'} />
+            <Field label="City" value={kyc.city || '—'} />
+            <Field label="State" value={kyc.state || '—'} />
+            <Field label="Occupation" value={kyc.occupation || '—'} />
+          </Grid>
+        </div>
+
+        <div className="card" style={{ marginBottom: '16px' }}>
+          <h3 style={{ margin: 0, fontSize: '16px', marginBottom: '16px' }}>Bank Account</h3>
+          <Grid>
+            <Field label="Bank" value={kyc.bankName || '—'} />
+            <Field label="Account Name" value={kyc.accountName || '—'} />
+            <Field label="Account Number" value={kyc.accountNumber ? '••••' + kyc.accountNumber.slice(-4) : '—'} />
+          </Grid>
+        </div>
+
+        <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
+          <button onClick={approve} disabled={actionLoading || kyc.status === 'APPROVED'} className="btn btn--primary" style={{ flex: 1, background: 'var(--bybit-green)', color: 'var(--bv-background)' }}>
+            <CheckCircle size={16} /> Approve
+          </button>
+          <button onClick={() => setShowReject(true)} disabled={actionLoading || kyc.status === 'REJECTED'} className="btn btn--outline" style={{ flex: 1, borderColor: 'var(--bybit-red)', color: 'var(--bybit-red)' }}>
+            <XCircle size={16} /> Reject
+          </button>
+        </div>
+
+        {showReject && (
+          <div className="card" style={{ marginTop: '16px', borderColor: 'var(--bybit-red)' }}>
+            <label className="form-label">Rejection Reason</label>
+            <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={3} placeholder="Explain why this submission is being rejected" />
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '12px' }}>
+              <button onClick={() => setShowReject(false)} className="btn btn--ghost">Cancel</button>
+              <button onClick={reject} className="btn btn--primary" style={{ background: 'var(--bybit-red)' }}>Confirm Reject</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
-function Row({ k, v }) {
+function Grid({ children }) { return <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>{children}</div>; }
+function Field({ label, value }) {
   return (
-    <div className="admin-kv__row">
-      <span className="admin-kv__k">{k}</span>
-      <span className="admin-kv__v">{v}</span>
+    <div>
+      <div className="data-label" style={{ fontSize: '10px', marginBottom: '4px' }}>{label}</div>
+      <div style={{ fontSize: '14px' }}>{value}</div>
     </div>
   );
 }

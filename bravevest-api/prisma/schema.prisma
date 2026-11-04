@@ -202,6 +202,8 @@ model User {
   @@map("users")
   wallet      Wallet?
   ledger      LedgerEntry[]
+  otpCodes OtpCode[]
+  preferences Json?   @default("{}")
 }
 
 model RefreshToken {
@@ -544,6 +546,8 @@ model FundingRequest {
   @@index([category])
   @@index([publishedAt])
   @@map("funding_requests")
+  managerNotes String?   @db.Text
+
 }
 
 model FundingRequestDocument {
@@ -661,4 +665,19 @@ model LedgerEntry {
   @@index([type])
   @@index([reference])
   @@map("ledger_entries")
+}
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code      String
+  purpose   String   // "login" | "withdrawal" | "password_change"
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([code])
+  @@map("otp_codes")
 }

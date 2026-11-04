@@ -1,0 +1,27 @@
+-- AlterTable
+ALTER TABLE "funding_requests" ADD COLUMN     "managerNotes" TEXT;
+
+-- AlterTable
+ALTER TABLE "users" ADD COLUMN     "preferences" JSONB DEFAULT '{}';
+
+-- CreateTable
+CREATE TABLE "otp_codes" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "purpose" TEXT NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "usedAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "otp_codes_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE INDEX "otp_codes_userId_idx" ON "otp_codes"("userId");
+
+-- CreateIndex
+CREATE INDEX "otp_codes_code_idx" ON "otp_codes"("code");
+
+-- AddForeignKey
+ALTER TABLE "otp_codes" ADD CONSTRAINT "otp_codes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

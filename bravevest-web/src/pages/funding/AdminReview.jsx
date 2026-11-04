@@ -51,7 +51,7 @@ export default function AdminReview() {
 
       <div style={{ display: 'grid', gap: 12, marginTop: 24 }}>
         {items.map((it) => (
-          <div key={it.id} style={{ padding: 20, border: '1px solid #e3e3e3', borderRadius: 14, background: '#fff' }}>
+          <div key={it.id} style={{ padding: 20, border: '1px solid #e3e3e3', borderRadius: 14, background: 'var(--bv-surface)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
               <div style={{ flex: '1 1 320px' }}>
                 <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -66,7 +66,7 @@ export default function AdminReview() {
                 <button className="btn btn-primary" onClick={() => approve(it.id)}>Approve</button>
                 <button
                   className="btn"
-                  style={{ border: '1px solid #b71c1c', color: '#b71c1c', background: '#fff' }}
+                  style={{ border: '1px solid #b71c1c', color: '#b71c1c', background: 'var(--bv-surface)' }}
                   onClick={() => { setRejectFor(it.id); setReason(''); }}
                 >
                   Reject
@@ -79,7 +79,7 @@ export default function AdminReview() {
 
       {rejectFor && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 100 }}>
-          <div style={{ background: '#fff', borderRadius: 16, padding: 24, maxWidth: 440, width: '100%' }}>
+          <div style={{ background: 'var(--bv-surface)', borderRadius: 16, padding: 24, maxWidth: 440, width: '100%' }}>
             <h3 style={{ marginTop: 0 }}>Reject request</h3>
             <textarea
               rows={4}
@@ -90,7 +90,7 @@ export default function AdminReview() {
             />
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 16 }}>
               <button className="btn" onClick={() => setRejectFor(null)}>Cancel</button>
-              <button className="btn" style={{ background: '#b71c1c', color: '#fff' }} onClick={reject}>Reject</button>
+              <button className="btn" style={{ background: '#b71c1c', color: 'var(--bv-surface)' }} onClick={reject}>Reject</button>
             </div>
           </div>
         </div>

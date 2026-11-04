@@ -432,7 +432,7 @@ export default function Support() {
           -webkit-tap-highlight-color: transparent;
         }
         .support__submit:hover:not(:disabled) {
-          background: #1a2842;
+          background: var(--bybit-surface-2);
         }
         .support__submit:focus-visible {
           outline: 2px solid var(--sp-gold);

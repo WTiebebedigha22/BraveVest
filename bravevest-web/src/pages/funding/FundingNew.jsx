@@ -133,7 +133,7 @@ const inputStyle = {
   border: '1px solid #e3e3e3',
   borderRadius: 10,
   fontSize: 15,
-  background: '#fff',
+  background: 'var(--bv-surface)',
 };
 
 function Field({ label, required, children }) {

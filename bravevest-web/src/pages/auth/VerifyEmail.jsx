@@ -75,7 +75,7 @@ export default function VerifyEmail() {
       {/* ── Left Promo Section ── */}
       <div className="auth-left-promo">
         <div style={{ position: 'relative', zIndex: 10 }}>
-          <h1 style={{ fontSize: '32px', fontWeight: '600', color: '#111', lineHeight: 1.3 }}>
+          <h1 style={{ fontSize: '32px', fontWeight: '600', color: 'var(--bv-text)', lineHeight: 1.3 }}>
             Verify your email<br />to secure your account.
           </h1>
           <p style={{ fontSize: '15px', color: '#666', marginTop: '12px', maxWidth: '340px', lineHeight: 1.6 }}>
@@ -111,10 +111,10 @@ export default function VerifyEmail() {
               boxShadow: '0 15px 30px rgba(246, 165, 0, 0.3)',
             }}
           >
-            <div style={{ width: '40px', height: '40px', background: '#fff', borderRadius: '50%', margin: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '40px', height: '40px', background: 'var(--bv-surface)', borderRadius: '50%', margin: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ fontWeight: 'bold', color: '#F6A500', fontSize: '18px' }}>B</span>
             </div>
-            <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: '#fff', fontSize: '11px', letterSpacing: '2px', fontWeight: '600', opacity: 0.85 }}>
+            <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: 'var(--bv-surface)', fontSize: '11px', letterSpacing: '2px', fontWeight: '600', opacity: 0.85 }}>
               BRAVEVEST
             </div>
           </div>
@@ -123,11 +123,11 @@ export default function VerifyEmail() {
         {/* Bottom Stats Strip */}
         <div style={{ display: 'flex', gap: '48px', position: 'relative', zIndex: 10 }}>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>₦184B+</div>
+            <div style={{ fontSize: '32px', fontWeight: '700', color: 'var(--bv-text)' }}>₦184B+</div>
             <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>Assets Under Management</div>
           </div>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>52,000+</div>
+            <div style={{ fontSize: '32px', fontWeight: '700', color: 'var(--bv-text)' }}>52,000+</div>
             <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>Active Investors</div>
           </div>
         </div>
@@ -149,27 +149,27 @@ export default function VerifyEmail() {
             <button
               type="button"
               aria-label="Change language"
-              style={{ background: 'none', border: 'none', color: '#111', cursor: 'pointer', padding: '8px' }}
+              style={{ background: 'none', border: 'none', color: 'var(--bv-text)', cursor: 'pointer', padding: '8px' }}
             >
               <Globe size={20} />
             </button>
           </div>
 
           {/* Verification Card */}
-          <div style={{ background: '#fff', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid #EAEAEA', textAlign: 'center' }}>
+          <div style={{ background: 'var(--bv-surface)', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid #EAEAEA', textAlign: 'center' }}>
             
             {/* Status Icon */}
             <div style={{ width: '64px', height: '64px', background: 'rgba(246,165,0,0.1)', color: '#F6A500', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
               <MailCheck size={32} />
             </div>
 
-            <h2 style={{ fontSize: '22px', fontWeight: '600', margin: '0 0 8px', color: '#111' }}>
+            <h2 style={{ fontSize: '22px', fontWeight: '600', margin: '0 0 8px', color: 'var(--bv-text)' }}>
               Email verification
             </h2>
             
             <p style={{ fontSize: '14px', color: '#666', lineHeight: 1.6, marginBottom: '24px' }}>
               {emailParam ? (
-                <>We sent a verification link to <strong style={{ color: '#111' }}>{emailParam}</strong>.</>
+                <>We sent a verification link to <strong style={{ color: 'var(--bv-text)' }}>{emailParam}</strong>.</>
               ) : (
                 <>Email verification is currently optional during this preview release.</>
               )}
@@ -191,7 +191,7 @@ export default function VerifyEmail() {
                 width: '100%',
                 padding: '14px',
                 background: '#F6A500',
-                color: '#fff',
+                color: 'var(--bv-surface)',
                 borderRadius: '8px',
                 fontSize: '16px',
                 fontWeight: '600',
@@ -212,7 +212,7 @@ export default function VerifyEmail() {
                 width: '100%',
                 padding: '12px',
                 background: '#F5F5F5',
-                color: '#111',
+                color: 'var(--bv-text)',
                 border: 'none',
                 borderRadius: '8px',
                 fontSize: '14px',
@@ -248,7 +248,7 @@ export default function VerifyEmail() {
 
           {/* Legal / Support Link */}
           <p style={{ textAlign: 'center', fontSize: '12px', color: '#888', marginTop: '24px', lineHeight: 1.6 }}>
-            Having trouble? Contact <a href="mailto:support@bravevest.com" style={{ color: '#111', textDecoration: 'underline' }}>Support</a>
+            Having trouble? Contact <a href="mailto:support@bravevest.com" style={{ color: 'var(--bv-text)', textDecoration: 'underline' }}>Support</a>
           </p>
 
         </div>

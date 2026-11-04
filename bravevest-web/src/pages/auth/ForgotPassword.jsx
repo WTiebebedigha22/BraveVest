@@ -83,7 +83,7 @@ export default function ForgotPassword() {
       {/* ── Left Promo Section ── */}
       <div className="auth-left-promo">
         <div style={{ position: 'relative', zIndex: 10 }}>
-          <h1 style={{ fontSize: '32px', fontWeight: '600', color: '#111', lineHeight: 1.3 }}>
+          <h1 style={{ fontSize: '32px', fontWeight: '600', color: 'var(--bv-text)', lineHeight: 1.3 }}>
             Secure & seamless<br />account recovery.
           </h1>
           <p style={{ fontSize: '15px', color: '#666', marginTop: '12px', maxWidth: '340px', lineHeight: 1.6 }}>
@@ -119,10 +119,10 @@ export default function ForgotPassword() {
               boxShadow: '0 15px 30px rgba(246, 165, 0, 0.3)',
             }}
           >
-            <div style={{ width: '40px', height: '40px', background: '#fff', borderRadius: '50%', margin: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '40px', height: '40px', background: 'var(--bv-surface)', borderRadius: '50%', margin: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ fontWeight: 'bold', color: '#F6A500', fontSize: '18px' }}>B</span>
             </div>
-            <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: '#fff', fontSize: '11px', letterSpacing: '2px', fontWeight: '600', opacity: 0.85 }}>
+            <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: 'var(--bv-surface)', fontSize: '11px', letterSpacing: '2px', fontWeight: '600', opacity: 0.85 }}>
               BRAVEVEST
             </div>
           </div>
@@ -131,11 +131,11 @@ export default function ForgotPassword() {
         {/* Bottom Stats Strip */}
         <div style={{ display: 'flex', gap: '48px', position: 'relative', zIndex: 10 }}>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>₦184B+</div>
+            <div style={{ fontSize: '32px', fontWeight: '700', color: 'var(--bv-text)' }}>₦184B+</div>
             <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>Assets Under Management</div>
           </div>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>52,000+</div>
+            <div style={{ fontSize: '32px', fontWeight: '700', color: 'var(--bv-text)' }}>52,000+</div>
             <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>Active Investors</div>
           </div>
         </div>
@@ -157,14 +157,14 @@ export default function ForgotPassword() {
             <button
               type="button"
               aria-label="Change language"
-              style={{ background: 'none', border: 'none', color: '#111', cursor: 'pointer', padding: '8px' }}
+              style={{ background: 'none', border: 'none', color: 'var(--bv-text)', cursor: 'pointer', padding: '8px' }}
             >
               <Globe size={20} />
             </button>
           </div>
 
           {/* Form Card */}
-          <div style={{ background: '#fff', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid #EAEAEA' }}>
+          <div style={{ background: 'var(--bv-surface)', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid #EAEAEA' }}>
             
             {sent ? (
               <div style={{ textAlign: 'center' }}>
@@ -172,9 +172,9 @@ export default function ForgotPassword() {
                   <CheckCircle size={28} />
                 </div>
                 
-                <h2 style={{ fontSize: '20px', fontWeight: '600', margin: '0 0 8px', color: '#111' }}>Check your email</h2>
+                <h2 style={{ fontSize: '20px', fontWeight: '600', margin: '0 0 8px', color: 'var(--bv-text)' }}>Check your email</h2>
                 <p style={{ fontSize: '14px', color: '#666', lineHeight: 1.6, marginBottom: '24px' }}>
-                  If an account exists for <strong style={{ color: '#111' }}>{email}</strong>, we sent a password reset link. It expires in 15 minutes.
+                  If an account exists for <strong style={{ color: 'var(--bv-text)' }}>{email}</strong>, we sent a password reset link. It expires in 15 minutes.
                 </p>
 
                 <button
@@ -185,7 +185,7 @@ export default function ForgotPassword() {
                     width: '100%',
                     padding: '12px',
                     background: '#F5F5F5',
-                    color: '#111',
+                    color: 'var(--bv-text)',
                     border: 'none',
                     borderRadius: '8px',
                     fontSize: '14px',
@@ -212,7 +212,7 @@ export default function ForgotPassword() {
             ) : (
               <>
                 <div style={{ marginBottom: '24px' }}>
-                  <h2 style={{ fontSize: '20px', fontWeight: '600', margin: '0 0 8px', color: '#111' }}>Reset password</h2>
+                  <h2 style={{ fontSize: '20px', fontWeight: '600', margin: '0 0 8px', color: 'var(--bv-text)' }}>Reset password</h2>
                   <p style={{ fontSize: '14px', color: '#666', margin: 0, lineHeight: 1.5 }}>
                     Enter your email address and we'll send you a link to reset your password.
                   </p>
@@ -248,7 +248,7 @@ export default function ForgotPassword() {
                       width: '100%',
                       padding: '14px',
                       background: '#F6A500',
-                      color: '#fff',
+                      color: 'var(--bv-surface)',
                       border: 'none',
                       borderRadius: '8px',
                       fontSize: '16px',
@@ -277,7 +277,7 @@ export default function ForgotPassword() {
 
           {/* Legal Footnote */}
           <p style={{ textAlign: 'center', fontSize: '12px', color: '#888', marginTop: '24px', lineHeight: 1.6 }}>
-            Need help? Contact <a href="mailto:support@bravevest.com" style={{ color: '#111', textDecoration: 'underline' }}>Support</a>
+            Need help? Contact <a href="mailto:support@bravevest.com" style={{ color: 'var(--bv-text)', textDecoration: 'underline' }}>Support</a>
           </p>
 
         </div>

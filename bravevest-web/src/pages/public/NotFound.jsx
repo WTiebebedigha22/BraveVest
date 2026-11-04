@@ -28,7 +28,7 @@ export default function NotFound() {
         </div>
 
         {/* Title */}
-        <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#111', marginBottom: '16px', letterSpacing: '-0.02em' }}>
+        <h1 style={{ fontSize: '32px', fontWeight: '700', color: 'var(--bybit-text)', marginBottom: '16px', letterSpacing: '-0.02em' }}>
           Page not <em style={{ fontStyle: 'italic', color: '#F6A500' }}>found.</em>
         </h1>
 
@@ -44,7 +44,7 @@ export default function NotFound() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: '8px',
               padding: '14px 28px',
-              background: '#F6A500', color: '#fff',
+              background: '#F6A500', color: 'var(--bv-surface)',
               border: 'none', borderRadius: '8px',
               fontSize: '15px', fontWeight: '600',
               textDecoration: 'none',
@@ -57,7 +57,7 @@ export default function NotFound() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: '8px',
               padding: '14px 28px',
-              background: '#fff', color: '#111',
+              background: 'var(--bybit-black)', color: 'var(--bybit-text)',
               border: '1px solid #EAEAEA', borderRadius: '8px',
               fontSize: '15px', fontWeight: '600',
               cursor: 'pointer', fontFamily: 'inherit',
@@ -73,16 +73,16 @@ export default function NotFound() {
             Popular Pages
           </div>
           <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/marketplace" style={{ fontSize: '14px', color: '#111', textDecoration: 'none', fontWeight: '500' }}>
+            <Link to="/marketplace" style={{ fontSize: '14px', color: 'var(--bybit-text)', textDecoration: 'none', fontWeight: '500' }}>
               Markets
             </Link>
-            <Link to="/how-it-works" style={{ fontSize: '14px', color: '#111', textDecoration: 'none', fontWeight: '500' }}>
+            <Link to="/how-it-works" style={{ fontSize: '14px', color: 'var(--bybit-text)', textDecoration: 'none', fontWeight: '500' }}>
               How It Works
             </Link>
-            <Link to="/faq" style={{ fontSize: '14px', color: '#111', textDecoration: 'none', fontWeight: '500' }}>
+            <Link to="/faq" style={{ fontSize: '14px', color: 'var(--bybit-text)', textDecoration: 'none', fontWeight: '500' }}>
               FAQ
             </Link>
-            <Link to="/support" style={{ fontSize: '14px', color: '#111', textDecoration: 'none', fontWeight: '500' }}>
+            <Link to="/support" style={{ fontSize: '14px', color: 'var(--bybit-text)', textDecoration: 'none', fontWeight: '500' }}>
               Support
             </Link>
           </div>

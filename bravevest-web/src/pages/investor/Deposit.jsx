@@ -225,7 +225,7 @@ export default function Deposit() {
             </div>
 
             {/* Right Column: Deposit Form */}
-            <div style={{ background: '#ffffff', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e5e7eb', boxShadow: '0 4px 24px rgba(0,0,0,0.03)' }}>
+            <div style={{ background: 'var(--bybit-surface)', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e5e7eb', boxShadow: '0 4px 24px rgba(0,0,0,0.03)' }}>
               
               <div style={{ padding: '20px 24px', borderBottom: '1px solid #e5e7eb', fontWeight: '600', fontSize: '16px', color: '#111111' }}>
                 {activeTab} (NGN)
@@ -245,7 +245,7 @@ export default function Deposit() {
                       className="bv-input-field"
                     />
                     <div className="bv-currency-select">
-                      <div style={{ width: '20px', height: '20px', background: '#059669', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '12px', fontWeight: 'bold' }}>
+                      <div style={{ width: '20px', height: '20px', background: '#059669', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--bv-surface)', fontSize: '12px', fontWeight: 'bold' }}>
                         ₦
                       </div>
                       <span>NGN</span>
@@ -260,7 +260,7 @@ export default function Deposit() {
                     <button
                       key={amt}
                       onClick={() => setFundAmount(amt)}
-                      style={{ background: '#f9fafb', border: '1px solid #d1d5db', color: '#111111', padding: '8px', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', fontWeight: '500' }}
+                      style={{ background: 'var(--bybit-surface)', border: '1px solid #d1d5db', color: '#111111', padding: '8px', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', fontWeight: '500' }}
                     >
                       ₦{amt}
                     </button>
@@ -271,9 +271,9 @@ export default function Deposit() {
                   <label style={{ display: 'block', fontSize: '13px', color: '#111111', fontWeight: '600', marginBottom: '10px' }}>
                     Payment Gateway
                   </label>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', border: '1px solid #d1d5db', borderRadius: '8px', cursor: 'pointer', background: '#f9fafb' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', border: '1px solid #d1d5db', borderRadius: '8px', cursor: 'pointer', background: 'var(--bybit-surface)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{ width: '28px', height: '28px', background: '#d97706', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '10px', fontWeight: '800' }}>
+                      <div style={{ width: '28px', height: '28px', background: '#d97706', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--bv-surface)', fontSize: '10px', fontWeight: '800' }}>
                         Pay
                       </div>
                       <span style={{ fontSize: '14px', fontWeight: '500', color: '#111111' }}>
@@ -294,7 +294,7 @@ export default function Deposit() {
                     borderRadius: '8px',
                     border: 'none',
                     backgroundColor: '#f59e0b',
-                    color: '#ffffff',
+                    color: 'var(--bv-surface)',
                     cursor: fundAmount ? 'pointer' : 'not-allowed',
                     opacity: fundAmount ? 1 : 0.5,
                     transition: 'all 0.15s ease',

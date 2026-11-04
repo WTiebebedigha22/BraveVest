@@ -56,6 +56,7 @@ app.get('/health', (req, res) =>
 app.get('/api', (req, res) => success(res, { name: 'BraveVest API', version: '0.1.0' }));
 
 app.use('/api/auth', require('./modules/auth/auth.routes'));
+app.use('/api/auth/otp', require('./modules/auth/otp.routes'));
 app.use('/api/kyc', require('./modules/kyc/kyc.routes'));
 app.use('/api/projects', require('./modules/projects/projects.routes'));
 app.use('/api/investments', require('./modules/investments/investments.routes'));
@@ -76,6 +77,8 @@ app.use('/api/contact', require('./modules/contact/contact.routes'));
 app.use('/api/wallet', require('./modules/wallet/wallet.routes'));
 
 app.use('/api/currency', require('./modules/currency/currency.routes'));
+
+app.use('/api/funding', require('./modules/funding/notes.routes'));
 
 app.use(notFound);
 app.use(errorHandler);

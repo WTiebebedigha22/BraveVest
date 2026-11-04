@@ -51,7 +51,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{ background: '#FFFFFF', color: '#111', minHeight: '100vh', fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+    <div style={{ background: 'var(--bybit-black)', color: 'var(--bybit-text)', minHeight: '100vh', fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       
       {/* ═══ RESPONSIVE STYLE INJECTIONS ═══ */}
       <style>{`
@@ -163,7 +163,7 @@ export default function Home() {
 
             {/* Left Content */}
             <div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: '#111', marginBottom: '20px' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: 'var(--bybit-text)', marginBottom: '20px' }}>
                 <span style={{ width: '24px', height: '2px', background: '#F6A500' }} />
                 The New Financial Platform
               </div>
@@ -181,12 +181,12 @@ export default function Home() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email / Mobile Number"
-                  style={{ flex: 1, background: 'transparent', border: 'none', padding: '12px 20px', fontSize: '15px', color: '#111', outline: 'none', width: '100%' }}
+                  style={{ flex: 1, background: 'transparent', border: 'none', padding: '12px 20px', fontSize: '15px', color: 'var(--bybit-text)', outline: 'none', width: '100%' }}
                 />
                 <Link
                   to="/register"
                   className="bv-signup-btn"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '12px 24px', background: '#F6A500', color: '#fff', borderRadius: '40px', fontSize: '14px', fontWeight: '600', textDecoration: 'none', whiteSpace: 'nowrap' }}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '12px 24px', background: '#F6A500', color: 'var(--bv-surface)', borderRadius: '40px', fontSize: '14px', fontWeight: '600', textDecoration: 'none', whiteSpace: 'nowrap' }}
                 >
                   <Shield size={16} /> Sign Up Now
                 </Link>
@@ -196,7 +196,7 @@ export default function Home() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '14px', color: '#555', flexWrap: 'wrap' }}>
                 <span>Or Use</span>
                 <div style={{ width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F5F5F5', color: '#DB4437', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer' }}>G</div>
-                <div style={{ width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F5F5F5', color: '#111', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer' }}></div>
+                <div style={{ width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F5F5F5', color: 'var(--bybit-text)', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer' }}></div>
                 <div style={{ width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F5F5F5', color: '#0088CC', fontWeight: 'bold', fontSize: '14px', cursor: 'pointer' }}>✈</div>
               </div>
             </div>
@@ -212,10 +212,10 @@ export default function Home() {
                     {fxError && <span style={{ fontSize: '10px', color: '#F6465D', marginLeft: 'auto' }}>Offline</span>}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                    <div style={{ width: '36px', height: '36px', background: '#F6A500', borderRadius: '50%', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px' }}>₦</div>
+                    <div style={{ width: '36px', height: '36px', background: '#F6A500', borderRadius: '50%', color: 'var(--bv-surface)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px' }}>₦</div>
                     <div>
                       <div style={{ fontSize: '12px', color: '#888' }}>USD/NGN</div>
-                      <div style={{ fontSize: '20px', fontWeight: '700', color: '#111' }}>
+                      <div style={{ fontSize: '20px', fontWeight: '700', color: 'var(--bybit-text)' }}>
                         {fxLoading ? '...' : fxRates[0]?.price}
                       </div>
                     </div>
@@ -235,9 +235,9 @@ export default function Home() {
                     {fxRates.slice(0, 3).map((rate, i) => (
                       <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <div style={{ width: '24px', height: '24px', background: '#F0F0F0', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}>{rate.icon}</div>
-                        <div style={{ flex: 1, fontSize: '12px', fontWeight: '600', color: '#111' }}>{rate.pair}</div>
+                        <div style={{ flex: 1, fontSize: '12px', fontWeight: '600', color: 'var(--bybit-text)' }}>{rate.pair}</div>
                         <div style={{ textAlign: 'right' }}>
-                          <div style={{ fontSize: '12px', fontWeight: '600', color: '#111' }}>{fxLoading ? '...' : rate.price}</div>
+                          <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--bybit-text)' }}>{fxLoading ? '...' : rate.price}</div>
                           <div style={{ fontSize: '10px', color: rate.change.startsWith('-') ? '#F6465D' : '#0ECB81', fontWeight: '500' }}>{rate.change}</div>
                         </div>
                       </div>
@@ -251,7 +251,7 @@ export default function Home() {
               <div style={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', border: '1px solid #EAEAEA', borderRadius: '16px', padding: '20px', boxShadow: '0 12px 32px rgba(0,0,0,0.05)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <div style={{ display: 'flex', gap: '16px', fontSize: '14px', fontWeight: '600' }}>
-                    <span style={{ color: '#111', borderBottom: '2px solid #F6A500', paddingBottom: '2px' }}>Active Deals</span>
+                    <span style={{ color: 'var(--bybit-text)', borderBottom: '2px solid #F6A500', paddingBottom: '2px' }}>Active Deals</span>
                     <span style={{ color: '#888' }}>Fully Funded</span>
                   </div>
                   <Link to="/marketplace" style={{ fontSize: '12px', color: '#F6A500', fontWeight: '600', textDecoration: 'none' }}>View all</Link>
@@ -259,9 +259,9 @@ export default function Home() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
                   {HOT_DEALS.map(c => (
                     <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: '10px', background: '#FAF9F6', padding: '10px', borderRadius: '10px' }}>
-                      <div style={{ width: '28px', height: '28px', background: '#FFF', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>{c.icon}</div>
+                      <div style={{ width: '28px', height: '28px', background: 'var(--bybit-black)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>{c.icon}</div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: '12px', fontWeight: '600', color: '#111', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.name}</div>
+                        <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--bybit-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.name}</div>
                         <div style={{ fontSize: '10px', color: '#888' }}>{c.tenor}</div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
@@ -282,11 +282,11 @@ export default function Home() {
       <div className="bv-container">
         <div className="bv-stats-grid">
           <div>
-            <div style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: '700', color: '#111', lineHeight: 1 }}>₦184B+</div>
+            <div style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: '700', color: 'var(--bybit-text)', lineHeight: 1 }}>₦184B+</div>
             <div style={{ fontSize: '14px', color: '#666', marginTop: '8px' }}>Assets Under Management</div>
           </div>
           <div>
-            <div style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: '700', color: '#111', lineHeight: 1 }}>52,000+</div>
+            <div style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: '700', color: 'var(--bybit-text)', lineHeight: 1 }}>52,000+</div>
             <div style={{ fontSize: '14px', color: '#666', marginTop: '8px' }}>Active Investors</div>
           </div>
           <div>
@@ -304,13 +304,13 @@ export default function Home() {
       <section style={{ padding: '80px 0' }}>
         <div className="bv-container">
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-            <h2 style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: '700', letterSpacing: '-0.02em', color: '#111', marginBottom: '12px' }}>
+            <h2 style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: '700', letterSpacing: '-0.02em', color: 'var(--bybit-text)', marginBottom: '12px' }}>
               One platform, endless possibilities.
             </h2>
             <p style={{ fontSize: '18px', color: '#555', marginBottom: '24px' }}>
               Unlock every way to grow, manage, and spend your money.
             </p>
-            <Link to="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', background: '#F6A500', color: '#fff', borderRadius: '8px', fontSize: '16px', fontWeight: '600', textDecoration: 'none' }}>
+            <Link to="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', background: '#F6A500', color: 'var(--bv-surface)', borderRadius: '8px', fontSize: '16px', fontWeight: '600', textDecoration: 'none' }}>
               <Shield size={18} /> Create Your Account
             </Link>
           </div>
@@ -319,21 +319,21 @@ export default function Home() {
 
             {/* Deposit */}
             <div style={{ background: '#F8F8F8', borderRadius: '20px', padding: '32px', display: 'flex', flexDirection: 'column', minHeight: '260px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: '#111', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: 'var(--bybit-text)', marginBottom: '16px' }}>
                 <span style={{ width: '20px', height: '2px', background: '#F6A500' }} /> Deposit
               </div>
-              <div style={{ fontSize: '20px', fontWeight: '600', color: '#111', lineHeight: 1.3 }}>Naira & USD<br />Instant funding</div>
+              <div style={{ fontSize: '20px', fontWeight: '600', color: 'var(--bybit-text)', lineHeight: 1.3 }}>Naira & USD<br />Instant funding</div>
               <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'center', paddingTop: '24px' }}>
-                <div style={{ width: '80px', height: '80px', background: '#F6A500', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '32px', fontWeight: 'bold', boxShadow: '0 10px 20px rgba(246,165,0,0.3)' }}>₦</div>
+                <div style={{ width: '80px', height: '80px', background: '#F6A500', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--bv-surface)', fontSize: '32px', fontWeight: 'bold', boxShadow: '0 10px 20px rgba(246,165,0,0.3)' }}>₦</div>
               </div>
             </div>
 
             {/* Invest */}
             <div style={{ background: '#F8F8F8', borderRadius: '20px', padding: '32px', display: 'flex', flexDirection: 'column', minHeight: '260px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: '#111', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: 'var(--bybit-text)', marginBottom: '16px' }}>
                 <span style={{ width: '20px', height: '2px', background: '#F6A500' }} /> Invest
               </div>
-              <div style={{ fontSize: '20px', fontWeight: '600', color: '#111', lineHeight: 1.3 }}>Private Credit<br />Fixed Returns</div>
+              <div style={{ fontSize: '20px', fontWeight: '600', color: 'var(--bybit-text)', lineHeight: 1.3 }}>Private Credit<br />Fixed Returns</div>
               <div style={{ marginTop: 'auto', paddingTop: '24px' }}>
                 <div style={{ width: '100%', height: '60px', background: 'linear-gradient(180deg, rgba(246,165,0,0.1) 0%, transparent 100%)', borderBottom: '2px solid #F6A500' }}>
                   <svg viewBox="0 0 100 40" style={{ width: '100%', height: '100%', stroke: '#F6A500', fill: 'none', strokeWidth: '2' }}>
@@ -345,10 +345,10 @@ export default function Home() {
 
             {/* Earn */}
             <div style={{ background: '#F8F8F8', borderRadius: '20px', padding: '32px', display: 'flex', flexDirection: 'column', minHeight: '260px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: '#111', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: 'var(--bybit-text)', marginBottom: '16px' }}>
                 <span style={{ width: '20px', height: '2px', background: '#F6A500' }} /> Earn
               </div>
-              <div style={{ fontSize: '20px', fontWeight: '600', color: '#111' }}>Yield up to</div>
+              <div style={{ fontSize: '20px', fontWeight: '600', color: 'var(--bybit-text)' }}>Yield up to</div>
               <div style={{ fontSize: '48px', fontWeight: '700', color: '#F6A500', lineHeight: 1, marginBottom: '8px' }}>18.5%</div>
               <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'center', paddingTop: '24px' }}>
                 <div style={{ width: '70px', height: '70px', background: 'linear-gradient(135deg, #E0E0E0 0%, #FFF 100%)', borderRadius: '16px', border: '1px solid #DDD', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 20px rgba(0,0,0,0.05)' }}>
@@ -358,9 +358,9 @@ export default function Home() {
             </div>
 
             {/* Card (Span 2) */}
-            <div className="bv-card-span-2" style={{ background: 'linear-gradient(135deg, #1A1A1A 0%, #333 100%)', borderRadius: '20px', padding: '32px', color: '#fff', position: 'relative', overflow: 'hidden', minHeight: '260px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div className="bv-card-span-2" style={{ background: 'linear-gradient(135deg, #1A1A1A 0%, #333 100%)', borderRadius: '20px', padding: '32px', color: 'var(--bv-surface)', position: 'relative', overflow: 'hidden', minHeight: '260px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: '#fff', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: 'var(--bv-surface)', marginBottom: '16px' }}>
                   <span style={{ width: '20px', height: '2px', background: '#F6A500' }} /> Card
                 </div>
                 <div style={{ fontSize: '20px', fontWeight: '600', lineHeight: 1.3 }}>Cashback up to</div>
@@ -368,7 +368,7 @@ export default function Home() {
               </div>
               <div style={{ position: 'absolute', right: '-20px', bottom: '-20px', opacity: 0.85 }}>
                 <div style={{ width: '220px', height: '140px', background: 'linear-gradient(135deg, #EAEAEA 0%, #FFF 100%)', borderRadius: '16px', transform: 'rotate(-15deg)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#111', letterSpacing: '2px' }}>BRAVEVEST</div>
+                  <div style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--bybit-text)', letterSpacing: '2px' }}>BRAVEVEST</div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                     <div style={{ width: '28px', height: '20px', background: 'rgba(246,165,0,0.2)', borderRadius: '4px', border: '1px solid #F6A500' }} />
                     <div style={{ display: 'flex' }}>
@@ -381,14 +381,14 @@ export default function Home() {
             </div>
 
             {/* Mobile */}
-            <div style={{ background: '#F6A500', borderRadius: '20px', padding: '32px', color: '#fff', display: 'flex', flexDirection: 'column', minHeight: '260px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: '#fff', marginBottom: '16px' }}>
-                <span style={{ width: '20px', height: '2px', background: '#fff' }} /> Mobile
+            <div style={{ background: '#F6A500', borderRadius: '20px', padding: '32px', color: 'var(--bv-surface)', display: 'flex', flexDirection: 'column', minHeight: '260px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: 'var(--bv-surface)', marginBottom: '16px' }}>
+                <span style={{ width: '20px', height: '2px', background: 'var(--bybit-black)' }} /> Mobile
               </div>
               <div style={{ fontSize: '20px', fontWeight: '600', lineHeight: 1.3 }}>Manage on the go</div>
               <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'center', paddingTop: '24px' }}>
-                <div style={{ width: '90px', height: '120px', background: '#111', borderRadius: '16px 16px 0 0', border: '4px solid #333', borderBottom: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <div style={{ width: '36px', height: '36px', background: '#F6A500', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '18px', fontWeight: 'bold' }}>B</div>
+                <div style={{ width: '90px', height: '120px', background: 'var(--bv-text)', borderRadius: '16px 16px 0 0', border: '4px solid #333', borderBottom: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '36px', height: '36px', background: '#F6A500', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--bv-surface)', fontSize: '18px', fontWeight: 'bold' }}>B</div>
                 </div>
               </div>
             </div>
@@ -399,10 +399,10 @@ export default function Home() {
 
       {/* ═══ FLOATING HELP ═══ */}
       <div style={{ position: 'fixed', bottom: '24px', right: '24px', display: 'flex', flexDirection: 'column', gap: '12px', zIndex: 100 }}>
-        <button aria-label="Download App" style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#fff', border: '1px solid #EAEAEA', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#111' }}>
+        <button aria-label="Download App" style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'var(--bybit-black)', border: '1px solid #EAEAEA', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--bybit-text)' }}>
           <Download size={20} />
         </button>
-        <button aria-label="Support" style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#fff', border: '1px solid #EAEAEA', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#111' }}>
+        <button aria-label="Support" style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'var(--bybit-black)', border: '1px solid #EAEAEA', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--bybit-text)' }}>
           <Headphones size={20} />
         </button>
       </div>

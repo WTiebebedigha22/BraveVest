@@ -1,5 +1,5 @@
-﻿import { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import PublicLayout from '@/components/layout/PublicLayout';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import ProtectedRoute from './ProtectedRoute';
@@ -7,33 +7,33 @@ import RoleRoute from './RoleRoute';
 import Loader from '@/components/shared/Loader';
 
 /* Public */
-const Home          = lazy(() => import('@/pages/public/Home'));
-const About         = lazy(() => import('@/pages/public/About'));
-const Resources     = lazy(() => import('@/pages/public/Resources'));
-const Contact       = lazy(() => import('@/pages/public/Contact'));
-const HowItWorks    = lazy(() => import('@/pages/public/HowItWorks'));
-const Marketplace   = lazy(() => import('@/pages/public/Marketplace'));
-const ProjectDetail = lazy(() => import('@/pages/public/ProjectDetail'));
-const HelpCenter    = lazy(() => import('@/pages/public/HelpCenter'));
-const HelpArticle   = lazy(() => import('@/pages/public/HelpArticle'));
-const Stories       = lazy(() => import('@/pages/public/Stories'));
-const StarterPool   = lazy(() => import('@/pages/public/StarterPool'));
-const Terms         = lazy(() => import('@/pages/public/Terms'));
-const Privacy       = lazy(() => import('@/pages/public/Privacy'));
-const Disclosures   = lazy(() => import('@/pages/public/Disclosures'));
-const RiskDisclosurePage = lazy(() => import('@/pages/public/RiskDisclosurePage'));
-const Insights      = lazy(() => import('@/pages/public/Insights'));
-const InsightDetail = lazy(() => import('@/pages/public/InsightDetail'));
+const Home              = lazy(() => import('@/pages/public/Home'));
+const About             = lazy(() => import('@/pages/public/About'));
+const Resources         = lazy(() => import('@/pages/public/Resources'));
+const Contact           = lazy(() => import('@/pages/public/Contact'));
+const HowItWorks        = lazy(() => import('@/pages/public/HowItWorks'));
+const Marketplace       = lazy(() => import('@/pages/public/Marketplace'));
+const ProjectDetail     = lazy(() => import('@/pages/public/ProjectDetail'));
+const OpportunityDetail = lazy(() => import('@/pages/public/OpportunityDetail'));
+const HelpCenter        = lazy(() => import('@/pages/public/HelpCenter'));
+const HelpArticle       = lazy(() => import('@/pages/public/HelpArticle'));
+const Stories           = lazy(() => import('@/pages/public/Stories'));
+const StarterPool       = lazy(() => import('@/pages/public/StarterPool'));
+const Terms             = lazy(() => import('@/pages/public/Terms'));
+const Privacy           = lazy(() => import('@/pages/public/Privacy'));
+const Disclosures       = lazy(() => import('@/pages/public/Disclosures'));
+const RiskDisclosure    = lazy(() => import('@/pages/public/RiskDisclosure'));
+const Security          = lazy(() => import('@/pages/public/Security'));
+const Insights          = lazy(() => import('@/pages/public/Insights'));
+const InsightDetail     = lazy(() => import('@/pages/public/InsightDetail'));
+const Faq               = lazy(() => import('@/pages/public/Faq'));
+const Support           = lazy(() => import('@/pages/public/Support'));
 
-/* Funding — public */
+/* Funding */
 const FundingList   = lazy(() => import('@/pages/funding/FundingList'));
 const FundingDetail = lazy(() => import('@/pages/funding/FundingDetail'));
-
-/* Funding — protected (borrower) */
 const FundingNew    = lazy(() => import('@/pages/funding/FundingNew'));
 const FundingMine   = lazy(() => import('@/pages/funding/FundingMine'));
-
-/* Funding — admin */
 const AdminFundingReview = lazy(() => import('@/pages/funding/AdminReview'));
 
 /* Auth */
@@ -49,15 +49,16 @@ const KycStep2Identity = lazy(() => import('@/pages/onboarding/KycStep2Identity'
 const KycStep3Address  = lazy(() => import('@/pages/onboarding/KycStep3Address'));
 const KycStep4Bank     = lazy(() => import('@/pages/onboarding/KycStep4Bank'));
 const KycStep5Review   = lazy(() => import('@/pages/onboarding/KycStep5Review'));
+const KycReview        = lazy(() => import('@/pages/onboarding/KycReview'));
 
 /* Investor */
 const InvestorDashboard = lazy(() => import('@/pages/investor/Dashboard'));
 const Investments       = lazy(() => import('@/pages/investor/Investments'));
 const InvestmentDetail  = lazy(() => import('@/pages/investor/InvestmentDetail'));
 const Portfolio         = lazy(() => import('@/pages/investor/Portfolio'));
-const Wallet = lazy(() => import('@/pages/investor/Wallet'));
-const Deposit = lazy(() => import('@/pages/investor/Deposit'));
-const Withdraw = lazy(() => import('@/pages/investor/Withdraw'));
+const Wallet            = lazy(() => import('@/pages/investor/Wallet'));
+const Deposit           = lazy(() => import('@/pages/investor/Deposit'));
+const Withdraw          = lazy(() => import('@/pages/investor/Withdraw'));
 const Documents         = lazy(() => import('@/pages/investor/Documents'));
 const Profile           = lazy(() => import('@/pages/investor/Profile'));
 const YearInReview      = lazy(() => import('@/pages/investor/YearInReview'));
@@ -67,6 +68,7 @@ const Groups            = lazy(() => import('@/pages/investor/Groups'));
 const Goals             = lazy(() => import('@/pages/investor/Goals'));
 const GoalDetail        = lazy(() => import('@/pages/investor/GoalDetail'));
 const Gifting           = lazy(() => import('@/pages/investor/Gifting'));
+const InvestorCommitments = lazy(() => import('@/pages/investor/Commitments'));
 
 /* Admin */
 const AdminDashboard      = lazy(() => import('@/pages/admin/Dashboard'));
@@ -82,16 +84,11 @@ const AdminTransactions   = lazy(() => import('@/pages/admin/Transactions'));
 const AdminReports        = lazy(() => import('@/pages/admin/Reports'));
 const AdminInsights       = lazy(() => import('@/pages/admin/Insights'));
 const InsightEditor       = lazy(() => import('@/pages/admin/InsightEditor'));
+const AdminContactInbox   = lazy(() => import('@/pages/admin/ContactInbox'));
+const AdminSettings       = lazy(() => import('@/pages/admin/Settings'));
 
 /* Misc */
 const NotFound = lazy(() => import('@/pages/NotFound'));
-const AdminContactInbox = lazy(() => import('@/pages/admin/ContactInbox'));
-const AdminSettings = lazy(() => import('@/pages/admin/Settings'));
-const InvestorCommitments = lazy(() => import('@/pages/investor/Commitments'));
-const KycReview = lazy(() => import('@/pages/onboarding/KycReview'));
-const Faq = lazy(() => import('@/pages/public/Faq'));
-const RiskDisclosure = lazy(() => import('@/pages/public/RiskDisclosure'));
-const Support = lazy(() => import('@/pages/public/Support'));
 
 function Loading() {
   return (
@@ -105,6 +102,7 @@ export default function AppRoutes() {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
+        {/* Public */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -113,34 +111,39 @@ export default function AppRoutes() {
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/marketplace/:slug" element={<ProjectDetail />} />
+          <Route path="/opportunities/:slug" element={<OpportunityDetail />} />
           <Route path="/help" element={<HelpCenter />} />
           <Route path="/help/:slug" element={<HelpArticle />} />
           <Route path="/stories" element={<Stories />} />
           <Route path="/starter" element={<StarterPool />} />
           <Route path="/insights" element={<Insights />} />
+          <Route path="/insights/:id" element={<InsightDetail />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/disclosures" element={<Disclosures />} />
-          <Route path="/risk-disclosure" element={<RiskDisclosurePage />} />
-          <Route path="/insights/:id" element={<InsightDetail />} />
-
-          {/* Funding — public */}
+          <Route path="/risk-disclosure" element={<RiskDisclosure />} />
+          <Route path="/security" element={<Security />} />
+          <Route path="/faq" element={<Faq />} />
+          <Route path="/support" element={<Support />} />
           <Route path="/funding" element={<FundingList />} />
           <Route path="/funding/:id" element={<FundingDetail />} />
         </Route>
 
+        {/* Auth */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
 
+        {/* Investor (protected) */}
         <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
           <Route path="/kyc" element={<KycStep1Personal />} />
           <Route path="/kyc/identity" element={<KycStep2Identity />} />
           <Route path="/kyc/address" element={<KycStep3Address />} />
           <Route path="/kyc/bank" element={<KycStep4Bank />} />
           <Route path="/kyc/review" element={<KycStep5Review />} />
+          <Route path="/kyc/status" element={<KycReview />} />
           <Route path="/dashboard" element={<InvestorDashboard />} />
           <Route path="/investments" element={<Investments />} />
           <Route path="/investments/:id" element={<InvestmentDetail />} />
@@ -157,14 +160,14 @@ export default function AppRoutes() {
           <Route path="/goals" element={<Goals />} />
           <Route path="/goals/:id" element={<GoalDetail />} />
           <Route path="/gifting" element={<Gifting />} />
-
-          {/* Funding — borrower (behind auth; role enforced server-side) */}
+          <Route path="/commitments" element={<InvestorCommitments />} />
           <Route path="/funding/new" element={<FundingNew />} />
           <Route path="/funding/mine" element={<FundingMine />} />
         </Route>
 
         <Route path="/payment/callback" element={<ProtectedRoute><PaymentCallback /></ProtectedRoute>} />
 
+        {/* Admin (protected + role-gated) */}
         <Route element={<ProtectedRoute><RoleRoute role="ADMIN"><DashboardLayout /></RoleRoute></ProtectedRoute>}>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/investors" element={<AdminInvestors />} />
@@ -180,16 +183,11 @@ export default function AppRoutes() {
           <Route path="/admin/insights" element={<AdminInsights />} />
           <Route path="/admin/insights/new" element={<InsightEditor />} />
           <Route path="/admin/insights/:id/edit" element={<InsightEditor />} />
-
-          {/* Funding — admin */}
           <Route path="/admin/funding/review" element={<AdminFundingReview />} />
+          <Route path="/admin/contact" element={<AdminContactInbox />} />
+          <Route path="/admin/settings" element={<AdminSettings />} />
         </Route>
 
-        <Route path="/admin/contact" element={<AdminContactInbox />} />
-        <Route path="/admin/settings" element={<AdminSettings />} />
-        <Route path="/commitments" element={<InvestorCommitments />} />
-        <Route path="/faq" element={<Faq />} />
-        <Route path="/support" element={<Support />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

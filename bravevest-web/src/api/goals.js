@@ -1,9 +1,10 @@
 import { api } from './client';
 
 export const goalsApi = {
-  async list() { return (await api.get('/goals')).data.data; },
-  async create(payload) { return (await api.post('/goals', payload)).data.data; },
-  async update(id, payload) { return (await api.patch('/goals/' + id, payload)).data.data; },
-  async remove(id) { await api.delete('/goals/' + id); },
-  async recommend(id) { return (await api.get('/goals/' + id + '/recommend')).data.data; },
+  list: () => api.get('/api/goals').then(r => r.data?.data || r.data || []),
+  get: (id) => api.get('/api/goals/' + id).then(r => r.data?.data || r.data),
+  create: (payload) => api.post('/api/goals', payload).then(r => r.data?.data || r.data),
+  update: (id, payload) => api.patch('/api/goals/' + id, payload).then(r => r.data),
+  remove: (id) => api.delete('/api/goals/' + id).then(r => r.data),
+  recommend: (id) => api.get('/api/goals/' + id + '/recommend').then(r => r.data?.data || r.data),
 };

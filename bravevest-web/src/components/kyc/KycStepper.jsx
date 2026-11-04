@@ -12,7 +12,7 @@ export default function KycStepper({ current = 1 }) {
               width: 28, height: 28, borderRadius: 14,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               backgroundColor: done ? '#1b5e20' : active ? '#B3D941' : '#eee',
-              color: done || active ? '#fff' : '#666',
+              color: done || active ? 'var(--bv-surface)' : '#666',
               fontSize: 12, fontWeight: 700,
             }}>
               {done ? '✓' : n}

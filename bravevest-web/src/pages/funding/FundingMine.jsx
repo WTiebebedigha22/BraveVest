@@ -54,7 +54,7 @@ export default function FundingMine() {
               padding: 20,
               border: '1px solid #e3e3e3',
               borderRadius: 14,
-              background: '#fff',
+              background: 'var(--bv-surface)',
               flexWrap: 'wrap',
             }}
           >

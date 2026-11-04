@@ -1,75 +1,54 @@
-import { useEffect, useState, useMemo } from 'react';
-import AdminPageHeader from '@/components/admin/AdminPageHeader';
-import AdminToolbar from '@/components/admin/AdminToolbar';
-import AdminTable from '@/components/admin/AdminTable';
-import AdminEmpty from '@/components/admin/AdminEmpty';
-import Loader from '@/components/shared/Loader';
-import Currency from '@/components/shared/Currency';
+import { useEffect, useState } from 'react';
 import { adminApi } from '@/api/admin';
+import { useCurrency } from '@/context/CurrencyContext';
+
+const TABS = ['ALL', 'SUCCESS', 'PENDING', 'FAILED'];
 
 export default function AdminTransactions() {
+  const { format } = useCurrency();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('ALL');
-  const [search, setSearch] = useState('');
+  const [tab, setTab] = useState('ALL');
 
   useEffect(() => {
-    adminApi.transactions({ limit: 200 })
-      .then((d) => setItems(d.data || []))
-      .catch(() => setItems([]))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const filtered = useMemo(() => {
-    let out = items;
-    if (filter !== 'ALL') out = out.filter((t) => t.status === filter);
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      out = out.filter((t) =>
-        t.reference?.toLowerCase().includes(q) ||
-        t.user?.email?.toLowerCase().includes(q)
-      );
-    }
-    return out;
-  }, [items, filter, search]);
-
-  const columns = [
-    { key: 'reference', label: 'Reference', render: (t) => <span className="admin-mono">{t.reference}</span> },
-    { key: 'investor', label: 'Investor', render: (t) => <strong>{t.user?.email || '—'}</strong> },
-    { key: 'type', label: 'Type', render: (t) => <span className="text-muted">{t.type}</span> },
-    { key: 'amount', label: 'Amount', align: 'right', render: (t) => <Currency value={t.amount} /> },
-    { key: 'status', label: 'Status', render: (t) => <AdminTable.Status status={t.status} /> },
-    { key: 'date', label: 'Date', align: 'right', render: (t) => new Date(t.createdAt).toLocaleDateString() },
-  ];
-
-  if (loading) return <div className="text-center py-5"><Loader /></div>;
+    setLoading(true);
+    const params = {};
+    if (tab !== 'ALL') params.status = tab;
+    adminApi.transactions(params).then(r => setItems(r || [])).catch(() => setItems([])).finally(() => setLoading(false));
+  }, [tab]);
 
   return (
-    <>
-      <AdminPageHeader
-        eyebrow="Admin"
-        title="Transactions"
-        subtitle={`${items.length} total recorded`}
-      />
+    <div style={{ padding: '32px 0' }}>
+      <div className="container">
+        <h1 style={{ margin: 0, fontSize: '24px', marginBottom: '4px' }}>Transactions</h1>
+        <p style={{ color: 'var(--bybit-text-muted)', margin: '0 0 24px', fontSize: '13px' }}>{items.length} records</p>
 
-      <AdminToolbar
-        right={
-          <>
-            <AdminToolbar.Pill active={filter === 'ALL'} onClick={() => setFilter('ALL')}>All</AdminToolbar.Pill>
-            <AdminToolbar.Pill active={filter === 'SUCCESS'} onClick={() => setFilter('SUCCESS')}>Success</AdminToolbar.Pill>
-            <AdminToolbar.Pill active={filter === 'PENDING'} onClick={() => setFilter('PENDING')}>Pending</AdminToolbar.Pill>
-            <AdminToolbar.Pill active={filter === 'FAILED'} onClick={() => setFilter('FAILED')}>Failed</AdminToolbar.Pill>
-          </>
-        }
-      >
-        <AdminToolbar.Search value={search} onChange={setSearch} placeholder="Search reference or email…" />
-      </AdminToolbar>
+        <div className="bybit-tabs" style={{ marginBottom: '16px' }}>
+          {TABS.map(t => (
+            <button key={t} onClick={() => setTab(t)} className={'bybit-tabs__item ' + (tab === t ? 'active' : '')}>{t}</button>
+          ))}
+        </div>
 
-      {filtered.length === 0 ? (
-        <AdminEmpty title="No transactions match" body="Try a different filter or search term." />
-      ) : (
-        <AdminTable columns={columns} rows={filtered} />
-      )}
-    </>
+        {loading ? <div style={{ padding: '48px', textAlign: 'center', color: 'var(--bybit-text-muted)' }}>Loading…</div> : (
+          <div style={{ border: '1px solid var(--bybit-border)', borderRadius: '8px', overflow: 'hidden' }}>
+            <table className="fin-table">
+              <thead><tr><th>Reference</th><th>User</th><th>Type</th><th>Status</th><th style={{ textAlign: 'right' }}>Amount</th><th>Date</th></tr></thead>
+              <tbody>
+                {items.map(tx => (
+                  <tr key={tx.id}>
+                    <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{tx.reference}</td>
+                    <td style={{ fontSize: '12px' }}>{tx.user?.email}</td>
+                    <td style={{ textTransform: 'capitalize' }}>{tx.type}</td>
+                    <td><span className={'pill ' + (tx.status === 'SUCCESS' ? 'pill--green' : tx.status === 'FAILED' ? 'pill--red' : '')}>{tx.status}</span></td>
+                    <td className="num">{format(tx.amount)}</td>
+                    <td style={{ color: 'var(--bybit-text-muted)' }}>{new Date(tx.createdAt).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

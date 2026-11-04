@@ -115,7 +115,7 @@ export default function ResetPassword() {
       {/* ── Left Promo Section ── */}
       <div className="auth-left-promo">
         <div style={{ position: 'relative', zIndex: 10 }}>
-          <h1 style={{ fontSize: '32px', fontWeight: '600', color: '#111', lineHeight: 1.3 }}>
+          <h1 style={{ fontSize: '32px', fontWeight: '600', color: 'var(--bv-text)', lineHeight: 1.3 }}>
             Create your new<br />account password.
           </h1>
           <p style={{ fontSize: '15px', color: '#666', marginTop: '12px', maxWidth: '340px', lineHeight: 1.6 }}>
@@ -151,10 +151,10 @@ export default function ResetPassword() {
               boxShadow: '0 15px 30px rgba(246, 165, 0, 0.3)',
             }}
           >
-            <div style={{ width: '40px', height: '40px', background: '#fff', borderRadius: '50%', margin: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '40px', height: '40px', background: 'var(--bv-surface)', borderRadius: '50%', margin: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ fontWeight: 'bold', color: '#F6A500', fontSize: '18px' }}>B</span>
             </div>
-            <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: '#fff', fontSize: '11px', letterSpacing: '2px', fontWeight: '600', opacity: 0.85 }}>
+            <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: 'var(--bv-surface)', fontSize: '11px', letterSpacing: '2px', fontWeight: '600', opacity: 0.85 }}>
               BRAVEVEST
             </div>
           </div>
@@ -163,11 +163,11 @@ export default function ResetPassword() {
         {/* Bottom Stats Strip */}
         <div style={{ display: 'flex', gap: '48px', position: 'relative', zIndex: 10 }}>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>₦184B+</div>
+            <div style={{ fontSize: '32px', fontWeight: '700', color: 'var(--bv-text)' }}>₦184B+</div>
             <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>Assets Under Management</div>
           </div>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>52,000+</div>
+            <div style={{ fontSize: '32px', fontWeight: '700', color: 'var(--bv-text)' }}>52,000+</div>
             <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>Active Investors</div>
           </div>
         </div>
@@ -189,16 +189,16 @@ export default function ResetPassword() {
             <button
               type="button"
               aria-label="Change language"
-              style={{ background: 'none', border: 'none', color: '#111', cursor: 'pointer', padding: '8px' }}
+              style={{ background: 'none', border: 'none', color: 'var(--bv-text)', cursor: 'pointer', padding: '8px' }}
             >
               <Globe size={20} />
             </button>
           </div>
 
           {/* Form Card */}
-          <div style={{ background: '#fff', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid #EAEAEA' }}>
+          <div style={{ background: 'var(--bv-surface)', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid #EAEAEA' }}>
             <div style={{ marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: '0 0 8px', color: '#111' }}>Set a new password</h2>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: '0 0 8px', color: 'var(--bv-text)' }}>Set a new password</h2>
               <p style={{ fontSize: '14px', color: '#666', margin: 0, lineHeight: 1.5 }}>
                 Enter your new password below to update your security credentials.
               </p>
@@ -303,7 +303,7 @@ export default function ResetPassword() {
                   width: '100%',
                   padding: '14px',
                   background: '#F6A500',
-                  color: '#fff',
+                  color: 'var(--bv-surface)',
                   border: 'none',
                   borderRadius: '8px',
                   fontSize: '16px',
@@ -329,7 +329,7 @@ export default function ResetPassword() {
 
           {/* Legal Footnote */}
           <p style={{ textAlign: 'center', fontSize: '12px', color: '#888', marginTop: '24px', lineHeight: 1.6 }}>
-            Need help? Contact <a href="mailto:support@bravevest.com" style={{ color: '#111', textDecoration: 'underline' }}>Support</a>
+            Need help? Contact <a href="mailto:support@bravevest.com" style={{ color: 'var(--bv-text)', textDecoration: 'underline' }}>Support</a>
           </p>
 
         </div>

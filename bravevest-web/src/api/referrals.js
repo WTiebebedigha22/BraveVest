@@ -1,5 +1,5 @@
 import { api } from './client';
 
 export const referralsApi = {
-  async me() { return (await api.get('/referrals/me')).data.data; },
+  me: () => api.get('/api/referrals/me').then(r => r.data?.data || r.data),
 };

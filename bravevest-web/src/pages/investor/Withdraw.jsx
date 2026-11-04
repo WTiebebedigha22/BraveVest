@@ -207,7 +207,7 @@ export default function Withdraw() {
               style={{
                 width: '140px',
                 padding: '14px',
-                background: '#f9fafb',
+                background: 'var(--bv-surface)',
                 border: '1px solid #d1d5db',
                 color: '#111111',
                 fontSize: '24px',

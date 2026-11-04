@@ -36,10 +36,10 @@ export default function HowItWorks() {
     <div className="page-light" style={{ paddingBottom: '80px' }}>
       
       {/* Hero Section */}
-      <section style={{ padding: '80px 0 64px', textAlign: 'center', background: '#fff' }}>
+      <section style={{ padding: '80px 0 64px', textAlign: 'center', background: 'var(--bv-surface)' }}>
         <div className="container container--narrow">
           <span className="orange-line-accent" style={{ justifyContent: 'center' }}>How It Works</span>
-          <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.02em', marginBottom: '16px', color: '#111' }}>
+          <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.02em', marginBottom: '16px', color: 'var(--bv-text)' }}>
             Your journey to fixed returns.
           </h1>
           <p style={{ fontSize: '18px', color: '#666', maxWidth: '600px', margin: '0 auto' }}>
@@ -49,18 +49,18 @@ export default function HowItWorks() {
       </section>
 
       {/* Steps Grid */}
-      <section style={{ padding: '0 0 64px', background: '#fff' }}>
+      <section style={{ padding: '0 0 64px', background: 'var(--bv-surface)' }}>
         <div className="container" style={{ maxWidth: '1200px' }}>
           <div className="grid-4">
             {STEPS.map((step, i) => {
               const Icon = step.icon;
               return (
                 <div key={i} style={{ position: 'relative', padding: '32px 24px', background: '#FAFAFA', borderRadius: '16px', border: '1px solid #EAEAEA' }}>
-                  <div style={{ position: 'absolute', top: '-16px', left: '24px', width: '32px', height: '32px', background: '#F6A500', color: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px', border: '4px solid #fff' }}>
+                  <div style={{ position: 'absolute', top: '-16px', left: '24px', width: '32px', height: '32px', background: '#F6A500', color: 'var(--bv-surface)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px', border: '4px solid #fff' }}>
                     {i + 1}
                   </div>
                   <Icon size={28} color="#F6A500" style={{ marginBottom: '20px', marginTop: '8px' }} />
-                  <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#111', marginBottom: '8px' }}>{step.title}</h3>
+                  <h3 style={{ fontSize: '18px', fontWeight: '600', color: 'var(--bv-text)', marginBottom: '8px' }}>{step.title}</h3>
                   <p style={{ fontSize: '14px', color: '#666', lineHeight: 1.6 }}>{step.desc}</p>
                 </div>
               );
@@ -77,7 +77,7 @@ export default function HowItWorks() {
             {/* Left Text */}
             <div>
               <span className="orange-line-accent">Why BraveVest</span>
-              <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '24px', color: '#111' }}>
+              <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '24px', color: 'var(--bv-text)' }}>
                 A better way to build your portfolio.
               </h2>
               <p style={{ fontSize: '16px', color: '#666', lineHeight: 1.7, marginBottom: '32px' }}>
@@ -87,16 +87,16 @@ export default function HowItWorks() {
                 {BENEFITS.map((benefit, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <CheckCircle2 size={20} color="#0ECB81" />
-                    <span style={{ fontSize: '15px', color: '#111', fontWeight: '500' }}>{benefit}</span>
+                    <span style={{ fontSize: '15px', color: 'var(--bv-text)', fontWeight: '500' }}>{benefit}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Right Visual */}
-            <div style={{ background: '#fff', borderRadius: '24px', padding: '40px', boxShadow: '0 20px 40px rgba(0,0,0,0.05)', border: '1px solid #EAEAEA' }}>
+            <div style={{ background: 'var(--bv-surface)', borderRadius: '24px', padding: '40px', boxShadow: '0 20px 40px rgba(0,0,0,0.05)', border: '1px solid #EAEAEA' }}>
               <div style={{ fontSize: '12px', color: '#888', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>Sample Investment</div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#111', marginBottom: '24px' }}>Lagos Solar Fund II</h3>
+              <h3 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--bv-text)', marginBottom: '24px' }}>Lagos Solar Fund II</h3>
               
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid #EAEAEA' }}>
                 <span style={{ color: '#666' }}>Expected Yield</span>
@@ -104,7 +104,7 @@ export default function HowItWorks() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid #EAEAEA' }}>
                 <span style={{ color: '#666' }}>Tenor</span>
-                <span style={{ fontWeight: '600', color: '#111' }}>18 Months</span>
+                <span style={{ fontWeight: '600', color: 'var(--bv-text)' }}>18 Months</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '32px' }}>
                 <span style={{ color: '#666' }}>Risk Rating</span>
@@ -129,9 +129,9 @@ export default function HowItWorks() {
       </section>
 
       {/* CTA Bottom */}
-      <section style={{ padding: '80px 0', background: '#fff', textAlign: 'center', borderTop: '1px solid #EAEAEA' }}>
+      <section style={{ padding: '80px 0', background: 'var(--bv-surface)', textAlign: 'center', borderTop: '1px solid #EAEAEA' }}>
         <div className="container container--narrow">
-          <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: '#111' }}>Ready to get started?</h2>
+          <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '16px', color: 'var(--bv-text)' }}>Ready to get started?</h2>
           <p style={{ fontSize: '16px', color: '#666', marginBottom: '32px' }}>Join 52,000+ investors earning fixed returns on BraveVest.</p>
           <Link to="/register" className="btn btn--primary" style={{ padding: '16px 48px', fontSize: '16px' }}>Create Free Account</Link>
         </div>

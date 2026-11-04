@@ -1,110 +1,51 @@
-import { useEffect, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AdminPageHeader from '@/components/admin/AdminPageHeader';
-import AdminToolbar from '@/components/admin/AdminToolbar';
-import AdminTable from '@/components/admin/AdminTable';
-import AdminEmpty from '@/components/admin/AdminEmpty';
-import Loader from '@/components/shared/Loader';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { adminApi } from '@/api/admin';
-import './Investors.css';
 
 export default function AdminInvestors() {
-  const nav = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [kycFilter, setKycFilter] = useState('ALL');
+  const [q, setQ] = useState('');
 
   useEffect(() => {
-    adminApi.investors({ limit: 100 })
-      .then((d) => setItems(d.data || []))
-      .catch(() => setItems([]))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const filtered = useMemo(() => {
-    let out = items;
-    if (kycFilter !== 'ALL') {
-      out = out.filter((u) => (u.kyc?.status || 'NOT_STARTED') === kycFilter);
-    }
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      out = out.filter((u) =>
-        (u.firstName + ' ' + u.lastName).toLowerCase().includes(q) ||
-        u.email.toLowerCase().includes(q) ||
-        (u.phone || '').includes(q)
-      );
-    }
-    return out;
-  }, [items, search, kycFilter]);
-
-  const columns = [
-    {
-      key: 'name', label: 'Name',
-      render: (u) => (
-        <div className="inv-row">
-          <div className="inv-row__avatar">{(u.firstName || 'U')[0]}{(u.lastName || '')[0] || ''}</div>
-          <div>
-            <div className="inv-row__name">{u.firstName} {u.lastName}</div>
-            <div className="inv-row__meta">{u.phone || 'No phone'}</div>
-          </div>
-        </div>
-      ),
-    },
-    { key: 'email', label: 'Email', render: (u) => <span className="text-muted">{u.email}</span> },
-    {
-      key: 'kyc', label: 'KYC',
-      render: (u) => <AdminTable.Status status={u.kyc?.status || 'NOT_STARTED'} />,
-    },
-    {
-      key: 'status', label: 'Account',
-      render: (u) => <AdminTable.Status status={u.status} />,
-    },
-    {
-      key: 'investments', label: 'Investments', align: 'right',
-      render: (u) => <strong>{u._count?.investments || 0}</strong>,
-    },
-    {
-      key: 'joined', label: 'Joined', align: 'right',
-      render: (u) => <span className="text-muted">{new Date(u.createdAt).toLocaleDateString()}</span>,
-    },
-  ];
-
-  if (loading) return <div className="text-center py-5"><Loader /></div>;
+    setLoading(true);
+    adminApi.investors({ q }).then(r => setItems(r || [])).catch(() => setItems([])).finally(() => setLoading(false));
+  }, [q]);
 
   return (
-    <>
-      <AdminPageHeader
-        eyebrow="Admin"
-        title="Investors"
-        subtitle={`${items.length} registered investors`}
-      />
+    <div style={{ padding: '32px 0' }}>
+      <div className="container">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '24px' }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: '24px' }}>Investor Directory</h1>
+            <p style={{ color: 'var(--bybit-text-muted)', margin: '4px 0 0', fontSize: '13px' }}>{items.length} users</p>
+          </div>
+          <input type="text" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search email or name" style={{ width: '240px' }} />
+        </div>
 
-      <AdminToolbar
-        right={
-          <>
-            <AdminToolbar.Pill active={kycFilter === 'ALL'} onClick={() => setKycFilter('ALL')}>All</AdminToolbar.Pill>
-            <AdminToolbar.Pill active={kycFilter === 'APPROVED'} onClick={() => setKycFilter('APPROVED')}>Approved</AdminToolbar.Pill>
-            <AdminToolbar.Pill active={kycFilter === 'UNDER_REVIEW'} onClick={() => setKycFilter('UNDER_REVIEW')}>Pending</AdminToolbar.Pill>
-            <AdminToolbar.Pill active={kycFilter === 'REJECTED'} onClick={() => setKycFilter('REJECTED')}>Rejected</AdminToolbar.Pill>
-          </>
-        }
-      >
-        <AdminToolbar.Search
-          value={search}
-          onChange={setSearch}
-          placeholder="Search name, email, phone…"
-        />
-      </AdminToolbar>
-
-      {filtered.length === 0 ? (
-        <AdminEmpty
-          title={search ? 'No matches' : 'No investors yet'}
-          body={search ? 'Try a different search term or filter.' : 'Investors will appear here once they register.'}
-        />
-      ) : (
-        <AdminTable columns={columns} rows={filtered} onRowClick={(u) => nav('/admin/investors/' + u.id)} />
-      )}
-    </>
+        {loading ? <div style={{ padding: '48px', textAlign: 'center', color: 'var(--bybit-text-muted)' }}>Loading…</div> : (
+          <div style={{ border: '1px solid var(--bybit-border)', borderRadius: '8px', overflow: 'hidden' }}>
+            <table className="fin-table">
+              <thead><tr><th>User</th><th>Roles</th><th>KYC</th><th>Investments</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                {items.map(u => (
+                  <tr key={u.id}>
+                    <td>
+                      <div style={{ fontWeight: '600' }}>{u.firstName} {u.lastName}</div>
+                      <div style={{ fontSize: '12px', color: 'var(--bybit-text-muted)' }}>{u.email}</div>
+                    </td>
+                    <td><span className="pill">{(u.roles || []).join(', ')}</span></td>
+                    <td><span className={'pill ' + (u.kyc?.status === 'APPROVED' ? 'pill--green' : u.kyc?.status === 'REJECTED' ? 'pill--red' : '')}>{u.kyc?.status || 'NONE'}</span></td>
+                    <td style={{ textAlign: 'center' }}>{u._count?.investments || 0}</td>
+                    <td><span className={'pill ' + (u.status === 'ACTIVE' ? 'pill--green' : 'pill--red')}>{u.status}</span></td>
+                    <td style={{ textAlign: 'right' }}><Link to={'/admin/investors/' + u.id} className="btn btn--outline btn--sm">View</Link></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
