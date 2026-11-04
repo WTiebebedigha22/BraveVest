@@ -66,7 +66,6 @@ export default function Sidebar({ onNavigate }) {
   const { user, logout } = useAuth();
   const { theme } = useTheme();
   const location = useLocation();
-
   const roles = getUserRoles(user);
   const isAdmin = roles.includes('ADMIN') || roles.includes('SUPER_ADMIN');
   const groups = isAdmin ? adminGroups : investorGroups;
@@ -75,142 +74,59 @@ export default function Sidebar({ onNavigate }) {
     if (onNavigate) onNavigate();
   }
 
+  const displayName = user?.firstName
+    ? user.firstName + ' ' + (user.lastName || '')
+    : (user?.email?.split('@')[0] || 'User');
+
   return (
-    <aside
-      className="sidebar"
-      style={{
-        width: '260px',
-        background: 'var(--bv-surface)',
-        borderRight: '1px solid var(--bv-border)',
-        padding: '24px 16px',
-        position: 'sticky',
-        top: 0,
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        flexShrink: 0,
-        overflowY: 'auto',
-      }}
-    >
-      {/* Brand */}
-      <Link to="/" className="sidebar__brand" style={{ marginBottom: '24px', display: 'block', padding: '0 8px' }} onClick={handleLinkClick}>
-        <img
-          src="/logo.png"
-          alt="BraveVest"
-          style={{
-            height: '24px',
-            width: 'auto',
-            filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'none',
-          }}
-        />
+    <aside style={{ width: '260px', background: 'var(--bv-surface)', borderRight: '1px solid var(--bv-border)', padding: '24px 16px', position: 'sticky', top: 0, height: '100vh', display: 'flex', flexDirection: 'column', flexShrink: 0, overflowY: 'auto' }}>
+      <Link to='/' style={{ marginBottom: '24px', display: 'block', padding: '0 8px' }} onClick={handleLinkClick}>
+        <img src='/logo.png' alt='BraveVest' style={{ height: '24px', width: 'auto', filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'none' }} />
       </Link>
-
-      {/* Nav */}
       <div style={{ flex: 1, overflowY: 'auto' }}>
-        {groups.map((group) => (
-          <div key={group.label} style={{ marginBottom: '20px' }}>
-            <div style={{
-              fontSize: '10px',
-              fontWeight: '600',
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              color: 'var(--bv-text-dim)',
-              padding: '0 12px',
-              marginBottom: '8px',
-            }}>
-              {group.label}
+        {groups.map(function(group) {
+          return (
+            <div key={group.label} style={{ marginBottom: '20px' }}>
+              <div style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--bv-text-dim)', padding: '0 12px', marginBottom: '8px' }}>
+                {group.label}
+              </div>
+              <nav>
+                {group.links.map(function(l) {
+                  const Icon = l.icon;
+                  const isActive = location.pathname === l.to;
+                  return (
+                    <NavLink
+                      key={l.to}
+                      to={l.to}
+                      end={l.end}
+                      onClick={handleLinkClick}
+                      style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 12px', marginBottom: '2px', borderRadius: '6px', fontSize: '13px', fontWeight: '500', color: isActive ? 'var(--bv-orange)' : 'var(--bv-text-muted)', background: isActive ? 'var(--bv-orange-soft)' : 'transparent', textDecoration: 'none' }}
+                    >
+                      {Icon && <Icon size={16} strokeWidth={1.5} />}
+                      <span>{l.label}</span>
+                    </NavLink>
+                  );
+                })}
+              </nav>
             </div>
-            <nav>
-              {group.links.map((l) => {
-                const Icon = l.icon;
-                const isActive = location.pathname === l.to || (l.end && location.pathname === l.to);
-                return (
-                  <NavLink
-                    key={l.to}
-                    to={l.to}
-                    end={l.end}
-                    onClick={handleLinkClick}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                      padding: '8px 12px',
-                      marginBottom: '2px',
-                      borderRadius: '6px',
-                      fontSize: '13px',
-                      fontWeight: '500',
-                      color: isActive ? 'var(--bv-orange)' : 'var(--bv-text-muted)',
-                      background: isActive ? 'var(--bv-orange-soft)' : 'transparent',
-                      textDecoration: 'none',
-                      transition: 'all 0.15s',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) e.currentTarget.style.background = 'var(--bv-hover)';
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) e.currentTarget.style.background = 'transparent';
-                    }}
-                  >
-                    {Icon && <Icon size={16} strokeWidth={1.5} />}
-                    <span>{l.label}</span>
-                  </NavLink>
-                );
-              })}
-            </nav>
-          </div>
-        ))}
+          );
+        })}
       </div>
-
-      {/* User block */}
-      <div style={{
-        borderTop: '1px solid var(--bv-border)',
-        paddingTop: '16px',
-        marginTop: '16px',
-      }}>
+      <div style={{ borderTop: '1px solid var(--bv-border)', paddingTop: '16px', marginTop: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', padding: '0 8px' }}>
-          <div style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: '50%',
-            background: 'var(--bv-orange-soft)',
-            color: 'var(--bv-orange)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: '600',
-            fontSize: '13px',
-            flexShrink: 0,
-          }}>
+          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--bv-orange-soft)', color: 'var(--bv-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '600', fontSize: '13px', flexShrink: 0 }}>
             {(user?.firstName || user?.email || 'U')[0].toUpperCase()}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--bv-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {user?.firstName ? `${user.firstName} ${user.lastName || ''}` : (user?.email?.split('@')[0] || 'User')}
+              {displayName}
             </div>
-            <div style={{ fontSize: '10px', color: 'var(--bv-text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <div style={{ fontSize: '10px', color: 'var(--bv-text-muted)' }}>
               {isAdmin ? 'Admin' : 'Investor'}
             </div>
           </div>
         </div>
-        <button
-          onClick={logout}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '8px 12px',
-            width: '100%',
-            background: 'transparent',
-            border: 'none',
-            color: 'var(--bv-text-muted)',
-            fontSize: '13px',
-            cursor: 'pointer',
-            borderRadius: '6px',
-            textAlign: 'left',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bv-hover)'; e.currentTarget.style.color = 'var(--bv-text)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--bv-text-muted)'; }}
-        >
+        <button onClick={logout} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', width: '100%', background: 'transparent', border: 'none', color: 'var(--bv-text-muted)', fontSize: '13px', cursor: 'pointer', borderRadius: '6px', textAlign: 'left' }}>
           <User size={16} strokeWidth={1.5} />
           <span>Sign out</span>
         </button>

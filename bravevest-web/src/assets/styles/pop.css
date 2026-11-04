@@ -1,0 +1,391 @@
+/* ============================================================
+   BRAVEVEST POP — motion, gradients, depth
+   Loaded after theme-overrides.css
+   ============================================================ */
+
+/* ============================================================
+   ANIMATION TOKENS
+   ============================================================ */
+:root {
+  --pop-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --pop-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --pop-dur-fast: 0.2s;
+  --pop-dur: 0.35s;
+  --pop-dur-slow: 0.6s;
+
+  --pop-grad-orange: linear-gradient(135deg, #F6A500 0%, #FFD966 100%);
+  --pop-grad-hero: linear-gradient(135deg, #F6A500 0%, #D98F00 100%);
+  --pop-grad-shine: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%);
+}
+
+/* ============================================================
+   GLOBAL SMOOTHING
+   ============================================================ */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ============================================================
+   AMBIENT GLOW ORBS
+   Floating backgrounds that give the page depth
+   ============================================================ */
+.ambient-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+  animation: orbDrift 20s ease-in-out infinite;
+}
+
+.ambient-orb--orange {
+  background: rgba(246, 165, 0, 0.3);
+  width: 400px;
+  height: 400px;
+  top: -100px;
+  right: -100px;
+}
+
+.ambient-orb--green {
+  background: rgba(14, 203, 129, 0.2);
+  width: 350px;
+  height: 350px;
+  bottom: -150px;
+  left: -150px;
+  animation-delay: -10s;
+}
+
+@keyframes orbDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+:root[data-theme="light"] .ambient-orb {
+  opacity: 0.25;
+}
+
+/* ============================================================
+   GRADIENT TEXT — for hero headlines
+   ============================================================ */
+.text-gradient {
+  background: var(--pop-grad-orange);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+h1 .text-gradient {
+  background: linear-gradient(135deg, #F6A500 0%, #FFD966 50%, #F6A500 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 6s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ============================================================
+   BUTTONS — gradient + shine sweep
+   ============================================================ */
+.btn--primary {
+  position: relative;
+  overflow: hidden;
+  background: var(--pop-grad-hero);
+  box-shadow: 0 4px 16px rgba(246, 165, 0, 0.3);
+  transition: transform var(--pop-dur-fast) var(--pop-ease), box-shadow var(--pop-dur-fast) var(--pop-ease);
+}
+
+.btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(246, 165, 0, 0.45);
+}
+
+.btn--primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--pop-grad-shine);
+  transform: translateX(-100%);
+  transition: transform var(--pop-dur-slow) var(--pop-ease);
+}
+
+.btn--primary:hover::before {
+  transform: translateX(100%);
+}
+
+.btn--primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Secondary buttons get a subtle scale */
+.btn--outline:hover {
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   CARDS — magnetic hover with lift + shadow bloom
+   ============================================================ */
+.card {
+  transition: transform var(--pop-dur) var(--pop-ease),
+              box-shadow var(--pop-dur) var(--pop-ease),
+              border-color var(--pop-dur-fast) var(--pop-ease);
+  will-change: transform;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px var(--bv-border-strong);
+}
+
+:root[data-theme="light"] .card:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--bv-border-strong);
+}
+
+/* Interactive cards (project cards, links) get cursor pointer + bigger lift */
+a .card,
+a.card,
+.card[onclick],
+.card[role="button"] {
+  cursor: pointer;
+}
+
+a .card:hover,
+a.card:hover {
+  transform: translateY(-6px) scale(1.01);
+}
+
+/* ============================================================
+   SCROLL REVEAL
+   Elements with class .reveal start hidden and animate in when visible
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s var(--pop-ease), transform 0.8s var(--pop-ease);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.08s; }
+.reveal-delay-2 { transition-delay: 0.16s; }
+.reveal-delay-3 { transition-delay: 0.24s; }
+.reveal-delay-4 { transition-delay: 0.32s; }
+
+/* ============================================================
+   PILLS AND BADGES — micro-animation
+   ============================================================ */
+.pill {
+  transition: transform var(--pop-dur-fast) var(--pop-ease-bounce),
+              box-shadow var(--pop-dur-fast) var(--pop-ease);
+}
+
+.pill:hover {
+  transform: scale(1.05);
+}
+
+.pill--green {
+  box-shadow: 0 0 0 0 rgba(14, 203, 129, 0.5);
+  animation: pillPulse 2.5s infinite;
+}
+
+@keyframes pillPulse {
+  0% { box-shadow: 0 0 0 0 rgba(14, 203, 129, 0.5); }
+  70% { box-shadow: 0 0 0 6px rgba(14, 203, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(14, 203, 129, 0); }
+}
+
+/* ============================================================
+   TABS — underline slides in
+   ============================================================ */
+.bybit-tabs__item {
+  position: relative;
+  transition: color var(--pop-dur-fast) var(--pop-ease);
+}
+
+.bybit-tabs__item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--bv-orange);
+  transition: all var(--pop-dur) var(--pop-ease);
+  transform: translateX(-50%);
+}
+
+.bybit-tabs__item.active::after {
+  width: 100%;
+}
+
+/* ============================================================
+   HERO — layered glow + entrance
+   ============================================================ */
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  animation: heroGlow 8s ease-in-out infinite;
+}
+
+@keyframes heroGlow {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+  50% { transform: translateX(-50%) scale(1.2); opacity: 1; }
+}
+
+.hero h1 {
+  animation: heroEntrance 0.9s var(--pop-ease) both;
+}
+
+.hero .lede {
+  animation: heroEntrance 0.9s var(--pop-ease) 0.15s both;
+}
+
+.hero__ctas {
+  animation: heroEntrance 0.9s var(--pop-ease) 0.3s both;
+}
+
+@keyframes heroEntrance {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   NUMBER COUNTERS — used by JS
+   ============================================================ */
+.count-up {
+  font-variant-numeric: tabular-nums;
+  display: inline-block;
+}
+
+/* ============================================================
+   SPARKLINES — glowing stroke
+   ============================================================ */
+svg polyline[stroke="var(--bv-orange)"],
+svg polyline[stroke="#F6A500"] {
+  filter: drop-shadow(0 0 6px rgba(246, 165, 0, 0.5));
+}
+
+/* ============================================================
+   SKELETON LOADING
+   ============================================================ */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bv-surface) 0%,
+    var(--bv-surface-2) 50%,
+    var(--bv-surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-line { height: 12px; width: 100%; margin-bottom: 8px; }
+.skeleton-line.short { width: 40%; }
+.skeleton-circle { width: 40px; height: 40px; border-radius: 50%; }
+
+/* ============================================================
+   PAGE TRANSITIONS — fade on route change
+   ============================================================ */
+.page-fade-in {
+  animation: pageFadeIn 0.3s var(--pop-ease) both;
+}
+
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   LINKS — underline grows on hover
+   ============================================================ */
+a:not(.btn):not(.sidebar-link):hover {
+  color: var(--bv-orange);
+}
+
+/* ============================================================
+   TABLES — row lift on hover
+   ============================================================ */
+.fin-table tbody tr {
+  transition: transform var(--pop-dur-fast) var(--pop-ease), background var(--pop-dur-fast) var(--pop-ease);
+}
+
+.fin-table tbody tr:hover td {
+  background: var(--bv-hover);
+}
+
+.fin-table tbody tr:hover {
+  transform: translateX(2px);
+}
+
+/* ============================================================
+   MODALS — scale entrance
+   ============================================================ */
+.modal-inner, [role="dialog"] > div {
+  animation: modalIn 0.3s var(--pop-ease-bounce) both;
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ============================================================
+   ICONS — subtle bounce on parent hover
+   ============================================================ */
+.card:hover svg,
+.btn:hover svg {
+  animation: iconBounce 0.4s var(--pop-ease-bounce);
+}
+
+@keyframes iconBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* ============================================================
+   CURSOR — custom pointer on interactive areas (desktop only)
+   ============================================================ */
+@media (hover: hover) and (pointer: fine) {
+  .btn, .card, a, button, [role="button"] {
+    cursor: pointer;
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION — respect accessibility preference
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

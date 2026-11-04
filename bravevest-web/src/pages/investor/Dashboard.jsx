@@ -83,7 +83,11 @@ export default function Dashboard() {
             <Link to="/portfolio" style={{ fontSize: '12px', color: 'var(--bybit-orange)' }}>View all</Link>
           </div>
           {loading ? (
-            <div style={{ padding: '40px', textAlign: 'center', color: 'var(--bybit-text-muted)' }}>Loading…</div>
+            <div style={{ padding: '24px' }}>
+        <div className="skeleton skeleton-line" />
+        <div className="skeleton skeleton-line" />
+        <div className="skeleton skeleton-line short" />
+      </div>
           ) : portfolio.items.length === 0 ? (
             <div style={{ padding: '48px', textAlign: 'center' }}>
               <FileText size={32} color="var(--bybit-text-dim)" style={{ margin: '0 auto 12px' }} />
@@ -126,7 +130,11 @@ export default function Dashboard() {
             <Link to="/wallet" style={{ fontSize: '12px', color: 'var(--bybit-orange)' }}>View ledger</Link>
           </div>
           {loading ? (
-            <div style={{ padding: '40px', textAlign: 'center', color: 'var(--bybit-text-muted)' }}>Loading…</div>
+            <div style={{ padding: '24px' }}>
+        <div className="skeleton skeleton-line" />
+        <div className="skeleton skeleton-line" />
+        <div className="skeleton skeleton-line short" />
+      </div>
           ) : recent.length === 0 ? (
             <div style={{ padding: '40px', textAlign: 'center', color: 'var(--bybit-text-muted)' }}>No transactions yet.</div>
           ) : (

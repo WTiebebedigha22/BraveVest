@@ -1,0 +1,303 @@
+/* ============================================================
+   THEME POLISH — contrast, shadows, borders, states
+   Loaded after global.css so it wins specificity.
+   ============================================================ */
+
+/* ============================================================
+   SHADOWS — soft in light, deep in dark
+   ============================================================ */
+:root {
+  --bv-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --bv-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --bv-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+:root[data-theme="light"] {
+  --bv-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --bv-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --bv-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Apply shadows */
+.card, .bybit-tab-panel {
+  box-shadow: var(--bv-shadow-sm);
+}
+.card:hover {
+  box-shadow: var(--bv-shadow-md);
+}
+.modal, .drawer {
+  box-shadow: var(--bv-shadow-lg);
+}
+
+/* ============================================================
+   BORDERS — visible in both themes
+   ============================================================ */
+:root {
+  --bv-border-input: #2A2A2A;
+  --bv-border-input-hover: #3A3A3A;
+}
+:root[data-theme="light"] {
+  --bv-border-input: #D1D1CE;
+  --bv-border-input-hover: #A8A8A4;
+}
+
+input, select, textarea {
+  border-color: var(--bv-border-input) !important;
+}
+input:hover, select:hover, textarea:hover {
+  border-color: var(--bv-border-input-hover);
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--bv-orange) !important;
+  box-shadow: 0 0 0 3px var(--bv-orange-soft);
+}
+
+/* ============================================================
+   BUTTONS — ensure contrast in both themes
+   ============================================================ */
+.btn--primary {
+  background: var(--bv-orange);
+  color: #FFFFFF !important;
+  font-weight: 600;
+}
+.btn--primary:hover {
+  background: var(--bv-orange-hover);
+}
+.btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--bv-text);
+  border: 1px solid var(--bv-border-strong);
+}
+.btn--outline:hover {
+  background: var(--bv-hover);
+  border-color: var(--bv-text-muted);
+}
+
+.btn--ghost {
+  color: var(--bv-text-muted);
+}
+.btn--ghost:hover {
+  color: var(--bv-text);
+  background: var(--bv-hover);
+}
+
+/* Danger / success buttons */
+.btn--danger {
+  background: var(--bv-red);
+  color: #FFFFFF !important;
+}
+
+/* ============================================================
+   HERO — orange glow per theme
+   ============================================================ */
+.hero::before {
+  background: radial-gradient(circle, var(--bv-orange-soft) 0%, transparent 65%);
+  opacity: 1;
+}
+:root[data-theme="light"] .hero::before {
+  opacity: 0.6;
+}
+
+/* ============================================================
+   PILLS — better contrast in light mode
+   ============================================================ */
+.pill {
+  background: var(--bv-surface-2);
+  color: var(--bv-text-muted);
+  border: 1px solid var(--bv-border);
+}
+.pill--orange {
+  background: var(--bv-orange-soft);
+  color: var(--bv-orange);
+  border-color: var(--bv-orange-soft);
+  font-weight: 600;
+}
+:root[data-theme="light"] .pill--orange {
+  background: #FFF4E0;
+  border-color: #FFE0A8;
+}
+.pill--green {
+  background: var(--bv-green-soft);
+  color: var(--bv-green);
+  border-color: var(--bv-green-soft);
+}
+:root[data-theme="light"] .pill--green {
+  background: #E6F7EF;
+  border-color: #B8E9D1;
+}
+.pill--red {
+  background: var(--bv-red-soft);
+  color: var(--bv-red);
+  border-color: var(--bv-red-soft);
+}
+:root[data-theme="light"] .pill--red {
+  background: #FEE9EB;
+  border-color: #FBBCC3;
+}
+
+/* ============================================================
+   TABLES — hover states that work in both themes
+   ============================================================ */
+.fin-table tbody tr {
+  transition: background 0.15s;
+}
+.fin-table tbody tr:hover td {
+  background: var(--bv-hover);
+}
+
+/* ============================================================
+   MODALS — overlay per theme
+   ============================================================ */
+:root {
+  --bv-overlay: rgba(0, 0, 0, 0.85);
+}
+:root[data-theme="light"] {
+  --bv-overlay: rgba(0, 0, 0, 0.45);
+}
+
+/* ============================================================
+   SCROLLBAR — subtle in dark, visible in light
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bv-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bv-border-strong);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bv-text-dim);
+}
+:root[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #C8C8C4;
+}
+
+/* ============================================================
+   FOCUS VISIBLE — accessibility in both themes
+   ============================================================ */
+*:focus-visible {
+  outline: 2px solid var(--bv-orange);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   LINKS — hover color per theme
+   ============================================================ */
+a {
+  transition: color 0.15s, opacity 0.15s;
+}
+a:hover {
+  color: var(--bv-orange);
+}
+
+/* ============================================================
+   NAVBAR — logo filter per theme (already handled, just enforce)
+   ============================================================ */
+:root {
+  --bv-logo-filter: brightness(0) invert(1);
+}
+:root[data-theme="light"] {
+  --bv-logo-filter: none;
+}
+.navbar__logo img,
+.footer__brand img,
+.sidebar__brand img {
+  filter: var(--bv-logo-filter);
+}
+
+/* ============================================================
+   SIDEBAR — active link visibility
+   ============================================================ */
+.sidebar a[style*="var(--bv-orange)"] {
+  background: var(--bv-orange-soft) !important;
+}
+:root[data-theme="light"] .sidebar a[style*="var(--bv-orange)"] {
+  background: #FFF4E0 !important;
+  color: #B87600 !important;
+}
+
+/* ============================================================
+   CARDS — subtle border darkening on hover in light mode
+   ============================================================ */
+:root[data-theme="light"] .card {
+  border-color: #E5E5E2;
+  background: #FFFFFF;
+}
+:root[data-theme="light"] .card:hover {
+  border-color: #D1D1CE;
+  background: #FEFEFE;
+}
+
+/* ============================================================
+   ALERT / ERROR / SUCCESS BOXES
+   ============================================================ */
+.alert-error, .error-box {
+  background: var(--bv-red-soft);
+  color: var(--bv-red);
+  border: 1px solid var(--bv-red-soft);
+  padding: 12px;
+  border-radius: 8px;
+}
+:root[data-theme="light"] .alert-error,
+:root[data-theme="light"] .error-box {
+  background: #FEE9EB;
+  border-color: #FBBCC3;
+  color: #C8253A;
+}
+
+/* ============================================================
+   GRADIENTS — hero and accent gradients per theme
+   ============================================================ */
+:root {
+  --bv-gradient-orange: linear-gradient(135deg, #F6A500 0%, #D98F00 100%);
+  --bv-gradient-subtle: linear-gradient(135deg, #1A1A1A 0%, #111111 100%);
+}
+:root[data-theme="light"] {
+  --bv-gradient-orange: linear-gradient(135deg, #F6A500 0%, #E69400 100%);
+  --bv-gradient-subtle: linear-gradient(135deg, #F9F9F8 0%, #F2F2F0 100%);
+}
+
+/* ============================================================
+   DISABLED STATE — consistent grey
+   ============================================================ */
+button:disabled, .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   TEXT SELECTION — visible in both themes
+   ============================================================ */
+::selection {
+  background: var(--bv-orange-soft);
+  color: var(--bv-text);
+}
+:root[data-theme="light"] ::selection {
+  background: #FFE0A8;
+  color: #0F0F10;
+}
+
+/* ============================================================
+   IMAGES — logo invert handled; everything else normal
+   ============================================================ */
+:root[data-theme="light"] img:not(.navbar__logo-img):not([data-no-filter]) {
+  opacity: 1;
+}
+
+/* ============================================================
+   HEADINGS — slightly stronger weight in light mode for legibility
+   ============================================================ */
+:root[data-theme="light"] h1,
+:root[data-theme="light"] h2,
+:root[data-theme="light"] h3 {
+  font-weight: 700;
+  color: #0F0F10;
+}

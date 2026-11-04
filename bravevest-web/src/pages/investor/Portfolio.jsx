@@ -83,7 +83,11 @@ export default function Portfolio() {
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--bybit-border)' }}>
             <h3 style={{ margin: 0, fontSize: '16px' }}>Holdings ({summary.items.length})</h3>
           </div>
-          {loading ? <div style={{ padding: '48px', textAlign: 'center', color: 'var(--bybit-text-muted)' }}>Loading…</div> : summary.items.length === 0 ? (
+          {loading ? <div style={{ padding: '24px' }}>
+        <div className="skeleton skeleton-line" />
+        <div className="skeleton skeleton-line" />
+        <div className="skeleton skeleton-line short" />
+      </div> : summary.items.length === 0 ? (
             <div style={{ padding: '48px', textAlign: 'center' }}>
               <p style={{ color: 'var(--bybit-text-muted)', marginBottom: '16px' }}>No holdings yet</p>
               <Link to="/marketplace" className="btn btn--outline btn--sm">Browse Opportunities</Link>

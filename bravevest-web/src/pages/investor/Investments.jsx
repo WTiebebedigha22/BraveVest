@@ -23,7 +23,11 @@ export default function Investments() {
           <p style={{ color: 'var(--bybit-text-muted)', margin: '4px 0 0', fontSize: '13px' }}>{items.length} active and completed</p>
         </div>
 
-        {loading ? <div style={{ padding: '48px', textAlign: 'center', color: 'var(--bybit-text-muted)' }}>Loading…</div> : items.length === 0 ? (
+        {loading ? <div style={{ padding: '24px' }}>
+        <div className="skeleton skeleton-line" />
+        <div className="skeleton skeleton-line" />
+        <div className="skeleton skeleton-line short" />
+      </div> : items.length === 0 ? (
           <div className="card" style={{ padding: '64px 24px', textAlign: 'center' }}>
             <p style={{ color: 'var(--bybit-text-muted)', marginBottom: '16px' }}>No investments yet.</p>
             <Link to="/marketplace" className="btn btn--primary">Browse Markets</Link>
