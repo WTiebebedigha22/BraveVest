@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { marketplaceApi } from '@/api/marketplace';
+import { projectsApi } from '@/api/projects';
 import { useCurrency } from '@/context/CurrencyContext';
 
 export default function OpportunityDetail() {
@@ -10,8 +10,8 @@ export default function OpportunityDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    marketplaceApi.get(id)
-      .then(setOp)
+    projectsApi.get(id)
+      .then((response) => setOp(response?.data?.data || response?.data || response))
       .catch(() => setOp(null))
       .finally(() => setLoading(false));
   }, [id]);
@@ -33,6 +33,12 @@ export default function OpportunityDetail() {
     );
   }
 
+  const targetYield = op.yield ?? op.expectedReturnPct ?? op.targetReturn;
+  const minimum = op.minimum ?? op.minInvestment ?? op.minimumAmount;
+  const available = op.available ?? op.availableAmount ?? (op.targetAmount != null && op.raisedAmount != null
+    ? Math.max(0, Number(op.targetAmount) - Number(op.raisedAmount))
+    : null);
+
   return (
     <div style={{ padding: '80px 0' }}>
       <div className="container">
@@ -44,10 +50,10 @@ export default function OpportunityDetail() {
 
         <div className="asymmetric-grid" style={{ marginTop: '40px' }}>
           <div>
-            <span className="eyebrow">{op.issuer || op.borrower}</span>
+            <span className="eyebrow">{op.issuer || op.borrower || op.category}</span>
             <h1 style={{ marginBottom: '24px' }}>{op.title || op.name}</h1>
             <p className="lede" style={{ marginBottom: '48px' }}>
-              {op.description || 'Detailed description unavailable.'}
+              {op.description || op.summary || 'Detailed description unavailable.'}
             </p>
 
             <div className="divider" />
@@ -61,11 +67,11 @@ export default function OpportunityDetail() {
                 </tr>
                 <tr>
                   <td style={{ color: 'var(--slate)' }}>Tenor</td>
-                  <td>{op.tenor || '—'}</td>
+                  <td>{op.tenor || (op.tenorMonths ? `${op.tenorMonths} months` : '—')}</td>
                 </tr>
                 <tr>
                   <td style={{ color: 'var(--slate)' }}>Target Yield</td>
-                  <td className="num positive">{op.yield ? `${op.yield}%` : '—'}</td>
+                  <td className="num positive">{targetYield != null ? `${targetYield}%` : '—'}</td>
                 </tr>
                 <tr>
                   <td style={{ color: 'var(--slate)' }}>Collateral</td>
@@ -73,7 +79,7 @@ export default function OpportunityDetail() {
                 </tr>
                 <tr>
                   <td style={{ color: 'var(--slate)' }}>Minimum</td>
-                  <td className="num">{op.minimum ? format(op.minimum) : '—'}</td>
+                  <td className="num">{minimum != null ? format(minimum) : '—'}</td>
                 </tr>
               </tbody>
             </table>
@@ -83,11 +89,11 @@ export default function OpportunityDetail() {
             <div className="card card--filled card--accent" style={{ marginBottom: '24px' }}>
               <div className="data-label">Available</div>
               <div className="data-value" style={{ marginTop: '12px', marginBottom: '24px' }}>
-                {op.available ? format(op.available) : '—'}
+                {available != null ? format(available) : '—'}
               </div>
               <div className="data-label">Target Yield</div>
               <div className="data-value text-gold" style={{ marginTop: '12px' }}>
-                {op.yield ? `${op.yield}%` : '—'}
+                {targetYield != null ? `${targetYield}%` : '—'}
               </div>
             </div>
             <Link to={`/invest/${op.id}`} className="btn btn--primary" style={{ width: '100%' }}>
