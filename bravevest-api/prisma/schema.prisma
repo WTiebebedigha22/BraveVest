@@ -298,6 +298,8 @@ model Project {
   @@index([category])
   @@index([isFeatured])
   @@map("projects")
+  @@index([category, status])
+  @@index([status, createdAt])
 }
 
 model Investment {
@@ -325,6 +327,9 @@ model Investment {
   @@index([projectId])
   @@index([status])
   @@map("investments")
+  @@index([userId, status])
+  @@index([projectId])
+  @@index([createdAt])
 }
 
 model Transaction {

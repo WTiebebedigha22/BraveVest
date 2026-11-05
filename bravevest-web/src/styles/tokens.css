@@ -1,0 +1,22 @@
+:root {
+  --accent: #0d6e4f;
+  --accent-hover: #0a5a40;
+  --accent-soft: #e8f4ef;
+
+  --positive: #0d8a5f;
+  --negative: #c0392b;
+
+  --text: #1a1a1a;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --surface: #ffffff;
+  --bg: #fafafa;
+
+  --radius: 10px;
+
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Playfair Display', serif;
+}

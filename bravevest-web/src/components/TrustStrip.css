@@ -1,0 +1,19 @@
+.trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-5, 24px);
+  padding: var(--s-4, 16px) var(--s-5, 24px);
+  border-top: 1px solid var(--border, #e5e7eb);
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  background: var(--bg, #fafafa);
+}
+.trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-size: 14px;
+  color: var(--muted, #6b7280);
+  font-weight: 500;
+}

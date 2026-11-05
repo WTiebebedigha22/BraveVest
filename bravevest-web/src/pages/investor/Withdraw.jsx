@@ -162,7 +162,7 @@ export default function Withdraw() {
               onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ''))}
               placeholder="0"
               className="bv-input-amount"
-              style={{ borderColor: exceedsBalance ? '#ef4444' : undefined }}
+              style={{ position: 'absolute', left: '20px', color: '#6b7280', borderColor: exceedsBalance ? '#ef4444' : undefined }}
             />
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', alignItems: 'center' }}>

@@ -1,0 +1,683 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  INVESTOR
+  ADMIN
+  SUPER_ADMIN
+  BORROWER
+}
+
+enum UserStatus {
+  PENDING_VERIFICATION
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum KycStatus {
+  NOT_STARTED
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum IdType {
+  NIN
+  BVN
+  PASSPORT
+  DRIVERS_LICENSE
+  VOTERS_CARD
+}
+
+enum ProjectCategory {
+  REAL_ESTATE
+  AGRICULTURE
+  ENERGY
+  SME
+  INFRASTRUCTURE
+}
+
+enum ProjectStatus {
+  DRAFT
+  PENDING_REVIEW
+  OPEN
+  FUNDED
+  CLOSED
+  CANCELLED
+}
+
+enum InvestmentStatus {
+  PENDING
+  CONFIRMED
+  ACTIVE
+  MATURED
+  WITHDRAWN
+  CANCELLED
+  DEFAULTED
+}
+
+enum TransactionType {
+  DEPOSIT
+  INVESTMENT
+  RETURN
+  WITHDRAWAL
+  REFUND
+  FEE
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REVERSED
+}
+
+enum PaymentProvider {
+  PAYSTACK
+  FLUTTERWAVE
+  BANK_TRANSFER
+  MANUAL
+}
+
+enum DocumentType {
+  ID_CARD
+  PASSPORT_PHOTO
+  PROOF_OF_ADDRESS
+  BANK_STATEMENT
+  UTILITY_BILL
+  SIGNATURE
+  OTHER
+}
+
+enum AuditAction {
+  USER_REGISTERED
+  USER_LOGIN
+  KYC_SUBMITTED
+  KYC_APPROVED
+  KYC_REJECTED
+  INVESTMENT_CREATED
+  INVESTMENT_CONFIRMED
+  PROJECT_CREATED
+  PROJECT_UPDATED
+  PAYMENT_INITIALIZED
+  PAYMENT_VERIFIED
+  ADMIN_ACTION
+  FUNDING_REQUEST_CREATED
+  FUNDING_REQUEST_SUBMITTED
+  FUNDING_REQUEST_APPROVED
+  FUNDING_REQUEST_REJECTED
+  FUNDING_REQUEST_PUBLISHED
+  FUNDING_REQUEST_CANCELLED
+  COMMITMENT_CREATED
+  REPAYMENT_RECORDED
+}
+
+enum GroupType {
+  COOPERATIVE
+  FAMILY
+  DIASPORA
+  CHURCH
+  WORKPLACE
+  FRIENDS
+  CUSTOM
+}
+
+enum GroupStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum GroupRole {
+  ADMIN
+  MEMBER
+}
+
+enum GoalType {
+  RENT
+  BUSINESS
+  EDUCATION
+  RETIREMENT
+  PROPERTY
+  EMERGENCY
+  CUSTOM
+}
+
+enum GoalStatus {
+  ACTIVE
+  ACHIEVED
+  ABANDONED
+}
+
+enum ReferralStatus {
+  PENDING
+  QUALIFIED
+  REWARDED
+  EXPIRED
+}
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  phone         String?    @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  image         String?
+  roles         UserRole[] @default([INVESTOR])
+  status        UserStatus @default(PENDING_VERIFICATION)
+  emailVerified DateTime?
+
+  kyc           KycProfile?
+  investments   Investment[]
+  transactions  Transaction[]
+  documents     Document[]
+  auditLogs     AuditLog[]
+  refreshTokens RefreshToken[]
+  groups        GroupMember[]
+  goals         InvestmentGoal[]
+  streak        InvestorStreak?
+  username      Username?
+  referrals     Referral[]       @relation("Referrer")
+  referredBy    Referral?        @relation("Referee")
+
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  fundingRequests     FundingRequest[]         @relation("BorrowerFundingRequests")
+  reviewedFundingReqs FundingRequest[]         @relation("ReviewedFundingRequests")
+  uploadedFundingDocs FundingRequestDocument[] @relation("UploadedFundingDocuments")
+  commitments         Commitment[]             @relation("InvestorCommitments")
+
+  @@index([email])
+  @@map("users")
+  wallet      Wallet?
+  ledger      LedgerEntry[]
+  otpCodes OtpCode[]
+  preferences Json?   @default("{}")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model KycProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  status KycStatus @default(NOT_STARTED)
+
+  dateOfBirth DateTime?
+  gender      String?
+  nationality String?
+  occupation  String?
+
+  idType       IdType?
+  idNumber     String?
+  idIssuedDate DateTime?
+  idExpiryDate DateTime?
+
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  state        String?
+  postalCode   String?
+  country      String? @default("NG")
+
+  bankName      String?
+  bankCode      String?
+  accountNumber String?
+  accountName   String?
+
+  reviewedById  String?
+  reviewedAt    DateTime?
+  rejectionNote String?
+  submittedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@map("kyc_profiles")
+}
+
+model Project {
+  id          String          @id @default(cuid())
+  slug        String          @unique
+  title       String
+  summary     String
+  description String          @db.Text
+  category    ProjectCategory
+  status      ProjectStatus   @default(DRAFT)
+
+  coverImage String?
+  gallery    String[] @default([])
+  documents  String[] @default([])
+
+  targetAmount      Decimal @db.Decimal(18, 2)
+  minInvestment     Decimal @db.Decimal(18, 2)
+  raisedAmount      Decimal @default(0) @db.Decimal(18, 2)
+  expectedReturnPct Decimal @db.Decimal(5, 2)
+  tenorMonths       Int
+  payoutFrequency   String?
+
+  startDate DateTime?
+  endDate   DateTime?
+  closesAt  DateTime?
+
+  location    String?
+  riskLevel   String?
+  isFeatured  Boolean @default(false)
+  createdById String
+
+  investments Investment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([category])
+  @@index([isFeatured])
+  @@map("projects")
+}
+
+model Investment {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  projectId String
+  project   Project          @relation(fields: [projectId], references: [id])
+  status    InvestmentStatus @default(PENDING)
+
+  amount         Decimal @db.Decimal(18, 2)
+  units          Int     @default(1)
+  expectedReturn Decimal @db.Decimal(18, 2)
+  actualReturn   Decimal @default(0) @db.Decimal(18, 2)
+
+  investedAt DateTime?
+  maturesAt  DateTime?
+
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([status])
+  @@map("investments")
+}
+
+model Transaction {
+  id           String      @id @default(cuid())
+  reference    String      @unique
+  userId       String
+  user         User        @relation(fields: [userId], references: [id])
+  investmentId String?
+  investment   Investment? @relation(fields: [investmentId], references: [id])
+
+  type     TransactionType
+  status   TransactionStatus @default(PENDING)
+  provider PaymentProvider   @default(PAYSTACK)
+
+  amount    Decimal @db.Decimal(18, 2)
+  fee       Decimal @default(0) @db.Decimal(18, 2)
+  netAmount Decimal @db.Decimal(18, 2)
+  currency  String  @default("NGN")
+
+  providerRef   String?
+  failureReason String?
+
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([investmentId])
+  @@index([status])
+  @@index([reference])
+  @@map("transactions")
+}
+
+model Document {
+  id     String       @id @default(cuid())
+  userId String
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type   DocumentType
+
+  fileName String
+  fileUrl  String
+  fileSize Int?
+  mimeType String?
+
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("documents")
+}
+
+model AuditLog {
+  id        String      @id @default(cuid())
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id])
+  action    AuditAction
+  entity    String?
+  entityId  String?
+  meta      Json?
+  createdAt DateTime    @default(now())
+
+  @@index([userId])
+  @@map("audit_logs")
+}
+
+model SavingsGroup {
+  id           String      @id @default(cuid())
+  name         String
+  description  String?
+  targetAmount Decimal     @db.Decimal(18, 2)
+  targetDate   DateTime?
+  type         GroupType   @default(CUSTOM)
+  status       GroupStatus @default(ACTIVE)
+  inviteCode   String      @unique
+  createdById  String
+
+  members GroupMember[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("savings_groups")
+}
+
+model GroupMember {
+  id                String       @id @default(cuid())
+  groupId           String
+  group             SavingsGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId            String
+  user              User         @relation(fields: [userId], references: [id])
+  role              GroupRole    @default(MEMBER)
+  contributedAmount Decimal      @default(0) @db.Decimal(18, 2)
+  joinedAt          DateTime     @default(now())
+
+  @@unique([groupId, userId])
+  @@map("group_members")
+}
+
+model InvestmentGoal {
+  id            String     @id @default(cuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id])
+  name          String
+  type          GoalType
+  targetAmount  Decimal    @db.Decimal(18, 2)
+  targetDate    DateTime
+  currentAmount Decimal    @default(0) @db.Decimal(18, 2)
+  status        GoalStatus @default(ACTIVE)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@map("investment_goals")
+}
+
+model InvestorStreak {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id])
+  currentStreak  Int       @default(0)
+  longestStreak  Int       @default(0)
+  lastActivityAt DateTime?
+
+  @@map("investor_streaks")
+}
+
+model Insight {
+  id          String    @id @default(cuid())
+  title       String
+  summary     String
+  body        String    @db.Text
+  category    String
+  coverImage  String?
+  isPublished Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@map("insights")
+}
+
+model Username {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  handle    String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("usernames")
+}
+
+model Referral {
+  id           String         @id @default(cuid())
+  referrerId   String
+  referrer     User           @relation("Referrer", fields: [referrerId], references: [id])
+  refereeId    String         @unique
+  referee      User           @relation("Referee", fields: [refereeId], references: [id])
+  code         String
+  status       ReferralStatus @default(PENDING)
+  rewardAmount Decimal?       @db.Decimal(18, 2)
+  qualifiedAt  DateTime?
+  rewardedAt   DateTime?
+  createdAt    DateTime       @default(now())
+
+  @@map("referrals")
+}
+
+// ============================================================
+// MVP Phase 1 — Funding requests
+// ============================================================
+
+enum FundingRequestStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  PUBLISHED
+  FUNDED
+  CANCELLED
+  REJECTED
+  DEFAULTED
+  CLOSED
+}
+
+model FundingRequest {
+  id         String @id @default(cuid())
+  reference  String @unique
+  borrowerId String
+  borrower   User   @relation("BorrowerFundingRequests", fields: [borrowerId], references: [id], onDelete: Cascade)
+
+  title       String
+  summary     String?
+  description String?         @db.Text
+  category    ProjectCategory @default(SME)
+  currency    String          @default("NGN")
+
+  amountRequested Decimal  @db.Decimal(18, 2)
+  amountFunded    Decimal  @default(0) @db.Decimal(18, 2)
+  minCommitment   Decimal? @db.Decimal(18, 2)
+  maxCommitment   Decimal? @db.Decimal(18, 2)
+
+  proposedReturnPct  Decimal? @db.Decimal(5, 2)
+  durationMonths     Int?
+  repaymentFrequency String? // "monthly" | "quarterly" | "bullet"
+
+  status          FundingRequestStatus @default(DRAFT)
+  rejectionReason String?
+  reviewedById    String?
+  reviewedBy      User?                @relation("ReviewedFundingRequests", fields: [reviewedById], references: [id])
+  reviewedAt      DateTime?
+  publishedAt     DateTime?
+  fundingDeadline DateTime?
+
+  documents   FundingRequestDocument[]
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  commitments Commitment[]
+
+  @@index([borrowerId])
+  @@index([status])
+  @@index([category])
+  @@index([publishedAt])
+  @@map("funding_requests")
+  managerNotes String?   @db.Text
+
+}
+
+model FundingRequestDocument {
+  id           String         @id @default(cuid())
+  requestId    String
+  request      FundingRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  kind         String // "pitch" | "financials" | "collateral" | "identity" | "other"
+  fileName     String
+  fileUrl      String
+  fileSize     Int?
+  mimeType     String?
+  uploadedById String
+  uploadedBy   User           @relation("UploadedFundingDocuments", fields: [uploadedById], references: [id])
+  createdAt    DateTime       @default(now())
+
+  @@index([requestId])
+  @@map("funding_request_documents")
+}
+
+enum ContactStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+model ContactMessage {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String        @db.Text
+  status    ContactStatus @default(NEW)
+  ip        String?
+  userAgent String?
+  repliedAt DateTime?
+  repliedBy String?
+  notes     String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([status])
+  @@index([email])
+  @@index([createdAt])
+  @@map("contact_messages")
+}
+
+enum CommitmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  REFUNDED
+}
+
+model Commitment {
+  id         String         @id @default(cuid())
+  reference  String         @unique
+  requestId  String
+  request    FundingRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  investorId String
+  investor   User           @relation("InvestorCommitments", fields: [investorId], references: [id], onDelete: Cascade)
+
+  amount   Decimal          @db.Decimal(18, 2)
+  currency String           @default("NGN")
+  status   CommitmentStatus @default(PENDING)
+
+  confirmedAt  DateTime?
+  cancelledAt  DateTime?
+  cancelReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([requestId])
+  @@index([investorId])
+  @@index([status])
+  @@map("commitments")
+}
+
+// ============================================================
+// Wallet + Ledger
+// ============================================================
+
+model Wallet {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balance   Decimal  @db.Decimal(18, 2) @default(0)
+  held      Decimal  @db.Decimal(18, 2) @default(0)   // escrow / in-flight
+  currency  String   @default("NGN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("wallets")
+}
+
+model LedgerEntry {
+  id             String   @id @default(cuid())
+  reference      String   @unique
+  userId         String?  // the user whose balance changed (nullable for external)
+  user           User?    @relation(fields: [userId], references: [id])
+  type           String   // "deposit" | "withdrawal" | "commitment" | "repayment" | "payout" | "fee" | "refund"
+  direction      String   // "credit" | "debit"
+  amount         Decimal  @db.Decimal(18, 2)
+  currency       String   @default("NGN")
+  balanceAfter   Decimal? @db.Decimal(18, 2)
+  description    String?
+  transactionId  String?  // link to Transaction
+  commitmentId   String?
+  metadata       Json?
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([type])
+  @@index([reference])
+  @@map("ledger_entries")
+}
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code      String
+  purpose   String   // "login" | "withdrawal" | "password_change"
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([code])
+  @@map("otp_codes")
+}

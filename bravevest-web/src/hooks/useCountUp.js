@@ -1,25 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 
-export function useCountUp(target, duration = 1200) {
-  const [value, setValue] = useState(0);
-  const startRef = useRef(null);
-  const rafRef = useRef(null);
-
+export function useCountUp(target, duration = 400) {
+  const [value, setValue] = useState(target);
+  const prev = useRef(target);
   useEffect(() => {
-    const numTarget = Number(target) || 0;
-    startRef.current = null;
-
-    function step(ts) {
-      if (!startRef.current) startRef.current = ts;
-      const progress = Math.min(1, (ts - startRef.current) / duration);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(numTarget * eased);
-      if (progress < 1) rafRef.current = requestAnimationFrame(step);
-    }
-
-    rafRef.current = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(rafRef.current);
+    const start = prev.current;
+    const delta = target - start;
+    const t0 = performance.now();
+    let raf;
+    const tick = (now) => {
+      const p = Math.min((now - t0) / duration, 1);
+      setValue(start + delta * p);
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else prev.current = target;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, [target, duration]);
-
   return value;
 }

@@ -17,7 +17,7 @@ export default function ConnectionBanner() {
   return (
     <div className={'connbanner ' + (online ? 'is-back' : 'is-offline')}>
       <span>{online ? '✓' : '⚠'}</span>
-      <span>{online ? "You're back online" : "You're offline — check your internet"}</span>
+      <span>{online ? "You're back online" : "You're offline - check your internet connection"}</span>
     </div>
   );
 }

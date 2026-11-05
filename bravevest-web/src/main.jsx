@@ -6,6 +6,7 @@ import './assets/styles/theme-overrides.css';
 import './assets/styles/pop.css';
 import './assets/styles/responsive.css';
 import './assets/styles/premium.css';
+import './styles/light-lock.css';
 import { initScrollReveal, initParallax } from './utils/scroll-reveal';
 
 

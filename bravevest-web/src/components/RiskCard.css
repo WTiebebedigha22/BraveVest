@@ -1,0 +1,14 @@
+.risk-card { background: var(--surface, #fff); border: 1px solid var(--border, #e5e7eb); border-radius: var(--radius, 10px); padding: var(--s-4, 16px); }
+.risk-label { margin: 0 0 var(--s-3, 12px); font-size: 11px; letter-spacing: 1px; color: var(--muted, #6b7280); font-weight: 600; }
+.risk-bars { display: flex; align-items: center; gap: 4px; margin-bottom: var(--s-4, 16px); }
+.risk-bars .bar { flex: 1; height: 6px; border-radius: 3px; background: var(--border, #e5e7eb); }
+.risk-bars .bar.filled.low { background: var(--positive, #0d8a5f); }
+.risk-bars .bar.filled.medium { background: #d97706; }
+.risk-bars .bar.filled.high { background: var(--negative, #c0392b); }
+.risk-name { font-size: 14px; font-weight: 600; margin-left: var(--s-2, 8px); }
+.risk-name.low { color: var(--positive, #0d8a5f); }
+.risk-name.medium { color: #d97706; }
+.risk-name.high { color: var(--negative, #c0392b); }
+.risk-card dl { display: grid; grid-template-columns: auto 1fr; gap: 6px var(--s-3, 12px); margin: 0; font-size: 13px; }
+.risk-card dt { color: var(--muted, #6b7280); }
+.risk-card dd { margin: 0; color: var(--text, #1a1a1a); }

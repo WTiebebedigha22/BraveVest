@@ -1,0 +1,31 @@
+/* Lock light mode — overrides any dark tokens regardless of theme state */
+html,
+html[data-theme="dark"],
+html[data-theme="light"],
+body {
+  color-scheme: light !important;
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+}
+
+html[data-theme="dark"] body {
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+}
+
+/* Undo any dark-mode class on the root */
+html.dark,
+html[data-theme="dark"] {
+  --bg: #fafafa !important;
+  --surface: #ffffff !important;
+  --text: #1a1a1a !important;
+  --muted: #6b7280 !important;
+  --border: #e5e7eb !important;
+  background: #fafafa !important;
+}
+
+/* Nuke any remaining dark utility classes */
+.dark,
+.dark * {
+  color-scheme: light !important;
+}
