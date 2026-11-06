@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import ThemeToggle from '@/components/shared/ThemeToggle';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { Wallet, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -51,7 +50,7 @@ const navbarStyles = `
 
   .bv-navbar__link {
     font-size: 14px;
-    color: var(--bybit-text-muted);
+    color: #848e9c;
     font-weight: 500;
     padding: 8px 16px;
     border-radius: 6px;
@@ -63,13 +62,13 @@ const navbarStyles = `
   }
 
   .bv-navbar__link:hover {
-    background: var(--bybit-surface-2);
-    color: var(--bybit-text);
+    background: #1e2329;
+    color: #eaecef;
   }
 
   .bv-navbar__link.active {
-    color: var(--bybit-orange) !important;
-    background: var(--bybit-surface-2) !important;
+    color: #f0b90b !important;
+    background: #1e2329 !important;
     font-weight: 600;
   }
 
@@ -101,7 +100,7 @@ const navbarStyles = `
   }
 
   .bv-btn--primary {
-    background-color: var(--bybit-orange);
+    background-color: #f0b90b;
     color: #000;
   }
 
@@ -111,12 +110,12 @@ const navbarStyles = `
 
   .bv-btn--ghost {
     background: transparent;
-    color: var(--bybit-text);
+    color: #eaecef;
     border: 1px solid #262930;
   }
 
   .bv-btn--ghost:hover {
-    background-color: var(--bybit-surface-2);
+    background-color: #1e2329;
     border-color: #363a45;
   }
 
@@ -130,7 +129,7 @@ const navbarStyles = `
     gap: 5px;
     border: 1px solid #262930;
     border-radius: 6px;
-    background: var(--bybit-surface);
+    background: #181a20;
     cursor: pointer;
     padding: 0;
   }
@@ -172,7 +171,7 @@ const navbarStyles = `
   }
 
   .bv-drawer-inner {
-    background: var(--bybit-black);
+    background: #0b0e11;
     border-bottom: 1px solid #1e2329;
     padding: 20px 24px 28px;
     max-height: calc(100vh - 64px);
@@ -185,13 +184,13 @@ const navbarStyles = `
     padding: 14px 0;
     font-size: 15px;
     font-weight: 500;
-    color: var(--bybit-text);
+    color: #eaecef;
     border-bottom: 1px solid #1e2329;
     text-decoration: none;
   }
 
   .bv-drawer-link:hover {
-    color: var(--bybit-orange);
+    color: #f0b90b;
   }
 
   .bv-profile-overlay {
@@ -207,7 +206,7 @@ const navbarStyles = `
     right: 0;
     bottom: 0;
     width: 300px;
-    background: var(--bybit-surface);
+    background: #181a20;
     border-left: 1px solid #262930;
     z-index: 99;
     display: flex;
@@ -220,13 +219,13 @@ const navbarStyles = `
     padding: 12px;
     border-radius: 6px;
     cursor: pointer;
-    color: var(--bybit-text-muted);
+    color: #848e9c;
     font-size: 14px;
     transition: all 0.15s ease;
   }
 
   .bv-profile-nav__item:hover {
-    background: var(--bybit-surface-2);
+    background: #1e2329;
     color: #fff;
   }
 
@@ -303,9 +302,9 @@ export default function Navbar() {
                   <button
                     onClick={() => setSidebarOpen(true)}
                     style={{
-                      background: 'var(--bv-orange)',
+                      background: '#f0b90b',
                       border: 'none',
-                      color: 'var(--bv-background)',
+                      color: '#000',
                       width: '34px',
                       height: '34px',
                       borderRadius: '50%',
@@ -361,7 +360,7 @@ export default function Navbar() {
               ))}
             </nav>
 
-            <div style={{ height: '1px', background: 'var(--bv-surface-2)', margin: '16px 0' }} />
+            <div style={{ height: '1px', background: '#1e2329', margin: '16px 0' }} />
 
             {user ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -369,9 +368,9 @@ export default function Navbar() {
                   <button
                     onClick={() => { setDrawerOpen(false); setSidebarOpen(true); }}
                     style={{
-                      background: 'var(--bv-orange)',
+                      background: '#f0b90b',
                       border: 'none',
-                      color: 'var(--bv-background)',
+                      color: '#000',
                       width: '38px',
                       height: '38px',
                       borderRadius: '50%',
@@ -382,10 +381,10 @@ export default function Navbar() {
                     {user.firstName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
                   </button>
                   <div style={{ overflow: 'hidden' }}>
-                    <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--bv-text)' }}>
+                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#eaecef' }}>
                       {user.email}
                     </div>
-                    <div style={{ fontSize: '12px', color: 'var(--bv-orange)' }}>Tap avatar to open profile</div>
+                    <div style={{ fontSize: '12px', color: '#f0b90b' }}>Tap avatar to open profile</div>
                   </div>
                 </div>
 
@@ -437,14 +436,14 @@ export default function Navbar() {
           <div className="bv-profile-overlay" onClick={() => setSidebarOpen(false)} />
           <div className="bv-profile-sidebar">
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingBottom: '20px', borderBottom: '1px solid #262930' }}>
-              <div style={{ background: 'var(--bv-orange)', color: 'var(--bv-background)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '16px' }}>
+              <div style={{ background: '#f0b90b', color: '#000', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '16px' }}>
                 {user.firstName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
               </div>
               <div style={{ overflow: 'hidden' }}>
-                <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--bv-surface)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                <div style={{ fontSize: '14px', fontWeight: '600', color: '#fff', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
                   {user.email || 'user@bravevest.com'}
                 </div>
-                <div style={{ fontSize: '12px', color: 'var(--bv-orange)' }}>
+                <div style={{ fontSize: '12px', color: '#f0b90b' }}>
                   {user.roles?.includes('ADMIN') ? 'Admin Account' : 'Main Account'}
                   <span style={{ color: '#888', marginLeft: '8px' }}>
                     UID: {user.id?.substring(0, 8) || '59197723'}

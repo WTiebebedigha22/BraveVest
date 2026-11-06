@@ -33,24 +33,8 @@
   position: relative;
   overflow: hidden;
   padding: 96px 0 72px;
-  background: #fff;
+  background: 'linear-gradient(135deg, #9b7d7d 0%, #551212 100%)';
   border-bottom: 1px solid var(--line);
-}
-.about-hero::before {
-  content: '';
-  position: absolute;
-  top: 0; right: -10%;
-  width: 55%; height: 100%;
-  background: radial-gradient(ellipse at top right, rgba(246,165,0,0.12), transparent 65%);
-  pointer-events: none;
-}
-.about-hero::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--orange), transparent);
-  opacity: 0.4;
 }
 .about-hero__mesh { display: none; }
 

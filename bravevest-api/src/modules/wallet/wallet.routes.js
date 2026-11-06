@@ -3,12 +3,13 @@ const { z } = require('zod');
 const svc = require('./wallet.service');
 const { success } = require('../../utils/apiResponse');
 const { audit } = require('../../middleware/audit');
+const { authRequired } = require('../../middleware/auth.middleware');
 
 const router = express.Router();
 
 let authenticate;
 try {
-  authenticate = require('../../middleware/auth').authRequired;
+  authenticate = require('../../middleware/auth.middleware').authRequired;
 } catch {}
 if (!authenticate) {
   authenticate = (req, res, next) => {
@@ -79,3 +80,104 @@ router.post('/credit', authenticate, async (req, res, next) => {
 });
 
 module.exports = router;
+
+/**
+ * POST /api/wallet/withdraw
+ * Debits the user's wallet and queues a bank payout.
+ * Body: { amount: number, bankId: string }
+ */
+router.post('/withdraw', authRequired, async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { amount, bankId } = req.body || {};
+
+    const amt = Number(amount);
+    if (!amt || amt <= 0) {
+      return res.status(400).json({ message: 'Invalid amount.' });
+    }
+    if (!bankId) {
+      return res.status(400).json({ message: 'Bank account required.' });
+    }
+
+    const wallet = await prisma.wallet.findUnique({ where: { userId } });
+    if (!wallet) {
+      return res.status(404).json({ message: 'Wallet not found.' });
+    }
+    if (Number(wallet.balance) < amt) {
+      return res.status(400).json({ message: 'Insufficient balance.' });
+    }
+
+    const [updatedWallet, txn] = await prisma.$transaction([
+      prisma.wallet.update({
+        where: { userId },
+        data: { balance: { decrement: amt } },
+      }),
+      prisma.transaction.create({
+        data: {
+          userId,
+          type: 'WITHDRAWAL',
+          direction: 'DEBIT',
+          amount: amt,
+          description: 'Withdrawal to bank account',
+          status: 'PENDING',
+        },
+      }),
+    ]);
+
+    res.json({
+      ok: true,
+      message: 'Withdrawal queued. Funds arrive within 1 business day.',
+      transactionId: txn.id,
+      newBalance: Number(updatedWallet.balance),
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * GET /api/wallet/banks
+ * Returns the user's linked bank accounts for withdrawals.
+ */
+router.get('/banks', authRequired, async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    const banks = await prisma.bankAccount.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    }).catch(() => []);
+
+    if (banks.length === 0) {
+      // Return one placeholder so the UI can render a selector
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { bankName: true, accountName: true, accountNumber: true },
+      }).catch(() => null);
+
+      if (user && user.accountNumber) {
+        return res.json([
+          {
+            id: 'primary',
+            bankName: user.bankName || 'Linked Bank',
+            accountName: user.accountName || 'Your Account',
+            last4: String(user.accountNumber).slice(-4),
+          },
+        ]);
+      }
+      return res.json([]);
+    }
+
+    res.json(
+      banks.map((b) => ({
+        id: b.id,
+        bankName: b.bankName || 'Bank',
+        accountName: b.accountName || 'Account',
+        last4: String(b.accountNumber || '').slice(-4) || '0000',
+      }))
+    );
+  } catch (err) {
+    next(err);
+  }
+});
+

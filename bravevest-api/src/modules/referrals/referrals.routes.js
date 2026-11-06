@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const ctrl = require('./referrals.controller');
 const asyncHandler = require('../../utils/asyncHandler');
-const { authRequired } = require('../../middleware/auth');
+const { authRequired } = require('../../middleware/auth.middleware');
 router.use(authRequired);
 router.get('/me', asyncHandler(ctrl.me));
 module.exports = router;

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const ctrl = require('./auth.controller');
 const asyncHandler = require('../../utils/asyncHandler');
 const { validate } = require('../../middleware/validate');
-const { authRequired } = require('../../middleware/auth');
+const { authRequired } = require('../../middleware/auth.middleware');
 const { authLimiter } = require('../../middleware/rateLimit');
 const { registerSchema, loginSchema, refreshSchema, forgotSchema, resetSchema } = require('./auth.validator');
 

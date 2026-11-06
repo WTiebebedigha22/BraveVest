@@ -1,159 +1,97 @@
-import { useEffect, useState, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import AdminPageHeader from '@/components/admin/AdminPageHeader';
-import AdminToolbar from '@/components/admin/AdminToolbar';
-import AdminTable from '@/components/admin/AdminTable';
-import AdminEmpty from '@/components/admin/AdminEmpty';
-import Loader from '@/components/shared/Loader';
-import Button from '@/components/shared/Button';
-import { insightsApi } from '@/api/insights';
-import { useToast } from '@/hooks/useToast';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Plus, Search, AlertCircle, Loader2 } from 'lucide-react';
+import { apiFetch } from '@/lib/api';
+import PortalLayout from '@/components/layout/PortalLayout';
 
-export default function AdminInsights() {
-  const nav = useNavigate();
-  const toast = useToast();
+const COLORS = {
+  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
+  border: '#EAEAEA', accent: '#F6A500', positive: '#0ECB81', negative: '#F6465D',
+};
+
+export default function Insights() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('ALL');
+  const [error, setError] = useState('');
   const [search, setSearch] = useState('');
 
-  function load() {
-    setLoading(true);
-    insightsApi.adminList({ limit: 100 })
-      .then((d) => setItems(d.data || []))
-      .catch(() => setItems([]))
-      .finally(() => setLoading(false));
-  }
-
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await apiFetch('/insights/admin/list', { );
+        if (!cancelled) setItems(Array.isArray(data) ? data : data.insights ?? []);
+      } catch (e) {
+        if (!cancelled) setError(e?.message || 'Could not load insights.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const filtered = useMemo(() => {
-    let out = items;
-    if (filter === 'PUBLISHED') out = out.filter((i) => i.isPublished);
-    if (filter === 'DRAFT') out = out.filter((i) => !i.isPublished);
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      out = out.filter((i) =>
-        i.title.toLowerCase().includes(q) ||
-        (i.category || '').toLowerCase().includes(q)
-      );
-    }
-    return out;
-  }, [items, filter, search]);
+    if (!search.trim()) return items;
+    const q = search.toLowerCase();
+    return items.filter((i) => (i.title || '').toLowerCase().includes(q) || (i.category || '').toLowerCase().includes(q));
+  }, [items, search]);
 
-  async function togglePublish(row) {
-    try {
-      await insightsApi.toggle(row.id);
-      toast.success(row.isPublished ? 'Unpublished' : 'Published');
-      load();
-    } catch (err) {
-      toast.error(err?.response?.data?.message || 'Failed');
-    }
-  }
-
-  async function remove(row) {
-    if (!confirm('Delete "' + row.title + '"?')) return;
-    try {
-      await insightsApi.remove(row.id);
-      toast.success('Deleted');
-      load();
-    } catch (err) {
-      toast.error(err?.response?.data?.message || 'Failed');
-    }
-  }
-
-  const columns = [
-    {
-      key: 'title', label: 'Title',
-      render: (i) => (
-        <div>
-          <div style={{ fontWeight: 500 }}>{i.title}</div>
-          <div style={{ fontSize: 11.5, color: 'var(--gray-600)', marginTop: 2 }}>{i.category}</div>
-        </div>
-      ),
-    },
-    {
-      key: 'status', label: 'Status',
-      render: (i) => <AdminTable.Status status={i.isPublished ? 'PUBLISHED' : 'DRAFT'} />,
-    },
-    {
-      key: 'date', label: 'Date',
-      render: (i) => (
-        <span style={{ fontSize: 12, color: 'var(--gray-600)' }}>
-          {i.publishedAt
-            ? 'Published ' + new Date(i.publishedAt).toLocaleDateString()
-            : 'Created ' + new Date(i.createdAt).toLocaleDateString()}
-        </span>
-      ),
-    },
-    {
-      key: 'actions', label: 'Actions', align: 'right',
-      render: (i) => (
-        <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-          <button className="insight-action" onClick={(e) => { e.stopPropagation(); nav('/admin/insights/' + i.id + '/edit'); }}>
-            Edit
-          </button>
-          <button className="insight-action" onClick={(e) => { e.stopPropagation(); togglePublish(i); }}>
-            {i.isPublished ? 'Unpublish' : 'Publish'}
-          </button>
-          <button className="insight-action insight-action--danger" onClick={(e) => { e.stopPropagation(); remove(i); }}>
-            Delete
-          </button>
-        </div>
-      ),
-    },
-  ];
-
-  if (loading) return <div className="text-center py-5"><Loader /></div>;
-
-  const counts = {
-    total: items.length,
-    published: items.filter((i) => i.isPublished).length,
-    draft: items.filter((i) => !i.isPublished).length,
-  };
+  if (loading) return (
+    <PortalLayout theme="dark">
+      <div style={{ padding: 48, display: 'flex', alignItems: 'center', gap: 12, color: COLORS.muted }}>
+      <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Loading insights…
+      <style>{'@keyframes spin { to { transform: rotate(360deg); } }'}</style>
+    </div>
+    </PortalLayout>
+  );
+  if (error) return <div role="alert" style={{ padding: 24, color: COLORS.negative, display: 'flex', gap: 8 }}><AlertCircle size={20} /> {error}</div>;
 
   return (
-    <>
-      <AdminPageHeader
-        eyebrow="Admin"
-        title="Insights"
-        subtitle={counts.total + ' total · ' + counts.published + ' published · ' + counts.draft + ' drafts'}
-        right={<Button as={Link} to="/admin/insights/new" variant="primary" size="sm">+ New insight</Button>}
-      />
+    <div style={{ padding: '24px 20px', maxWidth: 1000, margin: '0 auto', color: COLORS.text }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+        <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>Insights</h1>
+        <Link to="/admin/insights/new"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', background: COLORS.accent, color: '#FFF', borderRadius: 8, fontWeight: 600, fontSize: 14, textDecoration: 'none' }}>
+          <Plus size={16} /> New article
+        </Link>
+      </div>
 
-      <AdminToolbar
-        right={
-          <>
-            <AdminToolbar.Pill active={filter === 'ALL'} onClick={() => setFilter('ALL')}>All ({counts.total})</AdminToolbar.Pill>
-            <AdminToolbar.Pill active={filter === 'PUBLISHED'} onClick={() => setFilter('PUBLISHED')}>Published ({counts.published})</AdminToolbar.Pill>
-            <AdminToolbar.Pill active={filter === 'DRAFT'} onClick={() => setFilter('DRAFT')}>Drafts ({counts.draft})</AdminToolbar.Pill>
-          </>
-        }
-      >
-        <AdminToolbar.Search value={search} onChange={setSearch} placeholder="Search by title or category…" />
-      </AdminToolbar>
+      <div style={{ position: 'relative', marginBottom: 16, maxWidth: 360 }}>
+        <Search size={16} color={COLORS.muted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
+        <input type="search" value={search} onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search insights" aria-label="Search insights"
+          style={{ width: '100%', padding: '10px 12px 10px 36px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, outline: 'none', background: COLORS.surface }} />
+      </div>
 
       {filtered.length === 0 ? (
-        <AdminEmpty
-          title={search ? 'No matches' : 'No insights yet'}
-          body={search ? 'Try a different search.' : 'Publish your first market brief to engage investors.'}
-          action={<Button as={Link} to="/admin/insights/new" variant="primary" size="md">Write your first insight</Button>}
-        />
+        <div style={{ padding: 40, textAlign: 'center', color: COLORS.muted, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, fontSize: 14 }}>
+          {search ? 'No insights match your search.' : 'No insights yet. Create your first article.'}
+        </div>
       ) : (
-        <AdminTable columns={columns} rows={filtered} />
+        <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, overflow: 'hidden' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+            <thead>
+              <tr style={{ background: '#FAFAFA' }}>
+                {['Title', 'Category', 'Status', ''].map((h) => (
+                  <th key={h} style={{ textAlign: h === '' ? 'right' : 'left', padding: '12px 16px', fontSize: 12, fontWeight: 600, color: COLORS.muted, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((i) => (
+                <tr key={i.id} style={{ borderTop: `1px solid ${COLORS.border}` }}>
+                  <td style={{ padding: '14px 16px', fontWeight: 500 }}>{i.title}</td>
+                  <td style={{ padding: '14px 16px', color: COLORS.muted }}>{i.category || '—'}</td>
+                  <td style={{ padding: '14px 16px', textTransform: 'capitalize', color: COLORS.muted }}>{i.status || 'draft'}</td>
+                  <td style={{ padding: '14px 16px', textAlign: 'right' }}>
+                    <Link to={`/insights/${i.id}/edit`} style={{ color: COLORS.accent, fontWeight: 600, textDecoration: 'none', fontSize: 13 }}>Edit →</Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
-
-      <style>{`
-        .insight-action {
-          font-size: 11.5px; padding: 5px 10px;
-          border: 1px solid var(--line); border-radius: var(--r-pill);
-          background: #fff; color: var(--gray-700);
-          transition: all .12s ease;
-        }
-        .insight-action:hover { border-color: var(--ink); color: var(--ink); }
-        .insight-action--danger { color: var(--danger); }
-        .insight-action--danger:hover { border-color: var(--danger); }
-      `}</style>
-    </>
+    </div>
   );
 }

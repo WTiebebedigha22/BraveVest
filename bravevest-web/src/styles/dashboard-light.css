@@ -1,0 +1,86 @@
+/* ─────────────────────────────────────────────
+   BraveVest — Dashboard light lock
+   Forces every investor/admin page to a light background,
+   regardless of what inline styles or class rules say.
+   Loaded globally (not scoped) so it wins everywhere.
+   ───────────────────────────────────────────── */
+
+:root {
+  color-scheme: light !important;
+}
+
+html,
+body,
+#root {
+  background: #FAFAFA !important;
+  color: #1A1A1A !important;
+  color-scheme: light !important;
+}
+
+/* Dashboard page wrappers — match anything with dashboard-y class names */
+[class*="dashboard"],
+[class*="Dashboard"],
+[class*="investor"],
+[class*="Investor"],
+[class*="admin"],
+[class*="Admin"] {
+  background-color: #FAFAFA !important;
+  color: #1A1A1A !important;
+}
+
+/* Top-level page divs inside #root should never be dark */
+#root > div,
+#root > div > div,
+#root > div > div > div {
+}
+
+/* Force any dark background utility to light */
+[style*="background: #0"],
+[style*="background-color: #0"],
+[style*="background:#0"],
+[style*="background-color:#0"],
+[style*="background: #1"],
+[style*="background-color: #1"],
+[style*="background:#1"],
+[style*="background-color:#1"],
+[style*="background: rgb(0"],
+[style*="background-color: rgb(0"],
+[style*="background: black"],
+[style*="background-color: black"] {
+  background-color: #FAFAFA !important;
+  color: #1A1A1A !important;
+}
+
+/* Force any dark text color to dark-gray on light */
+[style*="color: #fff"],
+[style*="color: #FFF"],
+[style*="color: #ffffff"],
+[style*="color: white"],
+[style*="color: rgb(255"] {
+  color: #1A1A1A !important;
+}
+
+/* Cards — never pure black */
+[style*="background: #0A0A0A"],
+[style*="background-color: #0A0A0A"],
+[style*="background: #141414"],
+[style*="background-color: #141414"],
+[style*="background: #1A1A1A"],
+[style*="background-color: #1A1A1A"],
+[style*="background: #1C1C1C"],
+[style*="background-color: #1C1C1C"] {
+  background-color: #FFFFFF !important;
+  border-color: #EAEAEA !important;
+}
+
+/* Inputs and selects on dashboard pages */
+input, select, textarea {
+  background-color: #FFFFFF;
+  color: #1A1A1A;
+  color-scheme: light;
+}
+
+/* Force fallback */
+* {
+  scrollbar-color: #EAEAEA #FAFAFA;
+}

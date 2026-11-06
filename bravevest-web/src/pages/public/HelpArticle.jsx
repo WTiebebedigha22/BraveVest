@@ -183,7 +183,7 @@ export default function HelpArticle() {
   return (
     <article className="help-article container">
       <Link to="/help" className="help-article__back">← Back to Help Center</Link>
-      
+
       <div className="help-article__cat">{article.cat}</div>
       <h1 className="help-article__title">{article.title}</h1>
 

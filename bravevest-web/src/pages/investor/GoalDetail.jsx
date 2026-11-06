@@ -1,79 +1,97 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Trash2 } from 'lucide-react';
-import { goalsApi } from '@/api/goals';
+import { Link, useParams } from 'react-router-dom';
+import { ArrowLeft, Target, AlertCircle, Loader2 } from 'lucide-react';
 import { useCurrency } from '@/context/CurrencyContext';
+import { apiFetch } from '@/lib/api';
+import PortalLayout from '@/components/layout/PortalLayout';
+
+const COLORS = {
+  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
+  border: '#EAEAEA', accent: '#F6A500', positive: '#0ECB81', negative: '#F6465D',
+};
 
 export default function GoalDetail() {
   const { id } = useParams();
-  const nav = useNavigate();
   const { format } = useCurrency();
-  const [goal, setGoal] = useState(null);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    goalsApi.get(id).then(setGoal).catch(() => nav('/goals')).finally(() => setLoading(false));
-  }, [id, nav]);
+    let cancelled = false;
+    (async () => {
+      try {
+        const result = await apiFetch(`/goals/${id}`);
+        if (!cancelled) setData(result);
+      } catch (e) {
+        if (!cancelled) setError(e?.message || 'Could not load goal.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [id]);
 
-  async function remove() {
-    if (!confirm('Delete this goal?')) return;
-    try { await goalsApi.remove(id); nav('/goals'); } catch { alert('Delete failed'); }
-  }
+  if (loading) return (
+    <PortalLayout theme="dark">
+      <div style={{ padding: 48, display: 'flex', alignItems: 'center', gap: 12, color: COLORS.muted }}>
+      <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Loading goal…
+      <style>{'@keyframes spin { to { transform: rotate(360deg); } }'}</style>
+    </div>
+    </PortalLayout>
+  );
+  if (error) return <div role="alert" style={{ padding: 24, color: COLORS.negative, display: 'flex', gap: 8 }}><AlertCircle size={20} /> {error}</div>;
 
-  if (loading) return <div style={{ padding: '48px', textAlign: 'center', color: 'var(--bybit-text-muted)' }}>Loading…</div>;
-  if (!goal) return null;
-
-  const pct = goal.targetAmount > 0 ? Math.min(100, Math.round((goal.currentAmount / goal.targetAmount) * 100)) : 0;
-  const remaining = Math.max(0, Number(goal.targetAmount || 0) - Number(goal.currentAmount || 0));
+  const goal = data?.goal ?? data;
+  const contributions = data?.contributions ?? [];
+  const progress = goal?.target > 0 ? Math.min(100, Math.round(((goal.saved || 0) / goal.target) * 100)) : 0;
 
   return (
-    <div style={{ padding: '32px 0' }}>
-      <div className="container container--narrow">
-        <Link to="/goals" style={{ fontSize: '13px', color: 'var(--bybit-text-muted)', display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '24px' }}>
-          <ArrowLeft size={14} /> Back to goals
-        </Link>
+    <div style={{ padding: '24px 20px', maxWidth: 760, margin: '0 auto', color: COLORS.text }}>
+      <Link to="/goals" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: COLORS.muted, textDecoration: 'none', fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+        <ArrowLeft size={14} /> Back to goals
+      </Link>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
+      <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 20px', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <Target size={24} color={COLORS.accent} /> {goal?.name || 'Goal'}
+      </h1>
+
+      <section aria-label="Goal progress" style={{ padding: 24, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, marginBottom: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: '24px' }}>{goal.name}</h1>
-            <p style={{ color: 'var(--bybit-text-muted)', margin: '4px 0 0', fontSize: '13px' }}>
-              Target: {goal.targetDate ? new Date(goal.targetDate).toLocaleDateString() : '—'}
-            </p>
+            <div style={{ fontSize: 28, fontWeight: 700 }}>{format(goal?.saved || 0)}</div>
+            <div style={{ fontSize: 13, color: COLORS.muted }}>of {format(goal?.target || 0)} target</div>
           </div>
-          <button onClick={remove} className="btn btn--ghost" style={{ color: 'var(--bybit-red)' }}>
-            <Trash2 size={14} /> Delete
-          </button>
+          <div style={{ fontSize: 20, fontWeight: 700, color: COLORS.accent }}>{progress}%</div>
         </div>
+        <div style={{ height: 10, background: '#F0F0F0', borderRadius: 5, overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${progress}%`, background: COLORS.accent, transition: 'width 0.3s' }} />
+        </div>
+        {goal?.deadline && (
+          <div style={{ marginTop: 12, fontSize: 13, color: COLORS.muted }}>Target date: {goal.deadline}</div>
+        )}
+      </section>
 
-        <div className="card" style={{ marginBottom: '24px', padding: '32px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <div>
-              <div className="data-label">Saved</div>
-              <div style={{ fontSize: '32px', fontWeight: '700', marginTop: '4px' }}>{format(goal.currentAmount || 0)}</div>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-              <div className="data-label">Target</div>
-              <div style={{ fontSize: '32px', fontWeight: '700', marginTop: '4px', color: 'var(--bybit-orange)' }}>{format(goal.targetAmount || 0)}</div>
-            </div>
+      <section aria-label="Contributions">
+        <h2 style={{ fontSize: 16, fontWeight: 600, margin: '0 0 12px' }}>Contributions</h2>
+        {contributions.length === 0 ? (
+          <div style={{ padding: 32, textAlign: 'center', color: COLORS.muted, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, fontSize: 14 }}>
+            No contributions yet.
           </div>
-          <div style={{ height: '10px', background: 'var(--bybit-surface-2)', borderRadius: '5px', overflow: 'hidden', marginBottom: '12px' }}>
-            <div style={{ width: pct + '%', height: '100%', background: 'var(--bybit-orange)' }}></div>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--bybit-text-muted)' }}>
-            <span>{pct}% complete</span>
-            <span>{format(remaining)} remaining</span>
-          </div>
-        </div>
-
-        <div className="card">
-          <h3 style={{ margin: '0 0 12px', fontSize: '16px' }}>Status</h3>
-          <p style={{ fontSize: '13px', color: 'var(--bybit-text-muted)', lineHeight: '1.6' }}>
-            {goal.status === 'ACHIEVED' ? 'Goal achieved. Congratulations!' :
-             goal.status === 'ABANDONED' ? 'This goal was abandoned.' :
-             'This goal is active. Contributions are tracked automatically from your investments.'}
-          </p>
-        </div>
-      </div>
+        ) : (
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {contributions.map((c) => (
+              <li key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 14, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 10 }}>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600 }}>{c.source || 'Deposit'}</div>
+                  <div style={{ fontSize: 12, color: COLORS.muted, marginTop: 2 }}>{c.date}</div>
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: COLORS.positive }}>+{format(c.amount)}</div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }

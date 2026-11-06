@@ -1,117 +1,117 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { CheckCircle, XCircle } from 'lucide-react';
-import { adminApi } from '@/api/admin';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { apiFetch } from '@/lib/api';
+import PortalLayout from '@/components/layout/PortalLayout';
 
-export default function AdminKycDetail() {
+const COLORS = {
+  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
+  border: '#EAEAEA', accent: '#F6A500', positive: '#0ECB81', negative: '#F6465D',
+};
+
+export default function KycDetail() {
   const { id } = useParams();
-  const nav = useNavigate();
-  const [kyc, setKyc] = useState(null);
+  const navigate = useNavigate();
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showReject, setShowReject] = useState(false);
+  const [error, setError] = useState('');
+  const [acting, setActing] = useState('');
   const [reason, setReason] = useState('');
-  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
-    adminApi.kycGet(id).then(setKyc).catch(() => nav('/admin/kyc')).finally(() => setLoading(false));
-  }, [id, nav]);
+    let cancelled = false;
+    (async () => {
+      try {
+        const result = await apiFetch(`/admin/kyc/${id}`, { );
+        if (!cancelled) setData(json);
+      } catch (e) {
+        if (!cancelled) setError(e?.message || 'Could not load KYC submission.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [id]);
 
-  async function approve() {
-    if (!confirm('Approve this KYC submission?')) return;
-    setActionLoading(true);
+  async function act(action) {
+    setError('');
+    if (action === 'reject' && !reason.trim()) {
+      return setError('Please provide a reason for rejection.');
+    }
+    setActing(action);
     try {
-      await adminApi.kycApprove(id);
-      alert('Approved');
-      nav('/admin/kyc');
-    } catch (e) { alert('Failed'); }
-    finally { setActionLoading(false); }
+      const result = await apiFetch(`/admin/kyc/${id}/${action}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason: reason.trim() || undefined }),
+      });.catch(() => ({}));
+        throw new Error(d?.message || 'Action failed.');
+      }
+      navigate('/admin/kyc', { replace: true });
+    } catch (e) {
+      setError(e?.message || 'Action failed.');
+    } finally {
+      setActing('');
+    }
   }
 
-  async function reject() {
-    if (!reason.trim()) return alert('Reason required');
-    setActionLoading(true);
-    try {
-      await adminApi.kycReject(id, reason);
-      alert('Rejected');
-      nav('/admin/kyc');
-    } catch (e) { alert('Failed'); }
-    finally { setActionLoading(false); }
-  }
-
-  if (loading) return <div style={{ padding: '48px', textAlign: 'center', color: 'var(--bybit-text-muted)' }}>Loading…</div>;
-  if (!kyc) return <div style={{ padding: '48px', textAlign: 'center' }}>Not found</div>;
-
-  return (
-    <div style={{ padding: '32px 0' }}>
-      <div className="container container--narrow">
-        <button onClick={() => nav('/admin/kyc')} className="btn btn--ghost" style={{ marginBottom: '16px' }}>← Back to queue</button>
-
-        <div style={{ marginBottom: '24px' }}>
-          <h1 style={{ margin: 0, fontSize: '24px' }}>KYC Review</h1>
-          <p style={{ color: 'var(--bybit-text-muted)', margin: '4px 0 0', fontSize: '13px' }}>{kyc.user?.email} · {kyc.user?.firstName} {kyc.user?.lastName}</p>
-        </div>
-
-        <div className="card" style={{ marginBottom: '16px' }}>
-          <h3 style={{ margin: 0, fontSize: '16px', marginBottom: '16px' }}>Personal Info</h3>
-          <Grid>
-            <Field label="Full Name" value={`${kyc.user?.firstName || ''} ${kyc.user?.lastName || ''}`} />
-            <Field label="Date of Birth" value={kyc.dateOfBirth ? new Date(kyc.dateOfBirth).toLocaleDateString() : '—'} />
-            <Field label="Gender" value={kyc.gender || '—'} />
-            <Field label="Nationality" value={kyc.nationality || '—'} />
-            <Field label="ID Type" value={kyc.idType || '—'} />
-            <Field label="ID Number" value={kyc.idNumber ? '••••' + kyc.idNumber.slice(-4) : '—'} />
-          </Grid>
-        </div>
-
-        <div className="card" style={{ marginBottom: '16px' }}>
-          <h3 style={{ margin: 0, fontSize: '16px', marginBottom: '16px' }}>Address</h3>
-          <Grid>
-            <Field label="Street" value={[kyc.addressLine1, kyc.addressLine2].filter(Boolean).join(', ') || '—'} />
-            <Field label="City" value={kyc.city || '—'} />
-            <Field label="State" value={kyc.state || '—'} />
-            <Field label="Occupation" value={kyc.occupation || '—'} />
-          </Grid>
-        </div>
-
-        <div className="card" style={{ marginBottom: '16px' }}>
-          <h3 style={{ margin: 0, fontSize: '16px', marginBottom: '16px' }}>Bank Account</h3>
-          <Grid>
-            <Field label="Bank" value={kyc.bankName || '—'} />
-            <Field label="Account Name" value={kyc.accountName || '—'} />
-            <Field label="Account Number" value={kyc.accountNumber ? '••••' + kyc.accountNumber.slice(-4) : '—'} />
-          </Grid>
-        </div>
-
-        <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-          <button onClick={approve} disabled={actionLoading || kyc.status === 'APPROVED'} className="btn btn--primary" style={{ flex: 1, background: 'var(--bybit-green)', color: 'var(--bv-background)' }}>
-            <CheckCircle size={16} /> Approve
-          </button>
-          <button onClick={() => setShowReject(true)} disabled={actionLoading || kyc.status === 'REJECTED'} className="btn btn--outline" style={{ flex: 1, borderColor: 'var(--bybit-red)', color: 'var(--bybit-red)' }}>
-            <XCircle size={16} /> Reject
-          </button>
-        </div>
-
-        {showReject && (
-          <div className="card" style={{ marginTop: '16px', borderColor: 'var(--bybit-red)' }}>
-            <label className="form-label">Rejection Reason</label>
-            <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={3} placeholder="Explain why this submission is being rejected" />
-            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '12px' }}>
-              <button onClick={() => setShowReject(false)} className="btn btn--ghost">Cancel</button>
-              <button onClick={reject} className="btn btn--primary" style={{ background: 'var(--bybit-red)' }}>Confirm Reject</button>
-            </div>
-          </div>
-        )}
-      </div>
+  if (loading) return (
+    <PortalLayout theme="dark">
+      <div style={{ padding: 48, display: 'flex', alignItems: 'center', gap: 12, color: COLORS.muted }}>
+      <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Loading KYC…
+      <style>{'@keyframes spin { to { transform: rotate(360deg); } }'}</style>
     </div>
+    </PortalLayout>
   );
-}
+  if (error && !data) return <div role="alert" style={{ padding: 24, color: COLORS.negative, display: 'flex', gap: 8 }}><AlertCircle size={20} /> {error}</div>;
 
-function Grid({ children }) { return <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>{children}</div>; }
-function Field({ label, value }) {
+  const k = data?.submission ?? data;
+
   return (
-    <div>
-      <div className="data-label" style={{ fontSize: '10px', marginBottom: '4px' }}>{label}</div>
-      <div style={{ fontSize: '14px' }}>{value}</div>
+    <div style={{ padding: '24px 20px', maxWidth: 800, margin: '0 auto', color: COLORS.text }}>
+      <Link to="/admin/kyc" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: COLORS.muted, textDecoration: 'none', fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+        <ArrowLeft size={14} /> Back to KYC queue
+      </Link>
+
+      <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 20px' }}>{k?.name || 'KYC Submission'}</h1>
+
+      {error && (
+        <div role="alert" style={{ display: 'flex', gap: 8, padding: '10px 12px', background: 'rgba(246,70,93,0.08)', border: '1px solid rgba(246,70,93,0.2)', borderRadius: 8, color: COLORS.negative, fontSize: 13, marginBottom: 16 }}>
+          <AlertCircle size={16} /> {error}
+        </div>
+      )}
+
+      <section style={{ padding: 20, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, marginBottom: 20 }}>
+        <dl style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 10, margin: 0, fontSize: 14 }}>
+          <dt style={{ color: COLORS.muted, fontWeight: 500 }}>Email</dt><dd style={{ margin: 0 }}>{k?.email}</dd>
+          <dt style={{ color: COLORS.muted, fontWeight: 500 }}>ID type</dt><dd style={{ margin: 0 }}>{k?.idType || 'NIN'}</dd>
+          <dt style={{ color: COLORS.muted, fontWeight: 500 }}>ID number</dt><dd style={{ margin: 0, fontFamily: 'monospace' }}>{k?.idNumber || '—'}</dd>
+          <dt style={{ color: COLORS.muted, fontWeight: 500 }}>Submitted</dt><dd style={{ margin: 0 }}>{k?.submittedAt || '—'}</dd>
+        </dl>
+      </section>
+
+      <section style={{ padding: 20, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12 }}>
+        <h2 style={{ fontSize: 15, fontWeight: 600, margin: '0 0 12px' }}>Review decision</h2>
+
+        <label style={{ display: 'grid', gap: 6, fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+          Reason (required for rejection)
+          <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={3} placeholder="Optional note (required if rejecting)…"
+            style={{ padding: '10px 12px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, outline: 'none', resize: 'vertical', fontFamily: 'inherit' }} />
+        </label>
+
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <button type="button" onClick={() => act('approve')} disabled={!!acting}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '12px 20px', background: COLORS.positive, color: '#FFF', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: acting ? 'not-allowed' : 'pointer', opacity: acting ? 0.7 : 1 }}>
+            {acting === 'approve' ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <CheckCircle size={16} />}
+            {acting === 'approve' ? 'Approving…' : 'Approve'}
+          </button>
+          <button type="button" onClick={() => act('reject')} disabled={!!acting}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '12px 20px', background: COLORS.surface, color: COLORS.negative, border: `1px solid ${COLORS.negative}`, borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: acting ? 'not-allowed' : 'pointer', opacity: acting ? 0.7 : 1 }}>
+            {acting === 'reject' ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <XCircle size={16} />}
+            {acting === 'reject' ? 'Rejecting…' : 'Reject'}
+          </button>
+        </div>
+      </section>
     </div>
   );
 }

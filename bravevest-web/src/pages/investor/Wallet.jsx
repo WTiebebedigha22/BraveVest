@@ -1,212 +1,174 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowUpRight, ArrowDownRight, Wallet as WalletIcon, ArrowRightLeft, Download } from 'lucide-react';
-import { walletApi } from '@/api/wallet';
+import { useSearchParams } from 'react-router-dom';
+import { Wallet as WalletIcon, ArrowDownLeft, ArrowUpRight, Send, List, AlertCircle, Loader2 } from 'lucide-react';
 import { useCurrency } from '@/context/CurrencyContext';
+import { apiFetch } from '@/lib/api';
+import PortalLayout from '@/components/layout/PortalLayout';
+import Deposit from './Deposit';
+import Withdraw from './Withdraw';
+import Transfer from './Transfer';
+import Statement from './Statement';
 
-const TX_TYPES = {
-  deposit: { label: 'Deposit', color: '#0ECB81', icon: ArrowDownRight },
-  withdrawal: { label: 'Withdrawal', color: '#F6465D', icon: ArrowUpRight },
-  investment: { label: 'Investment', color: '#F6A500', icon: ArrowRightLeft },
-  return: { label: 'Return', color: '#0ECB81', icon: ArrowDownRight },
-  fee: { label: 'Fee', color: '#888', icon: ArrowUpRight },
-};
+const TABS = [
+  { id: 'overview', label: 'Overview', icon: WalletIcon },
+  { id: 'deposit', label: 'Deposit', icon: ArrowDownLeft },
+  { id: 'withdraw', label: 'Withdraw', icon: ArrowUpRight },
+  { id: 'transfer', label: 'Transfer', icon: Send },
+  { id: 'history', label: 'History', icon: List },
+];
+
+const CSS = `
+.wl { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-card2:#EDEDF0; --by-line:#E4E4E9; --by-text:#121214; --by-mute:#6B6B76; --by-yellow:#F7A600; --by-amber:#C27C00; --by-red:#D6334B;
+  background:var(--by-bg); color:var(--by-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; min-height:60vh; }
+.wl * { box-sizing:border-box; }
+.wl-wrap { max-width:1100px; margin:0 auto; padding:0 20px; }
+.wl-top { position:relative; overflow:hidden; padding:48px 0 8px; }
+.wl-glow { position:absolute; inset:0; pointer-events:none; background:radial-gradient(520px 260px at 85% 0%, rgba(247,166,0,.2), transparent 70%); }
+.wl-top .wl-wrap { position:relative; }
+.wl h1 { font-size:clamp(30px,4.2vw,44px); font-weight:800; letter-spacing:-0.035em; margin:0 0 28px; }
+.wl-main { padding-bottom:96px; }
+
+.wl-tabs { display:flex; gap:28px; border-bottom:1px solid var(--by-line); margin-bottom:32px; overflow-x:auto; scrollbar-width:none; }
+.wl-tabs::-webkit-scrollbar { display:none; }
+.wl-tab { position:relative; display:inline-flex; align-items:center; gap:8px; padding:12px 2px 14px; background:none; border:0; color:var(--by-mute); font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; white-space:nowrap; transition:color .15s; }
+.wl-tab:hover { color:var(--by-text); }
+.wl-tab[aria-selected='true'] { color:var(--by-text); }
+.wl-tab[aria-selected='true']::after { content:''; position:absolute; left:0; right:0; bottom:-1px; height:3px; border-radius:3px 3px 0 0; background:var(--by-yellow); }
+.wl-tab:focus-visible { outline:2px solid #121214; outline-offset:2px; border-radius:4px; }
+
+.wl-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; height:46px; padding:0 24px; border-radius:8px; font-size:15px; font-weight:600; font-family:inherit; border:0; cursor:pointer; transition:background .15s, border-color .15s, color .15s; }
+.wl-btn--y { background:var(--by-yellow); color:#121214; }
+.wl-btn--y:hover { background:#FFB82E; }
+.wl-btn--g { background:#fff; color:var(--by-text); border:1px solid var(--by-line); }
+.wl-btn--g:hover { border-color:var(--by-yellow); color:var(--by-amber); }
+.wl-btn:focus-visible { outline:2px solid #121214; outline-offset:2px; }
+
+.wl-hero { position:relative; overflow:hidden; background:var(--by-card); border:1px solid var(--by-line); border-radius:20px; padding:36px; margin-bottom:40px; }
+.wl-hero::before { content:''; position:absolute; inset:0; pointer-events:none; background:radial-gradient(420px 240px at 100% 0%, rgba(247,166,0,.22), transparent 70%); }
+.wl-hero > * { position:relative; }
+.wl-lbl { display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:12px; }
+.wl-ic { width:34px; height:34px; border-radius:8px; background:rgba(247,166,0,.16); color:var(--by-amber); display:flex; align-items:center; justify-content:center; }
+.wl-big { font-size:clamp(38px,6vw,60px); font-weight:800; letter-spacing:-0.04em; line-height:1.1; margin-bottom:28px; font-variant-numeric:tabular-nums; }
+.wl-actions { display:flex; gap:10px; flex-wrap:wrap; }
+
+.wl-sechead { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.wl-sechead h2 { font-size:20px; font-weight:800; letter-spacing:-0.02em; margin:0; }
+.wl-link { background:none; border:0; color:var(--by-amber); font-weight:600; font-size:14px; font-family:inherit; cursor:pointer; padding:0; }
+.wl-link:hover { text-decoration:underline; }
+.wl-empty { padding:40px 24px; text-align:center; background:var(--by-card); border-radius:16px; color:var(--by-mute); font-size:14px; }
+
+.wl-err { display:flex; gap:12px; align-items:flex-start; padding:16px; background:rgba(214,51,75,.08); border:1px solid rgba(214,51,75,.2); border-radius:12px; color:var(--by-red); font-size:14px; margin-bottom:24px; }
+.wl-err svg { flex:none; }
+.wl-state { padding:96px 20px; display:flex; align-items:center; justify-content:center; gap:12px; color:var(--by-mute); }
+.wl-spin { animation:wl-spin 1s linear infinite; }
+@keyframes wl-spin { to { transform:rotate(360deg); } }
+@media (prefers-reduced-motion:reduce) { .wl-spin { animation:none; } }
+@media (max-width:560px) { .wl-hero { padding:24px; } .wl-actions .wl-btn { flex:1; padding:0 12px; } .wl-tabs { gap:20px; } }
+`;
 
 export default function Wallet() {
   const { format } = useCurrency();
-  const [data, setData] = useState({ balance: 0, held: 0, ledger: [] });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'overview';
+  const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    Promise.all([
-      walletApi.get().catch(() => ({ balance: 0, held: 0 })),
-      walletApi.ledger(50).catch(() => []),
-    ]).then(([w, l]) => {
-      setData({ balance: w?.balance || 0, held: w?.held || 0, ledger: l || [] });
-    }).finally(() => setLoading(false));
-  }, []);
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await apiFetch('/wallet');
+        if (!cancelled) setBalance((data && data.balance) || 0);
+      } catch (e) {
+        if (!cancelled) setError(e && e.message ? e.message : 'Could not load wallet.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [activeTab]);
 
-  const filteredLedger = filter === 'all'
-    ? data.ledger
-    : data.ledger.filter(tx => tx.type === filter);
+  function setTab(id) {
+    const next = new URLSearchParams(searchParams);
+    next.set('tab', id);
+    setSearchParams(next);
+  }
 
-  const total = data.balance + data.held;
+  if (loading) {
+    return (
+      <PortalLayout theme="dark">
+        <style>{CSS}</style>
+        <div className='wl'>
+          <div className='wl-state' role='status'>
+            <Loader2 size={20} className='wl-spin' /> Loading wallet…
+          </div>
+        </div>
+      </PortalLayout>
+    );
+  }
 
   return (
-    <div className="page-light" style={{ minHeight: '100vh', background: '#FAFAFA', paddingBottom: '64px' }}>
-      
-      {/* Header */}
-      <div style={{ background: 'var(--bv-surface)', borderBottom: '1px solid #EAEAEA', padding: '48px 0' }}>
-        <div className="container" style={{ maxWidth: '1200px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '24px' }}>
-            <div>
-              <span style={{ fontSize: '12px', fontWeight: '600', color: '#F6A500', textTransform: 'uppercase', letterSpacing: '0.16em' }}>Account</span>
-              <h1 style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.02em', color: 'var(--bv-text)', margin: '8px 0 4px' }}>Wallet</h1>
-              <p style={{ fontSize: '15px', color: '#666', margin: 0 }}>Your cash position and full transaction ledger.</p>
-            </div>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <Link to="/deposit" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: '#F6A500', color: 'var(--bv-surface)', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
-                <ArrowDownRight size={16} /> Deposit
-              </Link>
-              <Link to="/withdraw" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'var(--bv-surface)', color: 'var(--bv-text)', border: '1px solid #EAEAEA', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
-                <ArrowUpRight size={16} /> Withdraw
-              </Link>
+    <PortalLayout theme="dark">
+      <style>{CSS}</style>
+      <div className='wl'>
+        <section className='wl-top'>
+          <div className='wl-glow' aria-hidden='true' />
+          <div className='wl-wrap'>
+            <h1>Wallet</h1>
+            <div className='wl-tabs' role='tablist' aria-label='Wallet sections'>
+              {TABS.map((t) => {
+                const Icon = t.icon;
+                return (
+                  <button
+                    key={t.id}
+                    type='button'
+                    role='tab'
+                    className='wl-tab'
+                    aria-selected={activeTab === t.id}
+                    onClick={() => setTab(t.id)}
+                  >
+                    <Icon size={16} /> {t.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Balances */}
-      <div className="container" style={{ maxWidth: '1200px', paddingTop: '32px' }}>
-        <div className="grid-3" style={{ marginBottom: '32px' }}>
-
-          {/* Total Balance */}
-          <div style={{ padding: '28px', background: 'linear-gradient(135deg, #111 0%, #1A1A1A 100%)', borderRadius: '16px', color: 'var(--bv-surface)', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, transparent, #F6A500, transparent)' }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: '600', color: '#F6A500', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
-              <WalletIcon size={14} /> Total Balance
-            </div>
-            <div style={{ fontSize: '32px', fontWeight: '700', letterSpacing: '-0.02em' }}>
-              {loading ? '—' : format(total)}
-            </div>
-            <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginTop: '8px' }}>Available + Held</div>
-          </div>
-
-          {/* Available */}
-          <div style={{ padding: '28px', background: 'var(--bv-surface)', border: '1px solid #EAEAEA', borderRadius: '16px' }}>
-            <div style={{ fontSize: '12px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
-              Available
-            </div>
-            <div style={{ fontSize: '32px', fontWeight: '700', letterSpacing: '-0.02em', color: 'var(--bv-text)' }}>
-              {loading ? '—' : format(data.balance)}
-            </div>
-            <div style={{ fontSize: '13px', color: '#0ECB81', marginTop: '8px', fontWeight: '500' }}>Ready to deploy</div>
-          </div>
-
-          {/* Held */}
-          <div style={{ padding: '28px', background: 'var(--bv-surface)', border: '1px solid #EAEAEA', borderRadius: '16px' }}>
-            <div style={{ fontSize: '12px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
-              Held in Escrow
-            </div>
-            <div style={{ fontSize: '32px', fontWeight: '700', letterSpacing: '-0.02em', color: '#F6A500' }}>
-              {loading ? '—' : format(data.held)}
-            </div>
-            <div style={{ fontSize: '13px', color: '#666', marginTop: '8px' }}>Committed to pending investments</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Ledger */}
-      <div className="container" style={{ maxWidth: '1200px' }}>
-        
-        {/* Header row */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--bv-text)', margin: 0 }}>Transaction Ledger</h3>
-            <span style={{ background: '#F5F5F5', color: '#666', padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: '600' }}>
-              {data.ledger.length}
-            </span>
-          </div>
-          <button style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: 'var(--bv-surface)', border: '1px solid #EAEAEA', borderRadius: '6px', fontSize: '13px', fontWeight: '500', color: 'var(--bv-text)', cursor: 'pointer', fontFamily: 'inherit' }}>
-            <Download size={14} /> Export CSV
-          </button>
-        </div>
-
-        {/* Filter chips */}
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
-          {[
-            { id: 'all', label: 'All' },
-            { id: 'deposit', label: 'Deposits' },
-            { id: 'withdrawal', label: 'Withdrawals' },
-            { id: 'investment', label: 'Investments' },
-            { id: 'return', label: 'Returns' },
-          ].map(f => (
-            <button
-              key={f.id}
-              onClick={() => setFilter(f.id)}
-              style={{
-                padding: '6px 14px',
-                borderRadius: '6px',
-                fontSize: '13px',
-                fontWeight: '500',
-                cursor: 'pointer',
-                border: 'none',
-                background: filter === f.id ? 'rgba(246,165,0,0.1)' : '#F5F5F5',
-                color: filter === f.id ? '#F6A500' : '#666',
-                fontFamily: 'inherit',
-              }}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Table */}
-        <div style={{ background: 'var(--bv-surface)', border: '1px solid #EAEAEA', borderRadius: '12px', overflow: 'hidden' }}>
-          {loading ? (
-            <div style={{ padding: '64px', textAlign: 'center', color: '#888' }}>Loading transactions…</div>
-          ) : filteredLedger.length === 0 ? (
-            <div style={{ padding: '64px 24px', textAlign: 'center' }}>
-              <WalletIcon size={32} color="#CCC" style={{ margin: '0 auto 16px' }} />
-              <h4 style={{ fontSize: '16px', fontWeight: '600', color: 'var(--bv-text)', marginBottom: '8px' }}>
-                {data.ledger.length === 0 ? 'No transactions yet' : 'No matching transactions'}
-              </h4>
-              <p style={{ fontSize: '14px', color: '#666', marginBottom: '24px' }}>
-                {data.ledger.length === 0 ? 'Your ledger will populate once you make your first deposit.' : 'Try a different filter.'}
-              </p>
-              {data.ledger.length === 0 && (
-                <Link to="/deposit" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '12px 24px', background: '#F6A500', color: 'var(--bv-surface)', borderRadius: '8px', fontSize: '14px', fontWeight: '600', textDecoration: 'none' }}>
-                  Make a Deposit
-                </Link>
-              )}
-            </div>
-          ) : (
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ background: '#FAFAFA' }}>
-                  {['Date', 'Type', 'Reference', 'Description', 'Amount', 'Balance'].map((h, i) => (
-                    <th key={h} style={{ textAlign: i >= 4 ? 'right' : 'left', padding: '14px 20px', fontSize: '12px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid #EAEAEA' }}>
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {filteredLedger.map((tx) => {
-                  const meta = TX_TYPES[tx.type] || { label: tx.type, color: '#888', icon: ArrowRightLeft };
-                  const Icon = meta.icon;
-                  return (
-                    <tr key={tx.id} style={{ borderBottom: '1px solid #EAEAEA' }}>
-                      <td style={{ padding: '16px 20px', fontSize: '14px', color: '#666' }}>
-                        {new Date(tx.createdAt).toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' })}
-                      </td>
-                      <td style={{ padding: '16px 20px' }}>
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: `${meta.color}15`, color: meta.color, borderRadius: '6px', fontSize: '12px', fontWeight: '600' }}>
-                          <Icon size={12} /> {meta.label}
-                        </span>
-                      </td>
-                      <td style={{ padding: '16px 20px', fontSize: '12px', fontFamily: 'monospace', color: '#666' }}>
-                        {tx.reference || '—'}
-                      </td>
-                      <td style={{ padding: '16px 20px', fontSize: '13px', color: '#666' }}>
-                        {tx.description || '—'}
-                      </td>
-                      <td style={{ padding: '16px 20px', fontSize: '14px', fontWeight: '600', textAlign: 'right', color: tx.direction === 'credit' ? '#0ECB81' : 'var(--bv-text)' }}>
-                        {tx.direction === 'credit' ? '+' : '−'}{format(tx.amount)}
-                      </td>
-                      <td style={{ padding: '16px 20px', fontSize: '13px', textAlign: 'right', color: '#666', fontFamily: 'monospace' }}>
-                        {tx.balanceAfter != null ? format(tx.balanceAfter) : '—'}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+        <div className='wl-wrap wl-main'>
+          {error && (
+            <div className='wl-err' role='alert'><AlertCircle size={20} /> {error}</div>
           )}
-        </div>
 
+          {activeTab === 'overview' && (
+            <>
+              <div className='wl-hero'>
+                <div className='wl-lbl'>
+                  <span className='wl-ic'><WalletIcon size={18} /></span> Available balance
+                </div>
+                <div className='wl-big'>{format(balance)}</div>
+                <div className='wl-actions'>
+                  <button type='button' onClick={() => setTab('deposit')} className='wl-btn wl-btn--y'><ArrowDownLeft size={16} /> Deposit</button>
+                  <button type='button' onClick={() => setTab('withdraw')} className='wl-btn wl-btn--g'><ArrowUpRight size={16} /> Withdraw</button>
+                  <button type='button' onClick={() => setTab('transfer')} className='wl-btn wl-btn--g'><Send size={16} /> Transfer</button>
+                </div>
+              </div>
+
+              <div className='wl-sechead'>
+                <h2>Recent transactions</h2>
+                <button type='button' onClick={() => setTab('history')} className='wl-link'>View all →</button>
+              </div>
+              <div className='wl-empty'>Switch to the History tab to see full ledger.</div>
+            </>
+          )}
+
+          {activeTab === 'deposit' && <Deposit />}
+          {activeTab === 'withdraw' && <Withdraw />}
+          {activeTab === 'transfer' && <Transfer />}
+          {activeTab === 'history' && <Statement />}
+        </div>
       </div>
-    </div>
+    </PortalLayout>
   );
 }

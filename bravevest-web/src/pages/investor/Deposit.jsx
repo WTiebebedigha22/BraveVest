@@ -1,321 +1,220 @@
 import { useState } from 'react';
-import { ChevronDown, Calendar, ShieldCheck, TrendingUp, ArrowRight, CheckCircle2, Clock, ArrowDownLeft } from 'lucide-react';
+import { Copy, CheckCircle, AlertCircle, Loader2, Building2, CreditCard } from 'lucide-react';
+import { useCurrency } from '@/context/CurrencyContext';
+import { apiFetch } from '@/lib/api';
+import PortalLayout from '@/components/layout/PortalLayout';
 
-const depositStyles = `
-  .bv-deposit-page {
-    background-color: #f8f9fa;
-    color: #111111;
-    min-height: calc(100vh - 64px);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    padding-bottom: 60px;
-  }
+const CSS = `
+.dp { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-card2:#EDEDF0; --by-line:#E4E4E9; --by-text:#121214; --by-mute:#6B6B76; --by-yellow:#F7A600; --by-amber:#C27C00; --by-green:#0E9F5B; --by-red:#D6334B;
+  color:var(--by-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; }
+.dp * { box-sizing:border-box; }
+.dp--page { background:var(--by-bg); min-height:60vh; padding:48px 20px 96px; }
+.dp-inner { max-width:560px; }
+.dp--page .dp-inner { margin:0 auto; }
+.dp-title { font-size:24px; font-weight:800; letter-spacing:-0.03em; margin:0 0 20px; }
+.dp--page .dp-title { font-size:clamp(28px,4vw,38px); }
 
-  .bv-deposit-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 32px 20px 0;
-  }
+.dp-card { background:var(--by-card); border:1px solid var(--by-line); border-radius:20px; padding:28px; margin-bottom:16px; }
+.dp-h { font-size:15px; font-weight:700; margin:0 0 12px; }
+.dp-lbl { display:grid; gap:8px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:12px; }
+.dp-amt { display:flex; align-items:center; gap:8px; height:56px; padding:0 16px; background:#fff; border:1px solid var(--by-line); border-radius:10px; transition:border-color .15s; }
+.dp-amt:focus-within { border-color:var(--by-yellow); }
+.dp-amt span { font-size:22px; font-weight:700; color:var(--by-mute); }
+.dp-amt input { flex:1; min-width:0; border:0; background:transparent; outline:none; font-family:inherit; font-size:26px; font-weight:800; letter-spacing:-0.02em; color:var(--by-text); font-variant-numeric:tabular-nums; -moz-appearance:textfield; }
+.dp-amt input::-webkit-outer-spin-button, .dp-amt input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+.dp-amt input::placeholder { color:#B4B4BE; }
+.dp-chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:28px; }
+.dp-chip { height:32px; padding:0 12px; border-radius:6px; border:1px solid var(--by-line); background:#fff; font-family:inherit; font-size:13px; font-weight:600; color:var(--by-text); cursor:pointer; }
+.dp-chip:hover { border-color:var(--by-yellow); background:rgba(247,166,0,.12); }
 
-  .bv-wallet-tabs {
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #e5e7eb;
-    gap: 8px;
-    overflow-x: auto;
-  }
+.dp-methods { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px; }
+.dp-method { display:flex; flex-direction:column; gap:4px; text-align:left; padding:16px 14px; background:#fff; border:1px solid var(--by-line); border-radius:12px; cursor:pointer; font-family:inherit; transition:border-color .15s, background .15s; }
+.dp-method:hover { border-color:var(--by-yellow); }
+.dp-method[aria-checked='true'] { border-color:var(--by-yellow); background:rgba(247,166,0,.1); box-shadow:inset 0 0 0 1px var(--by-yellow); }
+.dp-method b { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; color:var(--by-text); }
+.dp-method b svg { color:var(--by-mute); }
+.dp-method[aria-checked='true'] b svg { color:var(--by-amber); }
+.dp-method span { font-size:12px; color:var(--by-mute); }
 
-  .bv-wallet-tab {
-    padding: 12px 16px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #6b7280;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.15s ease;
-    white-space: nowrap;
-  }
+.dp-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; height:50px; border:0; border-radius:8px; background:var(--by-yellow); color:#121214; font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; transition:background .15s; }
+.dp-btn:hover:not(:disabled) { background:#FFB82E; }
+.dp-btn:disabled { opacity:.6; cursor:not-allowed; }
+.dp-btn:focus-visible, .dp-method:focus-visible, .dp-copy:focus-visible, .dp-chip:focus-visible { outline:2px solid #121214; outline-offset:2px; }
+.dp-spin { animation:dp-spin 1s linear infinite; }
+@keyframes dp-spin { to { transform:rotate(360deg); } }
+@media (prefers-reduced-motion:reduce) { .dp-spin { animation:none; } }
 
-  .bv-wallet-tab:hover {
-    color: #111111;
-  }
+.dp-msg { display:flex; gap:8px; align-items:flex-start; padding:12px; border-radius:8px; font-size:13px; line-height:1.5; margin-bottom:20px; }
+.dp-msg svg { flex:none; margin-top:1px; }
+.dp-msg--err { background:rgba(214,51,75,.08); border:1px solid rgba(214,51,75,.2); color:var(--by-red); }
+.dp-msg--ok { background:rgba(14,159,91,.08); border:1px solid rgba(14,159,91,.2); color:var(--by-green); }
 
-  .bv-wallet-tab.active {
-    color: #d97706;
-    border-bottom-color: #d97706;
-    font-weight: 600;
-  }
+.dp-row { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 0; border-top:1px solid var(--by-line); }
+.dp-row small { display:block; font-size:12px; color:var(--by-mute); margin-bottom:2px; }
+.dp-row b { font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; word-break:break-word; }
+.dp-copy { display:inline-flex; align-items:center; gap:6px; flex:none; height:34px; padding:0 12px; background:#fff; border:1px solid var(--by-line); border-radius:6px; font-family:inherit; font-size:13px; font-weight:600; color:var(--by-text); cursor:pointer; transition:border-color .15s, color .15s; }
+.dp-copy:hover { border-color:var(--by-yellow); color:var(--by-amber); }
+.dp-copy.done { color:var(--by-green); border-color:var(--by-green); }
+.dp-note { margin:12px 0 0; font-size:12px; color:var(--by-mute); line-height:1.6; }
+@media (max-width:480px) { .dp-card { padding:20px; } .dp-methods { grid-template-columns:1fr; } }
+`;
 
-  .bv-deposit-grid {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr;
-    gap: 40px;
-    margin-top: 32px;
-  }
+const METHODS = [
+  { id: 'bank', label: 'Bank transfer', desc: 'Free · 5 min', icon: Building2 },
+  { id: 'card', label: 'Card', desc: '1.5% fee · instant', icon: CreditCard },
+];
+const QUICK = [5000, 50000, 250000];
 
-  @media (max-width: 900px) {
-    .bv-deposit-grid {
-      grid-template-columns: 1fr;
+// embedded: set when rendered inside the Wallet tabs (no PageShell, no page padding)
+export default function Deposit({ embedded = false }) {
+  const { format } = useCurrency();
+  const [amount, setAmount] = useState('');
+  const [method, setMethod] = useState('bank');
+  const [copied, setCopied] = useState('');
+  const [err, setErr] = useState('');
+  const [ok, setOk] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const account = {
+    bankName: 'Providus Bank',
+    accountName: 'BRAVEVEST / YOUR NAME',
+    accountNumber: '9901234567',
+  };
+
+  async function copy(text, label) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(label);
+      setTimeout(() => setCopied(''), 1500);
+    } catch {
+      setErr('Could not copy — please copy manually.');
     }
   }
 
-  .bv-fund-banner {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(255, 255, 255, 0.95) 100%);
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    border-radius: 16px;
-    padding: 28px;
-    position: relative;
-    overflow: hidden;
+  async function submit(e) {
+    e.preventDefault();
+    setErr('');
+    setOk('');
+
+    const amt = Number(amount);
+    if (!amt || amt < 1000) {
+      return setErr('Minimum deposit is ₦1,000.');
+    }
+
+    if (method === 'card') {
+      setSubmitting(true);
+      try {
+        const data = await apiFetch('/payments/initialize', {
+          method: 'POST',
+          body: { amount: amt },
+        });
+        if (data?.authorizationUrl) {
+          window.location.href = data.authorizationUrl;
+        } else {
+          throw new Error('Payment URL missing from response.');
+        }
+      } catch (e) {
+        setErr(e?.message || 'Could not start payment.');
+      } finally {
+        setSubmitting(false);
+      }
+    } else {
+      setOk(`Send ${format(amt)} to the account below. Deposits reflect within 5 minutes.`);
+    }
   }
 
-  .bv-input-group {
-    display: flex;
-    background: #f9fafb;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #d1d5db;
-    transition: border-color 0.15s ease;
-  }
+  const Title = embedded ? 'h2' : 'h1';
 
-  .bv-input-group:focus-within {
-    border-color: #f59e0b;
-  }
+  const body = (
+    <div className={`dp${embedded ? '' : ' dp--page'}`}>
+      <style>{CSS}</style>
+      <div className='dp-inner'>
+        <Title className='dp-title'>Deposit</Title>
 
-  .bv-input-field {
-    flex: 1;
-    border: none;
-    background: transparent;
-    padding: 16px;
-    font-size: 16px;
-    color: #111111;
-    outline: none;
-    width: 100%;
-  }
+        <form onSubmit={submit} className='dp-card'>
+          {err && <div role='alert' className='dp-msg dp-msg--err'><AlertCircle size={16} /> {err}</div>}
+          {ok && <div role='status' className='dp-msg dp-msg--ok'><CheckCircle size={16} /> {ok}</div>}
 
-  .bv-input-field::placeholder {
-    color: #9ca3af;
-  }
-
-  .bv-currency-select {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 16px;
-    background: #ffffff;
-    border-left: 1px solid #d1d5db;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 14px;
-    color: #111111;
-  }
-
-  .bv-tx-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    transition: border-color 0.15s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-  }
-
-  .bv-tx-card:hover {
-    border-color: #d1d5db;
-  }
-`;
-
-// Mock recent transactions data
-const RECENT_DEPOSITS = [
-  { id: 'TXN-948201', amount: '₦150,000', method: 'Paystack Instant', date: '2026-10-28 14:32', status: 'Completed' },
-  { id: 'TXN-883920', amount: '₦50,000', method: 'Flutterwave', date: '2026-10-15 09:12', status: 'Completed' },
-  { id: 'TXN-772109', amount: '₦500,000', method: 'Bank Transfer', date: '2026-09-30 18:45', status: 'Completed' },
-  { id: 'TXN-661294', amount: '₦25,000', method: 'Paystack Instant', date: '2026-09-12 11:04', status: 'Processing' },
-];
-
-export default function Deposit() {
-  const [activeTab, setActiveTab] = useState('Fund Wallet');
-  const [fundAmount, setFundAmount] = useState('');
-
-  return (
-    <div className="bv-deposit-page">
-      <style dangerouslySetInnerHTML={{ __html: depositStyles }} />
-
-      <div className="bv-deposit-container">
-        
-        {/* Navigation Tabs Switcher */}
-        <div className="bv-wallet-tabs">
-          {['Fund Wallet', 'General Investment Deposit', 'Bank Transfer', 'Transaction History'].map((tab) => (
-            <div
-              key={tab}
-              className={`bv-wallet-tab ${activeTab === tab ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
+          <h3 className='dp-h'>Amount</h3>
+          <label className='dp-lbl' htmlFor='dp-amount'>
+            How much would you like to deposit? (₦)
+            <div className='dp-amt'>
+              <span>₦</span>
+              <input
+                id='dp-amount'
+                type='number'
+                inputMode='numeric'
+                min='1000'
+                step='500'
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder='5000'
+                required
+              />
             </div>
-          ))}
-          <div style={{ marginLeft: 'auto', display: 'flex', gap: '20px', fontSize: '13px', color: '#6b7280', alignItems: 'center' }}>
-            <span style={{ cursor: 'pointer' }}>Portfolio Overview ↗</span>
+          </label>
+          <div className='dp-chips'>
+            {QUICK.map((q) => (
+              <button key={q} type='button' className='dp-chip' onClick={() => setAmount(String(q))}>
+                ₦{q.toLocaleString('en-NG')}
+              </button>
+            ))}
           </div>
-        </div>
 
-        {/* Conditional View: Transaction History vs Deposit Form */}
-        {activeTab === 'Transaction History' ? (
-          <div style={{ marginTop: '32px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#111111' }}>Recent Deposit History</h2>
-              <span style={{ fontSize: '13px', color: '#6b7280' }}>Showing latest records</span>
-            </div>
-
-            <div>
-              {RECENT_DEPOSITS.map((tx) => (
-                <div key={tx.id} className="bv-tx-card">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                    <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d97706' }}>
-                      <ArrowDownLeft size={20} />
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '15px', fontWeight: '600', color: '#111111' }}>Deposit via {tx.method}</div>
-                      <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '2px' }}>{tx.id} • {tx.date}</div>
-                    </div>
-                  </div>
-
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '16px', fontWeight: '700', color: '#111111' }}>+{tx.amount}</div>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: '500', color: tx.status === 'Completed' ? '#059669' : '#d97706', marginTop: '2px' }}>
-                      {tx.status === 'Completed' ? <CheckCircle2 size={12} /> : <Clock size={12} />}
-                      {tx.status}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <h3 className='dp-h'>Payment method</h3>
+          <div role='radiogroup' aria-label='Payment method' className='dp-methods'>
+            {METHODS.map(({ id, label, desc, icon: Icon }) => (
+              <button
+                key={id}
+                type='button'
+                role='radio'
+                aria-checked={method === id}
+                className='dp-method'
+                onClick={() => setMethod(id)}
+              >
+                <b><Icon size={16} /> {label}</b>
+                <span>{desc}</span>
+              </button>
+            ))}
           </div>
-        ) : (
-          <div className="bv-deposit-grid">
-            
-            {/* Left Column: Platform Overview & Value Proposition */}
-            <div>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#fef3c7', color: '#d97706', padding: '4px 10px', borderRadius: '4px', fontSize: '12px', fontWeight: '600', marginBottom: '16px' }}>
-                <TrendingUp size={14} /> Verified Investment Opportunities
-              </div>
-              <h1 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '12px', color: '#111111' }}>
-                Fund Your Account & Grow Your Wealth
-              </h1>
-              <p style={{ color: '#6b7280', marginBottom: '32px', lineHeight: 1.6, fontSize: '14px' }}>
-                Deposit funds securely to back diverse, verified marketplace assets, scale high-yield projects, and track your capital growth in real-time.
-              </p>
 
-              {/* Feature Highlight Banner */}
-              <div className="bv-fund-banner">
-                <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: '#111111', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <ShieldCheck size={20} color="#d97706" /> Secure Capital Allocation
-                </h3>
-                <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '16px', maxWidth: '85%', lineHeight: 1.5 }}>
-                  All deposited balances allocated toward platform opportunities undergo rigorous risk assessment and milestone monitoring.
-                </p>
-                
-                <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                  <span style={{ color: '#d97706', fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-                    Explore Active Market Deals <ArrowRight size={14} />
-                  </span>
+          <button type='submit' disabled={submitting} className='dp-btn'>
+            {submitting && <Loader2 size={16} className='dp-spin' />}
+            {submitting ? 'Processing…' : method === 'card' ? 'Continue to payment' : 'Show bank details'}
+          </button>
+        </form>
+
+        {method === 'bank' && ok && (
+          <section aria-label='Bank transfer details' className='dp-card'>
+            <h3 className='dp-h' style={{ marginBottom: 4 }}>Bank transfer details</h3>
+            {[
+              { label: 'Bank', value: account.bankName, key: 'bank' },
+              { label: 'Account name', value: account.accountName, key: 'name' },
+              { label: 'Account number', value: account.accountNumber, key: 'number' },
+            ].map(({ label, value, key }) => (
+              <div key={key} className='dp-row'>
+                <div>
+                  <small>{label}</small>
+                  <b>{value}</b>
                 </div>
-              </div>
-            </div>
-
-            {/* Right Column: Deposit Form */}
-            <div style={{ background: '#ffffff', borderRadius: '16px', overflow: 'hidden', border: '1px solid #e5e7eb', boxShadow: '0 4px 24px rgba(0,0,0,0.03)' }}>
-              
-              <div style={{ padding: '20px 24px', borderBottom: '1px solid #e5e7eb', fontWeight: '600', fontSize: '16px', color: '#111111' }}>
-                {activeTab} (NGN)
-              </div>
-
-              <div style={{ padding: '28px 24px' }}>
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', color: '#6b7280', marginBottom: '8px', fontWeight: '500' }}>
-                    Deposit Amount
-                  </label>
-                  <div className="bv-input-group">
-                    <input
-                      type="number"
-                      value={fundAmount}
-                      onChange={(e) => setFundAmount(e.target.value)}
-                      placeholder="Min. 5,000 NGN"
-                      className="bv-input-field"
-                    />
-                    <div className="bv-currency-select">
-                      <div style={{ width: '20px', height: '20px', background: '#059669', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', fontSize: '12px', fontWeight: 'bold' }}>
-                        ₦
-                      </div>
-                      <span>NGN</span>
-                      <ChevronDown size={14} color="#6b7280" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Quick Select Buttons */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '24px' }}>
-                  {['10,000', '50,000', '250,000'].map((amt) => (
-                    <button
-                      key={amt}
-                      onClick={() => setFundAmount(amt)}
-                      style={{ background: '#ffffff', border: '1px solid #d1d5db', color: '#111111', padding: '8px', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', fontWeight: '500' }}
-                    >
-                      ₦{amt}
-                    </button>
-                  ))}
-                </div>
-
-                <div style={{ marginBottom: '28px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', color: '#111111', fontWeight: '600', marginBottom: '10px' }}>
-                    Payment Gateway
-                  </label>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', border: '1px solid #d1d5db', borderRadius: '8px', cursor: 'pointer', background: '#ffffff' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{ width: '28px', height: '28px', background: '#d97706', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', fontSize: '10px', fontWeight: '800' }}>
-                        Pay
-                      </div>
-                      <span style={{ fontSize: '14px', fontWeight: '500', color: '#111111' }}>
-                        Paystack / Flutterwave Instant Deposit
-                      </span>
-                    </div>
-                    <ChevronDown size={16} color="#6b7280" />
-                  </div>
-                </div>
-
                 <button
-                  disabled={!fundAmount}
-                  style={{
-                    width: '100%',
-                    padding: '16px',
-                    fontSize: '16px',
-                    fontWeight: '700',
-                    borderRadius: '8px',
-                    border: 'none',
-                    backgroundColor: '#f59e0b',
-                    color: '#ffffff',
-                    cursor: fundAmount ? 'pointer' : 'not-allowed',
-                    opacity: fundAmount ? 1 : 0.5,
-                    transition: 'all 0.15s ease',
-                    fontFamily: 'inherit',
-                  }}
+                  type='button'
+                  onClick={() => copy(value, key)}
+                  aria-label={`Copy ${label.toLowerCase()}`}
+                  className={`dp-copy${copied === key ? ' done' : ''}`}
                 >
-                  Proceed to Deposit
+                  {copied === key ? <><CheckCircle size={14} /> Copied</> : <><Copy size={14} /> Copy</>}
                 </button>
-
-                <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#6b7280' }}>
-                    <Calendar size={14} /> Automated Payouts enabled on active portfolios
-                  </span>
-                </div>
               </div>
-
-            </div>
-          </div>
+            ))}
+            <p className='dp-note'>
+              Use the account number exactly as shown. Deposits from a different account may be delayed.
+            </p>
+          </section>
         )}
-
       </div>
     </div>
   );
+
+  return embedded ? body : <PortalLayout theme="dark">{body}</PortalLayout>;
 }

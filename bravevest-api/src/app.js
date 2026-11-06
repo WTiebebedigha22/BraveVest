@@ -41,7 +41,11 @@ app.use(
 app.use(compression());
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan(env.isDev ? 'dev' : 'combined', { stream: { write: (m) => logger.info(m.trim()) } }));
+app.use(
+  morgan(env.isDev ? 'dev' : 'combined', {
+    stream: { write: (m) => logger.info(m.trim()) },
+  })
+);
 app.use('/uploads', express.static(path.join(process.cwd(), env.uploads.dir)));
 app.use('/api', globalLimiter);
 
@@ -53,8 +57,12 @@ app.get('/health', (req, res) =>
     time: new Date().toISOString(),
   })
 );
-app.get('/api', (req, res) => success(res, { name: 'BraveVest API', version: '0.1.0' }));
+app.get('/api', (req, res) =>
+  success(res, { name: 'BraveVest API', version: '0.1.0' })
+);
 
+// ── Module mounts ──────────────────────────────────────────
+app.use('/api/dashboard', require('./modules/dashboard/dashboard.routes'));
 app.use('/api/auth', require('./modules/auth/auth.routes'));
 app.use('/api/auth/otp', require('./modules/auth/otp.routes'));
 app.use('/api/kyc', require('./modules/kyc/kyc.routes'));
@@ -75,6 +83,7 @@ app.use('/api/funding', require('./modules/funding/funding.routes'));
 app.use('/api/contact', require('./modules/contact/contact.routes'));
 
 app.use('/api/wallet', require('./modules/wallet/wallet.routes'));
+app.use('/api/notifications', require('./modules/notifications/notifications.routes'));
 
 app.use('/api/currency', require('./modules/currency/currency.routes'));
 

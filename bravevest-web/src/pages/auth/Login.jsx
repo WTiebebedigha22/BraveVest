@@ -119,7 +119,7 @@ export default function Login() {
       {/* ── Left Promo Section ── */}
       <div className="login-left-promo">
         <div style={{ position: 'relative', zIndex: 10 }}>
-          <h1 style={{ fontSize: '32px', fontWeight: '600', color: 'var(--bv-text)', lineHeight: 1.3 }}>
+          <h1 style={{ fontSize: '32px', fontWeight: '600', color: '#111', lineHeight: 1.3 }}>
             Invest directly<br />in Africa's real economy.
           </h1>
           <p style={{ fontSize: '15px', color: '#666', marginTop: '12px', maxWidth: '340px', lineHeight: 1.6 }}>
@@ -155,10 +155,10 @@ export default function Login() {
               boxShadow: '0 15px 30px rgba(246, 165, 0, 0.3)',
             }}
           >
-            <div style={{ width: '40px', height: '40px', background: 'var(--bv-surface)', borderRadius: '50%', margin: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '40px', height: '40px', background: '#fff', borderRadius: '50%', margin: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <span style={{ fontWeight: 'bold', color: '#F6A500', fontSize: '18px' }}>B</span>
             </div>
-            <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: 'var(--bv-surface)', fontSize: '11px', letterSpacing: '2px', fontWeight: '600', opacity: 0.85 }}>
+            <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: '#fff', fontSize: '11px', letterSpacing: '2px', fontWeight: '600', opacity: 0.85 }}>
               BRAVEVEST
             </div>
           </div>
@@ -167,11 +167,11 @@ export default function Login() {
         {/* Stats Strip */}
         <div style={{ display: 'flex', gap: '48px', position: 'relative', zIndex: 10 }}>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: 'var(--bv-text)' }}>₦184B+</div>
+            <div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>₦184B+</div>
             <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>Assets Under Management</div>
           </div>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: 'var(--bv-text)' }}>52,000+</div>
+            <div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>52,000+</div>
             <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>Active Investors</div>
           </div>
         </div>
@@ -193,16 +193,16 @@ export default function Login() {
             <button
               type="button"
               aria-label="Change language"
-              style={{ background: 'none', border: 'none', color: 'var(--bv-text)', cursor: 'pointer', padding: '8px' }}
+              style={{ background: 'none', border: 'none', color: '#111', cursor: 'pointer', padding: '8px' }}
             >
               <Globe size={20} />
             </button>
           </div>
 
           {/* Form Card */}
-          <div style={{ background: 'var(--bv-surface)', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid #EAEAEA' }}>
+          <div style={{ background: '#fff', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid #EAEAEA' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: 0, color: 'var(--bv-text)' }}>Welcome back</h2>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: 0, color: '#111' }}>Welcome back</h2>
               <Link to="/register" style={{ fontSize: '13px', color: '#F6A500', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
                 Sign up
               </Link>
@@ -222,7 +222,7 @@ export default function Login() {
                     padding: '12px 0',
                     fontSize: '14px',
                     fontWeight: authMethod === m ? '600' : '400',
-                    color: authMethod === m ? 'var(--bv-text)' : '#888',
+                    color: authMethod === m ? '#111' : '#888',
                     borderBottom: authMethod === m ? '2px solid #F6A500' : '2px solid transparent',
                     cursor: 'pointer',
                     display: 'flex',
@@ -330,7 +330,7 @@ export default function Login() {
                   width: '100%',
                   padding: '14px',
                   background: '#F6A500',
-                  color: 'var(--bv-surface)',
+                  color: '#fff',
                   border: 'none',
                   borderRadius: '8px',
                   fontSize: '16px',
@@ -375,7 +375,7 @@ export default function Login() {
 
           {/* Legal / Terms */}
           <p style={{ textAlign: 'center', fontSize: '12px', color: '#888', marginTop: '24px', lineHeight: 1.6 }}>
-            By continuing, you agree to BraveVest's <a href="/terms" style={{ color: 'var(--bv-text)', textDecoration: 'underline' }}>Terms</a> and <a href="/privacy" style={{ color: 'var(--bv-text)', textDecoration: 'underline' }}>Privacy Policy</a>.
+            By continuing, you agree to BraveVest's <a href="/terms" style={{ color: '#111', textDecoration: 'underline' }}>Terms</a> and <a href="/privacy" style={{ color: '#111', textDecoration: 'underline' }}>Privacy Policy</a>.
           </p>
 
         </div>

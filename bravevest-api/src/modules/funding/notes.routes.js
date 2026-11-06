@@ -9,7 +9,7 @@ const router = express.Router();
 
 let authenticate;
 try {
-  authenticate = require('../../middleware/auth').authRequired;
+  authenticate = require('../../middleware/auth.middleware').authRequired;
 } catch {}
 if (!authenticate) {
   authenticate = (req, res, next) => {

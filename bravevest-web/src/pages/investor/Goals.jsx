@@ -1,108 +1,156 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Plus, Target } from 'lucide-react';
-import { goalsApi } from '@/api/goals';
+import { Link } from 'react-router-dom';
+import { Target, Plus, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { useCurrency } from '@/context/CurrencyContext';
+import { apiFetch } from '@/lib/api';
+import PortalLayout from '@/components/layout/PortalLayout';
+
+const COLORS = {
+  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
+  border: '#EAEAEA', accent: '#F6A500', positive: '#0ECB81', negative: '#F6465D',
+};
 
 export default function Goals() {
-  const nav = useNavigate();
   const { format } = useCurrency();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showCreate, setShowCreate] = useState(false);
-  const [form, setForm] = useState({ name: '', targetAmount: '', targetDate: '' });
-  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ name: '', target: '', deadline: '' });
+  const [saving, setSaving] = useState(false);
 
-  function load() {
-    setLoading(true);
-    goalsApi.list().then(r => setItems(Array.isArray(r) ? r : [])).catch(() => setItems([])).finally(() => setLoading(false));
-  }
-  useEffect(load, []);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await apiFetch('/goals');
+        if (!cancelled) setItems(Array.isArray(data) ? data : data.goals ?? []);
+      } catch (e) {
+        if (!cancelled) setError(e?.message || 'Could not load goals.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
-  async function create() {
-    if (!form.name || !form.targetAmount) return;
-    setSubmitting(true);
+  async function create(e) {
+    e.preventDefault();
+    setError('');
+    if (!form.name.trim()) return setError('Goal name is required.');
+    if (!form.target || Number(form.target) <= 0) return setError('Target amount must be greater than zero.');
+
+    setSaving(true);
     try {
-      await goalsApi.create({
-        name: form.name,
-        targetAmount: Number(form.targetAmount),
-        targetDate: form.targetDate || new Date(Date.now() + 365*24*60*60*1000).toISOString(),
-        type: 'CUSTOM',
+      const data = await apiFetch('/goals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: form.name.trim(), target: Number(form.target), deadline: form.deadline || null }),
       });
-      setShowCreate(false);
-      setForm({ name: '', targetAmount: '', targetDate: '' });
-      load();
+      setItems((prev) => [created, ...prev]);
+      setForm({ name: '', target: '', deadline: '' });
+      setShowForm(false);
     } catch (e) {
-      alert(e?.response?.data?.message || 'Failed to create goal');
-    } finally { setSubmitting(false); }
+      setError(e?.message || 'Could not create goal.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) {
+    return (
+    <PortalLayout theme="dark">
+      <div style={{ padding: 48, display: 'flex', alignItems: 'center', gap: 12, color: COLORS.muted }}>
+        <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Loading goals…
+        <style>{'@keyframes spin { to { transform: rotate(360deg); } }'}</style>
+      </div>
+    </PortalLayout>
+  );
   }
 
   return (
-    <div style={{ padding: '32px 0' }}>
-      <div className="container">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <div>
-            <h1 style={{ margin: 0, fontSize: '24px' }}>Goals</h1>
-            <p style={{ color: 'var(--bybit-text-muted)', margin: '4px 0 0', fontSize: '13px' }}>Track your financial milestones</p>
+    <div style={{ padding: '24px 20px', maxWidth: 900, margin: '0 auto', color: COLORS.text }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+        <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>Goals</h1>
+        <button type="button" onClick={() => setShowForm((v) => !v)}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', background: COLORS.accent, color: '#FFF', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>
+          <Plus size={16} /> {showForm ? 'Cancel' : 'New goal'}
+        </button>
+      </div>
+
+      {error && (
+        <div role="alert" style={{ display: 'flex', gap: 8, padding: '10px 12px', background: 'rgba(246,70,93,0.08)', border: '1px solid rgba(246,70,93,0.2)', borderRadius: 8, color: COLORS.negative, fontSize: 13, marginBottom: 16 }}>
+          <AlertCircle size={16} /> {error}
+        </div>
+      )}
+
+      {showForm && (
+        <form onSubmit={create} style={{ padding: 20, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, marginBottom: 20 }}>
+          <h2 style={{ fontSize: 15, fontWeight: 600, margin: '0 0 16px' }}>Create a goal</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 16 }}>
+            <label style={{ display: 'grid', gap: 6, fontSize: 13, fontWeight: 500 }}>
+              Goal name
+              <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
+                required placeholder="e.g. Retirement fund"
+                style={{ padding: '10px 12px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, outline: 'none' }} />
+            </label>
+            <label style={{ display: 'grid', gap: 6, fontSize: 13, fontWeight: 500 }}>
+              Target amount (₦)
+              <input type="number" inputMode="numeric" min="1000" step="1000" value={form.target} onChange={(e) => setForm({ ...form, target: e.target.value })}
+                required placeholder="500000"
+                style={{ padding: '10px 12px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, outline: 'none' }} />
+            </label>
+            <label style={{ display: 'grid', gap: 6, fontSize: 13, fontWeight: 500 }}>
+              Deadline
+              <input type="date" value={form.deadline} onChange={(e) => setForm({ ...form, deadline: e.target.value })}
+                style={{ padding: '10px 12px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, outline: 'none' }} />
+            </label>
           </div>
-          <button onClick={() => setShowCreate(true)} className="btn btn--primary">
-            <Plus size={14} /> New Goal
+          <button type="submit" disabled={saving}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 18px', background: COLORS.accent, color: '#FFF', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
+            {saving && <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />}
+            {saving ? 'Creating…' : 'Create goal'}
+          </button>
+        </form>
+      )}
+
+      {items.length === 0 ? (
+        <div style={{ padding: 40, textAlign: 'center', color: COLORS.muted, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, fontSize: 14 }}>
+          <Target size={32} style={{ margin: '0 auto 12px', color: '#CCC' }} />
+          <div style={{ fontWeight: 600, color: COLORS.text, marginBottom: 4 }}>No goals yet</div>
+          <div style={{ marginBottom: 16 }}>Set a savings target to stay motivated.</div>
+          <button type="button" onClick={() => setShowForm(true)}
+            style={{ padding: '10px 18px', background: COLORS.accent, color: '#FFF', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>
+            Create your first goal
           </button>
         </div>
-
-        {loading ? <div style={{ padding: '48px', textAlign: 'center', color: 'var(--bybit-text-muted)' }}>Loading…</div> : items.length === 0 ? (
-          <div className="card" style={{ padding: '64px 24px', textAlign: 'center' }}>
-            <Target size={32} color="var(--bybit-text-dim)" style={{ margin: '0 auto 12px' }} />
-            <p style={{ color: 'var(--bybit-text-muted)', marginBottom: '16px' }}>No goals yet. Set your first savings goal.</p>
-            <button onClick={() => setShowCreate(true)} className="btn btn--primary">Create Goal</button>
-          </div>
-        ) : (
-          <div className="grid-2">
-            {items.map(g => {
-              const pct = g.targetAmount > 0 ? Math.min(100, Math.round((g.currentAmount / g.targetAmount) * 100)) : 0;
-              return (
-                <Link key={g.id} to={'/goals/' + g.id} className="card" style={{ textDecoration: 'none' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                    <h3 style={{ margin: 0, fontSize: '16px' }}>{g.name}</h3>
-                    <span className="pill pill--orange">{pct}%</span>
+      ) : (
+        <div style={{ display: 'grid', gap: 12 }}>
+          {items.map((g) => {
+            const progress = g.target > 0 ? Math.min(100, Math.round((g.saved / g.target) * 100)) : 0;
+            return (
+              <Link key={g.id} to={`/goals/${g.id}`}
+                style={{ display: 'block', padding: 20, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, textDecoration: 'none', color: COLORS.text }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
+                  <div>
+                    <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 2 }}>{g.name}</div>
+                    <div style={{ fontSize: 12, color: COLORS.muted }}>
+                      {g.deadline ? `Target date ${g.deadline}` : 'No deadline'}
+                    </div>
                   </div>
-                  <div style={{ height: '6px', background: 'var(--bybit-surface-2)', borderRadius: '3px', overflow: 'hidden', marginBottom: '12px' }}>
-                    <div style={{ width: pct + '%', height: '100%', background: 'var(--bybit-orange)' }}></div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: 14, fontWeight: 700 }}>{format(g.saved)} <span style={{ color: COLORS.muted, fontWeight: 500 }}>of {format(g.target)}</span></div>
+                    <div style={{ fontSize: 12, color: COLORS.positive, fontWeight: 600, marginTop: 2 }}>{progress}% complete</div>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--bybit-text-muted)' }}>
-                    <span>{format(g.currentAmount || 0)}</span>
-                    <span>of {format(g.targetAmount || 0)}</span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-
-        {showCreate && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', display: 'grid', placeItems: 'center', zIndex: 1000, padding: '16px' }}>
-            <div className="card" style={{ maxWidth: '440px', width: '100%', padding: '24px' }}>
-              <h2 style={{ margin: '0 0 16px', fontSize: '20px' }}>New Goal</h2>
-              <div style={{ marginBottom: '16px' }}>
-                <label className="form-label">Goal Name</label>
-                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Emergency Fund" />
-              </div>
-              <div style={{ marginBottom: '16px' }}>
-                <label className="form-label">Target Amount</label>
-                <input type="text" value={form.targetAmount} onChange={(e) => setForm({ ...form, targetAmount: e.target.value.replace(/[^0-9]/g, '') })} placeholder="500000" />
-              </div>
-              <div style={{ marginBottom: '24px' }}>
-                <label className="form-label">Target Date</label>
-                <input type="date" value={form.targetDate} onChange={(e) => setForm({ ...form, targetDate: e.target.value })} />
-              </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button onClick={() => setShowCreate(false)} className="btn btn--outline" style={{ flex: 1 }}>Cancel</button>
-                <button onClick={create} disabled={submitting} className="btn btn--primary" style={{ flex: 1 }}>{submitting ? 'Creating…' : 'Create'}</button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+                </div>
+                <div style={{ height: 8, background: '#F0F0F0', borderRadius: 4, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${progress}%`, background: COLORS.accent, transition: 'width 0.3s' }} />
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

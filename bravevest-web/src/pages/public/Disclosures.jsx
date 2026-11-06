@@ -11,7 +11,7 @@ export default function Page() {
         </div>
       </section>
       <div className="container container--narrow" style={{ padding: '80px 24px' }}>
-        
+
     <h2 style="margin-top: 32px; margin-bottom: 16px;">Regulatory Status</h2>
     <p style="margin-bottom: 24px;">BraveVest operates as a technology platform. All lending and investment activity is conducted in partnership with licensed financial institutions. BraveVest does not itself hold, lend, or borrow funds.</p>
 
@@ -29,7 +29,7 @@ export default function Page() {
 
     <h2 style="margin-top: 32px; margin-bottom: 16px;">Data Protection</h2>
     <p style="margin-bottom: 24px;">BraveVest is registered with the Nigeria Data Protection Commission (NDPC). Our data handling practices comply with NDPA 2023 and international equivalents including GDPR.</p>
-  
+
       </div>
     </div>
   );

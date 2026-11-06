@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const ctrl = require('./groups.controller');
 const asyncHandler = require('../../utils/asyncHandler');
-const { authRequired } = require('../../middleware/auth');
+const { authRequired } = require('../../middleware/auth.middleware');
 router.use(authRequired);
 router.get('/', asyncHandler(ctrl.listMine));
 router.post('/', asyncHandler(ctrl.create));

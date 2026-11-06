@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const ctrl = require('./payments.controller');
 const asyncHandler = require('../../utils/asyncHandler');
-const { authRequired } = require('../../middleware/auth');
+const { authRequired } = require('../../middleware/auth.middleware');
 
 router.use(authRequired);
 router.post('/initialize', asyncHandler(ctrl.initialize));

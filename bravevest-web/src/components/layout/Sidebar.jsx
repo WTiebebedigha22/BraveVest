@@ -1,136 +1,215 @@
-import { NavLink, Link, useLocation } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { useTheme } from '@/context/ThemeContext';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Compass, PieChart, Wallet, FileText,
-  Target, Users, Gift, Share2, Calendar, User,
-  Shield, AlertCircle, DollarSign, Settings, MessageSquare, FolderKanban
+  LayoutDashboard, TrendingUp, Wallet, FileText, Target,
+  Gift, Users, UserCircle, Calendar, BarChart3, Shield,
+  FolderOpen, Settings, Inbox, PieChart, ArrowLeftRight, LogOut, X,
 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
-const investorGroups = [
-  { label: 'Invest', links: [
-    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { to: '/marketplace', label: 'Marketplace', icon: Compass },
-    { to: '/investments', label: 'My Investments', icon: PieChart },
-    { to: '/portfolio', label: 'Portfolio', icon: PieChart },
-    { to: '/commitments', label: 'Commitments', icon: Target },
-  ]},
-  { label: 'Money', links: [
-    { to: '/wallet', label: 'Wallet', icon: Wallet },
-    { to: '/deposit', label: 'Deposit', icon: DollarSign },
-    { to: '/withdraw', label: 'Withdraw', icon: DollarSign },
-  ]},
-  { label: 'Grow', links: [
-    { to: '/goals', label: 'Goals', icon: Target },
-    { to: '/groups', label: 'Group Savings', icon: Users },
-    { to: '/referral', label: 'Referrals', icon: Share2 },
-    { to: '/gifting', label: 'Gifting', icon: Gift },
-  ]},
-  { label: 'Account', links: [
-    { to: '/documents', label: 'Documents', icon: FileText },
-    { to: '/year-in-review', label: 'Year in Review', icon: Calendar },
-    { to: '/profile', label: 'Profile', icon: User },
-  ]},
+const COLORS = {
+  bg: '#FFFFFF',
+  text: '#1A1A1A',
+  muted: '#6B7280',
+  border: '#EAEAEA',
+  accent: '#F6A500',
+  accentSoft: 'rgba(246,165,0,0.1)',
+  negative: '#F6465D',
+  adminTint: 'rgba(246,165,0,0.04)',
+  adminBorder: 'rgba(246,165,0,0.15)',
+};
+
+const INVESTOR_LINKS = [
+  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/investments', label: 'Investments', icon: TrendingUp },
+  { to: '/opportunities/new', label: 'Submit Opportunity', icon: Plus },
+  { to: '/opportunities/mine', label: 'My Submissions', icon: FileCheck },
+  { to: '/portfolio', label: 'Portfolio', icon: PieChart },
+  { to: '/wallet', label: 'Wallet', icon: Wallet },
+  { to: '/statement', label: 'Statement', icon: FileText },
+  { to: '/goals', label: 'Goals', icon: Target },
+  { to: '/documents', label: 'Documents', icon: FileText },
+  { to: '/referral', label: 'Referral', icon: Gift },
+  { to: '/groups', label: 'Groups', icon: Users },
+  { to: '/notifications', label: 'Notifications', icon: Inbox },
+  { to: '/year-in-review', label: 'Year in Review', icon: Calendar },
+  { to: '/profile', label: 'Profile', icon: UserCircle },
 ];
 
-const adminGroups = [
-  { label: 'Overview', links: [
-    { to: '/admin', label: 'Admin Dashboard', icon: LayoutDashboard, end: true },
-    { to: '/admin/reports', label: 'Reports', icon: FileText },
-    { to: '/admin/transactions', label: 'Transactions', icon: DollarSign },
-  ]},
-  { label: 'Operations', links: [
-    { to: '/admin/kyc', label: 'KYC Review', icon: Shield },
-    { to: '/admin/investors', label: 'Investors', icon: Users },
-    { to: '/admin/funding/review', label: 'Funding Review', icon: AlertCircle },
-    { to: '/admin/projects', label: 'Projects', icon: FolderKanban },
-  ]},
-  { label: 'Finance', links: [
-    { to: '/admin/investments', label: 'Investments', icon: PieChart },
-  ]},
-  { label: 'Content & Support', links: [
-    { to: '/admin/insights', label: 'Insights', icon: FileText },
-    { to: '/admin/contact', label: 'Contact Inbox', icon: MessageSquare },
-    { to: '/admin/settings', label: 'Settings', icon: Settings },
-  ]},
+const ADMIN_LINKS = [
+  { to: '/admin', label: 'Overview', icon: BarChart3 },
+  { to: '/admin/investors', label: 'Investors', icon: Users },
+  { to: '/admin/kyc', label: 'KYC Queue', icon: Shield },
+  { to: '/admin/projects', label: 'Projects', icon: FolderOpen },
+  { to: '/admin/projects/pending', label: 'Pending Review', icon: Clock },
+  { to: '/admin/investments', label: 'Investments', icon: TrendingUp },
+  { to: '/admin/transactions', label: 'Transactions', icon: ArrowLeftRight },
+  { to: '/admin/reports', label: 'Reports', icon: FileText },
+  { to: '/admin/funding/review', label: 'Funding Review', icon: Inbox },
+  { to: '/admin/insights', label: 'Insights', icon: FileText },
+  { to: '/admin/contact', label: 'Contact Inbox', icon: Inbox },
+  { to: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
-function getUserRoles(user) {
-  if (!user) return [];
-  if (Array.isArray(user.roles) && user.roles.length) return user.roles;
-  if (user.role) return [user.role];
-  return [];
-}
-
-export default function Sidebar({ onNavigate }) {
+export default function Sidebar({ mobileOpen, onClose }) {
   const { user, logout } = useAuth();
-  const { theme } = useTheme();
-  const location = useLocation();
-  const roles = getUserRoles(user);
-  const isAdmin = roles.includes('ADMIN') || roles.includes('SUPER_ADMIN');
-  const groups = isAdmin ? adminGroups : investorGroups;
+  const nav = useNavigate();
+  const isAdmin = user?.roles?.includes('ADMIN') || user?.role === 'ADMIN';
+  const links = isAdmin ? ADMIN_LINKS : INVESTOR_LINKS;
 
-  function handleLinkClick() {
-    if (onNavigate) onNavigate();
+  function handleLogout() {
+    if (logout) logout();
+    if (onClose) onClose();
+    nav('/', { replace: true });
   }
 
-  const displayName = user?.firstName
-    ? user.firstName + ' ' + (user.lastName || '')
-    : (user?.email?.split('@')[0] || 'User');
-
-  return (
-    <aside style={{ width: '260px', background: 'var(--bv-surface)', borderRight: '1px solid var(--bv-border)', padding: '24px 16px', position: 'sticky', top: 0, height: '100vh', display: 'flex', flexDirection: 'column', flexShrink: 0, overflowY: 'auto' }}>
-      <Link to='/' style={{ marginBottom: '24px', display: 'block', padding: '0 8px' }} onClick={handleLinkClick}>
-        <img src='/logo.png' alt='BraveVest' style={{ height: '24px', width: 'auto', filter: theme === 'dark' ? 'brightness(0) invert(1)' : 'none' }} />
-      </Link>
-      <div style={{ flex: 1, overflowY: 'auto' }}>
-        {groups.map(function(group) {
-          return (
-            <div key={group.label} style={{ marginBottom: '20px' }}>
-              <div style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--bv-text-dim)', padding: '0 12px', marginBottom: '8px' }}>
-                {group.label}
-              </div>
-              <nav>
-                {group.links.map(function(l) {
-                  const Icon = l.icon;
-                  const isActive = location.pathname === l.to;
-                  return (
-                    <NavLink
-                      key={l.to}
-                      to={l.to}
-                      end={l.end}
-                      onClick={handleLinkClick}
-                      style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 12px', marginBottom: '2px', borderRadius: '6px', fontSize: '13px', fontWeight: '500', color: isActive ? 'var(--bv-orange)' : 'var(--bv-text-muted)', background: isActive ? 'var(--bv-orange-soft)' : 'transparent', textDecoration: 'none' }}
-                    >
-                      {Icon && <Icon size={16} strokeWidth={1.5} />}
-                      <span>{l.label}</span>
-                    </NavLink>
-                  );
-                })}
-              </nav>
-            </div>
-          );
-        })}
-      </div>
-      <div style={{ borderTop: '1px solid var(--bv-border)', paddingTop: '16px', marginTop: '16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', padding: '0 8px' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--bv-orange-soft)', color: 'var(--bv-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '600', fontSize: '13px', flexShrink: 0 }}>
-            {(user?.firstName || user?.email || 'U')[0].toUpperCase()}
+  const content = (
+    <>
+      {/* Brand with ADMIN badge */}
+      <div style={{ padding: '4px 12px 20px', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{
+          width: 32, height: 32, borderRadius: 8,
+          background: COLORS.accent, color: '#FFF',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontWeight: 700, fontSize: 16,
+          boxShadow: isAdmin ? '0 0 0 2px rgba(246,165,0,0.3)' : 'none',
+        }}>B</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ fontSize: 15, fontWeight: 700, color: COLORS.text, letterSpacing: '-0.01em' }}>BraveVest</span>
+            {isAdmin && (
+              <span style={{
+                padding: '2px 7px',
+                background: COLORS.accent,
+                color: '#0A0A0A',
+                borderRadius: 4,
+                fontSize: 9,
+                fontWeight: 800,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                lineHeight: 1.4,
+              }}>Admin</span>
+            )}
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--bv-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {displayName}
-            </div>
-            <div style={{ fontSize: '10px', color: 'var(--bv-text-muted)' }}>
-              {isAdmin ? 'Admin' : 'Investor'}
-            </div>
+          <div style={{ fontSize: 10, fontWeight: 600, color: isAdmin ? COLORS.accent : COLORS.muted, textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 1 }}>
+            {isAdmin ? 'Platform control' : 'Investor portal'}
           </div>
         </div>
-        <button onClick={logout} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px', width: '100%', background: 'transparent', border: 'none', color: 'var(--bv-text-muted)', fontSize: '13px', cursor: 'pointer', borderRadius: '6px', textAlign: 'left' }}>
-          <User size={16} strokeWidth={1.5} />
+        {onClose && (
+          <button onClick={onClose} aria-label='Close menu' style={{ background: 'none', border: 'none', color: COLORS.muted, cursor: 'pointer', padding: 4 }}>
+            <X size={18} />
+          </button>
+        )}
+      </div>
+
+      {/* Nav */}
+      <nav aria-label='Dashboard navigation' style={{ flex: 1, overflowY: 'auto' }}>
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {links.map(({ to, label, icon: Icon }) => {
+            const end = to === '/admin' || to === '/dashboard';
+            return (
+              <li key={to}>
+                <NavLink
+                  to={to}
+                  end={end}
+                  onClick={onClose}
+                  style={({ isActive }) => ({
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '10px 12px',
+                    borderRadius: 8,
+                    fontSize: 14,
+                    fontWeight: isActive ? 600 : 500,
+                    color: isActive ? COLORS.text : COLORS.muted,
+                    background: isActive ? COLORS.accentSoft : 'transparent',
+                    textDecoration: 'none',
+                    transition: 'background 0.15s, color 0.15s',
+                  })}
+                >
+                  {({ isActive }) => (
+                    <>
+                      <Icon size={18} color={isActive ? COLORS.accent : COLORS.muted} aria-hidden='true' />
+                      <span>{label}</span>
+                    </>
+                  )}
+                </NavLink>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      {/* Footer */}
+      <div style={{ borderTop: `1px solid ${COLORS.border}`, paddingTop: 12, marginTop: 12 }}>
+        <button
+          type='button'
+          onClick={handleLogout}
+          style={{
+            width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+            padding: '10px 12px', borderRadius: 8, fontSize: 14, fontWeight: 500,
+            color: COLORS.muted, background: 'transparent', border: 'none',
+            cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
+            transition: 'background 0.15s, color 0.15s',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = COLORS.negative; e.currentTarget.style.background = 'rgba(246,70,93,0.06)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = COLORS.muted; e.currentTarget.style.background = 'transparent'; }}
+        >
+          <LogOut size={18} aria-hidden='true' />
           <span>Sign out</span>
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  const sidebarStyle = {
+    width: 260,
+    flexShrink: 0,
+    background: isAdmin
+      ? `linear-gradient(180deg, ${COLORS.adminTint} 0%, ${COLORS.bg} 40%)`
+      : COLORS.bg,
+    borderRight: `1px solid ${isAdmin ? COLORS.adminBorder : COLORS.border}`,
+    padding: '20px 12px',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'sticky',
+    top: 64,
+    height: 'calc(100vh - 64px)',
+    overflowY: 'auto',
+  };
+
+  return (
+    <>
+      <aside aria-label='Dashboard navigation' className='bv-sidebar' style={sidebarStyle}>
+        {content}
+      </aside>
+
+      {mobileOpen && (
+        <>
+          <div
+            onClick={onClose}
+            style={{
+              position: 'fixed',
+              inset: '64px 0 0 0',
+              background: 'rgba(0,0,0,0.5)',
+              zIndex: 95,
+            }}
+          />
+          <aside
+            aria-label='Dashboard navigation'
+            className='bv-sidebar bv-sidebar--mobile'
+            style={{
+              ...sidebarStyle,
+              position: 'fixed',
+              top: 64,
+              left: 0,
+              bottom: 0,
+              zIndex: 100,
+            }}
+          >
+            {content}
+          </aside>
+        </>
+      )}
+    </>
   );
 }

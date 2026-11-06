@@ -5,20 +5,23 @@ import { CurrencyProvider } from '@/context/CurrencyContext';
 import ConnectionBanner from '@/components/shared/ConnectionBanner';
 import AppRoutes from '@/routes/AppRoutes';
 import { useAutoReveal } from '@/hooks/useReveal';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 export default function App() {
   useAutoReveal();
 
   return (
-    <HashRouter>
-      <ToastProvider>
-        <CurrencyProvider>
-          <AuthProvider>
-            <AppRoutes />
-            <ConnectionBanner />
-          </AuthProvider>
-        </CurrencyProvider>
-      </ToastProvider>
-    </HashRouter>
+    <ThemeProvider>
+      <HashRouter>
+        <ToastProvider>
+          <CurrencyProvider>
+            <AuthProvider>
+              <AppRoutes />
+              <ConnectionBanner />
+            </AuthProvider>
+          </CurrencyProvider>
+        </ToastProvider>
+      </HashRouter>
+    </ThemeProvider>
   );
 }

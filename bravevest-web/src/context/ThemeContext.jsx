@@ -1,48 +1,43 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { api } from '@/api/client';
 
-const STORAGE_KEY = 'bv.theme';
-const ThemeContext = createContext(null);
+const ThemeContext = createContext({ theme: 'dark', setTheme: () => {}, toggle: () => {} });
 
 export function ThemeProvider({ children }) {
   const [theme, setThemeState] = useState(() => {
-    if (typeof window === 'undefined') return 'dark';
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === 'light' || stored === 'dark') return stored;
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
+    try {
+      const saved = localStorage.getItem('bv_theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+    } catch {}
     return 'dark';
   });
 
   useEffect(() => {
+    try { localStorage.setItem('bv_theme', theme); } catch {}
     document.documentElement.setAttribute('data-theme', theme);
-    try { localStorage.setItem(STORAGE_KEY, theme); } catch {}
+    document.documentElement.style.colorScheme = theme;
+
+    if (theme === 'dark') {
+      document.body.style.background = '#0A0A0A';
+      document.body.style.color = '#FFFFFF';
+    } else {
+      document.body.style.background = '#FAFAFA';
+      document.body.style.color = '#0A0A0A';
+    }
   }, [theme]);
 
-  // Sync from server on load (best effort)
-  useEffect(() => {
-    api.get('/api/users/me')
-      .then(r => {
-        const prefs = r.data?.data?.preferences || r.data?.preferences;
-        const serverTheme = prefs?.theme;
-        if (serverTheme === 'light' || serverTheme === 'dark') setThemeState(serverTheme);
-      })
-      .catch(() => {});
-  }, []);
+  const setTheme = (t) => {
+    if (t === 'light' || t === 'dark') setThemeState(t);
+  };
 
-  function setTheme(next) {
-    setThemeState(next);
-    api.patch('/api/users/me', { preferences: { theme: next } }).catch(() => {});
-  }
+  const toggle = () => setThemeState((t) => (t === 'dark' ? 'light' : 'dark'));
 
-  function toggleTheme() {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  }
-
-  return <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme, toggle }}>
+      {children}
+    </ThemeContext.Provider>
+  );
 }
 
 export function useTheme() {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
-  return ctx;
+  return useContext(ThemeContext);
 }

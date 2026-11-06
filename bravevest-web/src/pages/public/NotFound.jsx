@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <div className="page-light" style={{ minHeight: '100vh', background: '#FAFAFA', display: 'grid', placeItems: 'center', padding: '120px 24px' }}>
       <div style={{ textAlign: 'center', maxWidth: '560px', width: '100%' }}>
-        
+
         {/* Eyebrow */}
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '12px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.16em', marginBottom: '24px' }}>
           <span style={{ width: '20px', height: '2px', background: '#F6A500' }} />

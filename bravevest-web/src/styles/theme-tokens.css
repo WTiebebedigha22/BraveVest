@@ -1,0 +1,108 @@
+/* ═══════════════════════════════════════════════
+   BraveVest — Light/Dark theme tokens
+   Applied via [data-theme="dark"] or [data-theme="light"]
+   ═══════════════════════════════════════════════ */
+
+/* ── DARK (default) ── */
+:root,
+[data-theme="dark"] {
+  --bg: #0A0A0A;
+  --bg-soft: #141414;
+  --bg-elev: #1A1A1A;
+  --text: #FFFFFF;
+  --text-muted: #A1A1AA;
+  --border: #262626;
+  --border-strong: #333333;
+  --surface: #141414;
+  --surface-elev: #1A1A1A;
+  --accent: #F6A500;
+  --accent-hover: #FFB81C;
+  --accent-soft: rgba(246,165,0,0.12);
+  --positive: #0ECB81;
+  --negative: #F6465D;
+  --overlay: rgba(0,0,0,0.72);
+  --shadow-card: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* ── LIGHT ── */
+[data-theme="light"] {
+  --bg: #FAFAFA;
+  --bg-soft: #F5F5F5;
+  --bg-elev: #FFFFFF;
+  --text: #0A0A0A;
+  --text-muted: #6B7280;
+  --border: #EAEAEA;
+  --border-strong: #D4D4D4;
+  --surface: #FFFFFF;
+  --surface-elev: #FFFFFF;
+  --accent: #F6A500;
+  --accent-hover: #E59500;
+  --accent-soft: rgba(246,165,0,0.12);
+  --positive: #0ECB81;
+  --negative: #F6465D;
+  --overlay: rgba(0,0,0,0.5);
+  --shadow-card: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ── Global body swap ── */
+[data-theme="dark"] body {
+  background: #0A0A0A;
+  color: #FFFFFF;
+  color-scheme: dark;
+}
+[data-theme="light"] body {
+  background: #FAFAFA;
+  color: #0A0A0A;
+  color-scheme: light;
+}
+
+/* ── PageShell: dark vs light ── */
+[data-theme="dark"] .bv-dark {
+  background: #0A0A0A;
+  color: #FFFFFF;
+}
+[data-theme="light"] .bv-dark {
+  background: #FAFAFA;
+  color: #0A0A0A;
+}
+
+[data-theme="light"] .bv-dark h1,
+[data-theme="light"] .bv-dark h2,
+[data-theme="light"] .bv-dark h3,
+[data-theme="light"] .bv-dark h4 {
+  color: #0A0A0A;
+}
+[data-theme="light"] .bv-dark p {
+  color: #6B7280;
+}
+
+/* ── Card backgrounds flip ── */
+[data-theme="light"] .bv-dark [style*="background: '#141414'"],
+[data-theme="light"] .bv-dark [style*="background: #141414"] {
+  background: #FFFFFF !important;
+  border-color: #EAEAEA !important;
+}
+
+/* ── Gradient text stays orange in both themes ── */
+[data-theme="light"] .bv-gradient-text {
+  background: linear-gradient(135deg, #E59500 0%, #F6A500 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Pill ghost buttons ── */
+[data-theme="light"] .bv-pill--ghost {
+  background: rgba(0,0,0,0.03);
+  color: #0A0A0A;
+  border-color: rgba(0,0,0,0.1);
+}
+[data-theme="light"] .bv-pill--ghost:hover {
+  background: rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.2);
+}
+
+/* ── Smooth transitions ── */
+html, body, .bv-dark, .bv-light {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

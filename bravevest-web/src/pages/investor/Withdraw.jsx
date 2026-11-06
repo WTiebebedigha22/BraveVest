@@ -1,264 +1,214 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShieldCheck, AlertTriangle, Clock } from 'lucide-react';
-import { api } from '@/api/client';
+import { Link } from 'react-router-dom';
+import { Wallet, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { useCurrency } from '@/context/CurrencyContext';
+import { apiFetch } from '@/lib/api';
+import PortalLayout from '@/components/layout/PortalLayout';
 
-const withdrawStyles = `
-  .bv-withdraw-page {
-    background-color: #f8f9fa;
-    color: #111111;
-    min-height: calc(100vh - 64px);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    padding: 40px 0 60px;
-  }
-  .bv-container {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
-  .bv-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-  }
-  .bv-form-label {
-    display: block;
-    font-size: 13px;
-    color: #6b7280;
-    margin-bottom: 8px;
-    font-weight: 500;
-  }
-  .bv-input-amount {
-    width: 100%;
-    padding: 18px 16px 18px 48px;
-    background: #f9fafb;
-    color: #111111;
-    font-size: 28px;
-    font-weight: 700;
-    outline: none;
-    border-radius: 8px;
-    border: 1px solid #d1d5db;
-    transition: border-color 0.15s ease;
-  }
-  .bv-input-amount:focus {
-    border-color: #f59e0b;
-    background: #ffffff;
-  }
-  .bv-btn-primary {
-    background-color: #f59e0b;
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 15px;
-    padding: 16px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    transition: background-color 0.15s ease;
-  }
-  .bv-btn-primary:hover:not(:disabled) {
-    background-color: #d97706;
-  }
-  .bv-btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  @media (max-width: 480px) {
-    .bv-input-amount {
-      font-size: 22px;
-      padding: 14px 14px 14px 40px;
-    }
-  }
+const CSS = `
+.wd { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-card2:#EDEDF0; --by-line:#E4E4E9; --by-text:#121214; --by-mute:#6B6B76; --by-yellow:#F7A600; --by-amber:#C27C00; --by-green:#0E9F5B; --by-red:#D6334B;
+  color:var(--by-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; }
+.wd * { box-sizing:border-box; }
+.wd--page { background:var(--by-bg); min-height:60vh; padding:48px 20px 96px; }
+.wd-inner { max-width:560px; }
+.wd--page .wd-inner { margin:0 auto; }
+.wd-title { font-size:24px; font-weight:800; letter-spacing:-0.03em; margin:0 0 20px; }
+.wd--page .wd-title { font-size:clamp(28px,4vw,38px); }
+
+.wd-hero { position:relative; overflow:hidden; background:var(--by-card); border:1px solid var(--by-line); border-radius:20px; padding:28px; margin-bottom:16px; }
+.wd-hero::before { content:''; position:absolute; inset:0; pointer-events:none; background:radial-gradient(320px 180px at 100% 0%, rgba(247,166,0,.22), transparent 70%); }
+.wd-hero > * { position:relative; }
+.wd-lbl { display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:10px; }
+.wd-ic { width:34px; height:34px; border-radius:8px; background:rgba(247,166,0,.16); color:var(--by-amber); display:flex; align-items:center; justify-content:center; }
+.wd-big { font-size:clamp(32px,5vw,44px); font-weight:800; letter-spacing:-0.035em; line-height:1.1; font-variant-numeric:tabular-nums; }
+
+.wd-card { background:var(--by-card); border:1px solid var(--by-line); border-radius:20px; padding:28px; }
+.wd-field { display:grid; gap:8px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:20px; }
+.wd-amt { display:flex; align-items:center; gap:8px; height:56px; padding:0 16px; background:#fff; border:1px solid var(--by-line); border-radius:10px; transition:border-color .15s; }
+.wd-amt:focus-within { border-color:var(--by-yellow); }
+.wd-amt span { font-size:22px; font-weight:700; color:var(--by-mute); }
+.wd-amt input { flex:1; min-width:0; border:0; background:transparent; outline:none; font-family:inherit; font-size:26px; font-weight:800; letter-spacing:-0.02em; color:var(--by-text); font-variant-numeric:tabular-nums; -moz-appearance:textfield; }
+.wd-amt input::-webkit-outer-spin-button, .wd-amt input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+.wd-amt input::placeholder { color:#B4B4BE; }
+.wd-all { justify-self:start; background:none; border:0; padding:0; font-family:inherit; font-size:13px; font-weight:600; color:var(--by-amber); cursor:pointer; }
+.wd-all:hover { text-decoration:underline; }
+.wd-sel { width:100%; height:48px; padding:0 14px; background:#fff; border:1px solid var(--by-line); border-radius:8px; font-family:inherit; font-size:15px; color:var(--by-text); outline:none; transition:border-color .15s; }
+.wd-sel:focus { border-color:var(--by-yellow); }
+.wd-none { padding:14px; background:#fff; border:1px dashed var(--by-line); border-radius:8px; color:var(--by-mute); font-size:13px; font-weight:500; line-height:1.6; }
+.wd-none a { color:var(--by-amber); font-weight:600; text-decoration:none; }
+.wd-none a:hover { text-decoration:underline; }
+
+.wd-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; height:50px; border:0; border-radius:8px; background:var(--by-yellow); color:#121214; font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; transition:background .15s; }
+.wd-btn:hover:not(:disabled) { background:#FFB82E; }
+.wd-btn:disabled { opacity:.6; cursor:not-allowed; }
+.wd-btn:focus-visible, .wd-all:focus-visible, .wd-sel:focus-visible { outline:2px solid #121214; outline-offset:2px; }
+.wd-spin { animation:wd-spin 1s linear infinite; }
+@keyframes wd-spin { to { transform:rotate(360deg); } }
+@media (prefers-reduced-motion:reduce) { .wd-spin { animation:none; } }
+
+.wd-msg { display:flex; gap:8px; align-items:flex-start; padding:12px; border-radius:8px; font-size:13px; line-height:1.5; margin-bottom:20px; }
+.wd-msg svg { flex:none; margin-top:1px; }
+.wd-msg--err { background:rgba(214,51,75,.08); border:1px solid rgba(214,51,75,.2); color:var(--by-red); }
+.wd-msg--ok { background:rgba(14,159,91,.08); border:1px solid rgba(14,159,91,.2); color:var(--by-green); }
+.wd-state { padding:64px 20px; display:flex; align-items:center; justify-content:center; gap:12px; color:var(--by-mute); }
+@media (max-width:480px) { .wd-card, .wd-hero { padding:20px; } }
 `;
 
-export default function Withdraw() {
-  const nav = useNavigate();
+// embedded: set when rendered inside the Wallet tabs (no PageShell, no page padding)
+export default function Withdraw({ embedded = false }) {
   const { format } = useCurrency();
-  const [amount, setAmount] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [wallet, setWallet] = useState({ balance: 0 });
-
-  // Withdrawal safety states
-  const [confirmed, setConfirmed] = useState(false);
-  const [pin, setPin] = useState('');
+  const [balance, setBalance] = useState(0);
+  const [banks, setBanks] = useState([]);
+  const [form, setForm] = useState({ amount: '', bankId: '' });
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [err, setErr] = useState('');
+  const [ok, setOk] = useState('');
 
   useEffect(() => {
-    api.get('/api/wallet').then(r => {
-      setWallet(r.data?.data || r.data || { balance: 0 });
-    }).catch(() => {});
+    let cancelled = false;
+    (async () => {
+      try {
+        const [w, b] = await Promise.all([
+          apiFetch('/wallet'),
+          apiFetch('/wallet/banks'),
+        ]);
+        if (!cancelled) {
+          setBalance(w?.balance ?? 0);
+          const bankList = Array.isArray(b) ? b : b?.banks ?? [];
+          setBanks(bankList);
+          if (bankList[0]?.id) {
+            setForm((f) => ({ ...f, bankId: bankList[0].id }));
+          }
+        }
+      } catch (e) {
+        if (!cancelled) setErr(e?.message || 'Could not load wallet.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
-  const amountNum = Number(amount) || 0;
-  const fee = amountNum * 0.002; // 0.2% withdrawal fee
-  const amountToReceive = amountNum - fee;
-  const exceedsBalance = amountNum > wallet.balance;
+  async function submit(e) {
+    e.preventDefault();
+    setErr('');
+    setOk('');
 
-  async function initiateWithdrawal() {
-    if (amountNum < 1000 || exceedsBalance || !confirmed || pin.length !== 4) {
-      return;
-    }
-    setLoading(true);
+    const amount = Number(form.amount);
+    if (!amount || amount <= 0) return setErr('Enter a valid amount.');
+    if (amount > balance) return setErr('Amount exceeds available balance.');
+    if (!form.bankId) return setErr('Select a bank account.');
+
+    setSubmitting(true);
     try {
-      await api.post('/api/payments/withdraw', {
-        amount: amountNum,
-        pin,
+      const data = await apiFetch('/wallet/withdraw', {
+        method: 'POST',
+        body: { amount, bankId: form.bankId },
       });
-      setSuccess(true);
+      // apiFetch already throws on non-2xx — no need to check data.message
+      setBalance((b) => Math.max(0, b - amount));
+      setForm((f) => ({ ...f, amount: '' }));
+      setOk(
+        data?.message ||
+          `Withdrawal of ${format(amount)} initiated. Funds arrive within 1 business day.`
+      );
     } catch (e) {
-      alert('Withdrawal failed. Check your PIN and try again.');
+      setErr(e?.message || 'Withdrawal failed.');
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   }
 
-  if (success) {
-    return (
-      <div className="bv-withdraw-page">
-        <style dangerouslySetInnerHTML={{ __html: withdrawStyles }} />
-        <div className="bv-container" style={{ textAlign: 'center', maxWidth: '560px', padding: '60px 20px' }}>
-          <div style={{ width: '64px', height: '64px', background: '#fef3c7', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
-            <Clock size={32} color="#f59e0b" strokeWidth={2} />
-          </div>
-          <h1 style={{ marginBottom: '12px', color: '#111111', fontSize: '26px', fontWeight: '700' }}>Withdrawal Pending</h1>
-          <p style={{ margin: '0 auto 32px', color: '#6b7280', lineHeight: 1.6, fontSize: '15px' }}>
-            Your withdrawal request has been received. Standard settlement is 1-2 business days. 
-            You will receive an email confirmation once the transfer is completed.
-          </p>
-          <Link to="/wallet" className="bv-btn-primary" style={{ display: 'inline-block', textDecoration: 'none', width: 'auto', padding: '14px 32px' }}>Return to Wallet</Link>
-        </div>
+  const wrap = (children) => {
+    const body = (
+      <div className={`wd${embedded ? '' : ' wd--page'}`}>
+        <style>{CSS}</style>
+        {children}
+      </div>
+    );
+    return embedded ? body : <PortalLayout theme="dark">{body}</PortalLayout>;
+  };
+
+  if (loading) {
+    return wrap(
+      <div className='wd-state' role='status'>
+        <Loader2 size={20} className='wd-spin' /> Loading…
       </div>
     );
   }
 
-  return (
-    <div className="bv-withdraw-page">
-      <style dangerouslySetInnerHTML={{ __html: withdrawStyles }} />
-      <div className="bv-container">
-        
-        <button onClick={() => nav('/wallet')} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', fontWeight: '500', padding: 0 }}>
-          <ArrowLeft size={16} /> Back to Wallet
-        </button>
+  const Title = embedded ? 'h2' : 'h1';
+  const blocked = submitting || banks.length === 0;
 
-        <div style={{ marginBottom: '28px' }}>
-          <span style={{ fontSize: '12px', fontWeight: '600', color: '#d97706', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Withdraw Funds</span>
-          <h1 style={{ margin: '4px 0 8px', color: '#111111', fontSize: '26px', fontWeight: '700' }}>Move funds out</h1>
-          <p style={{ margin: 0, color: '#6b7280', fontSize: '14px', lineHeight: 1.5 }}>
-            Withdrawals are processed securely to your verified settlement account within 1-2 business days.
-          </p>
+  return wrap(
+    <div className='wd-inner'>
+      <Title className='wd-title'>Withdraw</Title>
+
+      <section aria-label='Wallet balance' className='wd-hero'>
+        <div className='wd-lbl'>
+          <span className='wd-ic'><Wallet size={18} /></span> Available balance
         </div>
+        <div className='wd-big'>{format(balance)}</div>
+      </section>
 
-        <div className="bv-card">
-          <label className="bv-form-label">Withdrawal Amount (Min. ₦1,000)</label>
-          <div style={{ position: 'relative' }}>
-            <span style={{ position: 'absolute', left: '18px', top: '50%', transform: 'translateY(-50%)', color: '#6b7280', fontSize: '22px', fontWeight: '700' }}>₦</span>
+      <form onSubmit={submit} className='wd-card'>
+        {err && <div role='alert' className='wd-msg wd-msg--err'><AlertCircle size={16} /> {err}</div>}
+        {ok && <div role='status' className='wd-msg wd-msg--ok'><CheckCircle size={16} /> {ok}</div>}
+
+        <div className='wd-field'>
+          <label htmlFor='wd-amount'>Amount (₦)</label>
+          <div className='wd-amt'>
+            <span>₦</span>
             <input
-              type="text"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ''))}
-              placeholder="0"
-              className="bv-input-amount"
-              style={{ position: 'absolute', left: '20px', color: '#6b7280', borderColor: exceedsBalance ? '#ef4444' : undefined }}
+              id='wd-amount'
+              type='number'
+              inputMode='numeric'
+              min='0'
+              step='100'
+              value={form.amount}
+              onChange={(e) => setForm({ ...form, amount: e.target.value })}
+              placeholder='0.00'
+              required
             />
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', alignItems: 'center' }}>
-            <button onClick={() => setAmount(String(Math.floor(wallet.balance)))} style={{ background: 'none', border: 'none', color: '#d97706', fontSize: '12px', fontWeight: '700', cursor: 'pointer', padding: 0 }}>
-              USE MAX BALANCE
-            </button>
-            <div style={{ fontSize: '13px', color: exceedsBalance ? '#ef4444' : '#6b7280' }}>
-              Available: <span style={{ color: '#111111', fontWeight: '600' }}>{format(wallet.balance)}</span>
-            </div>
-          </div>
+          <button
+            type='button'
+            className='wd-all'
+            onClick={() => setForm({ ...form, amount: String(balance) })}
+          >
+            Withdraw all
+          </button>
         </div>
 
-        {/* Fee Breakdown */}
-        {amountNum > 0 && (
-          <div className="bv-card" style={{ fontSize: '14px', background: '#fdfbf7', borderColor: '#fde68a' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', color: '#6b7280' }}>
-              <span>Withdrawal Amount</span>
-              <span style={{ color: '#111111', fontWeight: '500' }}>{format(amountNum)}</span>
+        <div className='wd-field' style={{ marginBottom: 24 }}>
+          <label htmlFor='wd-bank'>Destination bank account</label>
+          {banks.length === 0 ? (
+            <div className='wd-none'>
+              No bank account linked. <Link to='/profile'>Add one</Link>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', color: '#6b7280' }}>
-              <span>Processing Fee (0.2%)</span>
-              <span style={{ color: '#111111', fontWeight: '500' }}>{format(fee)}</span>
-            </div>
-            <div style={{ borderTop: '1px solid #fef3c7', marginTop: '10px', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: '#92400e', fontWeight: '600' }}>You will receive</span>
-              <span style={{ color: '#d97706', fontWeight: '700', fontSize: '18px' }}>{format(amountToReceive)}</span>
-            </div>
-          </div>
-        )}
-
-        {/* Settlement Account */}
-        <div className="bv-card">
-          <div style={{ fontSize: '13px', color: '#6b7280', marginBottom: '10px', fontWeight: '500' }}>Settlement Account</div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <div style={{ fontSize: '15px', fontWeight: '600', color: '#111111' }}>GTBank</div>
-              <div style={{ fontSize: '13px', color: '#6b7280', fontFamily: 'monospace', marginTop: '2px' }}>0123••••••</div>
-            </div>
-            <span style={{ background: '#fef3c7', color: '#d97706', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: '600' }}>Verified</span>
-          </div>
+          ) : (
+            <select
+              id='wd-bank'
+              className='wd-sel'
+              value={form.bankId}
+              onChange={(e) => setForm({ ...form, bankId: e.target.value })}
+              required
+            >
+              {banks.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.bankName} •••• {b.last4}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
-        {/* Confirmation & PIN */}
-        <div className="bv-card">
-          <div style={{ fontSize: '13px', color: '#6b7280', marginBottom: '14px', fontWeight: '500' }}>Authorize Withdrawal</div>
-          <label style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', cursor: 'pointer', fontSize: '14px', color: '#111111', lineHeight: 1.5 }}>
-            <input type="checkbox" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} style={{ marginTop: '3px', accentColor: '#f59e0b', width: '16px', height: '16px', cursor: 'pointer' }} />
-            <span>
-              I confirm the settlement account details are correct. Incorrect destination details may lead to delayed or lost funds.
-            </span>
-          </label>
-          
-          <div style={{ marginTop: '24px' }}>
-            <label className="bv-form-label">Transaction PIN</label>
-            <input
-              type="password"
-              value={pin}
-              onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, '').slice(0, 4))}
-              placeholder="••••"
-              maxLength={4}
-              style={{
-                width: '140px',
-                padding: '12px',
-                background: '#f9fafb',
-                border: '1px solid #d1d5db',
-                color: '#111111',
-                fontSize: '22px',
-                letterSpacing: '6px',
-                textAlign: 'center',
-                fontFamily: 'monospace',
-                borderRadius: '8px',
-                outline: 'none',
-              }}
-            />
-          </div>
-        </div>
-
-        {exceedsBalance && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444', fontSize: '13px', marginBottom: '16px', background: '#fee2e2', padding: '12px 16px', borderRadius: '8px' }}>
-            <AlertTriangle size={16} /> Amount exceeds your available wallet balance.
-          </div>
-        )}
-
-        <button
-          onClick={initiateWithdrawal}
-          disabled={amountNum < 1000 || exceedsBalance || !confirmed || pin.length !== 4 || loading}
-          className="bv-btn-primary"
-        >
-          {loading ? 'Processing…' : 'Request Withdrawal'}
+        <button type='submit' disabled={blocked} className='wd-btn'>
+          {submitting && <Loader2 size={16} className='wd-spin' />}
+          {submitting ? 'Processing…' : 'Withdraw'}
         </button>
-
-        <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', color: '#6b7280', fontSize: '13px' }}>
-          <ShieldCheck size={16} color="#d97706" /> Withdrawals are secured and verified against your KYC identity.
-        </div>
-
-      </div>
+      </form>
     </div>
   );
 }

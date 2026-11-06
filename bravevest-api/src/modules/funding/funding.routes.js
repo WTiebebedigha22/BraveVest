@@ -14,8 +14,8 @@ const router = express.Router();
 let authenticate;
 try {
   authenticate = require('../../middleware/authenticate').authenticate
-    || require('../../middleware/auth').authenticate
-    || require('../../middleware/auth').protect;
+    || require('../../middleware/auth.middleware').authenticate
+    || require('../../middleware/auth.middleware').protect;
 } catch {}
 if (!authenticate) {
   authenticate = async (req, res, next) => {

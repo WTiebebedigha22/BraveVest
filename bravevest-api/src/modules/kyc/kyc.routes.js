@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const ctrl = require('./kyc.controller');
 const asyncHandler = require('../../utils/asyncHandler');
-const { authRequired } = require('../../middleware/auth');
+const { authRequired } = require('../../middleware/auth.middleware');
 const { kycUpload } = require('../../middleware/upload');
 
 router.use(authRequired);

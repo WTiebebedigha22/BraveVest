@@ -1,90 +1,97 @@
 import { useState } from 'react';
-import { Gift, Mail } from 'lucide-react';
-import { useCurrency } from '@/context/CurrencyContext';
+import { Gift, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useCurrency } from '@/context/CurrencyContext';
+import { apiFetch } from '@/lib/api';
+import PortalLayout from '@/components/layout/PortalLayout';
+
+const COLORS = {
+  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
+  border: '#EAEAEA', accent: '#F6A500', positive: '#0ECB81', negative: '#F6465D',
+};
 
 export default function Gifting() {
   const { user } = useAuth();
   const { format } = useCurrency();
-  const [form, setForm] = useState({ recipientEmail: '', amount: '', message: '' });
+  const [form, setForm] = useState({ recipient: '', amount: '', message: '' });
   const [submitting, setSubmitting] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [err, setErr] = useState('');
+  const [ok, setOk] = useState('');
 
   async function submit(e) {
     e.preventDefault();
-    if (!form.recipientEmail || !form.amount) return;
+    setErr(''); setOk('');
+    if (!form.recipient.trim()) return setErr('Enter the recipient\'s email or phone.');
+    const amt = Number(form.amount);
+    if (!amt || amt < 1000) return setErr('Minimum gift is ₦1,000.');
+
     setSubmitting(true);
     try {
-      // TODO: wire to /api/gifts/send when backend is ready
-      await new Promise(r => setTimeout(r, 800));
-      setSent(true);
+      const data = await apiFetch('/users/me/gift', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recipient: form.recipient.trim(), amount: amt, message: form.message.trim() }),
+      });.catch(() => ({}));
+        throw new Error(data?.message || 'Could not send gift.');
+      }
+      setOk(`Gift of ${format(amt)} sent to ${form.recipient}.`);
+      setForm({ recipient: '', amount: '', message: '' });
+    } catch (e) {
+      setErr(e?.message || 'Could not send gift.');
     } finally {
       setSubmitting(false);
     }
   }
 
-  if (sent) {
-    return (
-      <div style={{ padding: '32px 0' }}>
-        <div className="container container--narrow">
-          <div className="card" style={{ padding: '48px', textAlign: 'center' }}>
-            <Gift size={48} color="var(--bybit-orange)" style={{ margin: '0 auto 16px' }} />
-            <h2 style={{ margin: '0 0 12px', fontSize: '22px' }}>Gift Sent</h2>
-            <p style={{ color: 'var(--bybit-text-muted)', marginBottom: '24px', fontSize: '14px' }}>
-              {format(Number(form.amount))} has been gifted to {form.recipientEmail}. They will receive an invitation to claim it.
-            </p>
-            <button onClick={() => { setSent(false); setForm({ recipientEmail: '', amount: '', message: '' }); }} className="btn btn--outline">
-              Send Another Gift
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div style={{ padding: '32px 0' }}>
-      <div className="container container--narrow">
-        <div style={{ marginBottom: '24px' }}>
-          <h1 style={{ margin: 0, fontSize: '24px' }}>Gifting</h1>
-          <p style={{ color: 'var(--bybit-text-muted)', margin: '4px 0 0', fontSize: '13px' }}>Gift investments to friends and family</p>
-        </div>
+    <PortalLayout theme="dark">
+      <div style={{ padding: '24px 20px', maxWidth: 560, margin: '0 auto', color: COLORS.text }}>
+      <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 8px' }}>Gifting</h1>
+      <p style={{ margin: '0 0 20px', color: COLORS.muted, fontSize: 14 }}>
+        Gift an investment to someone you care about. They receive the full return when it matures.
+      </p>
 
-        <div className="card" style={{ padding: '32px' }}>
-          <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', alignItems: 'flex-start' }}>
-            <Gift size={32} color="var(--bybit-orange)" />
-            <div>
-              <h2 style={{ margin: 0, fontSize: '18px', marginBottom: '6px' }}>Give the gift of growth</h2>
-              <p style={{ color: 'var(--bybit-text-muted)', fontSize: '13px', lineHeight: '1.6' }}>
-                Gift an investment amount to a friend. They can redeem it and start building their own portfolio.
-              </p>
-            </div>
+      <form onSubmit={submit} style={{ padding: 20, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12 }}>
+        {err && (
+          <div role="alert" style={{ display: 'flex', gap: 8, alignItems: 'center', padding: '10px 12px', background: 'rgba(246,70,93,0.08)', border: '1px solid rgba(246,70,93,0.2)', borderRadius: 8, color: COLORS.negative, fontSize: 13, marginBottom: 16 }}>
+            <AlertCircle size={16} /> {err}
           </div>
+        )}
+        {ok && (
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', padding: '10px 12px', background: 'rgba(14,203,129,0.08)', border: '1px solid rgba(14,203,129,0.2)', borderRadius: 8, color: COLORS.positive, fontSize: 13, marginBottom: 16 }}>
+            <CheckCircle size={16} /> {ok}
+          </div>
+        )}
 
-          <form onSubmit={submit}>
-            <div style={{ marginBottom: '16px' }}>
-              <label className="form-label">Recipient Email</label>
-              <input type="email" value={form.recipientEmail} onChange={(e) => setForm({ ...form, recipientEmail: e.target.value })} placeholder="friend@example.com" required />
-            </div>
-            <div style={{ marginBottom: '16px' }}>
-              <label className="form-label">Gift Amount</label>
-              <input type="text" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value.replace(/[^0-9]/g, '') })} placeholder="50000" required />
-            </div>
-            <div style={{ marginBottom: '24px' }}>
-              <label className="form-label">Personal Message (optional)</label>
-              <textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} rows={3} placeholder="Happy birthday! Start investing." />
-            </div>
+        <label style={{ display: 'grid', gap: 6, fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+          Recipient email or phone
+          <input type="text" value={form.recipient} onChange={(e) => setForm({ ...form, recipient: e.target.value })}
+            required placeholder="friend@example.com or +2348012345678"
+            style={{ padding: '10px 12px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, outline: 'none' }} />
+        </label>
 
-            <button type="submit" disabled={submitting || !form.recipientEmail || !form.amount} className="btn btn--primary" style={{ width: '100%' }}>
-              <Mail size={14} /> {submitting ? 'Sending…' : 'Send Gift'}
-            </button>
-          </form>
-        </div>
+        <label style={{ display: 'grid', gap: 6, fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+          Gift amount (₦)
+          <input type="number" inputMode="numeric" min="1000" step="500" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })}
+            required placeholder="10000"
+            style={{ padding: '10px 12px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, outline: 'none' }} />
+        </label>
 
-        <p style={{ fontSize: '12px', color: 'var(--bybit-text-muted)', marginTop: '16px', textAlign: 'center' }}>
-          Funds are held in escrow until the recipient redeems the gift. You can cancel before redemption.
-        </p>
-      </div>
+        <label style={{ display: 'grid', gap: 6, fontSize: 13, fontWeight: 500, marginBottom: 20 }}>
+          Personal message (optional)
+          <textarea value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
+            rows={3} placeholder="Add a note to your gift…"
+            style={{ padding: '10px 12px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, outline: 'none', resize: 'vertical', fontFamily: 'inherit' }} />
+        </label>
+
+        <button type="submit" disabled={submitting}
+          style={{ width: '100%', padding: '14px', background: COLORS.accent, color: '#FFF', border: 'none', borderRadius: 8, fontSize: 15, fontWeight: 600, cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.7 : 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+          {submitting ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <Gift size={16} />}
+          {submitting ? 'Sending…' : 'Send gift'}
+        </button>
+        <style>{'@keyframes spin { to { transform: rotate(360deg); } }'}</style>
+      </form>
     </div>
+    </PortalLayout>
   );
 }

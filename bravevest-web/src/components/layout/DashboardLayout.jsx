@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import Sidebar from './Sidebar';
-import ThemeToggle from '@/components/shared/ThemeToggle';
-
 export default function DashboardLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -24,14 +22,13 @@ export default function DashboardLayout() {
 
       <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
         <div className='dash-mobile-bar' style={{ display: 'none', padding: '12px 16px', borderBottom: '1px solid var(--bv-border)', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bv-background)' }}>
-          <button onClick={function() { setMobileOpen(true); }} style={{ background: 'none', border: 'none', color: 'var(--bv-text)', cursor: 'pointer', padding: '8px' }} aria-label='Open menu'>
+          <button onClick={function() { setMobileOpen(true); }} style={{ background: 'none', border: 'none', color: '#000', cursor: 'pointer', padding: '8px' }} aria-label='Open menu'>
             <Menu size={22} />
           </button>
           <Link to='/dashboard'>
             <img src='/logo.png' alt='BraveVest' style={{ height: '22px', filter: 'var(--bv-logo-filter)' }} />
           </Link>
-          <ThemeToggle />
-        </div>
+          </div>
         <Outlet />
       </main>
     </div>

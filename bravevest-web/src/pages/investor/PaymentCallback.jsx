@@ -1,58 +1,72 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { CheckCircle, XCircle, Loader } from 'lucide-react';
-import { paymentsApi } from '@/api/investments';
+import { Link } from 'react-router-dom';
+import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { apiFetch } from '@/lib/api';
+import PortalLayout from '@/components/layout/PortalLayout';
+
+const COLORS = {
+  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
+  border: '#EAEAEA', accent: '#F6A500', positive: '#0ECB81', negative: '#F6465D',
+};
 
 export default function PaymentCallback() {
-  const nav = useNavigate();
-  const [params] = useSearchParams();
   const [status, setStatus] = useState('verifying');
-  const [message, setMessage] = useState('Verifying your payment…');
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const reference = params.get('reference') || params.get('trxref');
-    if (!reference) {
-      setStatus('error');
-      setMessage('No payment reference found.');
-      return;
-    }
-    paymentsApi.verify(reference)
-      .then((result) => {
-        if (result.status === 'SUCCESS' || result.status === 'success') {
-          setStatus('success');
-          setMessage('Payment confirmed. Your investment is now active.');
-        } else {
-          setStatus('pending');
-          setMessage('Payment status: ' + (result.status || 'unknown') + '. This may take a few moments.');
+    let cancelled = false;
+    (async () => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const reference = params.get('reference') || params.get('trxref');
+        if (!reference) throw new Error('No payment reference found.');
+        const data = await apiFetch(`/payments/verify/${encodeURIComponent(reference)}`);
+        if (!data?.success) {
+          throw new Error(data?.message || 'Could not verify payment.');
         }
-      })
-      .catch((e) => {
-        setStatus('error');
-        setMessage(e?.response?.data?.message || 'Could not verify payment.');
-      });
-  }, [params]);
+        if (!cancelled) setStatus('success');
+      } catch (e) {
+        if (!cancelled) {
+          setError(e?.message || 'Payment verification failed.');
+          setStatus('failed');
+        }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: '24px', background: 'var(--bybit-black)' }}>
-      <div className="card" style={{ maxWidth: '440px', width: '100%', textAlign: 'center', padding: '40px 24px' }}>
-        {status === 'verifying' && <Loader size={48} color="var(--bybit-orange)" style={{ margin: '0 auto 16px', animation: 'spin 1s linear infinite' }} />}
-        {status === 'success' && <CheckCircle size={48} color="var(--bybit-green)" style={{ margin: '0 auto 16px' }} />}
-        {status === 'error' && <XCircle size={48} color="var(--bybit-red)" style={{ margin: '0 auto 16px' }} />}
-        {status === 'pending' && <Loader size={48} color="var(--bybit-yellow)" style={{ margin: '0 auto 16px' }} />}
-
-        <h2 style={{ margin: '0 0 8px', fontSize: '20px' }}>
-          {status === 'verifying' && 'Verifying…'}
-          {status === 'success' && 'Payment Successful'}
-          {status === 'error' && 'Payment Failed'}
-          {status === 'pending' && 'Payment Pending'}
-        </h2>
-        <p style={{ color: 'var(--bybit-text-muted)', fontSize: '14px', marginBottom: '24px' }}>{message}</p>
-
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-          <button onClick={() => nav('/investments')} className="btn btn--primary">My Investments</button>
-          <button onClick={() => nav('/dashboard')} className="btn btn--outline">Dashboard</button>
-        </div>
-      </div>
+    <PortalLayout theme="dark">
+      <div style={{ padding: '48px 20px', maxWidth: 480, margin: '0 auto', color: COLORS.text, textAlign: 'center' }}>
+      {status === 'verifying' && (
+        <>
+          <Loader2 size={40} color={COLORS.accent} style={{ margin: '0 auto 16px', animation: 'spin 1s linear infinite' }} />
+          <h1 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 8px' }}>Verifying payment…</h1>
+          <p style={{ color: COLORS.muted, fontSize: 14 }}>Please do not close this page.</p>
+          <style>{'@keyframes spin { to { transform: rotate(360deg); } }'}</style>
+        </>
+      )}
+      {status === 'success' && (
+        <>
+          <CheckCircle size={48} color={COLORS.positive} style={{ margin: '0 auto 16px' }} />
+          <h1 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 8px' }}>Payment successful</h1>
+          <p style={{ color: COLORS.muted, fontSize: 14, marginBottom: 24 }}>Your wallet has been funded.</p>
+          <Link to="/wallet" style={{ display: 'inline-block', padding: '12px 20px', background: COLORS.accent, color: '#FFF', textDecoration: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14 }}>
+            Back to wallet
+          </Link>
+        </>
+      )}
+      {status === 'failed' && (
+        <>
+          <AlertCircle size={48} color={COLORS.negative} style={{ margin: '0 auto 16px' }} />
+          <h1 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 8px' }}>Payment failed</h1>
+          <p style={{ color: COLORS.muted, fontSize: 14, marginBottom: 24 }}>{error}</p>
+          <Link to="/deposit" style={{ display: 'inline-block', padding: '12px 20px', background: COLORS.accent, color: '#FFF', textDecoration: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14 }}>
+            Try again
+          </Link>
+        </>
+      )}
     </div>
+    </PortalLayout>
   );
 }

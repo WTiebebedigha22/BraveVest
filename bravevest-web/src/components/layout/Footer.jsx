@@ -1,49 +1,232 @@
 import { Link } from 'react-router-dom';
+import { Mail, MapPin, Shield } from 'lucide-react';
+
+const COLUMNS = [
+  {
+    title: 'Product',
+    links: [
+      { to: '/marketplace', label: 'Marketplace' },
+      { to: '/how-it-works', label: 'How it works' },
+      { to: '/about', label: 'About us' },
+      { to: '/faq', label: 'FAQ' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { to: '/about', label: 'About' },
+      { to: '/contact', label: 'Contact' },
+      { to: '/security', label: 'Security' },
+      { to: '/support', label: 'Support' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { to: '/terms', label: 'Terms of Service' },
+      { to: '/privacy', label: 'Privacy Policy' },
+      { to: '/risk-disclosure', label: 'Risk Disclosure' },
+    ],
+  },
+  {
+    title: 'Account',
+    links: [
+      { to: '/login', label: 'Sign in' },
+      { to: '/register', label: 'Create account' },
+      { to: '/dashboard', label: 'Dashboard' },
+      { to: '/wallet', label: 'Wallet' },
+    ],
+  },
+];
 
 export default function Footer() {
   return (
-    <footer className="footer">
-      <div className="container">
-        <div className="footer__grid">
-          <div className="footer__brand">
-            <Link to="/" style={{ display: 'inline-block', marginBottom: '16px', textDecoration: 'none' }}>
+    <footer
+      style={{
+        background: '#0A0A0A',
+        borderTop: '1px solid #1A1A1A',
+        color: '#F5F5F5',
+        fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+        marginTop: 'auto',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: '0 auto',
+          padding: '56px 20px 32px',
+        }}
+      >
+        {/* Top: brand + 4 link columns */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            gap: 40,
+            marginBottom: 40,
+          }}
+        >
+          {/* Brand — logo image */}
+          <div>
+            <Link
+              to="/"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                textDecoration: 'none',
+                marginBottom: 16,
+              }}
+            >
               <img
-                src="/icons/logo-light.png"
+                src="/icons/logo-dark.png"
                 alt="BraveVest"
-                style={{ height: '32px', width: 'auto', display: 'block' }}
+                style={{
+                  height: 32,
+                  width: 'auto',
+                  display: 'block',
+                  objectFit: 'contain',
+                }}
               />
             </Link>
-            <p className="footer__tagline">Private credit and structured lending for institutional borrowers and discerning investors.</p>
-          </div>
-          <div>
-            <div className="footer__h">Product</div>
-            <div className="footer__links">
-              <Link to="/marketplace">Markets</Link>
-              <Link to="/how-it-works">How It Works</Link>
-              <Link to="/faq">FAQ</Link>
+            <p
+              style={{
+                fontSize: 14,
+                color: '#A1A1AA',
+                lineHeight: 1.6,
+                margin: '0 0 16px',
+                maxWidth: 260,
+              }}
+            >
+              Direct access to vetted Nigerian private credit, real estate, and SME opportunities.
+            </p>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '6px 12px',
+                background: 'rgba(246,165,0,0.1)',
+                border: '1px solid rgba(246,165,0,0.2)',
+                borderRadius: 6,
+                fontSize: 12,
+                fontWeight: 600,
+                color: '#F6A500',
+              }}
+            >
+              <Shield size={12} />
+              Bravelion Holdings Company
             </div>
           </div>
-          <div>
-            <div className="footer__h">Company</div>
-            <div className="footer__links">
-              <Link to="/about">About</Link>
-              <Link to="/support">Contact</Link>
-              <Link to="/dashboard">Investor Portal</Link>
+
+          {/* Link columns */}
+          {COLUMNS.map((col) => (
+            <div key={col.title}>
+              <h4
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: '#F5F5F5',
+                  margin: '0 0 16px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                }}
+              >
+                {col.title}
+              </h4>
+              <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 10 }}>
+                {col.links.map((l) => (
+                  <li key={l.to}>
+                    <Link
+                      to={l.to}
+                      style={{
+                        fontSize: 14,
+                        color: '#A1A1AA',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
+          ))}
+        </div>
+
+        {/* Contact strip */}
+        <div
+          style={{
+            display: 'flex',
+            gap: 24,
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            paddingTop: 20,
+            borderTop: '1px solid #1A1A1A',
+            marginBottom: 20,
+            fontSize: 13,
+            color: '#A1A1AA',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Mail size={14} color="#F6A500" />
+            <a
+              href="mailto:support@bravevest.com"
+              style={{ color: '#A1A1AA', textDecoration: 'none' }}
+            >
+              support@bravevest.com
+            </a>
           </div>
-          <div>
-            <div className="footer__h">Legal</div>
-            <div className="footer__links">
-              <Link to="/terms">Terms</Link>
-              <Link to="/privacy">Privacy</Link>
-              <Link to="/disclosures">Disclosures</Link>
-              <Link to="/risk-disclosure">Risk Disclosure</Link>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <MapPin size={14} color="#F6A500" />
+            <span>Lagos, Nigeria</span>
           </div>
         </div>
-        <div className="footer__base">
+
+        {/* Risk disclaimer */}
+        <p
+          style={{
+            fontSize: 12,
+            color: '#A1A1AA',
+            lineHeight: 1.6,
+            marginBottom: 20,
+            opacity: 0.85,
+          }}
+        >
+          <strong style={{ color: '#F5F5F5' }}>Risk warning:</strong> All investments carry risk. Your
+          capital is at risk. Returns are projections, not guarantees. Past performance is not
+          indicative of future results. Read our{' '}
+          <Link to="/risk-disclosure" style={{ color: '#F6A500', textDecoration: 'none' }}>
+            full risk disclosure
+          </Link>{' '}
+          before investing.
+        </p>
+
+        {/* Bottom row */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 12,
+            paddingTop: 20,
+            borderTop: '1px solid #1A1A1A',
+            fontSize: 13,
+            color: '#A1A1AA',
+          }}
+        >
           <div>© {new Date().getFullYear()} BraveVest. All rights reserved.</div>
-          <div>SEC-Aligned · CBN-Regulated Partners</div>
+          <div style={{ display: 'flex', gap: 20 }}>
+            <Link to="/terms" style={{ color: '#A1A1AA', textDecoration: 'none' }}>
+              Terms
+            </Link>
+            <Link to="/privacy" style={{ color: '#A1A1AA', textDecoration: 'none' }}>
+              Privacy
+            </Link>
+            <Link to="/risk-disclosure" style={{ color: '#A1A1AA', textDecoration: 'none' }}>
+              Disclosures
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

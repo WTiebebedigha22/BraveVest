@@ -1,31 +1,54 @@
-/* Lock light mode — overrides any dark tokens regardless of theme state */
+/* ─────────────────────────────────────────────
+   BraveVest — Global light mode lock
+   Imported LAST in main.jsx so it wins the cascade.
+   ───────────────────────────────────────────── */
+
+:root {
+  color-scheme: light !important;
+}
+
 html,
-html[data-theme="dark"],
-html[data-theme="light"],
-body {
+body,
+#root {
+  background: #FAFAFA !important;
+  color: #1A1A1A !important;
   color-scheme: light !important;
-  background: #ffffff !important;
-  color: #1a1a1a !important;
 }
 
-html[data-theme="dark"] body {
-  background: #ffffff !important;
-  color: #1a1a1a !important;
-}
-
-/* Undo any dark-mode class on the root */
 html.dark,
-html[data-theme="dark"] {
-  --bg: #fafafa !important;
-  --surface: #ffffff !important;
-  --text: #1a1a1a !important;
-  --muted: #6b7280 !important;
-  --border: #e5e7eb !important;
-  background: #fafafa !important;
+html[data-theme="dark"],
+html[data-theme="Dark"],
+body.dark,
+body[data-theme="dark"],
+body[data-theme="Dark"] {
+  background: #FAFAFA !important;
+  color: #1A1A1A !important;
+  color-scheme: light !important;
 }
 
-/* Nuke any remaining dark utility classes */
-.dark,
-.dark * {
-  color-scheme: light !important;
+input,
+select,
+textarea,
+button {
+  color-scheme: light;
+  color: #1A1A1A;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  -webkit-text-fill-color: #1A1A1A !important;
+  caret-color: #1A1A1A;
+}
+
+* {
+  scrollbar-color: #EAEAEA #FAFAFA;
+}
+
+@media (prefers-color-scheme: dark) {
+  html, body, #root {
+    background: #FAFAFA !important;
+    color: #1A1A1A !important;
+  }
 }

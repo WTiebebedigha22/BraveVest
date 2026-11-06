@@ -1,197 +1,189 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, AlertTriangle, Calculator } from 'lucide-react';
-import { projectsApi } from '@/api/projects';
-import { investmentsApi, paymentsApi } from '@/api/investments';
-import { useCurrency } from '@/context/CurrencyContext';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, AlertCircle, Loader2, Shield, Calendar, Wallet, CheckCircle, Info, Percent } from 'lucide-react';
+import { apiFetch } from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
+import { useCurrency } from '@/context/CurrencyContext';
+import PageShell from '@/components/shared/PageShell';
 
 export default function ProjectDetail() {
   const { slug } = useParams();
   const nav = useNavigate();
-  const { format } = useCurrency();
   const { user } = useAuth();
+  const { format } = useCurrency();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showInvest, setShowInvest] = useState(false);
-  const [amount, setAmount] = useState('');
-  const [riskAck, setRiskAck] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [amount, setAmount] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [investErr, setInvestErr] = useState('');
+  const [investOk, setInvestOk] = useState('');
 
   useEffect(() => {
-    projectsApi.get(slug)
-      .then(r => setProject(r.data?.data || r.data || r))
-      .catch(() => nav('/marketplace'))
-      .finally(() => setLoading(false));
-  }, [slug, nav]);
-
-  if (loading) return <div style={{ padding: '80px 0', textAlign: 'center', color: 'var(--bybit-text-muted)' }}>Loading…</div>;
-  if (!project) return null;
-
-  const min = Number(project.minInvestment || project.minimumAmount || 0);
-  const amountNum = Number(amount) || 0;
-  const expectedReturn = amountNum * (Number(project.expectedReturnPct || project.targetReturn || 0) / 100);
-  const totalReturn = amountNum + expectedReturn;
-
-  async function submit() {
-    if (!user) { nav('/login'); return; }
-    if (amountNum < min) { setError('Minimum investment is ' + format(min)); return; }
-    if (!riskAck) { setError('You must acknowledge the risk disclosure'); return; }
-    setSubmitting(true);
-    setError('');
-    try {
-      const investment = await investmentsApi.create({
-        projectId: project.id,
-        amount: amountNum,
-      });
-      const payment = await paymentsApi.initialize({
-        amount: amountNum,
-        purpose: 'investment',
-        investmentId: investment.id || investment.investmentId,
-        callbackUrl: window.location.origin + '/#/payment/callback',
-      });
-      const url = payment.authorization_url || payment.authorizationUrl;
-      if (url) {
-        window.location.href = url;
-      } else {
-        setError('Payment initialization failed');
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await apiFetch('/projects/' + slug);
+        if (!cancelled) setProject(data);
+      } catch (e) {
+        if (!cancelled) setError(e && e.message ? e.message : 'Could not load project.');
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-    } catch (e) {
-      setError(e?.response?.data?.message || e?.message || 'Could not create investment');
+    })();
+    return () => { cancelled = true; };
+  }, [slug]);
+
+  const minAmount = Number((project && project.minInvestment) || 5000);
+  const target = Number((project && project.targetAmount) || 0);
+  const raised = Number((project && project.raisedAmount) || 0);
+  const funded = target > 0 ? Math.min(100, Math.round((raised / target) * 100)) : 0;
+  const annualRate = Number((project && project.expectedReturnPct) || 0);
+  const tenor = Number((project && project.tenorMonths) || 12);
+  const risk = (project && project.riskLevel) || 'B';
+  const amountNum = Number(amount) || 0;
+  const projectedReturn = amountNum * (1 + (annualRate / 100) * (tenor / 12));
+  const projectedEarnings = projectedReturn - amountNum;
+
+  async function invest(e) {
+    e.preventDefault();
+    setInvestErr(''); setInvestOk('');
+    if (!user) { nav('/login?redirect=/marketplace/' + slug); return; }
+    if (amountNum < minAmount) return setInvestErr('Minimum investment is ' + format(minAmount) + '.');
+    setSubmitting(true);
+    try {
+      await apiFetch('/investments', { method: 'POST', body: { projectId: project.id, amount: amountNum } });
+      setInvestOk('Investment of ' + format(amountNum) + ' placed successfully.');
+      setAmount('');
+      const fresh = await apiFetch('/projects/' + slug).catch(() => null);
+      if (fresh) setProject(fresh);
+    } catch (err) {
+      setInvestErr(err && err.message ? err.message : 'Could not place investment.');
     } finally {
       setSubmitting(false);
     }
   }
 
+  if (loading) {
+    return <PageShell theme='dark'><div style={{ padding: 96, display: 'flex', gap: 12, color: 'var(--text-muted)' }}><Loader2 size={20} /> Loading project…</div></PageShell>;
+  }
+  if (error || !project) {
+    return (
+      <PageShell theme='dark'>
+        <div style={{ padding: '48px 20px' }}>
+          <div style={{ maxWidth: 480, margin: '0 auto', padding: 16, background: 'rgba(246,70,93,0.1)', border: '1px solid rgba(246,70,93,0.25)', borderRadius: 12, color: '#F6465D', display: 'flex', gap: 12 }}>
+            <AlertCircle size={20} />
+            <div>
+              <div style={{ fontWeight: 600, marginBottom: 4 }}>Could not load project</div>
+              <div style={{ fontSize: 13 }}>{error || 'Project not found.'}</div>
+              <Link to='/marketplace' style={{ display: 'inline-block', marginTop: 12, color: '#F6465D', fontWeight: 600, fontSize: 13 }}>← Back to marketplace</Link>
+            </div>
+          </div>
+        </div>
+      </PageShell>
+    );
+  }
+
   return (
-    <div style={{ background: 'var(--bybit-black)', minHeight: '100vh' }}>
-      <div className="container" style={{ padding: '32px 24px' }}>
-        <Link to="/marketplace" style={{ fontSize: '13px', color: 'var(--bybit-text-muted)', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '24px' }}>
-          <ArrowLeft size={14} /> Back to markets
-        </Link>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '32px' }}>
-          {/* Main content */}
-          <div>
-            <div style={{ marginBottom: '24px' }}>
-              <span className="pill pill--orange" style={{ marginBottom: '12px' }}>{project.category}</span>
-              <h1 style={{ margin: '12px 0', fontSize: '28px' }}>{project.title}</h1>
-              <p style={{ color: 'var(--bybit-text-muted)', fontSize: '14px' }}>{project.summary}</p>
-            </div>
-
-            <div className="card" style={{ marginBottom: '16px' }}>
-              <h3 style={{ margin: 0, fontSize: '16px', marginBottom: '16px' }}>About this opportunity</h3>
-              <p style={{ color: 'var(--bybit-text-muted)', fontSize: '14px', whiteSpace: 'pre-wrap', lineHeight: '1.7' }}>
-                {project.description || 'Full details coming soon.'}
-              </p>
-            </div>
-
-            <div className="card">
-              <h3 style={{ margin: 0, fontSize: '16px', marginBottom: '12px' }}>Risk Disclosure</h3>
-              <p style={{ color: 'var(--bybit-text-muted)', fontSize: '13px', lineHeight: '1.6' }}>
-                This is a private credit investment. Your capital is at risk. Past performance does not guarantee future returns.
-                Read the full <Link to="/risk-disclosure" style={{ color: 'var(--bybit-orange)' }}>risk disclosure</Link> before investing.
-              </p>
-            </div>
-          </div>
-
-          {/* Investment card */}
-          <div>
-            <div className="card" style={{ position: 'sticky', top: '80px' }}>
-              <div style={{ marginBottom: '16px' }}>
-                <div className="data-label">Target Return</div>
-                <div style={{ fontSize: '32px', fontWeight: '700', color: 'var(--bybit-orange)', marginTop: '4px' }}>
-                  {Number(project.expectedReturnPct || project.targetReturn || 0).toFixed(1)}%
-                </div>
-                <div style={{ fontSize: '12px', color: 'var(--bybit-text-muted)' }}>per annum</div>
+    <PageShell theme='dark' ticker>
+      <section style={{ padding: '24px 20px 96px' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <Link to='/marketplace' style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', textDecoration: 'none', fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+            <ArrowLeft size={14} /> Back to marketplace
+          </Link>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: 24 }} className='project-detail-grid'>
+            <style>{'@media (min-width: 900px) { .project-detail-grid { grid-template-columns: minmax(0, 1fr) 380px !important; } }'}</style>
+            <main>
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#F6A500', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>{project.category || 'Investment'}</div>
+                <h1 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 700, margin: '0 0 12px', lineHeight: 1.2 }}>{project.title || project.name}</h1>
+                <p style={{ fontSize: 15, color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>{project.summary || project.description}</p>
               </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', paddingTop: '16px', borderTop: '1px solid var(--bybit-border)', marginBottom: '16px' }}>
-                <div>
-                  <div className="data-label">Minimum</div>
-                  <div style={{ fontSize: '14px', fontWeight: '600', marginTop: '4px' }}>{format(min)}</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 24 }}>
+                <div className='bv-card-lift' style={{ padding: 20, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', fontSize: 12, fontWeight: 500, marginBottom: 6 }}><Percent size={14} /> Annual Yield</div>
+                  <div style={{ fontSize: 24, fontWeight: 700, color: '#0ECB81' }}>{annualRate}%</div>
                 </div>
-                <div>
-                  <div className="data-label">Tenor</div>
-                  <div style={{ fontSize: '14px', fontWeight: '600', marginTop: '4px' }}>{project.tenorMonths || project.durationMonths}mo</div>
+                <div className='bv-card-lift' style={{ padding: 20, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', fontSize: 12, fontWeight: 500, marginBottom: 6 }}><Calendar size={14} /> Tenor</div>
+                  <div style={{ fontSize: 24, fontWeight: 700 }}>{tenor} mo</div>
                 </div>
-                <div>
-                  <div className="data-label">Target</div>
-                  <div style={{ fontSize: '14px', fontWeight: '600', marginTop: '4px' }}>{format(project.targetAmount)}</div>
+                <div className='bv-card-lift' style={{ padding: 20, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', fontSize: 12, fontWeight: 500, marginBottom: 6 }}><Shield size={14} /> Risk</div>
+                  <div style={{ fontSize: 24, fontWeight: 700, color: '#F59E0B' }}>{risk}</div>
                 </div>
-                <div>
-                  <div className="data-label">Funded</div>
-                  <div style={{ fontSize: '14px', fontWeight: '600', marginTop: '4px' }}>
-                    {Math.round((Number(project.raisedAmount || 0) / Number(project.targetAmount || 1)) * 100)}%
+                <div className='bv-card-lift' style={{ padding: 20, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', fontSize: 12, fontWeight: 500, marginBottom: 6 }}><Wallet size={14} /> Min</div>
+                  <div style={{ fontSize: 20, fontWeight: 700 }}>{format(minAmount)}</div>
+                </div>
+              </div>
+              {target > 0 && (
+                <div className='bv-card-lift' style={{ padding: 20, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, marginBottom: 24 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+                    <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-muted)' }}>Funding progress</span>
+                    <span style={{ fontSize: 15, fontWeight: 700 }}>{funded}%</span>
                   </div>
+                  <div style={{ height: 8, background: 'var(--bg-soft)', borderRadius: 4, overflow: 'hidden', marginBottom: 8 }}>
+                    <div style={{ height: '100%', width: funded + '%', background: '#F6A500', transition: 'width 0.3s' }} />
+                  </div>
+                  <div style={{ fontSize: 13, color: 'var(--text-muted)' }}><strong style={{ color: 'var(--text)' }}>{format(raised)}</strong> raised of {format(target)} target</div>
                 </div>
+              )}
+              <div className='bv-card-lift' style={{ padding: 20, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, marginBottom: 24 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                  <Info size={16} color='var(--text-muted)' />
+                  <h2 style={{ fontSize: 15, fontWeight: 600, margin: 0 }}>About this opportunity</h2>
+                </div>
+                <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>{project.description}</p>
               </div>
-
-              <button onClick={() => setShowInvest(true)} className="btn btn--primary" style={{ width: '100%' }}>
-                Invest Now
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Invest modal */}
-      {showInvest && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', display: 'grid', placeItems: 'center', zIndex: 1000, padding: '16px' }}>
-          <div className="card" style={{ maxWidth: '480px', width: '100%', padding: '24px' }}>
-            <h2 style={{ margin: '0 0 8px', fontSize: '20px' }}>Invest in {project.title}</h2>
-            <p style={{ color: 'var(--bybit-text-muted)', fontSize: '13px', marginBottom: '24px' }}>
-              Minimum investment: {format(min)}
-            </p>
-
-            <div style={{ marginBottom: '16px' }}>
-              <label className="form-label">Amount</label>
-              <input
-                type="text"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value.replace(/[^0-9]/g, ''))}
-                placeholder={String(min)}
-                style={{ fontSize: '24px', fontWeight: '600' }}
-              />
-              <div style={{ display: 'flex', gap: '6px', marginTop: '8px' }}>
-                {[min, min * 2, min * 5, min * 10].map(v => (
-                  <button key={v} type="button" onClick={() => setAmount(String(v))} className="pill" style={{ cursor: 'pointer', background: 'transparent' }}>
-                    {format(v)}
+              <div className='bv-card-lift' style={{ padding: 20, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                  <Info size={16} color='var(--text-muted)' />
+                  <h2 style={{ fontSize: 15, fontWeight: 600, margin: 0 }}>Risk disclosure</h2>
+                </div>
+                <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>All investments carry risk. Returns are projections, not guarantees. Your capital is at risk. Read the full disclosure before investing.</p>
+              </div>
+            </main>
+            <aside>
+              <div className='bv-card-lift' style={{ position: 'sticky', top: 88, padding: 24, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16 }}>
+                <h2 style={{ fontSize: 18, fontWeight: 600, margin: '0 0 16px' }}>Invest in this project</h2>
+                {investErr && <div style={{ display: 'flex', gap: 8, padding: '10px 12px', background: 'rgba(246,70,93,0.1)', borderRadius: 8, color: '#F6465D', fontSize: 13, marginBottom: 16 }}><AlertCircle size={16} /> {investErr}</div>}
+                {investOk && <div style={{ display: 'flex', gap: 8, padding: '10px 12px', background: 'rgba(14,203,129,0.1)', borderRadius: 8, color: '#0ECB81', fontSize: 13, marginBottom: 16 }}><CheckCircle size={16} /> {investOk}</div>}
+                <form onSubmit={invest}>
+                  <label style={{ display: 'grid', gap: 6, fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+                    Investment amount (₦)
+                    <input type='number' min={minAmount} step='1000' value={amount} onChange={(e) => setAmount(e.target.value)} placeholder={String(minAmount)} required style={{ padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 16, color: 'var(--text)', outline: 'none' }} />
+                    <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 400 }}>Minimum {format(minAmount)}</span>
+                  </label>
+                  {amountNum > 0 && (
+                    <div style={{ padding: 16, background: 'var(--bg-soft)', border: '1px solid var(--border)', borderRadius: 8, marginBottom: 16 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 13 }}>
+                        <span style={{ color: 'var(--text-muted)' }}>You invest</span>
+                        <strong>{format(amountNum)}</strong>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 13 }}>
+                        <span style={{ color: 'var(--text-muted)' }}>Projected earnings</span>
+                        <strong style={{ color: '#0ECB81' }}>+{format(projectedEarnings)}</strong>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8, borderTop: '1px solid var(--border)', fontSize: 14 }}>
+                        <span style={{ fontWeight: 600 }}>Total at maturity</span>
+                        <strong>{format(projectedReturn)}</strong>
+                      </div>
+                    </div>
+                  )}
+                  <button type='submit' disabled={submitting} className='bv-pill bv-pill--primary' style={{ width: '100%', justifyContent: 'center' }}>
+                    {submitting && <Loader2 size={16} />}
+                    {submitting ? 'Placing…' : user ? 'Invest now' : 'Sign in to invest'}
                   </button>
-                ))}
+                </form>
+                <p style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--border)', fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                  Projected returns: {format(projectedEarnings)} over {tenor} months. Not a guarantee. Capital at risk.
+                </p>
               </div>
-            </div>
-
-            {amountNum > 0 && (
-              <div className="card" style={{ background: 'var(--bybit-surface-2)', marginBottom: '16px', padding: '16px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '8px' }}>
-                  <span style={{ color: 'var(--bybit-text-muted)' }}>Expected Return</span>
-                  <span style={{ color: 'var(--bybit-green)' }}>{format(expectedReturn)}</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', paddingTop: '8px', borderTop: '1px solid var(--bybit-border)' }}>
-                  <span style={{ color: 'var(--bybit-text-muted)' }}>Total at Maturity</span>
-                  <span style={{ fontWeight: '600' }}>{format(totalReturn)}</span>
-                </div>
-              </div>
-            )}
-
-            <label style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontSize: '12px', color: 'var(--bybit-text-muted)', marginBottom: '16px', cursor: 'pointer' }}>
-              <input type="checkbox" checked={riskAck} onChange={(e) => setRiskAck(e.target.checked)} style={{ marginTop: '2px', width: 'auto' }} />
-              <span>I acknowledge that this is a private credit investment and my capital is at risk.</span>
-            </label>
-
-            {error && <div style={{ color: 'var(--bybit-red)', fontSize: '13px', marginBottom: '12px' }}>{error}</div>}
-
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={() => { setShowInvest(false); setError(''); }} className="btn btn--outline" style={{ flex: 1 }}>Cancel</button>
-              <button onClick={submit} disabled={submitting || !riskAck || amountNum < min} className="btn btn--primary" style={{ flex: 1 }}>
-                {submitting ? 'Processing…' : 'Confirm & Pay'}
-              </button>
-            </div>
+            </aside>
           </div>
         </div>
-      )}
-    </div>
+      </section>
+    </PageShell>
   );
 }

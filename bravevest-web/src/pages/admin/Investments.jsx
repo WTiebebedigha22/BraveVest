@@ -6,6 +6,7 @@ import AdminEmpty from '@/components/admin/AdminEmpty';
 import Loader from '@/components/shared/Loader';
 import Currency from '@/components/shared/Currency';
 import { adminApi } from '@/api/admin';
+import PortalLayout from '@/components/layout/PortalLayout';
 
 export default function AdminInvestments() {
   const [items, setItems] = useState([]);

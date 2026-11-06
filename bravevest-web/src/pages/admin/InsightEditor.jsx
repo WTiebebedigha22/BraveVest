@@ -1,195 +1,109 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import AdminPageHeader from '@/components/admin/AdminPageHeader';
-import AdminCard from '@/components/admin/AdminCard';
-import Loader from '@/components/shared/Loader';
-import Button from '@/components/shared/Button';
-import Input from '@/components/shared/Input';
-import { insightsApi } from '@/api/insights';
-import { useToast } from '@/hooks/useToast';
-import './InsightEditor.css';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { apiFetch } from '@/lib/api';
+import PortalLayout from '@/components/layout/PortalLayout';
 
-const CATEGORIES = [
-  'General',
-  'Real Estate',
-  'Agriculture',
-  'Energy',
-  'Credit',
-  'Market Notes',
-  'Platform',
-  'Education',
-];
+const COLORS = {
+  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
+  border: '#EAEAEA', accent: '#F6A500', positive: '#0ECB81', negative: '#F6465D',
+};
 
 export default function InsightEditor() {
   const { id } = useParams();
-  const nav = useNavigate();
-  const toast = useToast();
-  const isEdit = Boolean(id);
-
-  const [form, setForm] = useState({
-    title: '',
-    summary: '',
-    body: '',
-    category: 'General',
-    coverImage: '',
-    isPublished: false,
-  });
+  const navigate = useNavigate();
+  const isEdit = !!id;
+  const [form, setForm] = useState({ title: '', category: '', content: '', status: 'draft' });
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState('');
+  const [ok, setOk] = useState('');
 
   useEffect(() => {
     if (!isEdit) return;
-    insightsApi.adminGet(id)
-      .then((data) => setForm({
-        title: data.title || '',
-        summary: data.summary || '',
-        body: data.body || '',
-        category: data.category || 'General',
-        coverImage: data.coverImage || '',
-        isPublished: !!data.isPublished,
-      }))
-      .catch(() => toast.error('Failed to load'))
-      .finally(() => setLoading(false));
-  }, [id]);
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await apiFetch(`/insights/${id}`, { );
+        if (!cancelled) setForm({
+          title: data.title || '', category: data.category || '',
+          content: data.content || '', status: data.status || 'draft',
+        });
+      } catch (e) {
+        if (!cancelled) setErr(e?.message || 'Could not load article.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [id, isEdit]);
 
-  const update = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+  async function submit(e) {
+    e.preventDefault();
+    setErr(''); setOk('');
+    if (!form.title.trim()) return setErr('Title is required.');
+    if (!form.content.trim()) return setErr('Content is required.');
 
-  async function save(publish) {
     setSaving(true);
     try {
-      const payload = { ...form };
-      if (publish !== undefined) payload.isPublished = publish;
-
-      if (isEdit) {
-        await insightsApi.update(id, payload);
-        toast.success('Insight saved');
-      } else {
-        const created = await insightsApi.create(payload);
-        toast.success(payload.isPublished ? 'Published' : 'Draft saved');
-        nav('/admin/insights/' + created.id + '/edit');
-      }
-    } catch (err) {
-      toast.error(err?.response?.data?.message || 'Failed to save');
-    } finally { setSaving(false); }
+      const url = isEdit ? `/api/insights/${id}` : '/api/admin/insights';
+      const method = isEdit ? 'PATCH' : 'POST';
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      setOk(isEdit ? 'Article updated.' : 'Article created.');
+      if (!isEdit) setTimeout(() => navigate('/insights/admin/list'), 800);
+    } catch (e) {
+      setErr(e?.message || 'Save failed.');
+    } finally {
+      setSaving(false);
+    }
   }
 
-  if (loading) return <div className="text-center py-5"><Loader /></div>;
+  if (loading) return (
+    <PortalLayout theme="dark">
+      <div style={{ padding: 48, display: 'flex', alignItems: 'center', gap: 12, color: COLORS.muted }}>
+      <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Loading article…
+      <style>{'@keyframes spin { to { transform: rotate(360deg); } }'}</style>
+    </div>
+    </PortalLayout>
+  );
+
+  const input = { padding: '10px 12px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, outline: 'none', width: '100%' };
+  const label = { display: 'grid', gap: 6, fontSize: 13, fontWeight: 500, marginBottom: 16 };
 
   return (
-    <>
-      <Link to="/admin/insights" className="ie-back">← All insights</Link>
+    <div style={{ padding: '24px 20px', maxWidth: 800, margin: '0 auto', color: COLORS.text }}>
+      <Link to="/insights/admin/list" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: COLORS.muted, textDecoration: 'none', fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+        <ArrowLeft size={14} /> Back to insights
+      </Link>
+      <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 20px' }}>{isEdit ? 'Edit article' : 'New article'}</h1>
 
-      <AdminPageHeader
-        eyebrow={isEdit ? 'Edit Insight' : 'New Insight'}
-        title={isEdit ? form.title || 'Untitled' : 'Write an Insight'}
-        subtitle="Publish market briefs, educational content, or platform updates"
-        right={
-          <>
-            <Button variant="secondary" size="sm" onClick={() => save(false)} disabled={saving}>
-              Save draft
-            </Button>
-            <Button variant="primary" size="sm" onClick={() => save(true)} disabled={saving}>
-              {form.isPublished ? 'Republish' : 'Publish'}
-            </Button>
-          </>
-        }
-      />
+      <form onSubmit={submit} style={{ padding: 20, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12 }}>
+        {err && <div role="alert" style={{ display: 'flex', gap: 8, padding: '10px 12px', background: 'rgba(246,70,93,0.08)', border: '1px solid rgba(246,70,93,0.2)', borderRadius: 8, color: COLORS.negative, fontSize: 13, marginBottom: 16 }}><AlertCircle size={16} /> {err}</div>}
+        {ok && <div style={{ display: 'flex', gap: 8, padding: '10px 12px', background: 'rgba(14,203,129,0.08)', border: '1px solid rgba(14,203,129,0.2)', borderRadius: 8, color: COLORS.positive, fontSize: 13, marginBottom: 16 }}><CheckCircle size={16} /> {ok}</div>}
 
-      <div className="ie-grid">
-        <div className="ie-main">
-          <AdminCard padded={false}>
-            <AdminCard.Body>
-              <Input
-                label="Title"
-                value={form.title}
-                onChange={update('title')}
-                placeholder="e.g. Why Nigerian Real Estate Is Re-Rating in 2026"
-                required
-              />
-
-              <Input
-                label="Summary"
-                value={form.summary}
-                onChange={update('summary')}
-                placeholder="One-sentence hook shown in the feed"
-                hint="Keep it under 240 characters"
-              />
-
-              <div className="ie-field">
-                <label className="ie-label">Body</label>
-                <textarea
-                  className="ie-textarea"
-                  value={form.body}
-                  onChange={update('body')}
-                  rows={20}
-                  placeholder="Write the full article here. Line breaks are preserved. Basic markdown-like formatting works (## headings, - bullets, **bold**)."
-                />
-                <div className="ie-hint">{form.body.length} characters · {Math.max(1, Math.round(form.body.split(/\s+/).length))} words</div>
-              </div>
-            </AdminCard.Body>
-          </AdminCard>
+        <label style={label}>Title<input type="text" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required style={input} /></label>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
+          <label style={label}>Category<input type="text" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="e.g. Market outlook" style={input} /></label>
+          <label style={label}>Status
+            <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} style={input}>
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+              <option value="archived">Archived</option>
+            </select>
+          </label>
         </div>
+        <label style={label}>Content<textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={12} required style={{ ...input, resize: 'vertical', fontFamily: 'inherit' }} /></label>
 
-        <aside className="ie-side">
-          <AdminCard padded={false} className="mb-3">
-            <AdminCard.Header title="Settings" />
-            <AdminCard.Body>
-              <div className="ie-field">
-                <label className="ie-label">Category</label>
-                <select className="ie-select" value={form.category} onChange={update('category')}>
-                  {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
-
-              <Input
-                label="Cover image URL"
-                value={form.coverImage}
-                onChange={update('coverImage')}
-                placeholder="https://…"
-                hint="Optional · 1200×630 recommended"
-              />
-
-              <div className="ie-toggle">
-                <label className="ie-toggle__label">
-                  <input
-                    type="checkbox"
-                    checked={form.isPublished}
-                    onChange={(e) => setForm({ ...form, isPublished: e.target.checked })}
-                  />
-                  <span>Published</span>
-                </label>
-                <div className="ie-toggle__hint">
-                  {form.isPublished
-                    ? 'Visible to all users on /#/insights'
-                    : 'Saved as a draft — only admins can see it'}
-                </div>
-              </div>
-            </AdminCard.Body>
-          </AdminCard>
-
-          {form.coverImage && (
-            <AdminCard padded={false} className="mb-3">
-              <AdminCard.Header title="Preview" />
-              <AdminCard.Body>
-                <img src={form.coverImage} alt="" style={{ width: '100%', borderRadius: 12 }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-              </AdminCard.Body>
-            </AdminCard>
-          )}
-
-          <AdminCard padded={false}>
-            <AdminCard.Header title="Tips" />
-            <AdminCard.Body>
-              <ul className="ie-tips">
-                <li>Lead with the news or insight in the first sentence.</li>
-                <li>Use short paragraphs — 2–3 sentences each.</li>
-                <li>Include numbers, dates, and sources.</li>
-                <li>End with a clear takeaway for investors.</li>
-                <li>Avoid jargon — write for a first-time investor.</li>
-              </ul>
-            </AdminCard.Body>
-          </AdminCard>
-        </aside>
-      </div>
-    </>
+        <button type="submit" disabled={saving}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 20px', background: COLORS.accent, color: '#FFF', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
+          {saving && <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />}
+          {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Create article'}
+        </button>
+      </form>
+    </div>
   );
 }

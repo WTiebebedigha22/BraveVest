@@ -1,7 +1,16 @@
 const express = require('express');
 const asyncHandler = require('../../utils/asyncHandler');
 const ctrl = require('./admin.controller');
-const { authRequired } = require('../../middleware/auth');
+const { authRequired } = require('../../middleware/auth.middleware');
+
+// Inline admin guard (added by iji.js)
+const adminOnly = (req, res, next) => {
+  if (!req.user || (req.user.role !== 'ADMIN' && req.user.role !== 'SUPER_ADMIN')) {
+    return res.status(403).json({ message: 'Admin access required.' });
+  }
+  next();
+};
+
 const { requireRole } = require('../../middleware/role');
 
 const router = express.Router();
@@ -59,3 +68,91 @@ router.get('/reports/audit', asyncHandler(ctrl.reportAudit));
 router.get('/activity', asyncHandler(ctrl.recentActivity));
 
 module.exports = router;
+
+/**
+ * GET /api/admin/reports/summary
+ * Dashboard-level aggregated stats.
+ */
+router.get('/reports/summary', authRequired, adminOnly, async (req, res, next) => {
+  try {
+    const [investments, investors, projects, kyc] = await Promise.all([
+      prisma.investment.findMany({ where: { status: 'ACTIVE' } }).catch(() => []),
+      prisma.user.count({ where: { role: 'INVESTOR' } }).catch(() => 0),
+      prisma.project.count({ where: { status: 'OPEN' } }).catch(() => 0),
+      prisma.kycSubmission.count({ where: { status: 'PENDING' } }).catch(() => 0),
+    ]);
+
+    const totalInvested = investments.reduce(
+      (s, i) => s + Number(i.amount || 0),
+      0
+    );
+
+    res.json({
+      totalInvested,
+      activeInvestors: investors,
+      openProjects: projects,
+      pendingKyc: kyc,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * GET /api/admin/settings
+ * Platform configuration (singleton — creates defaults on first read).
+ */
+router.get('/settings', authRequired, adminOnly, async (req, res, next) => {
+  try {
+    let settings = await prisma.platformSettings.findFirst().catch(() => null);
+    if (!settings) {
+      settings = await prisma.platformSettings.create({
+        data: {
+          platformName: 'BraveVest',
+          supportEmail: 'support@bravevest.com',
+          minInvestment: 5000,
+          maxInvestment: 10000000,
+          kycRequired: true,
+          maintenanceMode: false,
+        },
+      }).catch(() => ({
+        platformName: 'BraveVest',
+        supportEmail: 'support@bravevest.com',
+        minInvestment: 5000,
+        maxInvestment: 10000000,
+        kycRequired: true,
+        maintenanceMode: false,
+      }));
+    }
+    res.json(settings);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * PATCH /api/admin/settings
+ * Updates platform config.
+ */
+router.patch('/settings', authRequired, adminOnly, async (req, res, next) => {
+  try {
+    const body = req.body || {};
+    let settings = await prisma.platformSettings.findFirst().catch(() => null);
+
+    if (!settings) {
+      settings = await prisma.platformSettings.create({ data: body }).catch(
+        () => null
+      );
+    } else {
+      settings = await prisma.platformSettings.update({
+        where: { id: settings.id },
+        data: body,
+      }).catch(() => settings);
+    }
+
+    res.json(settings);
+  } catch (err) {
+    next(err);
+  }
+});
+

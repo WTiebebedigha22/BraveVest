@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const ctrl = require('./insights.controller');
 const asyncHandler = require('../../utils/asyncHandler');
-const { authRequired } = require('../../middleware/auth');
+const { authRequired } = require('../../middleware/auth.middleware');
 const { requireRole } = require('../../middleware/role');
 
 router.get('/', asyncHandler(ctrl.list));

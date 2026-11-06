@@ -17,7 +17,7 @@ export default function PageShell({ title, subtitle, backTo, actions, children }
           </div>
           {actions && <div style={{ display: 'flex', gap: '8px' }}>{actions}</div>}
         </div>
-        
+
         {/* Content */}
         <div>{children}</div>
       </div>
