@@ -21,8 +21,8 @@ export default function InvestmentDetail() {
     let cancelled = false;
     (async () => {
       try {
-        const result = await apiFetch(`/investments/${id}`, { );
-        if (!cancelled) setData(json);
+        const result = await apiFetch(`/investments/${id}`);
+        if (!cancelled) setData(result);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load investment.');
       } finally {
