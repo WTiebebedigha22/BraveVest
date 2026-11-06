@@ -19,7 +19,7 @@ export default function Insights() {
     let cancelled = false;
     (async () => {
       try {
-        const data = await apiFetch('/insights/admin/list', { );
+        const data = await apiFetch('/insights/admin/list');
         if (!cancelled) setItems(Array.isArray(data) ? data : data.insights ?? []);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load insights.');

@@ -22,7 +22,7 @@ export default function ProjectEdit() {
     let cancelled = false;
     (async () => {
       try {
-        const data = await apiFetch(`/admin/projects/${id}`, { );
+        const data = await apiFetch(`/admin/projects/${id}`);
         if (!cancelled) setForm({
           name: p.name || '', sector: p.sector || '',
           target: String(p.target ?? ''), minInvestment: String(p.minInvestment ?? ''),

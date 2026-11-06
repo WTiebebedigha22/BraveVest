@@ -22,7 +22,7 @@ export default function KycDetail() {
     let cancelled = false;
     (async () => {
       try {
-        const result = await apiFetch(`/admin/kyc/${id}`, { );
+        const result = await apiFetch(`/admin/kyc/${id}`);
         if (!cancelled) setData(json);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load KYC submission.');

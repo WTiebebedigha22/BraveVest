@@ -17,7 +17,7 @@ export default function ContactInbox() {
     let cancelled = false;
     (async () => {
       try {
-        const data = await apiFetch('/admin/contact', { );
+        const data = await apiFetch('/admin/contact');
         if (!cancelled) setItems(Array.isArray(data) ? data : data.messages ?? []);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load messages.');

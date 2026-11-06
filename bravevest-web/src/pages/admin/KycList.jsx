@@ -23,7 +23,7 @@ export default function KycList() {
     let cancelled = false;
     (async () => {
       try {
-        const data = await apiFetch('/admin/kyc', { );
+        const data = await apiFetch('/admin/kyc');
         if (!cancelled) setItems(Array.isArray(data) ? data : data.submissions ?? []);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load KYC submissions.');

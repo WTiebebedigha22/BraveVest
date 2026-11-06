@@ -27,7 +27,7 @@ export default function Reports() {
     let cancelled = false;
     (async () => {
       try {
-        const data = await apiFetch('/admin/reports/summary', { );
+        const data = await apiFetch('/admin/reports/summary');
         if (!cancelled) setStats(json);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load report summary.');
@@ -41,7 +41,7 @@ export default function Reports() {
   async function downloadReport(id) {
     setDownloading(id);
     try {
-      const data = await apiFetch(`/admin/reports/${id}.csv`, { );      const blob = await res.blob();
+      const data = await apiFetch(`/admin/reports/${id}.csv`);      const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

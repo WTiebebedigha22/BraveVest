@@ -20,7 +20,7 @@ export default function AdminFundingReview() {
     let cancelled = false;
     (async () => {
       try {
-        const data = await apiFetch('/admin/funding/review', { );
+        const data = await apiFetch('/admin/funding/review');
         if (!cancelled) setItems(Array.isArray(data) ? data : data.requests ?? []);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load funding requests.');

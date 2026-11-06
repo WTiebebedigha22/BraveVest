@@ -22,7 +22,7 @@ export default function Commitments() {
     let cancelled = false;
     (async () => {
       try {
-        const data = await apiFetch('/funding/commitments/mine', { );
+        const data = await apiFetch('/funding/commitments/mine');
         if (!cancelled) setItems(Array.isArray(data) ? data : data.commitments ?? []);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load commitments.');

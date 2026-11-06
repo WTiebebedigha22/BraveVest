@@ -24,7 +24,7 @@ export default function InsightEditor() {
     let cancelled = false;
     (async () => {
       try {
-        const data = await apiFetch(`/insights/${id}`, { );
+        const data = await apiFetch(`/insights/${id}`);
         if (!cancelled) setForm({
           title: data.title || '', category: data.category || '',
           content: data.content || '', status: data.status || 'draft',

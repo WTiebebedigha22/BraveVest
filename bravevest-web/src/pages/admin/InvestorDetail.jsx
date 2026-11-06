@@ -22,7 +22,7 @@ export default function InvestorDetail() {
     let cancelled = false;
     (async () => {
       try {
-        const result = await apiFetch(`/admin/investors/${id}`, { );
+        const result = await apiFetch(`/admin/investors/${id}`);
         if (!cancelled) setData(json);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load investor.');

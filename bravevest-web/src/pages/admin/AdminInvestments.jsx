@@ -20,7 +20,7 @@ export default function AdminInvestments() {
     let cancelled = false;
     (async () => {
       try {
-        const data = await apiFetch('/admin/investments', { );
+        const data = await apiFetch('/admin/investments');
         if (!cancelled) setItems(Array.isArray(data) ? data : data.investments ?? []);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load investments.');

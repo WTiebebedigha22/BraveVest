@@ -25,7 +25,7 @@ export default function AdminProjects() {
     let cancelled = false;
     (async () => {
       try {
-        const data = await apiFetch('/admin/projects', { );
+        const data = await apiFetch('/admin/projects');
         if (!cancelled) setItems(Array.isArray(data) ? data : data.projects ?? []);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load projects.');

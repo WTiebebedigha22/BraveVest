@@ -24,7 +24,7 @@ export default function Transactions() {
     let cancelled = false;
     (async () => {
       try {
-        const data = await apiFetch('/admin/transactions', { );
+        const data = await apiFetch('/admin/transactions');
         if (!cancelled) setItems(Array.isArray(data) ? data : data.transactions ?? []);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load transactions.');
