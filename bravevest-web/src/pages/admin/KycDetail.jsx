@@ -4,10 +4,45 @@ import { ArrowLeft, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-re
 import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
 
-const COLORS = {
-  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
-  border: '#EAEAEA', accent: '#F6A500', positive: '#0ECB81', negative: '#F6465D',
-};
+const CSS = `
+.kd { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-line:#E4E4E9; --by-text:#121214; --by-mute:#6B6B76; --by-yellow:#F7A600; --by-amber:#C27C00; --by-green:#0E9F5B; --by-red:#D6334B;
+  background:var(--by-bg); color:var(--by-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; min-height:60vh; padding:40px 20px 96px; }
+.kd * { box-sizing:border-box; }
+.kd-inner { max-width:800px; margin:0 auto; }
+.kd-back { display:inline-flex; align-items:center; gap:6px; color:var(--by-mute); text-decoration:none; font-size:14px; font-weight:600; margin-bottom:20px; }
+.kd-back:hover { color:var(--by-amber); }
+.kd h1 { font-size:clamp(26px,4vw,36px); font-weight:800; letter-spacing:-0.03em; margin:0 0 24px; }
+
+.kd-card { background:var(--by-card); border:1px solid var(--by-line); border-radius:20px; padding:28px; margin-bottom:16px; }
+.kd-card h2 { font-size:17px; font-weight:800; letter-spacing:-0.01em; margin:0 0 16px; }
+.kd-dl { display:grid; grid-template-columns:auto 1fr; margin:0; font-size:15px; }
+.kd-dl dt, .kd-dl dd { padding:14px 0; border-top:1px solid var(--by-line); margin:0; }
+.kd-dl dt:first-of-type, .kd-dl dt:first-of-type + dd { border-top:0; padding-top:0; }
+.kd-dl dt { color:var(--by-mute); font-weight:600; padding-right:32px; }
+.kd-dl dd { font-weight:600; word-break:break-word; }
+.kd-dl .mono { font-family:ui-monospace,Menlo,monospace; font-size:14px; }
+
+.kd-lbl { display:grid; gap:8px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:20px; }
+.kd-lbl textarea { width:100%; padding:12px 14px; background:#fff; border:1px solid var(--by-line); border-radius:8px; font-family:inherit; font-size:15px; line-height:1.5; color:var(--by-text); resize:vertical; outline:none; transition:border-color .15s; }
+.kd-lbl textarea::placeholder { color:#B4B4BE; }
+.kd-lbl textarea:focus { border-color:var(--by-yellow); }
+.kd-actions { display:flex; gap:12px; flex-wrap:wrap; }
+.kd-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; height:48px; padding:0 24px; border-radius:8px; font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; transition:background .15s, border-color .15s; }
+.kd-btn--ok { background:var(--by-green); color:#fff; border:0; }
+.kd-btn--ok:hover:not(:disabled) { background:#0B8A4F; }
+.kd-btn--no { background:#fff; color:var(--by-red); border:1px solid rgba(214,51,75,.4); }
+.kd-btn--no:hover:not(:disabled) { background:rgba(214,51,75,.06); border-color:var(--by-red); }
+.kd-btn:disabled { opacity:.6; cursor:not-allowed; }
+.kd-btn:focus-visible, .kd-lbl textarea:focus-visible, .kd-back:focus-visible { outline:2px solid #121214; outline-offset:2px; }
+
+.kd-err { display:flex; gap:8px; align-items:flex-start; padding:12px; background:rgba(214,51,75,.08); border:1px solid rgba(214,51,75,.2); border-radius:8px; color:var(--by-red); font-size:13px; line-height:1.5; margin-bottom:20px; }
+.kd-err svg { flex:none; margin-top:1px; }
+.kd-state { padding:64px 0; display:flex; align-items:center; gap:12px; color:var(--by-mute); }
+.kd-spin { animation:kd-spin 1s linear infinite; }
+@keyframes kd-spin { to { transform:rotate(360deg); } }
+@media (prefers-reduced-motion:reduce) { .kd-spin { animation:none; } }
+@media (max-width:480px) { .kd-card { padding:20px; } .kd-dl { grid-template-columns:1fr; } .kd-dl dt { border-top:1px solid var(--by-line); padding:14px 0 2px; } .kd-dl dd { border-top:0; padding:0 0 12px; } }
+`;
 
 export default function KycDetail() {
   const { id } = useParams();
@@ -23,7 +58,7 @@ export default function KycDetail() {
     (async () => {
       try {
         const result = await apiFetch(`/admin/kyc/${id}`);
-        if (!cancelled) setData(json);
+        if (!cancelled) setData(result);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load KYC submission.');
       } finally {
@@ -40,13 +75,11 @@ export default function KycDetail() {
     }
     setActing(action);
     try {
-      const result = await apiFetch(`/admin/kyc/${id}/${action}`, {
+      // apiFetch throws on non-2xx, so no manual res.ok check is needed.
+      await apiFetch(`/admin/kyc/${id}/${action}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reason: reason.trim() || undefined }),
-      });.catch(() => ({}));
-        throw new Error(d?.message || 'Action failed.');
-      }
+        body: { reason: reason.trim() || undefined },
+      });
       navigate('/admin/kyc', { replace: true });
     } catch (e) {
       setError(e?.message || 'Action failed.');
@@ -55,63 +88,76 @@ export default function KycDetail() {
     }
   }
 
-  if (loading) return (
-    <PortalLayout theme="dark">
-      <div style={{ padding: 48, display: 'flex', alignItems: 'center', gap: 12, color: COLORS.muted }}>
-      <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Loading KYC…
-      <style>{'@keyframes spin { to { transform: rotate(360deg); } }'}</style>
-    </div>
+  const shell = (children) => (
+    <PortalLayout theme='light'>
+      <style>{CSS}</style>
+      <div className='kd'>
+        <div className='kd-inner'>{children}</div>
+      </div>
     </PortalLayout>
   );
-  if (error && !data) return <div role="alert" style={{ padding: 24, color: COLORS.negative, display: 'flex', gap: 8 }}><AlertCircle size={20} /> {error}</div>;
+
+  const back = (
+    <Link to='/admin/kyc' className='kd-back'><ArrowLeft size={14} /> Back to KYC queue</Link>
+  );
+
+  if (loading) {
+    return shell(
+      <div className='kd-state' role='status'>
+        <Loader2 size={20} className='kd-spin' /> Loading KYC…
+      </div>
+    );
+  }
+
+  if (error && !data) {
+    return shell(
+      <>
+        {back}
+        <div role='alert' className='kd-err'><AlertCircle size={16} /> {error}</div>
+      </>
+    );
+  }
 
   const k = data?.submission ?? data;
 
-  return (
-    <div style={{ padding: '24px 20px', maxWidth: 800, margin: '0 auto', color: COLORS.text }}>
-      <Link to="/admin/kyc" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: COLORS.muted, textDecoration: 'none', fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
-        <ArrowLeft size={14} /> Back to KYC queue
-      </Link>
+  return shell(
+    <>
+      {back}
+      <h1>{k?.name || 'KYC Submission'}</h1>
 
-      <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 20px' }}>{k?.name || 'KYC Submission'}</h1>
+      {error && <div role='alert' className='kd-err'><AlertCircle size={16} /> {error}</div>}
 
-      {error && (
-        <div role="alert" style={{ display: 'flex', gap: 8, padding: '10px 12px', background: 'rgba(246,70,93,0.08)', border: '1px solid rgba(246,70,93,0.2)', borderRadius: 8, color: COLORS.negative, fontSize: 13, marginBottom: 16 }}>
-          <AlertCircle size={16} /> {error}
-        </div>
-      )}
-
-      <section style={{ padding: 20, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, marginBottom: 20 }}>
-        <dl style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 10, margin: 0, fontSize: 14 }}>
-          <dt style={{ color: COLORS.muted, fontWeight: 500 }}>Email</dt><dd style={{ margin: 0 }}>{k?.email}</dd>
-          <dt style={{ color: COLORS.muted, fontWeight: 500 }}>ID type</dt><dd style={{ margin: 0 }}>{k?.idType || 'NIN'}</dd>
-          <dt style={{ color: COLORS.muted, fontWeight: 500 }}>ID number</dt><dd style={{ margin: 0, fontFamily: 'monospace' }}>{k?.idNumber || '—'}</dd>
-          <dt style={{ color: COLORS.muted, fontWeight: 500 }}>Submitted</dt><dd style={{ margin: 0 }}>{k?.submittedAt || '—'}</dd>
+      <section className='kd-card'>
+        <dl className='kd-dl'>
+          <dt>Email</dt><dd>{k?.email}</dd>
+          <dt>ID type</dt><dd>{k?.idType || 'NIN'}</dd>
+          <dt>ID number</dt><dd className='mono'>{k?.idNumber || '—'}</dd>
+          <dt>Submitted</dt><dd>{k?.submittedAt || '—'}</dd>
         </dl>
       </section>
 
-      <section style={{ padding: 20, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12 }}>
-        <h2 style={{ fontSize: 15, fontWeight: 600, margin: '0 0 12px' }}>Review decision</h2>
-
-        <label style={{ display: 'grid', gap: 6, fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+      <section className='kd-card'>
+        <h2>Review decision</h2>
+        <label className='kd-lbl'>
           Reason (required for rejection)
-          <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={3} placeholder="Optional note (required if rejecting)…"
-            style={{ padding: '10px 12px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, outline: 'none', resize: 'vertical', fontFamily: 'inherit' }} />
+          <textarea
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            rows={3}
+            placeholder='Optional note (required if rejecting)…'
+          />
         </label>
-
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <button type="button" onClick={() => act('approve')} disabled={!!acting}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '12px 20px', background: COLORS.positive, color: '#FFF', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: acting ? 'not-allowed' : 'pointer', opacity: acting ? 0.7 : 1 }}>
-            {acting === 'approve' ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <CheckCircle size={16} />}
+        <div className='kd-actions'>
+          <button type='button' className='kd-btn kd-btn--ok' onClick={() => act('approve')} disabled={!!acting}>
+            {acting === 'approve' ? <Loader2 size={16} className='kd-spin' /> : <CheckCircle size={16} />}
             {acting === 'approve' ? 'Approving…' : 'Approve'}
           </button>
-          <button type="button" onClick={() => act('reject')} disabled={!!acting}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '12px 20px', background: COLORS.surface, color: COLORS.negative, border: `1px solid ${COLORS.negative}`, borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: acting ? 'not-allowed' : 'pointer', opacity: acting ? 0.7 : 1 }}>
-            {acting === 'reject' ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <XCircle size={16} />}
+          <button type='button' className='kd-btn kd-btn--no' onClick={() => act('reject')} disabled={!!acting}>
+            {acting === 'reject' ? <Loader2 size={16} className='kd-spin' /> : <XCircle size={16} />}
             {acting === 'reject' ? 'Rejecting…' : 'Reject'}
           </button>
         </div>
       </section>
-    </div>
+    </>
   );
 }
