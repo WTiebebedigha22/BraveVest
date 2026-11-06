@@ -3,6 +3,7 @@ import {
   LayoutDashboard, TrendingUp, Wallet, FileText, Target,
   Gift, Users, UserCircle, Calendar, BarChart3, Shield,
   FolderOpen, Settings, Inbox, PieChart, ArrowLeftRight, LogOut, X,
+  Plus, FileCheck, Clock,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
