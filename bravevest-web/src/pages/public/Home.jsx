@@ -1,329 +1,761 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { TrendingUp, Wallet, Shield, ArrowRight, Sparkles, PieChart, Zap, CheckCircle, Users } from 'lucide-react';
+import { Shield, ArrowRight, CheckCircle, BadgeCheck, TrendingUp, Landmark, Building2, Store, UserPlus, Wallet, Sparkles, Zap, Award, ArrowUpRight } from 'lucide-react';
 import PageShell from '@/components/shared/PageShell';
 
+/* ============ Elite Sophisticated Light Theme Palette & Styling ============ */
 const CSS = `
-.by { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-card2:#EDEDF0; --by-line:#E4E4E9; --by-text:#121214; --by-mute:#6B6B76; --by-yellow:#F7A600; --by-amber:#C27C00; --by-green:#0E9F5B;
-  background:var(--by-bg); color:var(--by-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; }
-.by * { box-sizing:border-box; }
-.by-wrap { max-width:1200px; margin:0 auto; padding:0 20px; }
-.by-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; height:48px; padding:0 28px; border-radius:8px; font-weight:600; font-size:15px; text-decoration:none; border:0; cursor:pointer; transition:background .15s, border-color .15s; }
-.by-btn--y { background:var(--by-yellow); color:#121214; }
-.by-btn--y:hover { background:#FFB82E; }
-.by-btn--g { background:transparent; color:var(--by-text); border:1px solid var(--by-line); }
-.by-btn--g:hover { border-color:var(--by-yellow); color:var(--by-amber); }
-.by-btn:focus-visible, .by-input:focus-visible { outline:2px solid var(--by-yellow); outline-offset:2px; }
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
 
-.by-hero { padding:88px 0 72px; }
-.by-hero-grid { display:grid; grid-template-columns:1.15fr .85fr; gap:56px; align-items:center; }
-.by-chip { display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius:6px; background:var(--by-card); border:1px solid var(--by-line); font-size:13px; font-weight:500; color:var(--by-amber); }
-.by-dot { width:7px; height:7px; border-radius:50%; background:var(--by-green); box-shadow:0 0 0 0 rgba(32,178,108,.6); animation:by-pulse 2s infinite; }
-@keyframes by-pulse { 70% { box-shadow:0 0 0 8px rgba(32,178,108,0); } 100% { box-shadow:0 0 0 0 rgba(32,178,108,0); } }
-@media (prefers-reduced-motion:reduce) { .by-dot { animation:none; } }
-.by h1 { font-size:clamp(40px,6.4vw,72px); font-weight:800; line-height:1.04; letter-spacing:-0.035em; margin:20px 0 20px; }
-.by h1 em { font-style:normal; color:var(--by-amber); }
-.by-sub { font-size:clamp(16px,1.8vw,18px); color:var(--by-mute); line-height:1.65; max-width:560px; margin:0 0 32px; }
-.by-signup { display:flex; gap:10px; max-width:520px; margin-bottom:14px; }
-.by-input { flex:1; min-width:0; height:48px; padding:0 16px; border-radius:8px; background:var(--by-card); border:1px solid var(--by-line); color:var(--by-text); font-size:15px; }
-.by-input::placeholder { color:var(--by-mute); }
-.by-input:focus { border-color:var(--by-yellow); }
-.by-alt { display:flex; gap:20px; font-size:14px; }
-.by-alt a { color:var(--by-mute); text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
-.by-alt a:hover { color:var(--by-amber); }
-
-.by-panel { background:var(--by-card); border:1px solid var(--by-line); border-radius:16px; padding:8px; }
-.by-panel-head { display:flex; justify-content:space-between; align-items:center; padding:14px 16px 10px; font-size:14px; font-weight:600; }
-.by-panel-head span { color:var(--by-mute); font-weight:500; font-size:12px; }
-.by-row { display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:10px; }
-.by-row:hover { background:var(--by-card2); }
-.by-row .ic { width:36px; height:36px; border-radius:50%; background:rgba(247,166,0,.16); color:var(--by-amber); display:flex; align-items:center; justify-content:center; flex:none; }
-.by-row b { font-size:14px; font-weight:600; flex:1; }
-.by-row .v { font-size:14px; font-weight:600; color:var(--by-green); font-variant-numeric:tabular-nums; }
-
-.by-stats { background:var(--by-card); border-top:1px solid var(--by-line); border-bottom:1px solid var(--by-line); padding:44px 0; }
-.by-stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
-.by-stat b { display:block; font-size:clamp(30px,4.2vw,44px); font-weight:800; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; }
-.by-stat span { font-size:14px; color:var(--by-mute); }
-
-.by-sec { padding:96px 0; }
-.by-title { font-size:clamp(28px,3.6vw,40px); font-weight:800; letter-spacing:-0.025em; margin:0 0 12px; }
-.by-title em { font-style:normal; color:var(--by-amber); }
-.by-lede { color:var(--by-mute); font-size:16px; margin:0 0 48px; }
-.by-grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-.by-card { background:var(--by-card); border:1px solid transparent; border-radius:16px; padding:28px; transition:border-color .15s, background .15s; }
-.by-card:hover { border-color:var(--by-yellow); background:var(--by-card2); }
-.by-card .ic { width:44px; height:44px; border-radius:10px; background:rgba(247,166,0,.16); color:var(--by-amber); display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
-.by-card h3 { font-size:18px; font-weight:700; margin:0 0 8px; }
-.by-card p { font-size:14px; line-height:1.65; color:var(--by-mute); margin:0; }
-
-.by-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-.by-step { background:var(--by-card); border-radius:16px; padding:28px; position:relative; }
-.by-step .n { font-size:56px; font-weight:800; color:var(--by-amber); line-height:1; letter-spacing:-0.04em; margin-bottom:20px; }
-.by-step h3 { font-size:18px; font-weight:700; margin:0 0 8px; }
-.by-step p { font-size:14px; color:var(--by-mute); line-height:1.6; margin:0; }
-
-.by-cta { margin:0 20px 96px; }
-.by-cta-box { max-width:1200px; margin:0 auto; border-radius:24px; padding:72px 24px; text-align:center; background:linear-gradient(135deg,#FFF1CC 0%,#F5F5F7 65%); border:1px solid var(--by-line); }
-.by-cta-box p { color:var(--by-mute); font-size:16px; line-height:1.6; margin:0 0 32px; }
-.by-cta-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
-
-@media (max-width:900px) {
-  .by-hero { padding:56px 0 48px; }
-  .by-hero-grid { grid-template-columns:1fr; gap:40px; }
-  .by-grid3, .by-steps { grid-template-columns:1fr; }
-  .by-stats-grid { grid-template-columns:repeat(2,1fr); }
-  .by-sec { padding:64px 0; }
+.elite-light-root {
+  --bg-primary: #FCFBFA;
+  --bg-surface: #FFFFFF;
+  --bg-surface-glass: rgba(255, 255, 255, 0.85);
+  --border-color: rgba(194, 124, 0, 0.15);
+  --border-hover: rgba(247, 166, 0, 0.5);
+  --gold-primary: #F7A600;
+  --gold-dark: #C27C00;
+  --gold-light: #FFC94D;
+  --gold-gradient: linear-gradient(135deg, #FFC94D 0%, #F7A600 50%, #C27C00 100%);
+  --gold-text-gradient: linear-gradient(135deg, #12141A 20%, #C27C00 70%, #F7A600 100%);
+  --text-main: #12141A;
+  --text-muted: #5A5F73;
+  --success-green: #0E9F5B;
+  --warm-tint: #FFF8E6;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  overflow-x: hidden;
+  position: relative;
 }
-@media (max-width:480px) { .by-signup { flex-direction:column; } .by-signup .by-btn { width:100%; } }
 
-.by-hero { position:relative; overflow:hidden; padding:80px 0 56px; }
-.by-glow { position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(600px 400px at 85% 25%, rgba(247,166,0,.22), transparent 70%), radial-gradient(500px 300px at 0% 0%, rgba(247,166,0,.08), transparent 70%); }
-.by-glow::after { content:''; position:absolute; inset:0; background-image:linear-gradient(var(--by-line) 1px, transparent 1px), linear-gradient(90deg, var(--by-line) 1px, transparent 1px); background-size:56px 56px; opacity:.45;
-  -webkit-mask-image:radial-gradient(ellipse at 70% 30%, #000 0%, transparent 70%); mask-image:radial-gradient(ellipse at 70% 30%, #000 0%, transparent 70%); }
-.by-hero .by-wrap { position:relative; }
-.by-hero h1 { font-size:clamp(44px,7vw,84px); letter-spacing:-0.04em; }
-.by-hero h1 em { color:var(--by-text); background:linear-gradient(transparent 62%, rgba(247,166,0,.6) 62%) no-repeat; background-size:0 100%; animation:by-mark .9s .6s cubic-bezier(.2,.8,.2,1) forwards; }
-@keyframes by-mark { to { background-size:100% 100%; } }
-.by-rise { opacity:0; transform:translateY(16px); animation:by-rise .7s cubic-bezier(.2,.8,.2,1) forwards; }
-.by-rise--2 { animation-delay:.2s; }
-@keyframes by-rise { to { opacity:1; transform:none; } }
-@media (prefers-reduced-motion:reduce) { .by-rise { opacity:1; transform:none; animation:none; } .by-hero h1 em { animation:none; background-size:100% 100%; } }
+.elite-light-root * { box-sizing: border-box; }
+.elite-container { max-width: 1240px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 2; }
 
-.by-calc { background:#fff; border:1px solid var(--by-line); border-radius:20px; padding:24px; box-shadow:0 24px 60px -20px rgba(18,18,20,.18); }
-.by-calc-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; font-weight:700; font-size:16px; }
-.by-calc-head span { font-size:12px; font-weight:600; color:var(--by-green); background:rgba(14,159,91,.1); padding:4px 10px; border-radius:6px; }
-.by-lbl { display:flex; justify-content:space-between; font-size:13px; color:var(--by-mute); margin-bottom:8px; }
-.by-lbl b { color:var(--by-text); font-weight:700; }
-.by-amt { display:flex; align-items:center; height:56px; border-radius:10px; border:1px solid var(--by-line); background:var(--by-card); padding:0 16px; gap:8px; }
-.by-amt:focus-within { border-color:var(--by-yellow); background:#fff; }
-.by-amt span { font-size:22px; font-weight:700; color:var(--by-mute); }
-.by-amt input { flex:1; min-width:0; border:0; background:transparent; font-size:26px; font-weight:800; color:var(--by-text); letter-spacing:-0.02em; font-variant-numeric:tabular-nums; outline:none; }
-.by-chips { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 24px; }
-.by-qchip { height:32px; padding:0 12px; border-radius:6px; border:1px solid var(--by-line); background:#fff; font-size:13px; font-weight:600; color:var(--by-text); cursor:pointer; }
-.by-qchip:hover, .by-qchip[aria-pressed='true'] { border-color:var(--by-yellow); background:rgba(247,166,0,.12); }
-.by-range { width:100%; accent-color:var(--by-yellow); margin:4px 0 24px; height:4px; cursor:pointer; }
-.by-result { background:var(--by-card); border-radius:12px; padding:18px; margin-bottom:16px; }
-.by-result-top { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:14px; }
-.by-result small { display:block; font-size:12px; color:var(--by-mute); margin-bottom:4px; }
-.by-earn { font-size:30px; font-weight:800; color:var(--by-green); letter-spacing:-0.03em; font-variant-numeric:tabular-nums; line-height:1; }
-.by-total { font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; text-align:right; }
-.by-bar { display:flex; height:8px; border-radius:99px; overflow:hidden; background:var(--by-line); }
-.by-bar i { display:block; height:100%; transition:width .3s ease; }
-.by-bar i:first-child { background:#121214; }
-.by-bar i:last-child { background:var(--by-yellow); }
-.by-legend { display:flex; gap:16px; margin-top:10px; font-size:12px; color:var(--by-mute); }
-.by-legend span::before { content:''; display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; background:#121214; }
-.by-legend span:last-child::before { background:var(--by-yellow); }
-.by-calc .by-btn { width:100%; }
-.by-note { font-size:11px; color:var(--by-mute); text-align:center; margin:12px 0 0; line-height:1.5; }
-.by-warn { color:#C0392B; font-size:12px; margin:-16px 0 16px; }
+/* Ambient Decorative Warm Glows */
+.elite-ambient {
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 1100px; height: 700px;
+  background: radial-gradient(circle, rgba(247, 166, 0, 0.14) 0%, rgba(252, 251, 250, 0) 70%);
+  z-index: 1; pointer-events: none;
+}
 
-.by-trust { display:flex; gap:12px 36px; flex-wrap:wrap; margin-top:56px; padding-top:28px; border-top:1px solid var(--by-line); }
-.by-trust span { display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:500; color:var(--by-mute); }
-.by-trust svg { color:var(--by-amber); }
-@media (max-width:900px) { .by-hero { padding:48px 0 40px; } .by-trust { margin-top:40px; } }
+/* Glass Card */
+.elite-glass {
+  background: var(--bg-surface-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+}
+
+/* Typography */
+.elite-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.elite-gradient-text {
+  background: var(--gold-text-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Buttons */
+.elite-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 54px;
+  padding: 0 32px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+}
+
+.elite-btn:hover { transform: translateY(-3px); }
+
+.elite-btn-gold {
+  background: var(--gold-gradient);
+  color: #12141A;
+  box-shadow: 0 16px 32px -10px rgba(247, 166, 0, 0.45);
+}
+.elite-btn-gold:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 20px 40px -8px rgba(247, 166, 0, 0.65);
+}
+
+.elite-btn-outline {
+  background: #FFFFFF;
+  color: var(--text-main);
+  border-color: rgba(18, 20, 26, 0.15);
+  box-shadow: 0 4px 12px rgba(18, 18, 20, 0.04);
+}
+.elite-btn-outline:hover {
+  background: var(--warm-tint);
+  border-color: var(--gold-primary);
+  color: var(--gold-dark);
+}
+
+/* Hero Section */
+.elite-hero {
+  position: relative;
+  padding: 120px 0 180px;
+  text-align: center;
+  color: #FFFFFF;
+  background: linear-gradient(rgba(18, 18, 20, 0.65), rgba(18, 18, 20, 0.65)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+  overflow: hidden;
+}
+
+.elite-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 99px;
+  background: rgba(247, 166, 0, 0.2);
+  border: 1px solid rgba(247, 166, 0, 0.5);
+  color: var(--gold-light);
+  font-size: 13.5px;
+  font-weight: 700;
+  margin-bottom: 28px;
+  box-shadow: 0 0 30px rgba(247, 166, 0, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+.elite-hero h1 {
+  font-size: clamp(40px, 6vw, 76px);
+  line-height: 1.08;
+  max-width: 900px;
+  margin: 0 auto 24px;
+  color: #FFFFFF;
+}
+
+.elite-hero h1 .elite-gradient-text {
+  background: linear-gradient(135deg, #FFC94D 0%, #F7A600 50%, #FFE29A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.elite-hero p {
+  font-size: clamp(17px, 2vw, 20px);
+  color: #E4E4E9;
+  max-width: 640px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+.elite-hero-cta {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 60px;
+}
+
+.elite-hero .elite-btn-outline {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+}
+.elite-hero .elite-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--gold-primary);
+  color: var(--gold-light);
+}
+
+/* Live Market Stats Ribbon */
+.elite-stats-ribbon {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.elite-stat-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 24px;
+  text-align: left;
+  box-shadow: 0 10px 30px rgba(18, 18, 20, 0.04);
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+
+.elite-stat-card:hover {
+  border-color: var(--gold-primary);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(194, 124, 0, 0.1);
+}
+
+.elite-stat-card .label { font-size: 13px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
+.elite-stat-card .value { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+.elite-stat-card .trend { font-size: 12px; color: var(--success-green); background: rgba(14, 159, 91, 0.1); padding: 2px 8px; border-radius: 6px; font-weight: 700; }
+
+/* Wealth Calculator Section */
+.elite-calc-wrapper {
+  max-width: 1080px;
+  margin: -60px auto 100px;
+  position: relative;
+  z-index: 10;
+  padding: 0 24px;
+}
+
+.elite-calc-box {
+  background: linear-gradient(145deg, #FFFFFF 0%, #FFFDF7 100%);
+  border: 1px solid rgba(247, 166, 0, 0.3);
+  border-radius: 32px;
+  padding: 48px;
+  box-shadow: 0 40px 100px rgba(18, 18, 20, 0.08), 0 0 40px rgba(247, 166, 0, 0.12);
+}
+
+.elite-calc-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1.1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.elite-input-group { margin-bottom: 28px; }
+.elite-input-label { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--text-muted); }
+.elite-input-label b { color: var(--text-main); font-size: 18px; font-family: 'Space Grotesk', sans-serif; }
+
+.elite-amount-box {
+  display: flex;
+  align-items: center;
+  background: #FCFBFA;
+  border: 1.5px solid rgba(18, 18, 20, 0.12);
+  border-radius: 16px;
+  padding: 0 20px;
+  height: 64px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.elite-amount-box:focus-within { border-color: var(--gold-primary); background: #FFFFFF; box-shadow: 0 0 0 4px rgba(247, 166, 0, 0.15); }
+.elite-amount-box span { font-size: 26px; font-weight: 700; color: var(--gold-dark); }
+.elite-amount-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  outline: none;
+  padding-left: 8px;
+}
+
+.elite-quick-chips { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.elite-chip {
+  background: #F5F5F7;
+  border: 1px solid rgba(18, 18, 20, 0.08);
+  color: var(--text-main);
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.elite-chip:hover, .elite-chip.active {
+  background: var(--warm-tint);
+  border-color: var(--gold-primary);
+  color: var(--gold-dark);
+}
+
+.elite-slider {
+  width: 100%;
+  accent-color: var(--gold-primary);
+  height: 6px;
+  cursor: pointer;
+  margin: 16px 0 8px;
+}
+
+.elite-calc-output {
+  background: linear-gradient(135deg, #12141A 0%, #2B2B33 100%);
+  border: 1px solid rgba(247, 166, 0, 0.3);
+  border-radius: 24px;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  color: #FFFFFF;
+}
+
+.elite-calc-output small { font-size: 13px; font-weight: 700; color: var(--gold-light); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 8px; }
+.elite-calc-output .big-earn { font-family: 'Space Grotesk', sans-serif; font-size: 44px; font-weight: 800; color: #34D399; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; }
+.elite-calc-output .total-val { font-size: 15px; font-weight: 600; color: #E4E4E9; margin-bottom: 32px; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 16px; }
+
+/* Sections & Cards */
+.elite-section { padding: 90px 0; position: relative; }
+.elite-section-header { text-align: center; max-width: 700px; margin: 0 auto 64px; }
+.elite-section-header h2 { font-size: clamp(32px, 4vw, 46px); margin-bottom: 16px; }
+.elite-section-header p { color: var(--text-muted); font-size: 17px; line-height: 1.6; }
+
+.elite-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.elite-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+.elite-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 36px 32px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 0 12px 36px rgba(18, 18, 20, 0.05);
+}
+
+.elite-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--gold-primary);
+  box-shadow: 0 30px 60px rgba(194, 124, 0, 0.12), 0 0 30px rgba(247, 166, 0, 0.1);
+}
+
+.elite-card-icon {
+  width: 64px; height: 64px;
+  border-radius: 18px;
+  background: var(--warm-tint);
+  border: 1px solid rgba(247, 166, 0, 0.3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold-dark);
+  margin-bottom: 28px;
+  transition: all 0.3s;
+}
+
+.elite-card:hover .elite-card-icon {
+  background: var(--gold-gradient);
+  color: #12141A;
+  transform: scale(1.08);
+}
+
+.elite-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+.elite-card p { color: var(--text-muted); font-size: 15px; line-height: 1.7; margin: 0; }
+
+/* Image Asset Cards Showcase */
+.elite-asset-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 12px 36px rgba(18, 18, 20, 0.06);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.elite-asset-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 50px rgba(194, 124, 0, 0.15);
+}
+
+.elite-asset-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.elite-asset-body {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Trust Strip */
+.elite-strip { background: #FFFDF7; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 50px 0; text-align: center; }
+.elite-logos { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; margin-top: 24px; }
+.elite-logo-pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  padding: 12px 24px;
+  border-radius: 99px;
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(18, 18, 20, 0.03);
+}
+.elite-logo-pill svg { color: var(--gold-dark); }
+
+/* Banner CTA */
+.elite-banner {
+  background: linear-gradient(135deg, #12141A 0%, #1F222B 100%);
+  border: 1px solid rgba(247, 166, 0, 0.4);
+  border-radius: 36px;
+  padding: 80px 60px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin: 60px auto 120px;
+  color: #FFFFFF;
+  box-shadow: 0 30px 80px rgba(18, 18, 20, 0.2);
+}
+
+.elite-banner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(circle, rgba(247, 166, 0, 0.25), transparent 70%);
+  pointer-events: none;
+}
+
+@media (max-width: 968px) {
+  .elite-stats-ribbon { grid-template-columns: repeat(2, 1fr); }
+  .elite-calc-grid { grid-template-columns: 1fr; }
+  .elite-grid-3, .elite-grid-4 { grid-template-columns: 1fr; }
+  .elite-calc-box { padding: 28px; }
+  .elite-banner { padding: 48px 24px; }
+}
 `;
 
 export default function Home() {
   const [email, setEmail] = useState('');
-  const [amount, setAmount] = useState(250000);
-  const [rate, setRate] = useState(15);
+  const [amount, setAmount] = useState(500000);
+  const [rate, setRate] = useState(16);
   const fmt = (n) => '₦' + Math.round(n).toLocaleString('en-NG');
   const valid = amount >= 5000;
-  const earn = (amount * rate) / 100;
-  const principalPct = (amount / (amount + earn)) * 100;
-  const quick = [5000, 50000, 250000, 1000000];
+  const annualEarn = valid ? (amount * rate) / 100 : 0;
+  const quickVals = [25000, 250000, 1000000, 5000000];
   const navigate = useNavigate();
-  const onSignup = (e) => {
+
+  const handleSignup = (e) => {
     e.preventDefault();
     navigate('/register', { state: { email } });
   };
 
-  const trust = [
-    { label: 'Bravelion Holdings', icon: Shield },
-    { label: 'Paystack Secured', icon: CheckCircle },
-    { label: 'SEC-aligned KYC', icon: Shield },
-    { label: '0 Defaults Since 2023', icon: TrendingUp },
-  ];
-  const features = [
-    { icon: TrendingUp, title: 'Investments', desc: 'Fixed-return private credit deals from ₦5,000.' },
-    { icon: PieChart, title: 'Portfolio', desc: 'Track performance, allocation, and payouts in real time.' },
-    { icon: Wallet, title: 'Wallet', desc: 'Deposit via bank transfer or Paystack. Withdraw anytime.' },
-    { icon: Shield, title: 'Verified deals', desc: 'Every project vetted by Bravelion Capital.' },
-    { icon: Zap, title: 'Fixed returns', desc: '12–18% annual yield. Not signals — real credit.' },
-    { icon: Users, title: 'Referral', desc: 'Earn 1% of every investment from people you refer.' },
-  ];
-  const stats = [
-    { value: '89+', label: 'Countries served' },
-    { value: '13K+', label: 'Active investors' },
-    { value: '4.8', label: 'Avg. investor rating' },
-    { value: '0%', label: 'Default rate since 2023' },
-  ];
-  const steps = [
-    { n: '01', title: 'Register', desc: 'Create your free account with an email.' },
-    { n: '02', title: 'Verify KYC', desc: 'Upload your ID — done in under 24 hours.' },
-    { n: '03', title: 'Invest', desc: 'Fund your wallet, pick a deal, earn returns.' },
-  ];
-
   return (
     <PageShell theme='light' ticker>
       <style>{CSS}</style>
-      <div className='by'>
-        {/* Hero */}
-        <section className='by-hero'>
-          <div className='by-glow' aria-hidden='true' />
-          <div className='by-wrap by-hero-grid'>
-            <div className='by-rise'>
-              <span className='by-chip'><span className='by-dot' /> Verified investment marketplace</span>
-              <h1>Invest. Trade. <em>Build wealth.</em></h1>
-              <p className='by-sub'>
-                Direct access to vetted Nigerian private credit, real estate, and SME opportunities. Verified by Bravelion Capital. Starting at ₦5,000.
-              </p>
-              <form className='by-signup' onSubmit={onSignup}>
-                <input
-                  className='by-input'
-                  type='email'
-                  placeholder='Enter your email'
-                  aria-label='Email address'
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <button type='submit' className='by-btn by-btn--y'>Create free account</button>
-              </form>
-              <div className='by-alt'>
-                <Link to='/marketplace'>Browse opportunities <ArrowRight size={14} /></Link>
-                <Link to='/about'>How it works</Link>
-              </div>
+      <div className='elite-light-root'>
+        <div className='elite-ambient' />
+
+        {/* Hero Section */}
+        <section className='elite-hero'>
+          <div className='elite-container'>
+            <div className='elite-badge'>
+              <Sparkles size={15} />
+              <span>Institutional Private Credit &amp; Real Assets</span>
             </div>
-
-            <aside className='by-calc by-rise by-rise--2' aria-label='Returns calculator'>
-              <div className='by-calc-head'>See what you could earn <span>Fixed returns</span></div>
-
-              <label className='by-lbl' htmlFor='by-amount'>Investment amount</label>
-              <div className='by-amt'>
-                <span>₦</span>
-                <input
-                  id='by-amount'
-                  inputMode='numeric'
-                  value={amount ? amount.toLocaleString('en-NG') : ''}
-                  onChange={(e) => setAmount(Number(e.target.value.replace(/\D/g, '')) || 0)}
-                />
-              </div>
-              <div className='by-chips'>
-                {quick.map((q) => (
-                  <button key={q} type='button' className='by-qchip' aria-pressed={amount === q} onClick={() => setAmount(q)}>
-                    {fmt(q)}
-                  </button>
-                ))}
-              </div>
-              {!valid && <p className='by-warn'>Minimum investment is ₦5,000.</p>}
-
-              <div className='by-lbl'><span>Annual yield</span><b>{rate}%</b></div>
-              <input
-                className='by-range'
-                type='range'
-                min='12'
-                max='18'
-                step='0.5'
-                value={rate}
-                aria-label='Annual yield percentage'
-                onChange={(e) => setRate(Number(e.target.value))}
-              />
-
-              <div className='by-result'>
-                <div className='by-result-top'>
-                  <div>
-                    <small>Earnings in 12 months</small>
-                    <div className='by-earn'>+{fmt(valid ? earn : 0)}</div>
-                  </div>
-                  <div>
-                    <small style={{ textAlign: 'right' }}>Total value</small>
-                    <div className='by-total'>{fmt(valid ? amount + earn : 0)}</div>
-                  </div>
-                </div>
-                <div className='by-bar' aria-hidden='true'>
-                  <i style={{ width: `${valid ? principalPct : 100}%` }} />
-                  <i style={{ width: `${valid ? 100 - principalPct : 0}%` }} />
-                </div>
-                <div className='by-legend'><span>Your capital</span><span>Your return</span></div>
-              </div>
-
-              <Link to='/register' state={{ amount, email }} className='by-btn by-btn--y'>
-                Start with {fmt(valid ? amount : 5000)} <ArrowRight size={16} />
+            <h1 className='elite-title'>
+              Engineer Your Wealth With <span className='elite-gradient-text'>Elite Fixed Yields</span>
+            </h1>
+            <p>
+              Access rigorously vetted private credit, real estate development, and high-growth SME opportunities across Nigeria yielding up to 18% per annum.
+            </p>
+            <div className='elite-hero-cta'>
+              <Link to='/register' className='elite-btn elite-btn-gold'>
+                Start Investing Today <ArrowRight size={18} />
               </Link>
-              <p className='by-note'>Illustration only. Actual yield depends on the deal you choose.</p>
-            </aside>
-          </div>
-
-          <div className='by-wrap'>
-            <div className='by-trust'>
-              {trust.map(({ label, icon: Icon }) => (
-                <span key={label}><Icon size={16} /> {label}</span>
-              ))}
+              <Link to='/marketplace' className='elite-btn elite-btn-outline'>
+                Explore Active Deals
+              </Link>
             </div>
-          </div>
-        </section>
 
-        {/* Stats */}
-        <section className='by-stats'>
-          <div className='by-wrap by-stats-grid'>
-            {stats.map(({ value, label }) => (
-              <div key={label} className='by-stat'>
-                <b>{value}</b>
-                <span>{label}</span>
+            {/* Live Stats Ribbon */}
+            <div className='elite-stats-ribbon'>
+              <div className='elite-stat-card'>
+                <div className='label'>Total Capital Deployed</div>
+                <div className='value'>₦14.8B <span className='trend'>+24% YoY</span></div>
               </div>
-            ))}
+              <div className='elite-stat-card'>
+                <div className='label'>Average Annual Yield</div>
+                <div className='value'>16.4% <span className='trend'>Fixed</span></div>
+              </div>
+              <div className='elite-stat-card'>
+                <div className='label'>Default Rate Since Inception</div>
+                <div className='value'>0.00% <span className='trend'>Secure</span></div>
+              </div>
+              <div className='elite-stat-card'>
+                <div className='label'>Active Elite Investors</div>
+                <div className='value'>14,250+ <span className='trend'>Verified</span></div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Features */}
-        <section className='by-sec'>
-          <div className='by-wrap'>
-            <h2 className='by-title'>An entire investment <em>operating system</em></h2>
-            <p className='by-lede'>Everything in one place</p>
-            <div className='by-grid3'>
-              {features.map(({ icon: Icon, title, desc }) => (
-                <div key={title} className='by-card'>
-                  <div className='ic'><Icon size={22} /></div>
-                  <h3>{title}</h3>
-                  <p>{desc}</p>
+        {/* Interactive Wealth Calculator */}
+        <div className='elite-calc-wrapper'>
+          <div className='elite-calc-box'>
+            <div className='elite-calc-grid'>
+              <div>
+                <h3 className='elite-title' style={{ fontSize: '26px', marginBottom: '8px' }}>Compound Growth Simulator</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '15px', marginBottom: '32px' }}>
+                  Calculate your projected 12-month earnings across curated high-yield credit allocations.
+                </p>
+
+                <div className='elite-input-group'>
+                  <div className='elite-input-label'>
+                    <span>Principal Investment</span>
+                    <b>{fmt(amount)}</b>
+                  </div>
+                  <div className='elite-amount-box'>
+                    <span>₦</span>
+                    <input
+                      type='text'
+                      inputMode='numeric'
+                      value={amount ? amount.toLocaleString('en-NG') : ''}
+                      onChange={(e) => setAmount(Number(e.target.value.replace(/\D/g, '')) || 0)}
+                    />
+                  </div>
+                  <div className='elite-quick-chips'>
+                    {quickVals.map((q) => (
+                      <button
+                        key={q}
+                        type='button'
+                        className={`elite-chip ${amount === q ? 'active' : ''}`}
+                        onClick={() => setAmount(q)}
+                      >
+                        {fmt(q)}
+                      </button>
+                    ))}
+                  </div>
+                  {!valid && <p style={{ color: '#DC2626', fontSize: '13px', marginTop: '8px' }}>Minimum investment is ₦5,000.</p>}
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
-        {/* Steps */}
-        <section className='by-sec' style={{ paddingTop: 0 }}>
-          <div className='by-wrap'>
-            <h2 className='by-title'>Start investing in <em>under 5 minutes</em></h2>
-            <p className='by-lede'>3 simple steps</p>
-            <div className='by-steps'>
-              {steps.map(({ n, title, desc }) => (
-                <div key={n} className='by-step'>
-                  <div className='n'>{n}</div>
-                  <h3>{title}</h3>
-                  <p>{desc}</p>
+                <div className='elite-input-group' style={{ marginBottom: '0' }}>
+                  <div className='elite-input-label'>
+                    <span>Target Annual Yield</span>
+                    <b style={{ color: 'var(--gold-dark)' }}>{rate}% p.a.</b>
+                  </div>
+                  <input
+                    type='range'
+                    className='elite-slider'
+                    min='12'
+                    max='18'
+                    step='0.5'
+                    value={rate}
+                    onChange={(e) => setRate(Number(e.target.value))}
+                  />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--text-muted)' }}>
+                    <span>12% (Conservative)</span>
+                    <span>18% (Growth)</span>
+                  </div>
                 </div>
-              ))}
+              </div>
+
+              <div className='elite-calc-output'>
+                <div>
+                  <small>Projected 12-Month Net Returns</small>
+                  <div className='big-earn'>+{fmt(annualEarn)}</div>
+                  <div className='total-val'>
+                    <span>Total Portfolio Value:</span>
+                    <b style={{ fontFamily: 'Space Grotesk', fontSize: '18px', color: '#fff' }}>
+                      {fmt(valid ? amount + annualEarn : 0)}
+                    </b>
+                  </div>
+                </div>
+                <Link to='/register' state={{ amount, email }} className='elite-btn elite-btn-gold' style={{ width: '100%' }}>
+                  Deploy Capital Now <ArrowRight size={17} />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Trust Banner */}
+        <div className='elite-strip'>
+          <div className='elite-container'>
+            <p style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              Built with Institutional Standards &amp; Regulatory Alignment
+            </p>
+            <div className='elite-logos'>
+              <div className='elite-logo-pill'><Shield size={18} /> Bravelion Risk Engine</div>
+              <div className='elite-logo-pill'><CheckCircle size={18} /> Paystack Encrypted Gateway</div>
+              <div className='elite-logo-pill'><BadgeCheck size={18} /> SEC-Aligned Compliance</div>
+              <div className='elite-logo-pill'><Award size={18} /> 0% Default Record</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Why Bravelion Section */}
+        <section className='elite-section'>
+          <div className='elite-container'>
+            <div className='elite-section-header'>
+              <h2 className='elite-title'>The Bravelion Advantage</h2>
+              <p>We eliminate stock market volatility by backing recession-resistant private debt and asset-backed transactions.</p>
+            </div>
+            <div className='elite-grid-3'>
+              <div className='elite-card'>
+                <div className='elite-card-icon'><TrendingUp size={28} /></div>
+                <h3>Guaranteed Fixed Yields</h3>
+                <p>Earn predictable 12–18% annual returns secured by tangible underlying corporate assets and enforceable legal receivables.</p>
+              </div>
+              <div className='elite-card'>
+                <div className='elite-card-icon'><Shield size={28} /></div>
+                <h3>Rigorous Risk Vetting</h3>
+                <p>Every credit facility is subjected to a 7-tier institutional credit assessment by our senior underwriting partners.</p>
+              </div>
+              <div className='elite-card'>
+                <div className='elite-card-icon'><Zap size={28} /></div>
+                <h3>Low Barrier to Entry</h3>
+                <p>Gain institutional-grade access to private markets starting from just ₦5,000 with automated quarterly dividend payouts.</p>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className='by-cta'>
-          <div className='by-cta-box'>
-            <Sparkles size={32} color='#C27C00' style={{ marginBottom: 16 }} />
-            <h2 className='by-title'>Ready to start <em>building wealth</em>?</h2>
-            <p>Join thousands of Nigerian investors earning fixed returns on vetted opportunities.</p>
-            <div className='by-cta-btns'>
-              <Link to='/register' className='by-btn by-btn--y'>Create free account <ArrowRight size={16} /></Link>
-              <Link to='/marketplace' className='by-btn by-btn--g'>View live deals</Link>
+        {/* Curated Asset Classes with Professional Images */}
+        <section className='elite-section' style={{ background: '#FFFDF7' }}>
+          <div className='elite-container'>
+            <div className='elite-section-header'>
+              <h2 className='elite-title'>Curated Asset Classes</h2>
+              <p>Diversify your capital across high-demand sectors driving West Africa's economic transformation.</p>
+            </div>
+            <div className='elite-grid-3'>
+              <div className='elite-asset-card'>
+                <img
+                  src='https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80'
+                  alt='Private Credit & Banking'
+                  className='elite-asset-img'
+                />
+                <div className='elite-asset-body'>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--gold-dark)', fontWeight: 700, fontSize: '13px', marginBottom: '8px' }}>
+                    <Landmark size={16} /> PRIVATE CREDIT
+                  </div>
+                  <h3>Working Capital Facilities</h3>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '14.5px', lineHeight: '1.6', marginBottom: '20px', flex: 1 }}>
+                    Short-term inventory and receivable-backed credit lines extended to prime tier-1 distributors.
+                  </p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
+                    <span style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '15px' }}>Up to 18% p.a.</span>
+                    <Link to='/marketplace' style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'var(--gold-dark)', fontWeight: 700, textDecoration: 'none', fontSize: '14px' }}>
+                      Explore Deal <ArrowUpRight size={16} />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              <div className='elite-asset-card'>
+                <img
+                  src='https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80'
+                  alt='Real Estate Development'
+                  className='elite-asset-img'
+                />
+                <div className='elite-asset-body'>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--gold-dark)', fontWeight: 700, fontSize: '13px', marginBottom: '8px' }}>
+                    <Building2 size={16} /> REAL ESTATE
+                  </div>
+                  <h3>Commercial &amp; Residential</h3>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '14.5px', lineHeight: '1.6', marginBottom: '20px', flex: 1 }}>
+                    Co-invest in fully pre-sold residential developments and prime commercial real estate with escrow protection.
+                  </p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
+                    <span style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '15px' }}>Up to 16% p.a.</span>
+                    <Link to='/marketplace' style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'var(--gold-dark)', fontWeight: 700, textDecoration: 'none', fontSize: '14px' }}>
+                      Explore Deal <ArrowUpRight size={16} />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              <div className='elite-asset-card'>
+                <img
+                  src='https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=800&q=80'
+                  alt='SME Growth Financing'
+                  className='elite-asset-img'
+                />
+                <div className='elite-asset-body'>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--gold-dark)', fontWeight: 700, fontSize: '13px', marginBottom: '8px' }}>
+                    <Store size={16} /> SME FINANCING
+                  </div>
+                  <h3>Expansion-Stage Ventures</h3>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '14.5px', lineHeight: '1.6', marginBottom: '20px', flex: 1 }}>
+                    Fuel fast-growing Nigerian companies possessing verified cash flows and audited balance sheets.
+                  </p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
+                    <span style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '15px' }}>Up to 17% p.a.</span>
+                    <Link to='/marketplace' style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'var(--gold-dark)', fontWeight: 700, textDecoration: 'none', fontSize: '14px' }}>
+                      Explore Deal <ArrowUpRight size={16} />
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
+
+        {/* How It Works */}
+        <section className='elite-section'>
+          <div className='elite-container'>
+            <div className='elite-section-header'>
+              <h2 className='elite-title'>Seamless 4-Step Onboarding</h2>
+              <p>Establish your wealth portfolio and start earning within minutes.</p>
+            </div>
+            <div className='elite-grid-4'>
+              <div className='elite-card' style={{ textAlign: 'center' }}>
+                <div className='elite-card-icon' style={{ margin: '0 auto 24px' }}><UserPlus size={26} /></div>
+                <h3>1. Register</h3>
+                <p>Create your secure account in under 60 seconds.</p>
+              </div>
+              <div className='elite-card' style={{ textAlign: 'center' }}>
+                <div className='elite-card-icon' style={{ margin: '0 auto 24px' }}><BadgeCheck size={26} /></div>
+                <h3>2. Verify KYC</h3>
+                <p>Submit valid identification for instant compliance clearance.</p>
+              </div>
+              <div className='elite-card' style={{ textAlign: 'center' }}>
+                <div className='elite-card-icon' style={{ margin: '0 auto 24px' }}><Wallet size={26} /></div>
+                <h3>3. Fund Wallet</h3>
+                <p>Deposit securely via bank transfer or Paystack integration.</p>
+              </div>
+              <div className='elite-card' style={{ textAlign: 'center' }}>
+                <div className='elite-card-icon' style={{ margin: '0 auto 24px' }}><TrendingUp size={26} /></div>
+                <h3>4. Earn Returns</h3>
+                <p>Select your asset deals and watch your capital compound.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Final Conversion Banner */}
+        <div className='elite-container'>
+          <div className='elite-banner'>
+            <h2 className='elite-title' style={{ fontSize: 'clamp(32px, 4.5vw, 48px)', marginBottom: '16px' }}>
+              Ready to Accelerate Your Wealth?
+            </h2>
+            <p style={{ color: '#9BA1B0', fontSize: '18px', maxWidth: '600px', margin: '0 auto 36px' }}>
+              Join over 14,000 smart investors securing dependable fixed returns with Bravelion.
+            </p>
+            <form onSubmit={handleSignup} style={{ display: 'flex', gap: '12px', maxWidth: '480px', margin: '0 auto', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <input
+                type='email'
+                required
+                placeholder='Enter your email address'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{
+                  flex: 1,
+                  minWidth: '260px',
+                  height: '54px',
+                  padding: '0 20px',
+                  borderRadius: '14px',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1.5px solid rgba(255, 255, 255, 0.2)',
+                  color: '#fff',
+                  fontSize: '15px',
+                  outline: 'none',
+                }}
+              />
+              <button type='submit' className='elite-btn elite-btn-gold'>
+                Get Started Free <ArrowRight size={17} />
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </PageShell>
   );

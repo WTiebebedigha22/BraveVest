@@ -6,43 +6,88 @@ const INITIAL_MARKETS = [
   { symbol: 'EUR/NGN', price: 1672.85, change: 0.24, prefix: '₦' },
   { symbol: 'CAD/NGN', price: 1098.42, change: 0.08, prefix: '₦' },
   { symbol: 'ZAR/NGN', price: 84.91, change: -0.31, prefix: '₦' },
+  { symbol: 'BTC/USD', price: 92450.00, change: 1.45, prefix: '$' },
+  { symbol: 'ETH/USD', price: 3410.20, change: -0.85, prefix: '$' },
   { symbol: 'AAPL', price: 232.14, change: 0.56, prefix: '$' },
   { symbol: 'TSLA', price: 342.87, change: 2.14, prefix: '$' },
   { symbol: 'MSFT', price: 428.65, change: 0.42, prefix: '$' },
   { symbol: 'NVDA', price: 138.92, change: 1.87, prefix: '$' },
-  { symbol: 'GOOGL', price: 178.34, change: 0.29, prefix: '$' },
-  { symbol: 'AMZN', price: 213.56, change: 0.63, prefix: '$' },
 ];
 
 export default function TickerBar() {
   const [markets, setMarkets] = useState(INITIAL_MARKETS);
   const [flashMap, setFlashMap] = useState({});
-  const initialRef = useRef(INITIAL_MARKETS);
+  const prevPricesRef = useRef({});
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setMarkets((prev) =>
-        prev.map((m, idx) => {
-          const move = (Math.random() - 0.49) * m.price * 0.0006;
-          if (Math.abs(move) < 0.001) return m;
+    let isMounted = true;
+    const fetchLiveRates = async () => {
+      try {
+        const [fxRes, cryptoRes] = await Promise.all([
+          fetch('https://open.er-api.com/v6/latest/USD'),
+          fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true')
+        ]);
 
-          const newPrice = Math.max(0.01, m.price + move);
-          const origPrice = initialRef.current[idx].price;
-          const origChange = initialRef.current[idx].change;
-          const newChange = ((newPrice - origPrice) / origPrice) * 100 + origChange;
-          const direction = move > 0 ? 'up' : 'down';
+        if (!fxRes.ok) throw new Error('FX API error');
+        const fxData = await fxRes.json();
+        const usdToNgn = fxData.rates?.NGN || 1547.32;
+        const usdToGbp = fxData.rates?.GBP || 0.79;
+        const usdToEur = fxData.rates?.EUR || 0.92;
+        const usdToCad = fxData.rates?.CAD || 1.38;
+        const usdToZar = fxData.rates?.ZAR || 18.20;
 
-          setFlashMap((f) => ({ ...f, [m.symbol]: direction }));
-          setTimeout(() => {
-            setFlashMap((f) => ({ ...f, [m.symbol]: null }));
-          }, 600);
+        let btcPrice = 92450, btcChange = 1.45;
+        let ethPrice = 3410, ethChange = -0.85;
 
-          return { ...m, price: newPrice, change: newChange };
-        })
-      );
-    }, 2500);
+        if (cryptoRes.ok) {
+          const cryptoData = await cryptoRes.json();
+          if (cryptoData.bitcoin) {
+            btcPrice = cryptoData.bitcoin.usd;
+            btcChange = cryptoData.bitcoin.usd_24h_change || 1.45;
+          }
+          if (cryptoData.ethereum) {
+            ethPrice = cryptoData.ethereum.usd;
+            ethChange = cryptoData.ethereum.usd_24h_change || -0.85;
+          }
+        }
 
-    return () => clearInterval(timer);
+        const updatedMarkets = [
+          { symbol: 'USD/NGN', price: usdToNgn, change: 0.18, prefix: '₦' },
+          { symbol: 'GBP/NGN', price: usdToNgn / usdToGbp, change: -0.12, prefix: '₦' },
+          { symbol: 'EUR/NGN', price: usdToNgn / usdToEur, change: 0.24, prefix: '₦' },
+          { symbol: 'CAD/NGN', price: usdToNgn / usdToCad, change: 0.08, prefix: '₦' },
+          { symbol: 'ZAR/NGN', price: usdToNgn / usdToZar, change: -0.31, prefix: '₦' },
+          { symbol: 'BTC/USD', price: btcPrice, change: btcChange, prefix: '$' },
+          { symbol: 'ETH/USD', price: ethPrice, change: ethChange, prefix: '$' },
+          { symbol: 'AAPL', price: 232.14, change: 0.56, prefix: '$' },
+          { symbol: 'TSLA', price: 342.87, change: 2.14, prefix: '$' },
+          { symbol: 'MSFT', price: 428.65, change: 0.42, prefix: '$' },
+          { symbol: 'NVDA', price: 138.92, change: 1.87, prefix: '$' },
+        ];
+
+        if (isMounted) {
+          updatedMarkets.forEach((m) => {
+            const oldPrice = prevPricesRef.current[m.symbol];
+            if (oldPrice !== undefined && oldPrice !== m.price) {
+              const dir = m.price > oldPrice ? 'up' : 'down';
+              setFlashMap((f) => ({ ...f, [m.symbol]: dir }));
+              setTimeout(() => setFlashMap((f) => ({ ...f, [m.symbol]: null })), 800);
+            }
+            prevPricesRef.current[m.symbol] = m.price;
+          });
+          setMarkets(updatedMarkets);
+        }
+      } catch (err) {
+        console.warn('Market API fallback active');
+      }
+    };
+
+    fetchLiveRates();
+    const interval = setInterval(fetchLiveRates, 45000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   const items = [...markets, ...markets, ...markets];
@@ -50,50 +95,52 @@ export default function TickerBar() {
   return (
     <>
       <style>{`
-        @keyframes bybitMarquee {
+        @keyframes singleLineMarquee {
           0% { transform: translateX(0%); }
           100% { transform: translateX(-33.333%); }
         }
-        .bybit-ticker-track {
+        .ticker-track-single {
           display: flex;
           align-items: center;
           width: max-content;
-          animation: bybitMarquee 38s linear infinite;
+          animation: singleLineMarquee 36s linear infinite;
+          will-change: transform;
         }
-        .bybit-ticker-container:hover .bybit-ticker-track {
+        .ticker-wrap-single:hover .ticker-track-single {
           animation-play-state: paused;
         }
+        .flash-pulse-up { background: rgba(14, 159, 91, 0.15) !important; }
+        .flash-pulse-down { background: rgba(220, 38, 38, 0.15) !important; }
       `}</style>
-      
+
       <div 
-        className="bybit-ticker-container relative w-full h-[40px] bg-[#0f141c] border-t border-b border-[#1e2633] overflow-hidden font-sans select-none"
-        role="marquee" 
+        className="ticker-wrap-single relative w-full h-[42px] bg-gradient-to-r from-white via-[#FCFCFD] to-white border-b border-[#E4E4E9] overflow-hidden font-sans select-none shadow-[inset_0_1px_3px_rgba(0,0,0,0.02)]"
+        role="marquee"
         aria-label="Live Market Ticker"
       >
-        <div className="absolute top-0 bottom-0 left-0 w-[50px] z-10 pointer-events-none bg-gradient-to-r from-[#0f141c] to-transparent" />
-        <div className="absolute top-0 bottom-0 right-0 w-[50px] z-10 pointer-events-none bg-gradient-to-l from-[#0f141c] to-transparent" />
-        
-        <div className="bybit-ticker-track h-full">
+        {/* Glowing fade masks on both ends */}
+        <div className="absolute top-0 bottom-0 left-0 w-12 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent" />
+        <div className="absolute top-0 bottom-0 right-0 w-12 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent" />
+
+        <div className="ticker-track-single h-full">
           {items.map((m, index) => {
             const isUp = m.change >= 0;
             const flash = flashMap[m.symbol];
-            const flashBg = flash === 'up' ? 'bg-[rgba(0,176,124,0.18)]' : flash === 'down' ? 'bg-[rgba(246,70,93,0.18)]' : 'bg-transparent';
-            const formattedPrice = m.price.toLocaleString('en-US', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            });
+            const flashClass = flash === 'up' ? 'flash-pulse-up' : flash === 'down' ? 'flash-pulse-down' : '';
 
             return (
               <div 
-                key={`${m.symbol}-${index}`} 
-                className={`flex items-center gap-[8px] px-[18px] h-full border-r border-[#171d26] text-[13px] transition-colors duration-250 ${flashBg}`}
+                key={`${m.symbol}-${index}`}
+                className={`flex items-center gap-3 px-5 h-full border-r border-[#EEEEF2] text-[13px] whitespace-nowrap transition-colors duration-300 ${flashClass}`}
               >
-                <span className="font-semibold text-[#848e9c] tracking-[0.3px]">{m.symbol}</span>
-                <span className="font-semibold text-white tracking-[-0.2px]">
-                  <span className="text-[11px] text-[#848e9c] mr-[1px]">{m.prefix}</span>
-                  {formattedPrice}
+                <span className="font-bold text-[#121214] tracking-tight">{m.symbol}</span>
+                <span className="font-semibold text-[#33333B]">
+                  <span className="text-[11px] text-[#6B6B76] mr-0.5 font-normal">{m.prefix}</span>
+                  {m.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
-                <span className={`text-[11px] font-semibold px-[6px] py-[2px] rounded-[4px] ${isUp ? 'text-[#00b07c] bg-[rgba(0,176,124,0.12)]' : 'text-[#f6465d] bg-[rgba(246,70,93,0.12)]'}`}>
+                <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold tracking-wide ${
+                  isUp ? 'text-[#0E9F5B] bg-[#0E9F5B]/10' : 'text-[#DC2626] bg-[#DC2626]/10'
+                }`}>
                   {isUp ? '+' : ''}{m.change.toFixed(2)}%
                 </span>
               </div>

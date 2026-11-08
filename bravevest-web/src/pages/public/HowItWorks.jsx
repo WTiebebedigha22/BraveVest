@@ -1,107 +1,346 @@
 import { Link } from 'react-router-dom';
-import { UserPlus, Search, ShieldCheck, TrendingUp, ArrowRight, CheckCircle2 } from 'lucide-react';
+import {
+  UserPlus, BadgeCheck, Wallet, TrendingUp, ArrowRight,
+  Shield, CheckCircle, Zap, Sparkles, Clock, Lock, Award,
+  Percent, Users, FileCheck,
+} from 'lucide-react';
 import PageShell from '@/components/shared/PageShell';
 
-const STEPS = [
-  { icon: UserPlus, title: 'Create an Account', desc: 'Sign up in minutes. Verify your identity to unlock full platform features.' },
-  { icon: Search, title: 'Browse Markets', desc: 'Explore vetted private credit, real estate, and SME deals across Nigeria.' },
-  { icon: ShieldCheck, title: 'Fund Your Wallet', desc: 'Deposit Naira or USD directly into your BraveVest wallet via bank transfer.' },
-  { icon: TrendingUp, title: 'Invest & Earn', desc: 'Select a deal, invest your capital, and watch your fixed returns accrue.' },
-];
-
-const BENEFITS = [
-  'Diversified access to real-world assets',
-  'Fixed, contractually-defined returns',
-  'Institutional-grade underwriting',
-  'No hidden fees or complex derivatives',
-];
-
 const CSS = `
-.hw { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-card2:#EDEDF0; --by-line:#E4E4E9; --by-text:#121214; --by-mute:#6B6B76; --by-yellow:#F7A600; --by-amber:#C27C00; --by-green:#0E9F5B;
-  background:var(--by-bg); color:var(--by-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; }
-.hw * { box-sizing:border-box; }
-.hw-wrap { max-width:1200px; margin:0 auto; padding:0 20px; }
-.hw-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; height:52px; padding:0 32px; border-radius:8px; font-weight:600; font-size:15px; text-decoration:none; background:var(--by-yellow); color:#121214; transition:background .15s; }
-.hw-btn:hover { background:#FFB82E; }
-.hw-btn:focus-visible { outline:2px solid #121214; outline-offset:2px; }
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
 
-.hw-hero { position:relative; overflow:hidden; padding:88px 0 72px; }
-.hw-glow { position:absolute; inset:0; pointer-events:none; background:radial-gradient(600px 360px at 80% 0%, rgba(247,166,0,.2), transparent 70%); }
-.hw-glow::after { content:''; position:absolute; inset:0; background-image:linear-gradient(var(--by-line) 1px, transparent 1px), linear-gradient(90deg, var(--by-line) 1px, transparent 1px); background-size:56px 56px; opacity:.45;
-  -webkit-mask-image:radial-gradient(ellipse at 75% 0%, #000 0%, transparent 65%); mask-image:radial-gradient(ellipse at 75% 0%, #000 0%, transparent 65%); }
-.hw-hero .hw-wrap { position:relative; }
-.hw-chip { display:inline-flex; padding:6px 12px; border-radius:6px; background:var(--by-card); border:1px solid var(--by-line); font-size:13px; font-weight:600; color:var(--by-amber); }
-.hw h1 { font-size:clamp(40px,6.4vw,72px); font-weight:800; line-height:1.05; letter-spacing:-0.04em; margin:20px 0 20px; max-width:820px; }
-.hw h1 em { font-style:normal; background:linear-gradient(transparent 62%, rgba(247,166,0,.6) 62%) no-repeat; background-size:0 100%; animation:hw-mark .9s .4s cubic-bezier(.2,.8,.2,1) forwards; }
-@keyframes hw-mark { to { background-size:100% 100%; } }
-@media (prefers-reduced-motion:reduce) { .hw h1 em { animation:none; background-size:100% 100%; } }
-.hw-sub { font-size:clamp(16px,1.8vw,19px); color:var(--by-mute); line-height:1.65; max-width:600px; margin:0; }
+.elite-light-root {
+  --bg-primary: #FCFBFA;
+  --bg-surface: #FFFFFF;
+  --bg-surface-glass: rgba(255, 255, 255, 0.85);
+  --border-color: rgba(194, 124, 0, 0.15);
+  --gold-primary: #F7A600;
+  --gold-dark: #C27C00;
+  --gold-light: #FFC94D;
+  --gold-gradient: linear-gradient(135deg, #FFC94D 0%, #F7A600 50%, #C27C00 100%);
+  --gold-text-gradient: linear-gradient(135deg, #12141A 20%, #C27C00 70%, #F7A600 100%);
+  --text-main: #12141A;
+  --text-muted: #5A5F73;
+  --success-green: #0E9F5B;
+  --warm-tint: #FFF8E6;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  overflow-x: hidden;
+  position: relative;
+}
 
-.hw-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; padding-bottom:96px; }
-.hw-step { background:var(--by-card); border:1px solid transparent; border-radius:16px; padding:28px 24px; transition:border-color .15s, background .15s; }
-.hw-step:hover { border-color:var(--by-yellow); background:var(--by-card2); }
-.hw-step-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:28px; }
-.hw-ic { width:44px; height:44px; border-radius:10px; background:rgba(247,166,0,.16); color:var(--by-amber); display:flex; align-items:center; justify-content:center; }
-.hw-n { font-size:44px; font-weight:800; line-height:1; letter-spacing:-0.04em; color:var(--by-amber); }
-.hw-step h3 { font-size:18px; font-weight:700; margin:0 0 8px; }
-.hw-step p { font-size:14px; color:var(--by-mute); line-height:1.65; margin:0; }
+.elite-light-root * { box-sizing: border-box; }
+.elite-container { max-width: 1240px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 2; }
 
-.hw-deep { background:var(--by-card); padding:96px 0; }
-.hw-deep-grid { display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; }
-.hw-title { font-size:clamp(28px,3.6vw,40px); font-weight:800; letter-spacing:-0.025em; line-height:1.1; margin:16px 0 20px; }
-.hw-p { font-size:16px; color:var(--by-mute); line-height:1.7; margin:0 0 32px; max-width:520px; }
-.hw-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:16px; }
-.hw-list li { display:flex; align-items:center; gap:12px; font-size:15px; font-weight:600; }
-.hw-list svg { color:var(--by-green); flex:none; }
+.elite-ambient {
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 1100px; height: 700px;
+  background: radial-gradient(circle, rgba(247, 166, 0, 0.14) 0%, rgba(252, 251, 250, 0) 70%);
+  z-index: 1; pointer-events: none;
+}
 
-.hw-deal { background:#fff; border:1px solid var(--by-line); border-radius:20px; padding:32px; box-shadow:0 24px 60px -20px rgba(18,18,20,.18); }
-.hw-deal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:13px; color:var(--by-mute); font-weight:500; }
-.hw-deal-head span { color:var(--by-green); background:rgba(14,159,91,.1); padding:4px 10px; border-radius:6px; font-size:12px; font-weight:600; }
-.hw-deal h3 { font-size:26px; font-weight:800; letter-spacing:-0.02em; margin:0 0 24px; }
-.hw-row { display:flex; justify-content:space-between; align-items:center; padding:16px 0; border-top:1px solid var(--by-line); font-size:15px; color:var(--by-mute); }
-.hw-row b { color:var(--by-text); font-weight:700; font-variant-numeric:tabular-nums; }
-.hw-row b.g { color:var(--by-green); font-size:20px; }
-.hw-badge { color:var(--by-amber)!important; background:rgba(247,166,0,.16); padding:2px 10px; border-radius:6px; }
-.hw-prog { margin:20px 0 28px; }
-.hw-prog-top { display:flex; justify-content:space-between; font-size:12px; color:var(--by-mute); margin-bottom:8px; }
-.hw-bar { height:8px; border-radius:99px; background:var(--by-line); overflow:hidden; }
-.hw-bar i { display:block; width:72%; height:100%; background:var(--by-yellow); border-radius:99px; }
-.hw-deal .hw-btn { width:100%; }
+.elite-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; letter-spacing: -0.03em; }
+.elite-gradient-text { background: var(--gold-text-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-.hw-cta { padding:96px 20px; }
-.hw-cta-box { max-width:1200px; margin:0 auto; border-radius:24px; padding:72px 24px; text-align:center; background:linear-gradient(135deg,#FFF1CC 0%,#F5F5F7 65%); border:1px solid var(--by-line); }
-.hw-cta-box h2 { font-size:clamp(28px,3.6vw,40px); font-weight:800; letter-spacing:-0.025em; margin:0 0 12px; }
-.hw-cta-box p { color:var(--by-mute); font-size:16px; margin:0 0 32px; }
+.elite-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 10px; height: 54px; padding: 0 32px;
+  border-radius: 14px; font-weight: 700; font-size: 15px;
+  text-decoration: none; cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1.5px solid transparent; white-space: nowrap;
+}
+.elite-btn:hover { transform: translateY(-3px); }
+.elite-btn-gold { background: var(--gold-gradient); color: #12141A; box-shadow: 0 16px 32px -10px rgba(247, 166, 0, 0.45); }
+.elite-btn-gold:hover { filter: brightness(1.05); box-shadow: 0 20px 40px -8px rgba(247, 166, 0, 0.65); }
+.elite-btn-outline { background: #FFFFFF; color: var(--text-main); border-color: rgba(18, 20, 26, 0.15); box-shadow: 0 4px 12px rgba(18, 18, 20, 0.04); }
+.elite-btn-outline:hover { background: var(--warm-tint); border-color: var(--gold-primary); color: var(--gold-dark); }
 
-@media (max-width:960px) { .hw-steps { grid-template-columns:repeat(2,1fr); } .hw-deep-grid { grid-template-columns:1fr; gap:40px; } }
-@media (max-width:560px) { .hw-hero { padding:56px 0 48px; } .hw-steps { grid-template-columns:1fr; padding-bottom:64px; } .hw-deep, .hw-cta { padding:64px 20px; } .hw-deep .hw-wrap { padding:0; } .hw-deep-grid { padding:0 20px; } }
+/* ── HERO with image ── */
+.elite-hero-hiw {
+  position: relative;
+  padding: 120px 0 130px;
+  text-align: center;
+  color: #FFFFFF;
+  background:
+    linear-gradient(rgba(18, 18, 20, 0.72), rgba(18, 18, 20, 0.85)),
+    url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+  overflow: hidden;
+}
+.elite-hero-hiw h1 {
+  font-size: clamp(40px, 6vw, 68px);
+  line-height: 1.08;
+  max-width: 900px;
+  margin: 0 auto 24px;
+  color: #FFFFFF;
+}
+.elite-hero-hiw h1 .elite-gradient-text {
+  background: linear-gradient(135deg, #FFC94D 0%, #F7A600 50%, #FFE29A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.elite-hero-hiw p {
+  font-size: clamp(17px, 2vw, 20px);
+  color: #E4E4E9;
+  max-width: 720px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+/* Outline button reads on dark hero */
+.elite-hero-hiw .elite-btn-outline {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+}
+.elite-hero-hiw .elite-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--gold-primary);
+  color: var(--gold-light);
+}
+
+.elite-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 18px; border-radius: 99px;
+  background: rgba(247, 166, 0, 0.2);
+  border: 1px solid rgba(247, 166, 0, 0.5);
+  color: #FFC94D;
+  font-size: 13.5px; font-weight: 700;
+  margin-bottom: 28px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 30px rgba(247, 166, 0, 0.2);
+}
+
+.elite-section { padding: 90px 0; position: relative; }
+.elite-section-alt { background: #FFFDF7; }
+.elite-section-header { text-align: center; max-width: 700px; margin: 0 auto 64px; }
+.elite-section-header h2 { font-size: clamp(32px, 4vw, 46px); margin: 0 0 16px; }
+.elite-section-header p { color: var(--text-muted); font-size: 17px; line-height: 1.6; margin: 0; }
+
+/* Steps Timeline */
+.elite-timeline {
+  position: relative;
+  display: grid; gap: 32px;
+  max-width: 900px; margin: 0 auto;
+}
+.elite-timeline::before {
+  content: '';
+  position: absolute;
+  left: 48px; top: 60px; bottom: 60px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--gold-primary) 0%, var(--gold-light) 50%, var(--gold-primary) 100%);
+  opacity: 0.4;
+}
+
+.elite-step {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 24px;
+  align-items: flex-start;
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 32px;
+  transition: all 0.3s;
+  box-shadow: 0 12px 36px rgba(18, 18, 20, 0.05);
+}
+.elite-step:hover { border-color: var(--gold-primary); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(194, 124, 0, 0.1); }
+.elite-step-num {
+  width: 72px; height: 72px; border-radius: 20px;
+  background: var(--gold-gradient); color: #12141A;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px; font-weight: 800;
+  box-shadow: 0 12px 24px rgba(247, 166, 0, 0.3);
+  flex-shrink: 0;
+}
+.elite-step-body h3 { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; margin: 0 0 8px; }
+.elite-step-body .step-tag { display: inline-block; padding: 3px 10px; background: var(--warm-tint); border: 1px solid rgba(247, 166, 0, 0.2); border-radius: 99px; font-size: 11px; font-weight: 700; color: var(--gold-dark); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+.elite-step-body p { color: var(--text-muted); font-size: 15px; line-height: 1.7; margin: 0 0 16px; }
+.elite-step-bullets { display: flex; flex-direction: column; gap: 8px; padding: 0; margin: 0; list-style: none; }
+.elite-step-bullets li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-main); }
+.elite-step-bullets svg { color: var(--success-green); flex-shrink: 0; margin-top: 3px; }
+
+/* Feature Grid */
+.elite-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.elite-card {
+  background: #FFFFFF; border: 1px solid var(--border-color);
+  border-radius: 24px; padding: 36px 32px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 12px 36px rgba(18, 18, 20, 0.05);
+}
+.elite-card:hover { transform: translateY(-8px); border-color: var(--gold-primary); box-shadow: 0 30px 60px rgba(194, 124, 0, 0.12), 0 0 30px rgba(247, 166, 0, 0.1); }
+.elite-card-icon {
+  width: 64px; height: 64px; border-radius: 18px;
+  background: var(--warm-tint); border: 1px solid rgba(247, 166, 0, 0.3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold-dark); margin-bottom: 24px; transition: all 0.3s;
+}
+.elite-card:hover .elite-card-icon { background: var(--gold-gradient); color: #12141A; transform: scale(1.08); }
+.elite-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; margin: 0 0 10px; }
+.elite-card p { color: var(--text-muted); font-size: 15px; line-height: 1.65; margin: 0; }
+
+/* FAQ-style details */
+.elite-faq { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+.elite-faq-item {
+  background: #FFFFFF; border: 1px solid var(--border-color);
+  border-radius: 16px; padding: 24px 28px;
+  transition: all 0.2s;
+}
+.elite-faq-item:hover { border-color: var(--gold-primary); }
+.elite-faq-item summary { cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+.elite-faq-item summary::-webkit-details-marker { display: none; }
+.elite-faq-item summary::after { content: '+'; font-size: 24px; color: var(--gold-dark); transition: transform 0.2s; }
+.elite-faq-item[open] summary::after { content: '−'; }
+.elite-faq-item p { color: var(--text-muted); font-size: 15px; line-height: 1.7; margin: 16px 0 0; }
+
+.elite-banner {
+  background: linear-gradient(135deg, #12141A 0%, #1F222B 100%);
+  border: 1px solid rgba(247, 166, 0, 0.4);
+  border-radius: 36px; padding: 72px 48px;
+  text-align: center; position: relative; overflow: hidden;
+  margin: 60px auto 120px; color: #FFFFFF;
+  box-shadow: 0 30px 80px rgba(18, 18, 20, 0.2);
+}
+.elite-banner::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(circle, rgba(247, 166, 0, 0.25), transparent 70%);
+  pointer-events: none;
+}
+.elite-banner h2 { font-size: clamp(32px, 4.5vw, 48px); margin: 0 0 16px; color: #FFFFFF; }
+.elite-banner p { color: #9BA1B0; font-size: 18px; max-width: 600px; margin: 0 auto 36px; }
+
+@media (max-width: 968px) {
+  .elite-hero-hiw { padding: 72px 0 90px; }
+  .elite-grid-3 { grid-template-columns: 1fr; }
+  .elite-timeline::before { display: none; }
+  .elite-step { grid-template-columns: 1fr; }
+  .elite-step-num { margin-bottom: 8px; }
+  .elite-banner { padding: 48px 24px; }
+}
 `;
 
 export default function HowItWorks() {
   return (
-    <PageShell theme='light'>
+    <PageShell theme='light' ticker>
       <style>{CSS}</style>
-      <div className='hw'>
-        <section className='hw-hero'>
-          <div className='hw-glow' aria-hidden='true' />
-          <div className='hw-wrap'>
-            <span className='hw-chip'>How It Works</span>
-            <h1>Your journey to <em>fixed returns.</em></h1>
-            <p className='hw-sub'>
-              BraveVest bridges the gap between discerning investors and Africa's most resilient private credit opportunities.
+      <div className='elite-light-root'>
+        <div className='elite-ambient' />
+
+        {/* HERO with image background */}
+        <section className='elite-hero-hiw'>
+          <div className='elite-container'>
+            <div className='elite-badge'>
+              <Sparkles size={15} />
+              <span>How BraveVest Works</span>
+            </div>
+            <h1 className='elite-title'>
+              From Sign-Up to <span className='elite-gradient-text'>Fixed Returns</span> in Under 5 Minutes
+            </h1>
+            <p>
+              Four steps to start earning 12–18% annual yield on vetted, collateralized private credit opportunities.
             </p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link to='/register' className='elite-btn elite-btn-gold'>
+                Create Free Account <ArrowRight size={17} />
+              </Link>
+              <Link to='/marketplace' className='elite-btn elite-btn-outline'>
+                Browse Deals
+              </Link>
+            </div>
           </div>
         </section>
 
-        <section>
-          <div className='hw-wrap'>
-            <div className='hw-steps'>
-              {STEPS.map(({ icon: Icon, title, desc }, i) => (
-                <div key={title} className='hw-step'>
-                  <div className='hw-step-top'>
-                    <div className='hw-ic'><Icon size={22} /></div>
-                    <div className='hw-n'>{i + 1}</div>
-                  </div>
+        {/* Steps Timeline */}
+        <section className='elite-section'>
+          <div className='elite-container'>
+            <div className='elite-section-header'>
+              <h2 className='elite-title'>The <span className='elite-gradient-text'>4-Step Process</span></h2>
+              <p>Everything you need to know to deploy capital and start earning.</p>
+            </div>
+
+            <div className='elite-timeline'>
+              <div className='elite-step'>
+                <div className='elite-step-num'>01</div>
+                <div className='elite-step-body'>
+                  <span className='step-tag'>60 Seconds</span>
+                  <h3>Create your account</h3>
+                  <p>Sign up with your email address. No paperwork, no waiting room. Your account is live immediately.</p>
+                  <ul className='elite-step-bullets'>
+                    <li><CheckCircle size={16} /> Email + password signup — 3 fields only</li>
+                    <li><CheckCircle size={16} /> 2FA-protected login for all sessions</li>
+                    <li><CheckCircle size={16} /> No deposit required to browse</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className='elite-step'>
+                <div className='elite-step-num'>02</div>
+                <div className='elite-step-body'>
+                  <span className='step-tag'>Under 24 Hours</span>
+                  <h3>Complete KYC verification</h3>
+                  <p>Upload a government ID and a selfie. Our team reviews and approves in under 24 hours (usually 2–4 hours).</p>
+                  <ul className='elite-step-bullets'>
+                    <li><CheckCircle size={16} /> NIN, driver's license, or passport accepted</li>
+                    <li><CheckCircle size={16} /> Proof of address + liveness selfie</li>
+                    <li><CheckCircle size={16} /> SEC-aligned compliance review</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className='elite-step'>
+                <div className='elite-step-num'>03</div>
+                <div className='elite-step-body'>
+                  <span className='step-tag'>Instant</span>
+                  <h3>Fund your wallet</h3>
+                  <p>Deposit via bank transfer (free) or Paystack card (1.5% fee). Funds reflect in under 5 minutes.</p>
+                  <ul className='elite-step-bullets'>
+                    <li><CheckCircle size={16} /> Bank transfer — instant, no fees</li>
+                    <li><CheckCircle size={16} /> Paystack — card, 1.5% processing fee</li>
+                    <li><CheckCircle size={16} /> Segregated custodian accounts</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className='elite-step'>
+                <div className='elite-step-num'>04</div>
+                <div className='elite-step-body'>
+                  <span className='step-tag'>Compounding</span>
+                  <h3>Invest and earn</h3>
+                  <p>Browse vetted opportunities, select your deal, and watch your capital compound with fixed quarterly returns.</p>
+                  <ul className='elite-step-bullets'>
+                    <li><CheckCircle size={16} /> Minimum investment from ₦5,000</li>
+                    <li><CheckCircle size={16} /> Fixed 12–18% annual yields</li>
+                    <li><CheckCircle size={16} /> Quarterly payouts, auto-credited</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* What you get */}
+        <section className='elite-section elite-section-alt'>
+          <div className='elite-container'>
+            <div className='elite-section-header'>
+              <h2 className='elite-title'>What You Get <span className='elite-gradient-text'>As an Investor</span></h2>
+              <p>Every account includes the full BraveVest platform — no tiers, no upsells.</p>
+            </div>
+            <div className='elite-grid-3'>
+              {[
+                { icon: Shield, title: 'Asset-backed deals', desc: 'Every investment is collateralized. Your capital is protected by real assets, not promises.' },
+                { icon: Percent, title: 'Fixed 12–18% yields', desc: 'Predictable returns, paid quarterly. No trading, no speculation, no volatility.' },
+                { icon: Wallet, title: 'Instant withdrawals', desc: 'Withdraw returns to your KYC-verified bank account in 1 business day. No withdrawal fees.' },
+                { icon: Users, title: 'Diversified portfolio', desc: 'Spread capital across real estate, energy, agri, and SME deals — starting at ₦5,000 each.' },
+                { icon: FileCheck, title: 'Full transparency', desc: 'Every deal, payout, and fee visible in your dashboard in real time. No hidden charges.' },
+                { icon: Clock, title: '24-hour KYC', desc: 'Most investors are approved in under 4 hours. Start investing the same day.' },
+              ].map(({ icon: Icon, title, desc }) => (
+                <div key={title} className='elite-card'>
+                  <div className='elite-card-icon'><Icon size={26} /></div>
                   <h3>{title}</h3>
                   <p>{desc}</p>
                 </div>
@@ -110,43 +349,45 @@ export default function HowItWorks() {
           </div>
         </section>
 
-        <section className='hw-deep'>
-          <div className='hw-wrap hw-deep-grid'>
-            <div>
-              <span className='hw-chip' style={{ background: '#fff' }}>Why BraveVest</span>
-              <h2 className='hw-title'>A better way to build your portfolio.</h2>
-              <p className='hw-p'>
-                Traditional savings accounts erode your wealth. Equities are volatile. BraveVest offers a third path: fixed-income private credit, backed by real assets.
-              </p>
-              <ul className='hw-list'>
-                {BENEFITS.map((b) => (
-                  <li key={b}><CheckCircle2 size={20} /> {b}</li>
-                ))}
-              </ul>
+        {/* FAQ */}
+        <section className='elite-section'>
+          <div className='elite-container'>
+            <div className='elite-section-header'>
+              <h2 className='elite-title'>Common <span className='elite-gradient-text'>Questions</span></h2>
+              <p>Quick answers to what investors ask most.</p>
             </div>
-
-            <div className='hw-deal'>
-              <div className='hw-deal-head'>Sample Investment <span>Fixed return</span></div>
-              <h3>Lagos Solar Fund II</h3>
-              <div className='hw-row'><span>Expected Yield</span><b className='g'>14.5% APY</b></div>
-              <div className='hw-row'><span>Tenor</span><b>18 Months</b></div>
-              <div className='hw-row'><span>Risk Rating</span><b className='hw-badge'>A</b></div>
-              <div className='hw-prog'>
-                <div className='hw-prog-top'><span>Funded: 72%</span><span>₦50,000 min</span></div>
-                <div className='hw-bar' role='progressbar' aria-valuenow={72} aria-valuemin={0} aria-valuemax={100} aria-label='Funded'><i /></div>
-              </div>
-              <Link to='/marketplace' className='hw-btn'>Explore Deals <ArrowRight size={18} /></Link>
+            <div className='elite-faq'>
+              {[
+                { q: 'How do I fund my wallet?', a: 'Go to Wallet → Deposit. Choose bank transfer (free, instant) or Paystack card (1.5% fee). Funds reflect within 5 minutes.' },
+                { q: 'When do returns get paid?', a: 'Returns are paid quarterly to your BraveVest wallet based on the specific deal structure. You see every payout in your statement.' },
+                { q: 'What happens if a borrower defaults?', a: 'All projects are collateralized. Our recovery team liquidates collateral to recover investor capital. Since 2023, our default rate is zero.' },
+                { q: 'Can I withdraw before the tenor ends?', a: 'Most deals are locked for the full tenor. A secondary market is planned for Q1 2027, but is not yet live.' },
+                { q: 'How do I change my bank account?', a: 'For security, withdrawals only go to your KYC-verified bank account. To change it, contact support with documentation.' },
+              ].map((f) => (
+                <details key={f.q} className='elite-faq-item'>
+                  <summary>{f.q}</summary>
+                  <p>{f.a}</p>
+                </details>
+              ))}
             </div>
           </div>
         </section>
 
-        <section className='hw-cta'>
-          <div className='hw-cta-box'>
-            <h2>Ready to get started?</h2>
-            <p>Join 52,000+ investors earning fixed returns on BraveVest.</p>
-            <Link to='/register' className='hw-btn'>Create Free Account</Link>
+        {/* CTA */}
+        <div className='elite-container'>
+          <div className='elite-banner'>
+            <h2 className='elite-title'>Start Earning Today</h2>
+            <p>Join 14,250+ investors compounding capital on BraveVest.</p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link to='/register' className='elite-btn elite-btn-gold'>
+                Create Free Account <ArrowRight size={17} />
+              </Link>
+              <Link to='/faq' className='elite-btn elite-btn-outline'>
+                Read Full FAQ
+              </Link>
+            </div>
           </div>
-        </section>
+        </div>
       </div>
     </PageShell>
   );
