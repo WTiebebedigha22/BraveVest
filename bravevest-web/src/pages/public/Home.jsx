@@ -108,7 +108,7 @@ const CSS = `
 /* Hero Section */
 .elite-hero {
   position: relative;
-  padding: 120px 0 180px;
+  padding: 100px 0 140px;
   text-align: center;
   color: #FFFFFF;
   background: linear-gradient(rgba(18, 18, 20, 0.65), rgba(18, 18, 20, 0.65)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
@@ -132,7 +132,7 @@ const CSS = `
 }
 
 .elite-hero h1 {
-  font-size: clamp(40px, 6vw, 76px);
+  font-size: clamp(36px, 5.5vw, 70px);
   line-height: 1.08;
   max-width: 900px;
   margin: 0 auto 24px;
@@ -146,10 +146,10 @@ const CSS = `
 }
 
 .elite-hero p {
-  font-size: clamp(17px, 2vw, 20px);
+  font-size: clamp(16px, 1.8vw, 19px);
   color: #E4E4E9;
   max-width: 640px;
-  margin: 0 auto 40px;
+  margin: 0 auto 36px;
   line-height: 1.6;
 }
 
@@ -158,7 +158,7 @@ const CSS = `
   gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 60px;
+  margin-bottom: 48px;
 }
 
 .elite-hero .elite-btn-outline {
@@ -177,19 +177,22 @@ const CSS = `
 .elite-stats-ribbon {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  max-width: 1040px;
+  gap: 16px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
 .elite-stat-card {
   background: #FFFFFF;
   border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 24px;
+  border-radius: 16px;
+  padding: 20px 16px;
   text-align: left;
   box-shadow: 0 10px 30px rgba(18, 18, 20, 0.04);
   transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .elite-stat-card:hover {
@@ -198,14 +201,22 @@ const CSS = `
   box-shadow: 0 20px 40px rgba(194, 124, 0, 0.1);
 }
 
-.elite-stat-card .label { font-size: 13px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; }
-.elite-stat-card .value { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-.elite-stat-card .trend { font-size: 12px; color: var(--success-green); background: rgba(14, 159, 91, 0.1); padding: 2px 8px; border-radius: 6px; font-weight: 700; }
+.elite-stat-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.elite-stat-card .label { font-size: 12.5px; color: var(--text-muted); font-weight: 600; line-height: 1.3; }
+.elite-stat-card .value { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+.elite-stat-card .trend { font-size: 11px; color: var(--success-green); background: rgba(14, 159, 91, 0.1); padding: 2px 6px; border-radius: 6px; font-weight: 700; white-space: nowrap; }
 
 /* Wealth Calculator Section */
 .elite-calc-wrapper {
   max-width: 1080px;
-  margin: -60px auto 100px;
+  margin: -40px auto 100px;
   position: relative;
   z-index: 10;
   padding: 0 24px;
@@ -469,20 +480,32 @@ export default function Home() {
             {/* Live Stats Ribbon */}
             <div className='elite-stats-ribbon'>
               <div className='elite-stat-card'>
-                <div className='label'>Total Capital Deployed</div>
-                <div className='value'>₦14.8B <span className='trend'>+24% YoY</span></div>
+                <div className='elite-stat-card-top'>
+                  <div className='label'>Total Capital Deployed</div>
+                  <span className='trend'>+24% YoY</span>
+                </div>
+                <div className='value'>₦14.8B</div>
               </div>
               <div className='elite-stat-card'>
-                <div className='label'>Average Annual Yield</div>
-                <div className='value'>16.4% <span className='trend'>Fixed</span></div>
+                <div className='elite-stat-card-top'>
+                  <div className='label'>Average Annual Yield</div>
+                  <span className='trend'>Fixed</span>
+                </div>
+                <div className='value'>16.4%</div>
               </div>
               <div className='elite-stat-card'>
-                <div className='label'>Default Rate Since Inception</div>
-                <div className='value'>0.00% <span className='trend'>Secure</span></div>
+                <div className='elite-stat-card-top'>
+                  <div className='label'>Default Rate Since Inception</div>
+                  <span className='trend'>Secure</span>
+                </div>
+                <div className='value'>0.00%</div>
               </div>
               <div className='elite-stat-card'>
-                <div className='label'>Active Elite Investors</div>
-                <div className='value'>14,250+ <span className='trend'>Verified</span></div>
+                <div className='elite-stat-card-top'>
+                  <div className='label'>Active Elite Investors</div>
+                  <span className='trend'>Verified</span>
+                </div>
+                <div className='value'>14,250+</div>
               </div>
             </div>
           </div>

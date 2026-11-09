@@ -9,7 +9,7 @@ router.get('/', authRequired, async (req, res, next) => {
   try {
     const userId = req.user.id;
 
-    const [investments, wallet, recentTx, pendingLedger] = await Promise.all([
+    const [investments, wallet, recentTx, pendingPayouts] = await Promise.all([
       prisma.investment.findMany({
         where: { userId, status: 'ACTIVE' },
         include: { project: true },
@@ -18,27 +18,20 @@ router.get('/', authRequired, async (req, res, next) => {
       prisma.transaction.findMany({
         where: { userId },
         orderBy: { createdAt: 'desc' },
-        take: 5,
+        take: 8,
       }).catch(() => []),
-      prisma.ledgerEntry.findMany({
-        where: { wallet: { userId }, status: 'PENDING' },
+      prisma.transaction.findMany({
+        where: { userId, type: 'PAYOUT', status: 'PENDING' },
         orderBy: { createdAt: 'asc' },
         take: 1,
       }).catch(() => []),
     ]);
 
-    const portfolioValue = investments.reduce(
-      (s, i) => s + Number(i.amount || 0),
-      0
-    );
-    const monthlyDelta = investments.reduce(
-      (s, i) =>
-        s + (Number(i.amount || 0) * Number(i.project?.interestRate || 0)) / 1200,
-      0
-    );
-    const nextPayout = pendingLedger[0]
-      ? { amount: Number(pendingLedger[0].amount || 0), date: pendingLedger[0].createdAt }
-      : null;
+    const portfolioValue = investments.reduce((s, i) => s + Number(i.amount || 0), 0);
+    const monthlyDelta = investments.reduce((s, i) => {
+      const rate = Number(i.project?.expectedReturnPct || 0);
+      return s + (Number(i.amount || 0) * rate) / 1200;
+    }, 0);
 
     res.json({
       portfolioValue,
@@ -46,19 +39,18 @@ router.get('/', authRequired, async (req, res, next) => {
       deltaPercent: portfolioValue > 0 ? (monthlyDelta / portfolioValue) * 100 : 0,
       activeInvestments: investments.length,
       walletBalance: Number(wallet?.balance || 0),
-      nextPayout,
-      recentActivity: recentTx.map((tx) => ({
-        id: tx.id,
-        title: tx.description || tx.type || 'Transaction',
-        amount: Number(tx.amount || 0),
-        positive:
-          String(tx.type).includes('DEPOSIT') || String(tx.type).includes('PAYOUT'),
-        date: tx.createdAt,
+      nextPayout: pendingPayouts[0]
+        ? { amount: Number(pendingPayouts[0].amount), date: pendingPayouts[0].createdAt }
+        : null,
+      recentActivity: recentTx.map((t) => ({
+        id: t.id,
+        title: t.description || t.type || 'Transaction',
+        amount: Number(t.amount || 0),
+        positive: t.type === 'DEPOSIT' || t.type === 'PAYOUT' || t.type === 'REFUND',
+        date: t.createdAt,
       })),
     });
-  } catch (err) {
-    next(err);
-  }
+  } catch (err) { next(err); }
 });
 
 module.exports = router;

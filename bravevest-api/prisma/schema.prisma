@@ -328,7 +328,6 @@ model Investment {
   @@index([status])
   @@map("investments")
   @@index([userId, status])
-  @@index([projectId])
   @@index([createdAt])
 }
 
@@ -347,6 +346,7 @@ model Transaction {
   amount    Decimal @db.Decimal(18, 2)
   fee       Decimal @default(0) @db.Decimal(18, 2)
   netAmount Decimal @db.Decimal(18, 2)
+  description   String?  
   currency  String  @default("NGN")
 
   providerRef   String?
