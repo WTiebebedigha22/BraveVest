@@ -4,6 +4,7 @@ const svc = require('./wallet.service');
 const { success } = require('../../utils/apiResponse');
 const { audit } = require('../../middleware/audit');
 const { authRequired } = require('../../middleware/auth.middleware');
+const { prisma } = require('../../config/database');
 
 const router = express.Router();
 

@@ -276,9 +276,7 @@ export default function Navbar() {
               <NavLink
                 key={l.to}
                 to={l.to}
-                className={({ isActive }) =>
-                  `bv-navbar__link ${isActive ? 'active' : ''}`
-                }
+                className={({ isActive }) => `bv-navbar__link ${isActive ? 'active' : ''}`}
               >
                 {l.label}
               </NavLink>
@@ -316,7 +314,9 @@ export default function Navbar() {
                       fontFamily: 'inherit',
                     }}
                   >
-                    {user.firstName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
+                    {user.firstName?.charAt(0).toUpperCase() ||
+                      user.email?.charAt(0).toUpperCase() ||
+                      'U'}
                   </button>
                 </>
               ) : (
@@ -366,7 +366,10 @@ export default function Navbar() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <button
-                    onClick={() => { setDrawerOpen(false); setSidebarOpen(true); }}
+                    onClick={() => {
+                      setDrawerOpen(false);
+                      setSidebarOpen(true);
+                    }}
                     style={{
                       background: '#f0b90b',
                       border: 'none',
@@ -378,13 +381,17 @@ export default function Navbar() {
                       cursor: 'pointer',
                     }}
                   >
-                    {user.firstName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
+                    {user.firstName?.charAt(0).toUpperCase() ||
+                      user.email?.charAt(0).toUpperCase() ||
+                      'U'}
                   </button>
                   <div style={{ overflow: 'hidden' }}>
                     <div style={{ fontSize: '14px', fontWeight: '600', color: '#eaecef' }}>
                       {user.email}
                     </div>
-                    <div style={{ fontSize: '12px', color: '#f0b90b' }}>Tap avatar to open profile</div>
+                    <div style={{ fontSize: '12px', color: '#f0b90b' }}>
+                      Tap avatar to open profile
+                    </div>
                   </div>
                 </div>
 
@@ -435,12 +442,44 @@ export default function Navbar() {
         <>
           <div className="bv-profile-overlay" onClick={() => setSidebarOpen(false)} />
           <div className="bv-profile-sidebar">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingBottom: '20px', borderBottom: '1px solid #262930' }}>
-              <div style={{ background: '#f0b90b', color: '#000', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '16px' }}>
-                {user.firstName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                paddingBottom: '20px',
+                borderBottom: '1px solid #262930',
+              }}
+            >
+              <div
+                style={{
+                  background: '#f0b90b',
+                  color: '#000',
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: '700',
+                  fontSize: '16px',
+                }}
+              >
+                {user.firstName?.charAt(0).toUpperCase() ||
+                  user.email?.charAt(0).toUpperCase() ||
+                  'U'}
               </div>
               <div style={{ overflow: 'hidden' }}>
-                <div style={{ fontSize: '14px', fontWeight: '600', color: '#fff', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                <div
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#eaecef',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                  }}
+                >
                   {user.email || 'user@bravevest.com'}
                 </div>
                 <div style={{ fontSize: '12px', color: '#f0b90b' }}>
@@ -456,35 +495,89 @@ export default function Navbar() {
               <button
                 className="bv-btn bv-btn--primary"
                 style={{ flex: 1 }}
-                onClick={() => { setSidebarOpen(false); nav('/deposit'); }}
+                onClick={() => {
+                  setSidebarOpen(false);
+                  nav('/deposit');
+                }}
               >
                 Deposit
               </button>
               <button
                 className="bv-btn bv-btn--ghost"
                 style={{ flex: 1 }}
-                onClick={() => { setSidebarOpen(false); nav('/withdraw'); }}
+                onClick={() => {
+                  setSidebarOpen(false);
+                  nav('/withdraw');
+                }}
               >
                 Withdraw
               </button>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
-              <div className="bv-profile-nav__item" onClick={() => { setSidebarOpen(false); nav('/dashboard'); }}>Overview</div>
-              <div className="bv-profile-nav__item" onClick={() => setSidebarOpen(false)}>Account</div>
-              <div className="bv-profile-nav__item" onClick={() => setSidebarOpen(false)}>My Events</div>
-              <div className="bv-profile-nav__item" onClick={() => setSidebarOpen(false)}>Referral Program</div>
-              <div className="bv-profile-nav__item" onClick={() => setSidebarOpen(false)}>Preference Settings</div>
-              <div className="bv-profile-nav__item" onClick={() => setSidebarOpen(false)}>API</div>
+              <div
+                className="bv-profile-nav__item"
+                onClick={() => {
+                  setSidebarOpen(false);
+                  nav('/dashboard');
+                }}
+              >
+                Overview
+              </div>
+              <div
+                className="bv-profile-nav__item"
+                onClick={() => {
+                  setSidebarOpen(false);
+                  nav('/wallet');
+                }}
+              >
+                Wallet
+              </div>
+              <div
+                className="bv-profile-nav__item"
+                onClick={() => {
+                  setSidebarOpen(false);
+                  nav('/notifications');
+                }}
+              >
+                Notifications
+              </div>
+              <div
+                className="bv-profile-nav__item"
+                onClick={() => {
+                  setSidebarOpen(false);
+                  nav('/referrals');
+                }}
+              >
+                Referral Program
+              </div>
+              <div
+                className="bv-profile-nav__item"
+                onClick={() => {
+                  setSidebarOpen(false);
+                  nav('/profile');
+                }}
+              >
+                Profile
+              </div>
+              <div
+                className="bv-profile-nav__item"
+                onClick={() => {
+                  setSidebarOpen(false);
+                  nav('/goals');
+                }}
+              >
+                Goals
+              </div>
             </div>
 
             <div style={{ paddingTop: '16px', borderTop: '1px solid #262930' }}>
               <button
                 className="bv-btn bv-btn--ghost"
                 onClick={handleLogout}
-                style={{ width: '100%', gap: '8px', color: '#ff4d4f', borderColor: '#ff4d4f22' }}
+                style={{ width: '100%', gap: '8px', backgroundColor: '#ff4d4f', borderColor: '#ff4d4f' }}
               >
-                <LogOut size={16} /> Logout
+                <LogOut size={16} color="#000" /> Logout
               </button>
             </div>
           </div>
