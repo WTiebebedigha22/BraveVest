@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 
 export default function Login() {
   const nav = useNavigate();
-  const { login } = useAuth();
+  const { login, socialLogin } = useAuth();
   const [authMethod, setAuthMethod] = useState('email');
   const [form, setForm] = useState({ email: '', password: '', phone: '', countryCode: '+234' });
   const [showPassword, setShowPassword] = useState(false);
@@ -38,6 +38,20 @@ export default function Login() {
     }
   }
 
+  async function handleSocialAuth(provider) {
+    setErr('');
+    setLoading(true);
+    try {
+      const user = await socialLogin(provider);
+      const roles = user?.roles || (user?.role ? [user.role] : []);
+      nav(roles.includes('ADMIN') ? '/admin' : '/dashboard', { replace: true });
+    } catch (e) {
+      setErr(e?.response?.data?.message || `${provider} sign-in failed. Please try again.`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#F7F7F7', fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       
@@ -48,8 +62,8 @@ export default function Login() {
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          padding: 48px 64px;
-          background: linear-gradient(135deg, #F0F0F0 0%, #E8E8E8 100%);
+          padding: 56px 64px;
+          background: linear-gradient(135deg, rgba(11, 15, 25, 0.85) 0%, rgba(11, 15, 25, 0.7) 100%), url('watermarked_img_10228335117829985453.jpg') center/cover no-repeat;
           position: relative;
           overflow: hidden;
         }
@@ -116,63 +130,29 @@ export default function Login() {
         }
       `}</style>
 
-      {/* ── Left Promo Section ── */}
+      {/* ── Left Promo Section with Enhanced High-Contrast Text ── */}
       <div className="login-left-promo">
         <div style={{ position: 'relative', zIndex: 10 }}>
-          <h1 style={{ fontSize: '32px', fontWeight: '600', color: '#111', lineHeight: 1.3 }}>
+          <span style={{ display: 'inline-block', padding: '6px 14px', background: 'rgba(246, 165, 0, 0.25)', color: '#FFB81C', borderRadius: '20px', fontSize: '12px', fontWeight: '700', letterSpacing: '0.5px', marginBottom: '20px', backdropFilter: 'blur(6px)', border: '1px solid rgba(246, 165, 0, 0.3)' }}>
+            ENTERPRISE-GRADE SECURITY
+          </span>
+          <h1 style={{ fontSize: '38px', fontWeight: '800', color: '#FFFFFF', lineHeight: 1.2, letterSpacing: '-0.5px', textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>
             Invest directly<br />in Africa's real economy.
           </h1>
-          <p style={{ fontSize: '15px', color: '#666', marginTop: '12px', maxWidth: '340px', lineHeight: 1.6 }}>
-            Fixed returns from vetted private credit, real estate, and SME deals.
+          <p style={{ fontSize: '16px', color: '#F0F0F0', marginTop: '16px', maxWidth: '400px', lineHeight: 1.6, fontWeight: '400', textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
+            Fixed returns engineered from fully vetted private credit, commercial real estate, and high-growth SME transactions.
           </p>
         </div>
 
-        {/* Abstract Card Stack Visual */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '80%',
-            height: '60%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1,
-          }}
-        >
-          <div style={{ position: 'absolute', width: '280px', height: '180px', background: '#E0E0E0', borderRadius: '12px', transform: 'rotate(-15deg) translateY(-60px) translateX(-20px)', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', border: '1px solid #D0D0D0' }} />
-          <div style={{ position: 'absolute', width: '280px', height: '180px', background: '#F5F5F5', borderRadius: '12px', transform: 'rotate(-5deg) translateY(-20px) translateX(10px)', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', border: '1px solid #D0D0D0' }} />
-          <div
-            style={{
-              position: 'absolute',
-              width: '280px',
-              height: '180px',
-              background: 'linear-gradient(135deg, #F6A500 0%, #E09000 100%)',
-              borderRadius: '12px',
-              transform: 'rotate(5deg) translateY(20px) translateX(-10px)',
-              boxShadow: '0 15px 30px rgba(246, 165, 0, 0.3)',
-            }}
-          >
-            <div style={{ width: '40px', height: '40px', background: '#fff', borderRadius: '50%', margin: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontWeight: 'bold', color: '#F6A500', fontSize: '18px' }}>B</span>
-            </div>
-            <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: '#fff', fontSize: '11px', letterSpacing: '2px', fontWeight: '600', opacity: 0.85 }}>
-              BRAVEVEST
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Strip */}
-        <div style={{ display: 'flex', gap: '48px', position: 'relative', zIndex: 10 }}>
+        {/* Stats Strip with High Contrast */}
+        <div style={{ display: 'flex', gap: '48px', position: 'relative', zIndex: '10', borderTop: '1px solid rgba(255, 255, 255, 0.2)', paddingTop: '28px' }}>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>₦184B+</div>
-            <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>Assets Under Management</div>
+            <div style={{ fontSize: '32px', fontWeight: '800', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>₦184B+</div>
+            <div style={{ fontSize: '13px', color: '#E0E0E0', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Assets Under Management</div>
           </div>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#111' }}>52,000+</div>
-            <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>Active Investors</div>
+            <div style={{ fontSize: '32px', fontWeight: '800', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>52,000+</div>
+            <div style={{ fontSize: '13px', color: '#E0E0E0', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Active Investors</div>
           </div>
         </div>
       </div>
@@ -355,11 +335,23 @@ export default function Login() {
 
             {/* Social Auth Options */}
             <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
-              <button type="button" disabled={loading} className="social-btn" style={{ opacity: loading ? 0.6 : 1 }}>
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => handleSocialAuth('google')}
+                className="social-btn"
+                style={{ opacity: loading ? 0.6 : 1 }}
+              >
                 <span style={{ color: '#DB4437', fontWeight: 'bold', fontSize: '15px' }}>G</span>
                 Google
               </button>
-              <button type="button" disabled={loading} className="social-btn" style={{ opacity: loading ? 0.6 : 1 }}>
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => handleSocialAuth('apple')}
+                className="social-btn"
+                style={{ opacity: loading ? 0.6 : 1 }}
+              >
                 <span style={{ fontWeight: 'bold', fontSize: '15px' }}></span>
                 Apple
               </button>

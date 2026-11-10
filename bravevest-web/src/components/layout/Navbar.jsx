@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Wallet, LogOut } from 'lucide-react';
+import { Wallet, LogOut, Sun, Moon, Download } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 const LINKS = [
@@ -10,7 +10,43 @@ const LINKS = [
   { to: '/faq', label: 'FAQ' },
 ];
 
+// ── avatar text helper ─────────────────────────────
+function avatarText(user) {
+  if (!user) return 'U';
+  const first = (user.firstName || '').trim();
+  const last  = (user.lastName  || '').trim();
+
+  if (first) {
+    if (first.length <= 3) return first;
+    if (last) return (first[0] + last[0]).toUpperCase();
+    return first[0].toUpperCase();
+  }
+
+  const email = (user.email || '').trim();
+  return email ? email[0].toUpperCase() : 'U';
+}
+
+// ── theme hook ─────────────────────────────────────
+const THEME_KEY = 'bv-theme';
+function useTheme() {
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'dark';
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === 'light' || saved === 'dark') return saved;
+    return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
+  }, [theme]);
+
+  const toggle = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+  return { theme, toggle };
+}
+
 const navbarStyles = `
+  /* ── Navbar shell: permanently dark, theme-independent ── */
   .bv-navbar {
     position: sticky;
     top: 0;
@@ -20,6 +56,7 @@ const navbarStyles = `
     -webkit-backdrop-filter: saturate(180%) blur(12px);
     border-bottom: 1px solid #1e2329;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #eaecef;
   }
 
   .bv-navbar__inner {
@@ -35,18 +72,13 @@ const navbarStyles = `
 
   .bv-navbar__nav {
     display: none;
-    gap: 12px;
+    gap: 8px;
     flex: 1;
     justify-content: flex-start;
     align-items: center;
     margin-left: 20px;
   }
-
-  @media (min-width: 1025px) {
-    .bv-navbar__nav {
-      display: flex;
-    }
-  }
+  @media (min-width: 1025px) { .bv-navbar__nav { display: flex; } }
 
   .bv-navbar__link {
     font-size: 14px;
@@ -60,12 +92,10 @@ const navbarStyles = `
     text-decoration: none;
     transition: all 0.15s ease;
   }
-
   .bv-navbar__link:hover {
     background: #1e2329;
     color: #eaecef;
   }
-
   .bv-navbar__link.active {
     color: #f0b90b !important;
     background: #1e2329 !important;
@@ -77,17 +107,14 @@ const navbarStyles = `
     align-items: center;
     gap: 10px;
   }
+  @media (min-width: 1025px) { .bv-navbar__right-desktop { display: flex; } }
 
-  @media (min-width: 1025px) {
-    .bv-navbar__right-desktop {
-      display: flex;
-    }
-  }
-
-  .bv-btn {
+  /* ── Navbar buttons: always dark, never inherit theme ── */
+  .bv-navbar .bv-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     font-weight: 600;
     font-size: 13px;
     padding: 8px 18px;
@@ -98,26 +125,37 @@ const navbarStyles = `
     transition: all 0.15s ease;
     font-family: inherit;
   }
-
-  .bv-btn--primary {
+  .bv-navbar .bv-btn--primary {
     background-color: #f0b90b;
     color: #000;
   }
+  .bv-navbar .bv-btn--primary:hover { background-color: #fcd535; }
 
-  .bv-btn--primary:hover {
-    background-color: #fcd535;
-  }
-
-  .bv-btn--ghost {
+  .bv-navbar .bv-btn--ghost {
     background: transparent;
     color: #eaecef;
     border: 1px solid #262930;
   }
-
-  .bv-btn--ghost:hover {
-    background-color: #1e2329;
+  .bv-navbar .bv-btn--ghost:hover {
+    background: #1e2329;
     border-color: #363a45;
   }
+
+  .bv-navbar .bv-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid #262930;
+    color: #eaecef;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+  }
+  .bv-navbar .bv-icon-btn:hover { background: #1e2329; }
 
   .bv-burger {
     display: inline-flex;
@@ -133,7 +171,6 @@ const navbarStyles = `
     cursor: pointer;
     padding: 0;
   }
-
   .bv-burger span {
     display: block;
     width: 18px;
@@ -142,25 +179,12 @@ const navbarStyles = `
     border-radius: 2px;
     transition: all 0.2s ease;
   }
+  .bv-burger.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .bv-burger.is-active span:nth-child(2) { opacity: 0; }
+  .bv-burger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  @media (min-width: 1025px) { .bv-burger { display: none; } }
 
-  .bv-burger.is-active span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
-  }
-
-  .bv-burger.is-active span:nth-child(2) {
-    opacity: 0;
-  }
-
-  .bv-burger.is-active span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
-  }
-
-  @media (min-width: 1025px) {
-    .bv-burger {
-      display: none;
-    }
-  }
-
+  /* ── Drawer: theme-aware (uses tokens) ── */
   .bv-drawer {
     position: fixed;
     inset: 64px 0 0 0;
@@ -169,74 +193,138 @@ const navbarStyles = `
     z-index: 55;
     animation: bvFadeIn 0.15s ease forwards;
   }
-
   .bv-drawer-inner {
-    background: #0b0e11;
-    border-bottom: 1px solid #1e2329;
+    background: var(--bv-bg);
+    border-bottom: 1px solid var(--bv-border-soft);
     padding: 20px 24px 28px;
     max-height: calc(100vh - 64px);
     overflow-y: auto;
+    color: var(--bv-text);
     animation: bvSlideDown 0.2s ease forwards;
   }
-
   .bv-drawer-link {
     display: block;
     padding: 14px 0;
     font-size: 15px;
     font-weight: 500;
-    color: #eaecef;
-    border-bottom: 1px solid #1e2329;
+    color: var(--bv-text);
+    border-bottom: 1px solid var(--bv-border-soft);
     text-decoration: none;
   }
+  .bv-drawer-link:hover { color: var(--bv-accent); }
 
-  .bv-drawer-link:hover {
-    color: #f0b90b;
+  /* Drawer buttons: theme-aware */
+  .bv-drawer .bv-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 8px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s ease;
+    font-family: inherit;
   }
+  .bv-drawer .bv-btn--primary {
+    background-color: var(--bv-accent);
+    color: #000;
+  }
+  .bv-drawer .bv-btn--primary:hover { background-color: var(--bv-accent-hover); }
 
+  .bv-drawer .bv-btn--ghost {
+    background: transparent;
+    color: var(--bv-text);
+    border: 1px solid var(--bv-border);
+  }
+  .bv-drawer .bv-btn--ghost:hover { background: var(--bv-surface); }
+
+  .bv-drawer .bv-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid var(--bv-border);
+    color: var(--bv-text);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+  }
+  .bv-drawer .bv-icon-btn:hover { background: var(--bv-surface); }
+
+  /* ── Profile sidebar: theme-aware ── */
   .bv-profile-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.6);
     z-index: 98;
   }
-
   .bv-profile-sidebar {
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     width: 300px;
-    background: #181a20;
-    border-left: 1px solid #262930;
+    background: var(--bv-bg-elevated);
+    border-left: 1px solid var(--bv-border);
     z-index: 99;
     display: flex;
     flex-direction: column;
     padding: 24px;
-    color: #fff;
+    color: var(--bv-text);
   }
-
   .bv-profile-nav__item {
     padding: 12px;
     border-radius: 6px;
     cursor: pointer;
-    color: #848e9c;
+    color: var(--bv-text-muted);
     font-size: 14px;
     transition: all 0.15s ease;
   }
-
   .bv-profile-nav__item:hover {
-    background: #1e2329;
-    color: #fff;
+    background: var(--bv-surface);
+    color: var(--bv-text);
   }
 
-  @keyframes bvFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  /* Profile sidebar buttons: theme-aware */
+  .bv-profile-sidebar .bv-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 8px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s ease;
+    font-family: inherit;
   }
+  .bv-profile-sidebar .bv-btn--primary {
+    background-color: var(--bv-accent);
+    color: #000;
+  }
+  .bv-profile-sidebar .bv-btn--primary:hover { background-color: var(--bv-accent-hover); }
 
+  .bv-profile-sidebar .bv-btn--ghost {
+    background: transparent;
+    color: var(--bv-text);
+    border: 1px solid var(--bv-border);
+  }
+  .bv-profile-sidebar .bv-btn--ghost:hover { background: var(--bv-surface); }
+
+  @keyframes bvFadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes bvSlideDown {
     from { transform: translateY(-8px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    to   { transform: translateY(0);    opacity: 1; }
   }
 `;
 
@@ -245,6 +333,7 @@ export default function Navbar() {
   const nav = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { theme, toggle } = useTheme();
 
   function handleLogout() {
     logout?.();
@@ -254,6 +343,9 @@ export default function Navbar() {
   }
 
   if (loading) return null;
+
+  const initials = avatarText(user);
+  const isLight = theme === 'light';
 
   return (
     <>
@@ -285,6 +377,26 @@ export default function Navbar() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div className="bv-navbar__right-desktop">
+              {/* Theme toggle */}
+              <button
+                className="bv-icon-btn"
+                onClick={toggle}
+                aria-label={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
+                title={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
+              >
+                {isLight ? <Moon size={16} /> : <Sun size={16} />}
+              </button>
+
+              {/* Download app — icon only */}
+              <a
+                href="/download"
+                className="bv-icon-btn"
+                aria-label="Download App"
+                title="Download App"
+              >
+                <Download size={16} />
+              </a>
+
               {user ? (
                 <>
                   <Link to="/deposit" className="bv-btn bv-btn--primary">
@@ -312,11 +424,10 @@ export default function Navbar() {
                       cursor: 'pointer',
                       fontWeight: '700',
                       fontFamily: 'inherit',
+                      fontSize: initials.length > 2 ? '12px' : '14px',
                     }}
                   >
-                    {user.firstName?.charAt(0).toUpperCase() ||
-                      user.email?.charAt(0).toUpperCase() ||
-                      'U'}
+                    {initials}
                   </button>
                 </>
               ) : (
@@ -360,7 +471,7 @@ export default function Navbar() {
               ))}
             </nav>
 
-            <div style={{ height: '1px', background: '#1e2329', margin: '16px 0' }} />
+            <div style={{ height: '1px', background: 'var(--bv-border-soft)', margin: '16px 0' }} />
 
             {user ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -379,17 +490,16 @@ export default function Navbar() {
                       borderRadius: '50%',
                       fontWeight: '700',
                       cursor: 'pointer',
+                      fontSize: initials.length > 2 ? '13px' : '15px',
                     }}
                   >
-                    {user.firstName?.charAt(0).toUpperCase() ||
-                      user.email?.charAt(0).toUpperCase() ||
-                      'U'}
+                    {initials}
                   </button>
                   <div style={{ overflow: 'hidden' }}>
-                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#eaecef' }}>
+                    <div style={{ fontSize: '14px', fontWeight: '600', color: 'inherit' }}>
                       {user.email}
                     </div>
-                    <div style={{ fontSize: '12px', color: '#f0b90b' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--bv-accent)' }}>
                       Tap avatar to open profile
                     </div>
                   </div>
@@ -413,25 +523,69 @@ export default function Navbar() {
                     Assets
                   </Link>
                 </div>
+
+                {/* Icon row: theme + download */}
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    className="bv-icon-btn"
+                    onClick={toggle}
+                    aria-label={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
+                    title={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
+                  >
+                    {isLight ? <Moon size={16} /> : <Sun size={16} />}
+                  </button>
+                  <a
+                    href="/download"
+                    onClick={() => setDrawerOpen(false)}
+                    className="bv-icon-btn"
+                    aria-label="Download App"
+                    title="Download App"
+                  >
+                    <Download size={16} />
+                  </a>
+                </div>
               </div>
             ) : (
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <Link
-                  to="/login"
-                  onClick={() => setDrawerOpen(false)}
-                  className="bv-btn bv-btn--ghost"
-                  style={{ flex: 1, textAlign: 'center' }}
-                >
-                  Log In
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setDrawerOpen(false)}
-                  className="bv-btn bv-btn--primary"
-                  style={{ flex: 1, textAlign: 'center' }}
-                >
-                  Sign Up
-                </Link>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <Link
+                    to="/login"
+                    onClick={() => setDrawerOpen(false)}
+                    className="bv-btn bv-btn--ghost"
+                    style={{ flex: 1, textAlign: 'center' }}
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={() => setDrawerOpen(false)}
+                    className="bv-btn bv-btn--primary"
+                    style={{ flex: 1, textAlign: 'center' }}
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+
+                {/* Icon row for logged-out users too */}
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    className="bv-icon-btn"
+                    onClick={toggle}
+                    aria-label={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
+                    title={isLight ? 'Switch to dark mode' : 'Switch to light mode'}
+                  >
+                    {isLight ? <Moon size={16} /> : <Sun size={16} />}
+                  </button>
+                  <a
+                    href="/download"
+                    onClick={() => setDrawerOpen(false)}
+                    className="bv-icon-btn"
+                    aria-label="Download App"
+                    title="Download App"
+                  >
+                    <Download size={16} />
+                  </a>
+                </div>
               </div>
             )}
           </div>
@@ -448,7 +602,7 @@ export default function Navbar() {
                 alignItems: 'center',
                 gap: '12px',
                 paddingBottom: '20px',
-                borderBottom: '1px solid #262930',
+                borderBottom: '1px solid var(--bv-border)',
               }}
             >
               <div
@@ -462,19 +616,16 @@ export default function Navbar() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: '700',
-                  fontSize: '16px',
+                  fontSize: initials.length > 2 ? '14px' : '16px',
                 }}
               >
-                {user.firstName?.charAt(0).toUpperCase() ||
-                  user.email?.charAt(0).toUpperCase() ||
-                  'U'}
+                {initials}
               </div>
               <div style={{ overflow: 'hidden' }}>
                 <div
                   style={{
                     fontSize: '14px',
                     fontWeight: '600',
-                    color: '#eaecef',
                     whiteSpace: 'nowrap',
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
@@ -482,9 +633,9 @@ export default function Navbar() {
                 >
                   {user.email || 'user@bravevest.com'}
                 </div>
-                <div style={{ fontSize: '12px', color: '#f0b90b' }}>
+                <div style={{ fontSize: '12px', color: 'var(--bv-accent)' }}>
                   {user.roles?.includes('ADMIN') ? 'Admin Account' : 'Main Account'}
-                  <span style={{ color: '#888', marginLeft: '8px' }}>
+                  <span style={{ color: 'var(--bv-text-muted)', marginLeft: '8px' }}>
                     UID: {user.id?.substring(0, 8) || '59197723'}
                   </span>
                 </div>
@@ -515,67 +666,25 @@ export default function Navbar() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
-              <div
-                className="bv-profile-nav__item"
-                onClick={() => {
-                  setSidebarOpen(false);
-                  nav('/dashboard');
-                }}
-              >
-                Overview
-              </div>
-              <div
-                className="bv-profile-nav__item"
-                onClick={() => {
-                  setSidebarOpen(false);
-                  nav('/wallet');
-                }}
-              >
-                Wallet
-              </div>
-              <div
-                className="bv-profile-nav__item"
-                onClick={() => {
-                  setSidebarOpen(false);
-                  nav('/notifications');
-                }}
-              >
-                Notifications
-              </div>
-              <div
-                className="bv-profile-nav__item"
-                onClick={() => {
-                  setSidebarOpen(false);
-                  nav('/referrals');
-                }}
-              >
-                Referral Program
-              </div>
-              <div
-                className="bv-profile-nav__item"
-                onClick={() => {
-                  setSidebarOpen(false);
-                  nav('/profile');
-                }}
-              >
-                Profile
-              </div>
-              <div
-                className="bv-profile-nav__item"
-                onClick={() => {
-                  setSidebarOpen(false);
-                  nav('/goals');
-                }}
-              >
-                Goals
-              </div>
+              <div className="bv-profile-nav__item" onClick={() => { setSidebarOpen(false); nav('/dashboard'); }}>Overview</div>
+              <div className="bv-profile-nav__item" onClick={() => { setSidebarOpen(false); nav('/wallet'); }}>Wallet</div>
+              <div className="bv-profile-nav__item" onClick={() => { setSidebarOpen(false); nav('/notifications'); }}>Notifications</div>
+              <div className="bv-profile-nav__item" onClick={() => { setSidebarOpen(false); nav('/referrals'); }}>Referral Program</div>
+              <div className="bv-profile-nav__item" onClick={() => { setSidebarOpen(false); nav('/profile'); }}>Profile</div>
+              <div className="bv-profile-nav__item" onClick={() => { setSidebarOpen(false); nav('/goals'); }}>Goals</div>
             </div>
 
-            <div style={{ paddingTop: '16px', borderTop: '1px solid #262930' }}>
+            <div style={{ paddingTop: '16px', borderTop: '1px solid var(--bv-border)' }}>
               <button
                 className="bv-btn bv-btn--ghost"
                 onClick={handleLogout}
-                style={{ width: '100%', gap: '8px', backgroundColor: '#ff4d4f', borderColor: '#ff4d4f' }}
+                style={{
+                  width: '100%',
+                  gap: '8px',
+                  backgroundColor: '#ff4d4f',
+                  borderColor: '#ff4d4f',
+                  color: '#000',
+                }}
               >
                 <LogOut size={16} color="#000" /> Logout
               </button>
