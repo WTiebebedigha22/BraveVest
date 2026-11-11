@@ -168,15 +168,15 @@ enum ReferralStatus {
 
 model User {
   notifications Notification[]
-  id            String     @id @default(cuid())
-  email         String     @unique
-  phone         String?    @unique
+  id            String         @id @default(cuid())
+  email         String         @unique
+  phone         String?        @unique
   passwordHash  String
   firstName     String
   lastName      String
   image         String?
-  roles         UserRole[] @default([INVESTOR])
-  status        UserStatus @default(PENDING_VERIFICATION)
+  roles         UserRole[]     @default([INVESTOR])
+  status        UserStatus     @default(PENDING_VERIFICATION)
   emailVerified DateTime?
 
   kyc           KycProfile?
@@ -198,13 +198,13 @@ model User {
   reviewedFundingReqs FundingRequest[]         @relation("ReviewedFundingRequests")
   uploadedFundingDocs FundingRequestDocument[] @relation("UploadedFundingDocuments")
   commitments         Commitment[]             @relation("InvestorCommitments")
+  wallet              Wallet?
+  ledger              LedgerEntry[]
+  otpCodes            OtpCode[]
+  preferences         Json?                    @default("{}")
 
   @@index([email])
   @@map("users")
-  wallet      Wallet?
-  ledger      LedgerEntry[]
-  otpCodes OtpCode[]
-  preferences Json?   @default("{}")
 }
 
 model RefreshToken {
@@ -214,11 +214,12 @@ model RefreshToken {
   token     String   @unique
   expiresAt DateTime
   revoked   Boolean  @default(false)
+  userAgent String?
+  ipAddress String?
   createdAt DateTime @default(now())
 
   @@index([userId])
-  @@map("refresh_tokens")  userAgent String?
-  ipAddress String?
+  @@map("refresh_tokens")
 }
 
 model KycProfile {
@@ -299,9 +300,9 @@ model Project {
   @@index([status])
   @@index([category])
   @@index([isFeatured])
-  @@map("projects")
   @@index([category, status])
   @@index([status, createdAt])
+  @@map("projects")
 }
 
 model Investment {
@@ -328,9 +329,9 @@ model Investment {
   @@index([userId])
   @@index([projectId])
   @@index([status])
-  @@map("investments")
   @@index([userId, status])
   @@index([createdAt])
+  @@map("investments")
 }
 
 model Transaction {
@@ -345,11 +346,11 @@ model Transaction {
   status   TransactionStatus @default(PENDING)
   provider PaymentProvider   @default(PAYSTACK)
 
-  amount    Decimal @db.Decimal(18, 2)
-  fee       Decimal @default(0) @db.Decimal(18, 2)
-  netAmount Decimal @db.Decimal(18, 2)
-  description   String?  
-  currency  String  @default("NGN")
+  amount      Decimal @db.Decimal(18, 2)
+  fee         Decimal @default(0) @db.Decimal(18, 2)
+  netAmount   Decimal @db.Decimal(18, 2)
+  description String?
+  currency    String  @default("NGN")
 
   providerRef   String?
   failureReason String?
@@ -543,18 +544,17 @@ model FundingRequest {
   publishedAt     DateTime?
   fundingDeadline DateTime?
 
-  documents   FundingRequestDocument[]
-  createdAt   DateTime                 @default(now())
-  updatedAt   DateTime                 @updatedAt
-  commitments Commitment[]
+  documents    FundingRequestDocument[]
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+  commitments  Commitment[]
+  managerNotes String?                  @db.Text
 
   @@index([borrowerId])
   @@index([status])
   @@index([category])
   @@index([publishedAt])
   @@map("funding_requests")
-  managerNotes String?   @db.Text
-
 }
 
 model FundingRequestDocument {
@@ -643,8 +643,8 @@ model Wallet {
   id        String   @id @default(cuid())
   userId    String   @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  balance   Decimal  @db.Decimal(18, 2) @default(0)
-  held      Decimal  @db.Decimal(18, 2) @default(0)   // escrow / in-flight
+  balance   Decimal  @default(0) @db.Decimal(18, 2)
+  held      Decimal  @default(0) @db.Decimal(18, 2) // escrow / in-flight
   currency  String   @default("NGN")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -653,20 +653,20 @@ model Wallet {
 }
 
 model LedgerEntry {
-  id             String   @id @default(cuid())
-  reference      String   @unique
-  userId         String?  // the user whose balance changed (nullable for external)
-  user           User?    @relation(fields: [userId], references: [id])
-  type           String   // "deposit" | "withdrawal" | "commitment" | "repayment" | "payout" | "fee" | "refund"
-  direction      String   // "credit" | "debit"
-  amount         Decimal  @db.Decimal(18, 2)
-  currency       String   @default("NGN")
-  balanceAfter   Decimal? @db.Decimal(18, 2)
-  description    String?
-  transactionId  String?  // link to Transaction
-  commitmentId   String?
-  metadata       Json?
-  createdAt      DateTime @default(now())
+  id            String   @id @default(cuid())
+  reference     String   @unique
+  userId        String? // the user whose balance changed (nullable for external)
+  user          User?    @relation(fields: [userId], references: [id])
+  type          String // "deposit" | "withdrawal" | "commitment" | "repayment" | "payout" | "fee" | "refund"
+  direction     String // "credit" | "debit"
+  amount        Decimal  @db.Decimal(18, 2)
+  currency      String   @default("NGN")
+  balanceAfter  Decimal? @db.Decimal(18, 2)
+  description   String?
+  transactionId String? // link to Transaction
+  commitmentId  String?
+  metadata      Json?
+  createdAt     DateTime @default(now())
 
   @@index([userId])
   @@index([type])
@@ -675,21 +675,21 @@ model LedgerEntry {
 }
 
 model OtpCode {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   code      String
-  purpose   String   // "login" | "withdrawal" | "password_change"
+  purpose   String // "login" | "withdrawal" | "password_change"
   expiresAt DateTime
   usedAt    DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
   @@index([userId])
   @@index([code])
   @@map("otp_codes")
 }
 
-// ── Notifications (added by installer) ──────────────────
+// ── Notifications ─────────────────────────────────────────
 model Notification {
   id        String   @id @default(cuid())
   userId    String

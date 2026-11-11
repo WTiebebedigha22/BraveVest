@@ -239,7 +239,7 @@ export default function HowItWorks() {
               <span>How BraveVest Works</span>
             </div>
             <h1 className='elite-title'>
-              From Sign-Up to <span className='elite-gradient-text'>Fixed Returns</span> in Under 5 Minutes
+              From Sign-Up to <span className='elite-gradient-text'>Fixed Returns</span> immediately.
             </h1>
             <p>
               Four steps to start earning 12–18% annual yield on vetted, collateralized private credit opportunities.
@@ -297,7 +297,7 @@ export default function HowItWorks() {
                 <div className='elite-step-body'>
                   <span className='step-tag'>Instant</span>
                   <h3>Fund your wallet</h3>
-                  <p>Deposit via bank transfer (free) or Paystack card (1.5% fee). Funds reflect in under 5 minutes.</p>
+                  <p>Deposit via bank transfer (free) or Paystack card (1.5% fee). Funds reflect in your wallet immediately.</p>
                   <ul className='elite-step-bullets'>
                     <li><CheckCircle size={16} /> Bank transfer — instant, no fees</li>
                     <li><CheckCircle size={16} /> Paystack — card, 1.5% processing fee</li>
@@ -358,7 +358,7 @@ export default function HowItWorks() {
             </div>
             <div className='elite-faq'>
               {[
-                { q: 'How do I fund my wallet?', a: 'Go to Wallet → Deposit. Choose bank transfer (free, instant) or Paystack card (1.5% fee). Funds reflect within 5 minutes.' },
+                { q: 'How do I fund my wallet?', a: 'Go to Wallet → Deposit. Choose bank transfer (free, instant) or Paystack card (1.5% fee). Funds reflect in your wallet immediately.' },
                 { q: 'When do returns get paid?', a: 'Returns are paid quarterly to your BraveVest wallet based on the specific deal structure. You see every payout in your statement.' },
                 { q: 'What happens if a borrower defaults?', a: 'All projects are collateralized. Our recovery team liquidates collateral to recover investor capital. Since 2023, our default rate is zero.' },
                 { q: 'Can I withdraw before the tenor ends?', a: 'Most deals are locked for the full tenor. A secondary market is planned for Q1 2027, but is not yet live.' },

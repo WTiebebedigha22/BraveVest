@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { LockedField, ChangePasswordForm, ActiveSessionsPanel } from '@/AppEnhancements';
 import {
   User, Mail, Phone, MapPin, Shield, LogOut, CheckCircle, AlertCircle,
   Loader2, KeyRound, Calendar, Award, Camera,

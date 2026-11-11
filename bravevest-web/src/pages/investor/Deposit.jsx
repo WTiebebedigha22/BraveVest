@@ -60,7 +60,7 @@ const CSS = `
 `;
 
 const METHODS = [
-  { id: 'bank', label: 'Bank transfer', desc: 'Free · 5 min', icon: Building2 },
+  { id: 'bank', label: 'Bank transfer', desc: 'Free · Instant', icon: Building2 },
   { id: 'card', label: 'Card', desc: '1.5% fee · instant', icon: CreditCard },
 ];
 const QUICK = [5000, 50000, 250000];
@@ -119,7 +119,7 @@ export default function Deposit({ embedded = false }) {
         setSubmitting(false);
       }
     } else {
-      setOk(`Send ${format(amt)} to the account below. Deposits reflect within 5 minutes.`);
+      setOk(`Send ${format(amt)} to the account below. Deposits reflect in your wallet immediately.`);
     }
   }
 

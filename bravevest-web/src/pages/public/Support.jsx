@@ -48,7 +48,7 @@ const CSS = `
 
 const FAQS = [
   { q: 'How do I complete KYC?', a: 'Log in → click Profile → Complete KYC. Upload a government ID (NIN, driver\'s license, or international passport), a live selfie, and proof of address. Approval typically takes under 24 hours.' },
-  { q: 'How do I fund my wallet?', a: 'Go to Wallet → Deposit. Choose bank transfer (free, instant settlement) or Paystack (debit card, 1.5% fee). Funds reflect in your BraveVest wallet within 5 minutes.' },
+  { q: 'How do I fund my wallet?', a: 'Go to Wallet → Deposit. Choose bank transfer (free, instant settlement) or Paystack (debit card, 1.5% fee). Funds reflect in your BraveVest wallet immediately.' },
   { q: 'When do returns get paid?', a: 'Returns are paid quarterly directly to your BraveVest wallet based on the specific asset deal structure. Every payout is fully itemized in your Statement.' },
   { q: 'What happens if a borrower defaults?', a: 'All private credit projects are heavily collateralized with verified real-world assets. Our risk and legal recovery team liquidates collateral to secure investor capital.' },
   { q: 'How do I withdraw funds?', a: 'Go to Wallet → Withdraw. Enter the amount, select your KYC-verified bank account, and confirm. Funds arrive within 1 business day with zero withdrawal fees.' },
