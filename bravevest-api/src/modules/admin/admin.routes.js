@@ -2,6 +2,7 @@ const express = require('express');
 const asyncHandler = require('../../utils/asyncHandler');
 const ctrl = require('./admin.controller');
 const { authRequired } = require('../../middleware/auth.middleware');
+const { requireAdmin, requireSuperAdmin } = require('../../middleware/requireAdmin');
 
 // Inline admin guard (added by iji.js)
 const adminOnly = (req, res, next) => {
@@ -134,7 +135,7 @@ router.get('/settings', authRequired, adminOnly, async (req, res, next) => {
  * PATCH /api/admin/settings
  * Updates platform config.
  */
-router.patch('/settings', authRequired, adminOnly, async (req, res, next) => {
+router.patch('/settings', requireSuperAdmin, authRequired, adminOnly, async (req, res, next) => {
   try {
     const body = req.body || {};
     let settings = await prisma.platformSettings.findFirst().catch(() => null);

@@ -33,12 +33,12 @@ export default function PortfolioChart() {
       <div className="pchart__chart">
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={series} margin={{ top: 8, right: 8, bottom: 8, left: 8 }} barCategoryGap={14}>
-            <CartesianGrid vertical={false} stroke="#E5E5E5" />
+            <CartesianGrid vertical={false} stroke="var(--bv-border)" />
             <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6B6B6B' }} />
             <YAxis hide />
             <Tooltip
               cursor={{ fill: 'rgba(15,15,16,.04)' }}
-              contentStyle={{ borderRadius: 12, border: '1px solid #E5E5E5', fontSize: 12 }}
+              contentStyle={{ borderRadius: 12, border: '1px solid var(--bv-border)', fontSize: 12 }}
               formatter={(v) => [formatNaira(v), 'Invested']}
             />
             <Bar dataKey="invested" fill="#C9A6F2" radius={[0, 0, 0, 0]} />

@@ -5,6 +5,8 @@ import {
   CheckCircle, Loader2, AlertCircle, Globe, Smartphone,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { ThemeLogo } from '@/components/shared/ThemeLogo';
+
 
 const STEPS = [
   { n: 1, label: 'Personal' },
@@ -98,7 +100,7 @@ export default function Register() {
     <div style={{
       display: 'flex',
       minHeight: '100vh',
-      background: '#F7F7F7',
+      background: 'var(--bv-bg)',
       fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     }}>
 
@@ -110,7 +112,7 @@ export default function Register() {
           flex-direction: column;
           justify-content: space-between;
           padding: 56px 64px;
-          background: linear-gradient(135deg, rgba(11, 15, 25, 0.85) 0%, rgba(11, 15, 25, 0.7) 100%), url('watermarked_img_10228335117829985453.jpg') center/cover no-repeat;
+          background: linear-gradient(135deg, rgba(11, 15, 25, 0.85) 0%, rgba(11, 15, 25, 0.7) 100%), url('https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
           position: relative;
           overflow: hidden;
         }
@@ -121,26 +123,26 @@ export default function Register() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          background: #F7F7F7;
+          background: var(--bv-bg);
           padding: 40px 24px;
         }
 
         .auth-input {
           width: 100%;
           padding: 14px 16px;
-          background: #F5F5F5;
+          background: var(--bv-bg-elevated);
           border: 1px solid transparent;
           border-radius: 8px;
           font-size: 15px;
-          color: #111;
+          color: var(--bv-text);
           outline: none;
           font-family: inherit;
           transition: border-color 0.2s, background-color 0.2s;
         }
 
         .auth-input:focus {
-          background: #FFFFFF;
-          border-color: #F6A500;
+          background: var(--bv-bg-elevated);
+          border-color: var(--bv-accent);
         }
 
         .auth-label {
@@ -148,7 +150,7 @@ export default function Register() {
           gap: 6px;
           font-size: 13px;
           font-weight: 500;
-          color: #111;
+          color: var(--bv-text);
         }
 
         .auth-field {
@@ -160,7 +162,7 @@ export default function Register() {
           left: 14px;
           top: 50%;
           transform: translateY(-50%);
-          color: #888;
+          color: var(--bv-text-muted);
           pointer-events: none;
           display: flex;
         }
@@ -172,8 +174,8 @@ export default function Register() {
         .social-btn {
           flex: 1;
           padding: 11px;
-          background: #FFF;
-          border: 1px solid #EAEAEA;
+          background: var(--bv-bg-elevated);
+          border: 1px solid var(--bv-border);
           border-radius: 8px;
           font-size: 13px;
           font-weight: 500;
@@ -182,14 +184,14 @@ export default function Register() {
           align-items: center;
           justify-content: center;
           gap: 8px;
-          color: #111;
+          color: var(--bv-text);
           font-family: inherit;
           transition: background-color 0.2s, border-color 0.2s;
         }
 
         .social-btn:hover:not(:disabled) {
-          background-color: #FAF9F6;
-          border-color: #DDD;
+          background-color: var(--bv-bg-elevated);
+          border-color: var(--bv-border);
         }
 
         @media (max-width: 900px) {
@@ -206,26 +208,26 @@ export default function Register() {
       {/* ── Left Promo Section with Security Visual & High-Contrast Text ── */}
       <div className="login-left-promo">
         <div style={{ position: 'relative', zIndex: 10 }}>
-          <span style={{ display: 'inline-block', padding: '6px 14px', background: 'rgba(246, 165, 0, 0.25)', color: '#FFB81C', borderRadius: '20px', fontSize: '12px', fontWeight: '700', letterSpacing: '0.5px', marginBottom: '20px', backdropFilter: 'blur(6px)', border: '1px solid rgba(246, 165, 0, 0.3)' }}>
+          <span style={{ display: 'inline-block', padding: '6px 14px', background: 'rgba(246, 165, 0, 0.25)', color: 'var(--bv-orange)', borderRadius: '20px', fontSize: '12px', fontWeight: '700', letterSpacing: '0.5px', marginBottom: '20px', backdropFilter: 'blur(6px)', border: '1px solid rgba(246, 165, 0, 0.3)' }}>
             ENTERPRISE-GRADE SECURITY
           </span>
-          <h1 style={{ fontSize: '38px', fontWeight: '800', color: '#FFFFFF', lineHeight: 1.2, letterSpacing: '-0.5px', textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>
-            Start investing in<br />Africa's real economy.
+          <h1 style={{ fontSize: '40px', fontWeight: '900', color: 'var(--bv-orange)', lineHeight: 1.2, letterSpacing: '-0.5px', textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>
+            Invest directly<br />in Africa's real economy.
           </h1>
-          <p style={{ fontSize: '16px', color: '#F0F0F0', marginTop: '16px', maxWidth: '400px', lineHeight: 1.6, fontWeight: '400', textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
-            Join 52,000+ investors earning fixed returns on vetted private credit, real estate, and SME deals.
+          <p style={{ fontSize: '16px', color: '#F0F3F6', marginTop: '16px', maxWidth: '400px', lineHeight: 1.6, fontWeight: '400', textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
+            Fixed returns engineered from fully vetted private credit, commercial real estate, and high-growth SME transactions.
           </p>
         </div>
 
         {/* Stats Strip with High Contrast */}
-        <div style={{ display: 'flex', gap: '48px', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255, 255, 255, 0.2)', paddingTop: '28px' }}>
+        <div style={{ display: 'flex', gap: '48px', position: 'relative', zIndex: '10', borderTop: '1px solid rgba(255, 255, 255, 0.2)', paddingTop: '28px' }}>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '800', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>₦184B+</div>
-            <div style={{ fontSize: '13px', color: '#E0E0E0', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Assets Under Management</div>
+            <div style={{ fontSize: '32px', fontWeight: '800', color: 'var(--bv-orange)', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>₦184B+</div>
+            <div style={{ fontSize: '13px', color: '#F0F3F6', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Assets Under Management</div>
           </div>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '800', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>52,000+</div>
-            <div style={{ fontSize: '13px', color: '#E0E0E0', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Active Investors</div>
+            <div style={{ fontSize: '32px', fontWeight: '800', color: 'var(--bv-orange)', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>52,000+</div>
+            <div style={{ fontSize: '13px', color: '#F0F3F6', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Active Investors</div>
           </div>
         </div>
       </div>
@@ -237,16 +239,12 @@ export default function Register() {
           {/* Header & Logo */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
             <Link to="/" style={{ display: 'inline-block', textDecoration: 'none' }}>
-              <img
-                src="/icons/logo-light.png"
-                alt="BraveVest Logo"
-                style={{ height: '36px', width: 'auto', display: 'block', objectFit: 'contain' }}
-              />
+              <ThemeLogo height={36} alt="BraveVest Logo" />
             </Link>
             <button
               type="button"
               aria-label="Change language"
-              style={{ background: 'none', border: 'none', color: '#111', cursor: 'pointer', padding: '8px' }}
+              style={{ background: 'none', border: 'none', color: 'var(--bv-text)', cursor: 'pointer', padding: '8px' }}
             >
               <Globe size={20} />
             </button>
@@ -254,17 +252,17 @@ export default function Register() {
 
           {/* Form Card */}
           <div style={{
-            background: '#fff',
+            background: 'var(--bv-bg-elevated)',
             borderRadius: '16px',
             padding: '32px',
             boxShadow: '0 4px 24px rgba(0,0,0,0.04)',
-            border: '1px solid #EAEAEA',
+            border: '1px solid var(--bv-border)',
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: 0, color: '#111' }}>Create your account</h2>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: 0, color: 'var(--bv-text)' }}>Create your account</h2>
               <Link
                 to="/login"
-                style={{ fontSize: '13px', color: '#F6A500', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}
+                style={{ fontSize: '13px', color: 'var(--bv-accent)', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}
               >
                 Sign in
               </Link>
@@ -279,14 +277,14 @@ export default function Register() {
                   <div key={s.n} style={{ flex: 1 }}>
                     <div style={{
                       height: 3,
-                      background: done || active ? '#F6A500' : '#EAEAEA',
+                      background: done || active ? 'var(--bv-accent)' : 'var(--bv-border)',
                       borderRadius: 2,
                       marginBottom: 6,
                     }} />
                     <div style={{
                       fontSize: 10,
                       fontWeight: 600,
-                      color: done || active ? '#F6A500' : '#888',
+                      color: done || active ? 'var(--bv-accent)' : 'var(--bv-text-muted)',
                       textTransform: 'uppercase',
                       letterSpacing: '0.04em',
                     }}>
@@ -377,8 +375,8 @@ export default function Register() {
                     onClick={next}
                     style={{
                       padding: '14px',
-                      background: '#F6A500',
-                      color: '#fff',
+                      background: 'var(--bv-accent)',
+                      color: 'var(--bv-bg-elevated)',
                       border: 'none',
                       borderRadius: '8px',
                       fontSize: '15px',
@@ -430,7 +428,7 @@ export default function Register() {
                     </div>
                   </label>
 
-                  <p style={{ fontSize: '13px', color: '#666', lineHeight: 1.6, margin: 0 }}>
+                  <p style={{ fontSize: '13px', color: 'var(--bv-text-muted)', lineHeight: 1.6, margin: 0 }}>
                     Your location helps us provide region-specific features and compliance.
                   </p>
 
@@ -441,9 +439,9 @@ export default function Register() {
                       style={{
                         flex: 1,
                         padding: '14px',
-                        background: '#fff',
-                        color: '#111',
-                        border: '1px solid #EAEAEA',
+                        background: 'var(--bv-bg-elevated)',
+                        color: 'var(--bv-text)',
+                        border: '1px solid var(--bv-border)',
                         borderRadius: '8px',
                         fontSize: '15px',
                         fontWeight: '600',
@@ -463,8 +461,8 @@ export default function Register() {
                       style={{
                         flex: 2,
                         padding: '14px',
-                        background: '#F6A500',
-                        color: '#fff',
+                        background: 'var(--bv-accent)',
+                        color: 'var(--bv-bg-elevated)',
                         border: 'none',
                         borderRadius: '8px',
                         fontSize: '15px',
@@ -515,11 +513,11 @@ export default function Register() {
 
                   <div style={{
                     padding: '12px',
-                    background: '#F5F5F5',
-                    border: '1px solid #EAEAEA',
+                    background: 'var(--bv-bg-elevated)',
+                    border: '1px solid var(--bv-border)',
                     borderRadius: '8px',
                     fontSize: '12px',
-                    color: '#666',
+                    color: 'var(--bv-text-muted)',
                     lineHeight: 1.6,
                   }}>
                     Password must be 8+ characters with uppercase, lowercase, and a number.
@@ -537,7 +535,7 @@ export default function Register() {
                     />
                   </label>
 
-                  <label style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', fontSize: '13px', color: '#666', cursor: 'pointer' }}>
+                  <label style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', fontSize: '13px', color: 'var(--bv-text-muted)', cursor: 'pointer' }}>
                     <input
                       type="checkbox"
                       checked={form.agree}
@@ -546,8 +544,8 @@ export default function Register() {
                     />
                     <span>
                       I am 18+ and agree to the{' '}
-                      <Link to="/terms" style={{ color: '#F6A500', textDecoration: 'underline' }}>Terms</Link> and{' '}
-                      <Link to="/privacy" style={{ color: '#F6A500', textDecoration: 'underline' }}>Privacy Policy</Link>.
+                      <Link to="/terms" style={{ color: 'var(--bv-accent)', textDecoration: 'underline' }}>Terms</Link> and{' '}
+                      <Link to="/privacy" style={{ color: 'var(--bv-accent)', textDecoration: 'underline' }}>Privacy Policy</Link>.
                     </span>
                   </label>
 
@@ -558,9 +556,9 @@ export default function Register() {
                       style={{
                         flex: 1,
                         padding: '14px',
-                        background: '#fff',
-                        color: '#111',
-                        border: '1px solid #EAEAEA',
+                        background: 'var(--bv-bg-elevated)',
+                        color: 'var(--bv-text)',
+                        border: '1px solid var(--bv-border)',
                         borderRadius: '8px',
                         fontSize: '15px',
                         fontWeight: '600',
@@ -580,8 +578,8 @@ export default function Register() {
                       style={{
                         flex: 2,
                         padding: '14px',
-                        background: '#F6A500',
-                        color: '#fff',
+                        background: 'var(--bv-accent)',
+                        color: 'var(--bv-bg-elevated)',
                         border: 'none',
                         borderRadius: '8px',
                         fontSize: '15px',
@@ -608,9 +606,9 @@ export default function Register() {
             {step === 1 && (
               <>
                 <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0' }}>
-                  <div style={{ flex: 1, height: '1px', background: '#EAEAEA' }} />
-                  <span style={{ padding: '0 12px', fontSize: '12px', color: '#888' }}>or sign up with</span>
-                  <div style={{ flex: 1, height: '1px', background: '#EAEAEA' }} />
+                  <div style={{ flex: 1, height: '1px', background: 'var(--bv-border)' }} />
+                  <span style={{ padding: '0 12px', fontSize: '12px', color: 'var(--bv-text-muted)' }}>or sign up with</span>
+                  <div style={{ flex: 1, height: '1px', background: 'var(--bv-border)' }} />
                 </div>
 
                 <div style={{ display: 'flex', gap: '12px' }}>
@@ -639,10 +637,10 @@ export default function Register() {
             )}
 
             {/* Footer link */}
-            <div style={{ textAlign: 'center', borderTop: '1px solid #EAEAEA', paddingTop: '20px', marginTop: '24px' }}>
+            <div style={{ textAlign: 'center', borderTop: '1px solid var(--bv-border)', paddingTop: '20px', marginTop: '24px' }}>
               <Link
                 to="/login"
-                style={{ fontSize: '13px', color: '#F6A500', fontWeight: '500', display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}
+                style={{ fontSize: '13px', color: 'var(--bv-accent)', fontWeight: '500', display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}
               >
                 Already have an account? Sign in <ArrowRight size={14} />
               </Link>
@@ -650,10 +648,10 @@ export default function Register() {
           </div>
 
           {/* Legal / Terms */}
-          <p style={{ textAlign: 'center', fontSize: '12px', color: '#888', marginTop: '24px', lineHeight: 1.6 }}>
+          <p style={{ textAlign: 'center', fontSize: '12px', color: 'var(--bv-text-muted)', marginTop: '24px', lineHeight: 1.6 }}>
             By creating an account, you agree to BraveVest's{' '}
-            <a href="#/terms" style={{ color: '#111', textDecoration: 'underline' }}>Terms</a> and{' '}
-            <a href="#/privacy" style={{ color: '#111', textDecoration: 'underline' }}>Privacy Policy</a>.
+            <a href="#/terms" style={{ color: 'var(--bv-text)', textDecoration: 'underline' }}>Terms</a> and{' '}
+            <a href="#/privacy" style={{ color: 'var(--bv-text)', textDecoration: 'underline' }}>Privacy Policy</a>.
           </p>
 
         </div>

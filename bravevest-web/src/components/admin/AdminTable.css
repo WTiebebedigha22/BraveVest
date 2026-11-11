@@ -1,12 +1,12 @@
 .atable-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 .atable {
-  background: #fff; border: 1px solid var(--line);
+  background: var(--bv-bg-elevated); border: 1px solid var(--line);
   border-radius: var(--r-lg); overflow: hidden;
   min-width: 720px;
 }
 .atable--empty {
-  background: #fff; border: 1px dashed var(--line);
+  background: var(--bv-bg-elevated); border: 1px dashed var(--line);
   border-radius: var(--r-lg); padding: 60px 24px;
   text-align: center; color: var(--gray-600); font-size: 14px;
 }
@@ -41,10 +41,10 @@
   padding: 4px 10px; border-radius: var(--r-pill);
   font-size: 11px; font-weight: 600; letter-spacing: .02em;
   text-transform: uppercase;
-  background: #F1F1EF; color: var(--gray-700);
+  background: var(--bv-bg-elevated); color: var(--gray-700);
 }
-.apill--approved, .apill--success, .apill--active, .apill--confirmed, .apill--open { background: #EAF7CE; color: #3a5a10; }
-.apill--pending, .apill--under_review, .apill--pending_review { background: #FDF4DB; color: #8a6c0a; }
-.apill--rejected, .apill--failed, .apill--cancelled, .apill--defaulted { background: #FBE6E6; color: #8a2121; }
-.apill--matured, .apill--closed, .apill--withdrawn, .apill--funded { background: #E5F0F5; color: #1a5276; }
-.apill--suspended, .apill--deactivated { background: #F1F1EF; color: var(--gray-600); }
+.apill--approved, .apill--success, .apill--active, .apill--confirmed, .apill--open { background: color-mix(in srgb, var(--bv-success) 15%, var(--bv-bg-elevated)); color: var(--bv-success-text, #3a7d44); }
+.apill--pending, .apill--under_review, .apill--pending_review { background: color-mix(in srgb, var(--bv-warning) 15%, var(--bv-bg-elevated)); color: var(--bv-warning-text, var(--bv-warning-text)); }
+.apill--rejected, .apill--failed, .apill--cancelled, .apill--defaulted { background: color-mix(in srgb, var(--bv-danger) 12%, var(--bv-bg-elevated)); color: var(--bv-danger); }
+.apill--matured, .apill--closed, .apill--withdrawn, .apill--funded { background: var(--bv-surface); color: var(--bv-info-text, var(--bv-info-text)); }
+.apill--suspended, .apill--deactivated { background: var(--bv-bg-elevated); color: var(--gray-600); }

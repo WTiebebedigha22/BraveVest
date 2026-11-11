@@ -5,7 +5,7 @@
 .insights__sub { color: var(--gray-600); font-size: 16px; margin-top: 14px; max-width: 560px; }
 .insights__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .insights__card {
-  background: #fff; border: 1px solid var(--line);
+  background: var(--bv-bg-elevated); border: 1px solid var(--line);
   border-radius: var(--r-lg); overflow: hidden;
   display: flex; flex-direction: column;
   transition: border-color .15s ease;

@@ -9,4 +9,38 @@ async function me(req, res) { return success(res, await service.me(req.user.id))
 async function forgotPassword(req, res) { return success(res, await service.forgotPassword(req.body.email), 'Email sent'); }
 async function resetPassword(req, res) { return success(res, await service.resetPassword(req.body.token, req.body.password), 'Password reset'); }
 
-module.exports = { register, login, refresh, logout, me, forgotPassword, resetPassword };
+// ── Session & password management ──────────────────────────────
+async function changePassword(req, res) {
+  await service.changePassword(
+    req.user.id,
+    req.body.oldPassword,
+    req.body.newPassword,
+    req.body.refreshToken || null
+  );
+  return success(res, null, 'Password updated');
+}
+
+async function listSessions(req, res) {
+  const currentToken = req.body?.refreshToken || req.headers['x-refresh-token'] || null;
+  const sessions = await service.listSessions(req.user.id, currentToken);
+  return success(res, sessions, 'Sessions retrieved');
+}
+
+async function logoutOthers(req, res) {
+  const currentToken = req.body?.refreshToken || req.headers['x-refresh-token'] || null;
+  const revoked = await service.revokeOtherSessions(req.user.id, currentToken);
+  return success(res, { revoked }, 'Other sessions logged out');
+}
+
+module.exports = {
+  register,
+  login,
+  refresh,
+  logout,
+  me,
+  forgotPassword,
+  resetPassword,
+  changePassword,
+  listSessions,
+  logoutOthers,
+};

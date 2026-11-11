@@ -56,7 +56,7 @@ const navbarStyles = `
     -webkit-backdrop-filter: saturate(180%) blur(12px);
     border-bottom: 1px solid #1e2329;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    color: #eaecef;
+    color: #F0F3F6;
   }
 
   .bv-navbar__inner {
@@ -82,7 +82,7 @@ const navbarStyles = `
 
   .bv-navbar__link {
     font-size: 14px;
-    color: #848e9c;
+    color: #848E9C;
     font-weight: 500;
     padding: 8px 16px;
     border-radius: 6px;
@@ -94,7 +94,7 @@ const navbarStyles = `
   }
   .bv-navbar__link:hover {
     background: #1e2329;
-    color: #eaecef;
+    color: #F0F3F6;
   }
   .bv-navbar__link.active {
     color: #f0b90b !important;
@@ -133,12 +133,12 @@ const navbarStyles = `
 
   .bv-navbar .bv-btn--ghost {
     background: transparent;
-    color: #eaecef;
+    color: #F0F3F6;
     border: 1px solid #262930;
   }
   .bv-navbar .bv-btn--ghost:hover {
     background: #1e2329;
-    border-color: #363a45;
+    border-color: #3A414A;
   }
 
   .bv-navbar .bv-icon-btn {
@@ -150,7 +150,7 @@ const navbarStyles = `
     border-radius: 6px;
     background: transparent;
     border: 1px solid #262930;
-    color: #eaecef;
+    color: #F0F3F6;
     cursor: pointer;
     transition: all 0.15s ease;
     text-decoration: none;
@@ -167,7 +167,7 @@ const navbarStyles = `
     gap: 5px;
     border: 1px solid #262930;
     border-radius: 6px;
-    background: #181a20;
+    background: #151A21;
     cursor: pointer;
     padding: 0;
   }
@@ -175,7 +175,7 @@ const navbarStyles = `
     display: block;
     width: 18px;
     height: 2px;
-    background: #eaecef;
+    background: #F0F3F6;
     border-radius: 2px;
     transition: all 0.2s ease;
   }
@@ -184,7 +184,7 @@ const navbarStyles = `
   .bv-burger.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
   @media (min-width: 1025px) { .bv-burger { display: none; } }
 
-  /* ── Drawer: theme-aware (uses tokens) ── */
+  /* ── Drawer: always dark (matches navbar) ── */
   .bv-drawer {
     position: fixed;
     inset: 64px 0 0 0;
@@ -194,12 +194,12 @@ const navbarStyles = `
     animation: bvFadeIn 0.15s ease forwards;
   }
   .bv-drawer-inner {
-    background: var(--bv-bg);
-    border-bottom: 1px solid var(--bv-border-soft);
+    background: #0B0E11;
+    border-bottom: 1px solid #1e2329;
     padding: 20px 24px 28px;
     max-height: calc(100vh - 64px);
     overflow-y: auto;
-    color: var(--bv-text);
+    color: #F0F3F6;
     animation: bvSlideDown 0.2s ease forwards;
   }
   .bv-drawer-link {
@@ -207,13 +207,13 @@ const navbarStyles = `
     padding: 14px 0;
     font-size: 15px;
     font-weight: 500;
-    color: var(--bv-text);
-    border-bottom: 1px solid var(--bv-border-soft);
+    color: #F0F3F6;
+    border-bottom: 1px solid #1e2329;
     text-decoration: none;
   }
-  .bv-drawer-link:hover { color: var(--bv-accent); }
+  .bv-drawer-link:hover { color: #f0b90b; }
 
-  /* Drawer buttons: theme-aware */
+  /* Drawer buttons: always dark */
   .bv-drawer .bv-btn {
     display: inline-flex;
     align-items: center;
@@ -230,17 +230,17 @@ const navbarStyles = `
     font-family: inherit;
   }
   .bv-drawer .bv-btn--primary {
-    background-color: var(--bv-accent);
+    background-color: #f0b90b;
     color: #000;
   }
-  .bv-drawer .bv-btn--primary:hover { background-color: var(--bv-accent-hover); }
+  .bv-drawer .bv-btn--primary:hover { background-color: #fcd535; }
 
   .bv-drawer .bv-btn--ghost {
     background: transparent;
-    color: var(--bv-text);
-    border: 1px solid var(--bv-border);
+    color: #F0F3F6;
+    border: 1px solid #262930;
   }
-  .bv-drawer .bv-btn--ghost:hover { background: var(--bv-surface); }
+  .bv-drawer .bv-btn--ghost:hover { background: #1e2329; }
 
   .bv-drawer .bv-icon-btn {
     display: inline-flex;
@@ -250,15 +250,15 @@ const navbarStyles = `
     height: 34px;
     border-radius: 6px;
     background: transparent;
-    border: 1px solid var(--bv-border);
-    color: var(--bv-text);
+    border: 1px solid #262930;
+    color: #F0F3F6;
     cursor: pointer;
     transition: all 0.15s ease;
     text-decoration: none;
   }
-  .bv-drawer .bv-icon-btn:hover { background: var(--bv-surface); }
+  .bv-drawer .bv-icon-btn:hover { background: #1e2329; }
 
-  /* ── Profile sidebar: theme-aware ── */
+  /* ── Profile sidebar: always dark ── */
   .bv-profile-overlay {
     position: fixed;
     inset: 0;
@@ -271,28 +271,28 @@ const navbarStyles = `
     right: 0;
     bottom: 0;
     width: 300px;
-    background: var(--bv-bg-elevated);
-    border-left: 1px solid var(--bv-border);
+    background: #151A21;
+    border-left: 1px solid #2B313A;
     z-index: 99;
     display: flex;
     flex-direction: column;
     padding: 24px;
-    color: var(--bv-text);
+    color: #F0F3F6;
   }
   .bv-profile-nav__item {
     padding: 12px;
     border-radius: 6px;
     cursor: pointer;
-    color: var(--bv-text-muted);
+    color: #848E9C;
     font-size: 14px;
     transition: all 0.15s ease;
   }
   .bv-profile-nav__item:hover {
-    background: var(--bv-surface);
-    color: var(--bv-text);
+    background: #1E2329;
+    color: #F0F3F6;
   }
 
-  /* Profile sidebar buttons: theme-aware */
+  /* Profile sidebar buttons: always dark */
   .bv-profile-sidebar .bv-btn {
     display: inline-flex;
     align-items: center;
@@ -309,17 +309,17 @@ const navbarStyles = `
     font-family: inherit;
   }
   .bv-profile-sidebar .bv-btn--primary {
-    background-color: var(--bv-accent);
+    background-color: #f0b90b;
     color: #000;
   }
-  .bv-profile-sidebar .bv-btn--primary:hover { background-color: var(--bv-accent-hover); }
+  .bv-profile-sidebar .bv-btn--primary:hover { background-color: #fcd535; }
 
   .bv-profile-sidebar .bv-btn--ghost {
     background: transparent;
-    color: var(--bv-text);
-    border: 1px solid var(--bv-border);
+    color: #F0F3F6;
+    border: 1px solid #2B313A;
   }
-  .bv-profile-sidebar .bv-btn--ghost:hover { background: var(--bv-surface); }
+  .bv-profile-sidebar .bv-btn--ghost:hover { background: #1E2329; }
 
   @keyframes bvFadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes bvSlideDown {
@@ -351,7 +351,7 @@ export default function Navbar() {
     <>
       <style dangerouslySetInnerHTML={{ __html: navbarStyles }} />
 
-      <header className="bv-navbar">
+      <header className="bv-navbar" style={{ background: '#0B0E11', color: '#F0F3F6' }}>
         <div className="bv-navbar__inner">
           <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
             <Link to="/" style={{ display: 'inline-flex', alignItems: 'center' }}>
@@ -471,7 +471,7 @@ export default function Navbar() {
               ))}
             </nav>
 
-            <div style={{ height: '1px', background: 'var(--bv-border-soft)', margin: '16px 0' }} />
+            <div style={{ height: '1px', background: '#1e2329', margin: '16px 0' }} />
 
             {user ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -496,10 +496,10 @@ export default function Navbar() {
                     {initials}
                   </button>
                   <div style={{ overflow: 'hidden' }}>
-                    <div style={{ fontSize: '14px', fontWeight: '600', color: 'inherit' }}>
+                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#F0F3F6' }}>
                       {user.email}
                     </div>
-                    <div style={{ fontSize: '12px', color: 'var(--bv-accent)' }}>
+                    <div style={{ fontSize: '12px', color: '#f0b90b' }}>
                       Tap avatar to open profile
                     </div>
                   </div>
@@ -602,7 +602,7 @@ export default function Navbar() {
                 alignItems: 'center',
                 gap: '12px',
                 paddingBottom: '20px',
-                borderBottom: '1px solid var(--bv-border)',
+                borderBottom: '1px solid #2B313A',
               }}
             >
               <div
@@ -629,13 +629,14 @@ export default function Navbar() {
                     whiteSpace: 'nowrap',
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
+                    color: '#F0F3F6',
                   }}
                 >
                   {user.email || 'user@bravevest.com'}
                 </div>
-                <div style={{ fontSize: '12px', color: 'var(--bv-accent)' }}>
+                <div style={{ fontSize: '12px', color: '#f0b90b' }}>
                   {user.roles?.includes('ADMIN') ? 'Admin Account' : 'Main Account'}
-                  <span style={{ color: 'var(--bv-text-muted)', marginLeft: '8px' }}>
+                  <span style={{ color: '#848E9C', marginLeft: '8px' }}>
                     UID: {user.id?.substring(0, 8) || '59197723'}
                   </span>
                 </div>
@@ -674,7 +675,7 @@ export default function Navbar() {
               <div className="bv-profile-nav__item" onClick={() => { setSidebarOpen(false); nav('/goals'); }}>Goals</div>
             </div>
 
-            <div style={{ paddingTop: '16px', borderTop: '1px solid var(--bv-border)' }}>
+            <div style={{ paddingTop: '16px', borderTop: '1px solid #2B313A' }}>
               <button
                 className="bv-btn bv-btn--ghost"
                 onClick={handleLogout}

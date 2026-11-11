@@ -3,7 +3,7 @@
   text-decoration: underline; text-underline-offset: 3px;
 }
 .kycdoc-note {
-  background: #FBE6E6; color: #8a2121;
+  background: color-mix(in srgb, var(--bv-danger) 12%, var(--bv-bg-elevated)); color: var(--bv-danger);
   padding: 14px 18px; border-radius: var(--r-md);
   font-size: 13.5px; line-height: 1.6;
 }
@@ -12,7 +12,7 @@
   padding-top: 20px; border-top: 1px solid var(--line);
 }
 .admin-error {
-  background: #FBE6E6; color: #8a2121;
+  background: color-mix(in srgb, var(--bv-danger) 12%, var(--bv-bg-elevated)); color: var(--bv-danger);
   padding: 12px 18px; border-radius: var(--r-md);
   font-size: 13.5px; margin-bottom: 18px;
 }

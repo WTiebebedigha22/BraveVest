@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import Sidebar from './Sidebar';
+import { ThemeLogo } from '@/components/shared/ThemeLogo';
+import { useIsAdmin } from '@/AppEnhancements';
+
 export default function DashboardLayout() {
+  const isAdmin = useIsAdmin();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -26,7 +30,7 @@ export default function DashboardLayout() {
             <Menu size={22} />
           </button>
           <Link to='/dashboard'>
-            <img src='/logo.png' alt='BraveVest' style={{ height: '22px', filter: 'var(--bv-logo-filter)' }} />
+            <ThemeLogo height={22} alt="BraveVest" />
           </Link>
           </div>
         <Outlet />

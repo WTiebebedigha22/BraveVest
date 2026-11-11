@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Globe, ArrowLeft, Lock, Eye, EyeOff, CheckCircle2, Circle } from 'lucide-react';
 import { authApi } from '@/api/auth';
+import { ThemeLogo } from '@/components/shared/ThemeLogo';
+
 
 export default function ResetPassword() {
   const [params] = useSearchParams();
@@ -46,7 +48,7 @@ export default function ResetPassword() {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#F7F7F7', fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bv-bg)', fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
 
       {/* ── RESPONSIVE STYLES ── */}
       <style>{`
@@ -67,26 +69,26 @@ export default function ResetPassword() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          background: #F7F7F7;
+          background: var(--bv-bg);
           padding: 40px 24px;
         }
 
         .auth-input {
           width: 100%;
           padding: 14px 16px 14px 40px;
-          background: #F5F5F5;
+          background: var(--bv-bg-elevated);
           border: 1px solid transparent;
           border-radius: 8px;
           font-size: 15px;
-          color: #111;
+          color: var(--bv-text);
           outline: none;
           font-family: inherit;
           transition: border-color 0.2s, background-color 0.2s;
         }
 
         .auth-input:focus {
-          background: #FFFFFF;
-          border-color: #F6A500;
+          background: var(--bv-bg-elevated);
+          border-color: var(--bv-accent);
         }
 
         .rule-item {
@@ -94,7 +96,7 @@ export default function ResetPassword() {
           align-items: center;
           gap: 6px;
           font-size: 12px;
-          color: #666;
+          color: var(--bv-text-muted);
         }
 
         .rule-item.valid {
@@ -118,10 +120,10 @@ export default function ResetPassword() {
           <span style={{ display: 'inline-block', padding: '6px 14px', background: 'rgba(246, 165, 0, 0.25)', color: '#FFB81C', borderRadius: '20px', fontSize: '12px', fontWeight: '700', letterSpacing: '0.5px', marginBottom: '20px', backdropFilter: 'blur(6px)', border: '1px solid rgba(246, 165, 0, 0.3)' }}>
             ENTERPRISE-GRADE SECURITY
           </span>
-          <h1 style={{ fontSize: '38px', fontWeight: '800', color: '#FFFFFF', lineHeight: 1.2, letterSpacing: '-0.5px', textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>
+          <h1 style={{ fontSize: '38px', fontWeight: '800', color: 'var(--bv-bg-elevated)', lineHeight: 1.2, letterSpacing: '-0.5px', textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>
             Create your new<br />account password.
           </h1>
-          <p style={{ fontSize: '16px', color: '#F0F0F0', marginTop: '16px', maxWidth: '400px', lineHeight: 1.6, fontWeight: '400', textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
+          <p style={{ fontSize: '16px', color: 'var(--bv-text)', marginTop: '16px', maxWidth: '400px', lineHeight: 1.6, fontWeight: '400', textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
             Ensure your account remains secure with a strong and unique password.
           </p>
         </div>
@@ -129,12 +131,12 @@ export default function ResetPassword() {
         {/* Bottom Stats Strip */}
         <div style={{ display: 'flex', gap: '48px', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255, 255, 255, 0.2)', paddingTop: '28px' }}>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '800', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>₦184B+</div>
-            <div style={{ fontSize: '13px', color: '#E0E0E0', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Assets Under Management</div>
+            <div style={{ fontSize: '32px', fontWeight: '800', color: 'var(--bv-bg-elevated)', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>₦184B+</div>
+            <div style={{ fontSize: '13px', color: 'var(--text-main)', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Assets Under Management</div>
           </div>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '800', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>52,000+</div>
-            <div style={{ fontSize: '13px', color: '#E0E0E0', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Active Investors</div>
+            <div style={{ fontSize: '32px', fontWeight: '800', color: 'var(--bv-bg-elevated)', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>52,000+</div>
+            <div style={{ fontSize: '13px', color: 'var(--text-main)', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Active Investors</div>
           </div>
         </div>
       </div>
@@ -146,26 +148,22 @@ export default function ResetPassword() {
           {/* Header & Logo */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
             <Link to="/" style={{ display: 'inline-block', textDecoration: 'none' }}>
-              <img
-                src="/icons/logo-light.png"
-                alt="BraveVest Logo"
-                style={{ height: '36px', width: 'auto', display: 'block', objectFit: 'contain' }}
-              />
+              <ThemeLogo height={36} alt="BraveVest Logo" />
             </Link>
             <button
               type="button"
               aria-label="Change language"
-              style={{ background: 'none', border: 'none', color: '#111', cursor: 'pointer', padding: '8px' }}
+              style={{ background: 'none', border: 'none', color: 'var(--bv-text)', cursor: 'pointer', padding: '8px' }}
             >
               <Globe size={20} />
             </button>
           </div>
 
           {/* Form Card */}
-          <div style={{ background: '#fff', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid #EAEAEA' }}>
+          <div style={{ background: 'var(--bv-bg-elevated)', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid var(--bv-border)' }}>
             <div style={{ marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: '0 0 8px', color: '#111' }}>Set a new password</h2>
-              <p style={{ fontSize: '14px', color: '#666', margin: 0, lineHeight: 1.5 }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: '0 0 8px', color: 'var(--bv-text)' }}>Set a new password</h2>
+              <p style={{ fontSize: '14px', color: 'var(--bv-text-muted)', margin: 0, lineHeight: 1.5 }}>
                 Enter your new password below to update your security credentials.
               </p>
             </div>
@@ -183,7 +181,7 @@ export default function ResetPassword() {
                   className="auth-input"
                   style={{ paddingRight: '44px' }}
                 />
-                <Lock size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#888' }} />
+                <Lock size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--bv-text-muted)' }} />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
@@ -195,7 +193,7 @@ export default function ResetPassword() {
                     transform: 'translateY(-50%)',
                     background: 'none',
                     border: 'none',
-                    color: '#888',
+                    color: 'var(--bv-text-muted)',
                     cursor: 'pointer',
                     padding: '4px',
                     display: 'flex',
@@ -207,7 +205,7 @@ export default function ResetPassword() {
               </div>
 
               {/* Password Requirements Checklist */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '16px', padding: '12px', background: '#FAF9F6', borderRadius: '8px', border: '1px solid #EAEAEA' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '16px', padding: '12px', background: 'var(--bv-bg-elevated)', borderRadius: '8px', border: '1px solid var(--bv-border)' }}>
                 <div className={`rule-item ${hasMinLength ? 'valid' : ''}`}>
                   {hasMinLength ? <CheckCircle2 size={14} /> : <Circle size={14} />} At least 8 characters
                 </div>
@@ -231,7 +229,7 @@ export default function ResetPassword() {
                   className="auth-input"
                   style={{ paddingRight: '44px' }}
                 />
-                <Lock size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#888' }} />
+                <Lock size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--bv-text-muted)' }} />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -243,7 +241,7 @@ export default function ResetPassword() {
                     transform: 'translateY(-50%)',
                     background: 'none',
                     border: 'none',
-                    color: '#888',
+                    color: 'var(--bv-text-muted)',
                     cursor: 'pointer',
                     padding: '4px',
                     display: 'flex',
@@ -268,8 +266,8 @@ export default function ResetPassword() {
                 style={{
                   width: '100%',
                   padding: '14px',
-                  background: '#F6A500',
-                  color: '#fff',
+                  background: 'var(--bv-accent)',
+                  color: 'var(--bv-bg-elevated)',
                   border: 'none',
                   borderRadius: '8px',
                   fontSize: '16px',
@@ -286,16 +284,16 @@ export default function ResetPassword() {
             </form>
 
             {/* Back to Login Link */}
-            <div style={{ textAlign: 'center', borderTop: '1px solid #EAEAEA', paddingTop: '20px' }}>
-              <Link to="/login" style={{ fontSize: '13px', color: '#F6A500', fontWeight: '500', display: 'inline-flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}>
+            <div style={{ textAlign: 'center', borderTop: '1px solid var(--bv-border)', paddingTop: '20px' }}>
+              <Link to="/login" style={{ fontSize: '13px', color: 'var(--bv-accent)', fontWeight: '500', display: 'inline-flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}>
                 <ArrowLeft size={14} /> Back to Log In
               </Link>
             </div>
           </div>
 
           {/* Legal Footnote */}
-          <p style={{ textAlign: 'center', fontSize: '12px', color: '#888', marginTop: '24px', lineHeight: 1.6 }}>
-            Need help? Contact <a href="mailto:support@bravevest.com" style={{ color: '#111', textDecoration: 'underline' }}>Support</a>
+          <p style={{ textAlign: 'center', fontSize: '12px', color: 'var(--bv-text-muted)', marginTop: '24px', lineHeight: 1.6 }}>
+            Need help? Contact <a href="mailto:support@bravevest.com" style={{ color: 'var(--bv-text)', textDecoration: 'underline' }}>Support</a>
           </p>
 
         </div>

@@ -5,8 +5,8 @@ import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
 
 const COLORS = {
-  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
-  border: '#EAEAEA', accent: '#F6A500', positive: '#0ECB81', negative: '#F6465D',
+  surface: '#FFFFFF', text: '#1A1A1A', muted: 'var(--bv-text-muted)',
+  border: 'var(--bv-border)', accent: 'var(--bv-accent)', positive: '#0ECB81', negative: '#F6465D',
 };
 
 export default function PaymentCallback() {
@@ -51,7 +51,7 @@ export default function PaymentCallback() {
           <CheckCircle size={48} color={COLORS.positive} style={{ margin: '0 auto 16px' }} />
           <h1 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 8px' }}>Payment successful</h1>
           <p style={{ color: COLORS.muted, fontSize: 14, marginBottom: 24 }}>Your wallet has been funded.</p>
-          <Link to="/wallet" style={{ display: 'inline-block', padding: '12px 20px', background: COLORS.accent, color: '#FFF', textDecoration: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14 }}>
+          <Link to="/wallet" style={{ display: 'inline-block', padding: '12px 20px', background: COLORS.accent, color: 'var(--bv-bg-elevated)', textDecoration: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14 }}>
             Back to wallet
           </Link>
         </>
@@ -61,7 +61,7 @@ export default function PaymentCallback() {
           <AlertCircle size={48} color={COLORS.negative} style={{ margin: '0 auto 16px' }} />
           <h1 style={{ fontSize: 22, fontWeight: 700, margin: '0 0 8px' }}>Payment failed</h1>
           <p style={{ color: COLORS.muted, fontSize: 14, marginBottom: 24 }}>{error}</p>
-          <Link to="/deposit" style={{ display: 'inline-block', padding: '12px 20px', background: COLORS.accent, color: '#FFF', textDecoration: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14 }}>
+          <Link to="/deposit" style={{ display: 'inline-block', padding: '12px 20px', background: COLORS.accent, color: 'var(--bv-bg-elevated)', textDecoration: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14 }}>
             Try again
           </Link>
         </>

@@ -25,7 +25,7 @@ import AdminDashboard from '@/pages/admin/AdminDashboard';
 
 function Protected({ children, roles }) {
   const { user, loading } = useAuth();
-  if (loading) return <div style={{ padding: '64px', textAlign: 'center', color: '#888' }}>Loading…</div>;
+  if (loading) return <div style={{ padding: '64px', textAlign: 'center', color: 'var(--bv-text-muted)' }}>Loading…</div>;
   if (!user) return <Navigate to="/login" replace />;
   if (roles && !roles.some((r) => (user.roles || [user.role]).includes(r))) {
     return <Navigate to="/dashboard" replace />;

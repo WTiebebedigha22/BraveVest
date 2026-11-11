@@ -10,7 +10,7 @@
     radial-gradient(40% 60% at 80% 70%, rgba(201,166,242,.45) 0%, transparent 65%);
   filter: blur(60px); opacity: .7; pointer-events: none;
 }
-.ref-hero__inner { position: relative; color: #fff; }
+.ref-hero__inner { position: relative; color: var(--bv-bg-elevated); }
 .ref-hero__label {
   font-size: 12px; text-transform: uppercase; letter-spacing: .14em;
   color: rgba(255,255,255,.65); margin-bottom: 12px;
@@ -18,7 +18,7 @@
 .ref-hero__code {
   font-family: var(--font-serif);
   font-size: clamp(36px, 7vw, 64px);
-  color: #fff; letter-spacing: .02em;
+  color: var(--bv-bg-elevated); letter-spacing: .02em;
   margin-bottom: 24px;
 }
 .ref-hero__actions { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -29,7 +29,7 @@
 .ref-steps li { display: flex; gap: 16px; align-items: flex-start; }
 .ref-steps__n {
   width: 32px; height: 32px; border-radius: 50%;
-  background: var(--ink); color: #fff;
+  background: var(--ink); color: var(--bv-bg-elevated);
   display: inline-flex; align-items: center; justify-content: center;
   font-weight: 600; font-size: 13px; flex-shrink: 0;
 }

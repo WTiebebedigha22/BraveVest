@@ -41,24 +41,24 @@ export default function AdminReview() {
   return (
     <div className="page" style={{ padding: '32px 16px', maxWidth: 1000, margin: '0 auto' }}>
       <h1 style={{ margin: 0, fontSize: 28 }}>Review queue</h1>
-      <p style={{ color: '#666' }}>Credit requests awaiting approval.</p>
+      <p style={{ color: 'var(--bv-text-muted)' }}>Credit requests awaiting approval.</p>
 
       {loading && <div style={{ padding: 40, textAlign: 'center' }}>Loading…</div>}
-      {error && <div style={{ padding: 40, textAlign: 'center', color: '#b71c1c' }}>{error.message}</div>}
+      {error && <div style={{ padding: 40, textAlign: 'center', color: 'var(--bv-danger)' }}>{error.message}</div>}
       {!loading && items.length === 0 && (
-        <div style={{ padding: 60, textAlign: 'center', color: '#888' }}>Queue is empty.</div>
+        <div style={{ padding: 60, textAlign: 'center', color: 'var(--bv-text-muted)' }}>Queue is empty.</div>
       )}
 
       <div style={{ display: 'grid', gap: 12, marginTop: 24 }}>
         {items.map((it) => (
-          <div key={it.id} style={{ padding: 20, border: '1px solid #e3e3e3', borderRadius: 14, background: 'var(--bv-surface)' }}>
+          <div key={it.id} style={{ padding: 20, border:  '1px solid var(--bv-border)', borderRadius: 14, background: 'var(--bv-surface)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
               <div style={{ flex: '1 1 320px' }}>
                 <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
                   <Link to={`/funding/${it.id}`} style={{ color: 'inherit', fontWeight: 600 }}>{it.title}</Link>
                   <StatusBadge status={it.status} />
                 </div>
-                <div style={{ fontSize: 13, color: '#666', marginTop: 6 }}>
+                <div style={{ fontSize: 13, color: 'var(--bv-text-muted)', marginTop: 6 }}>
                   {it.borrower?.email} · {fmt(it.amountRequested)} · {it.category?.replace('_', ' ')}
                 </div>
               </div>
@@ -66,7 +66,7 @@ export default function AdminReview() {
                 <button className="btn btn-primary" onClick={() => approve(it.id)}>Approve</button>
                 <button
                   className="btn"
-                  style={{ border: '1px solid #b71c1c', color: '#b71c1c', background: 'var(--bv-surface)' }}
+                  style={{ border: '1px solid var(--bv-danger)', color: 'var(--bv-danger)', background: 'var(--bv-surface)' }}
                   onClick={() => { setRejectFor(it.id); setReason(''); }}
                 >
                   Reject
@@ -86,11 +86,11 @@ export default function AdminReview() {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="Reason (visible to the borrower)"
-              style={{ width: '100%', padding: 12, border: '1px solid #e3e3e3', borderRadius: 10, fontFamily: 'inherit' }}
+              style={{ width: '100%', padding: 12, border:  '1px solid var(--bv-border)', borderRadius: 10, fontFamily: 'inherit' }}
             />
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 16 }}>
               <button className="btn" onClick={() => setRejectFor(null)}>Cancel</button>
-              <button className="btn" style={{ background: '#b71c1c', color: 'var(--bv-surface)' }} onClick={reject}>Reject</button>
+              <button className="btn" style={{ background: 'var(--bv-danger)', color: 'var(--bv-surface)' }} onClick={reject}>Reject</button>
             </div>
           </div>
         </div>

@@ -37,8 +37,8 @@ export default function PortfolioHealth({ investments = [] }) {
   }, [active]);
 
   const concentration = topShare > 0.7 ? 'High' : topShare > 0.4 ? 'Moderate' : 'Low';
-  const concentrationColor = topShare > 0.7 ? '#8a2121' : topShare > 0.4 ? '#8a6c0a' : '#3a5a10';
-  const concentrationBg = topShare > 0.7 ? '#FBE6E6' : topShare > 0.4 ? '#FDF4DB' : '#EAF7CE';
+  const concentrationColor = topShare > 0.7 ? 'var(--bv-danger)' : topShare > 0.4 ? 'var(--bv-warning-text, var(--bv-warning-text))' : 'var(--bv-success-text, #3a7d44)';
+  const concentrationBg = topShare > 0.7 ? 'color-mix(in srgb, var(--bv-danger) 15%, var(--bv-bg-elevated))' : topShare > 0.4 ? 'color-mix(in srgb, var(--bv-warning) 15%, var(--bv-bg-elevated))' : 'color-mix(in srgb, var(--bv-success) 15%, var(--bv-bg-elevated))';
 
   const diversificationScore = Math.max(0, Math.min(100, Math.round((1 - hhi) * 100)));
 
@@ -76,7 +76,7 @@ export default function PortfolioHealth({ investments = [] }) {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ borderRadius: 12, border: '1px solid #E5E5E5', fontSize: 12 }}
+                  contentStyle={{ borderRadius: 12, border: '1px solid var(--bv-border)', fontSize: 12 }}
                   formatter={(v) => [`₦${Number(v).toLocaleString()}`, 'Amount']}
                 />
               </PieChart>

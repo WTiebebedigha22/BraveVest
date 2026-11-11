@@ -52,7 +52,7 @@ export default function LegalLayout({ title, subtitle, lastUpdated, description,
           </section>
         ))}
 
-        <footer className="legal__foot">
+        <footer className="legal__foot bv-always-dark">
           <div className="legal__foot-title">Questions about this document?</div>
           <p className="legal__foot-body">
             Contact our legal and compliance team at{' '}

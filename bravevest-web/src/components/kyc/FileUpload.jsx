@@ -28,7 +28,7 @@ export default function FileUpload({ type, label, onUploaded, existingUrl }) {
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#666', marginBottom: 6 }}>{label}</label>
+      <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--bv-text-muted)', marginBottom: 6 }}>{label}</label>
       <div
         onClick={() => !busy && ref.current?.click()}
         style={{
@@ -37,19 +37,19 @@ export default function FileUpload({ type, label, onUploaded, existingUrl }) {
           padding: '20px 16px',
           textAlign: 'center',
           cursor: busy ? 'wait' : 'pointer',
-          background: url ? '#f0f7f0' : '#fafafa',
+          background: url ? 'var(--bv-surface)' : 'var(--bv-bg)',
           transition: 'background 0.15s',
         }}
       >
         {busy ? (
-          <div style={{ color: '#666', fontSize: 13 }}>Uploading…</div>
+          <div style={{ color: 'var(--bv-text-muted)', fontSize: 13 }}>Uploading…</div>
         ) : url ? (
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#1b5e20' }}>✓ Uploaded</div>
-            <a href={url} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: '#1b5e20' }}>View file</a>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--bv-success)' }}>✓ Uploaded</div>
+            <a href={url} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: 'var(--bv-success)' }}>View file</a>
           </div>
         ) : (
-          <div style={{ color: '#888', fontSize: 13 }}>
+          <div style={{ color: 'var(--bv-text-muted)', fontSize: 13 }}>
             <div style={{ fontSize: 22, marginBottom: 4 }}>↑</div>
             Click to upload PDF, JPG, or PNG
             <div style={{ fontSize: 11, marginTop: 4 }}>Max 20 MB</div>

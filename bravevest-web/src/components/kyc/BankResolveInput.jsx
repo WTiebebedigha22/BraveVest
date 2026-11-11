@@ -32,11 +32,11 @@ export default function BankResolveInput({ value, onChange }) {
   return (
     <div style={{ display: 'grid', gap: 12 }}>
       <div>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#666', marginBottom: 6 }}>Bank</label>
+        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--bv-text-muted)', marginBottom: 6 }}>Bank</label>
         <select
           value={bankCode}
           onChange={(e) => setBankCode(e.target.value)}
-          style={{ width: '100%', padding: '11px 14px', border: '1px solid #e3e3e3', borderRadius: 10, fontSize: 15 }}
+          style={{ width: '100%', padding: '11px 14px', border:  '1px solid var(--bv-border)', borderRadius: 10, fontSize: 15 }}
         >
           <option value="">Select bank</option>
           {NIGERIAN_BANKS.map((b) => <option key={b.code} value={b.code}>{b.name}</option>)}
@@ -44,19 +44,19 @@ export default function BankResolveInput({ value, onChange }) {
       </div>
 
       <div>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#666', marginBottom: 6 }}>Account number</label>
+        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--bv-text-muted)', marginBottom: 6 }}>Account number</label>
         <input
           value={accountNumber}
           onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
           placeholder="10-digit NUBAN"
           inputMode="numeric"
-          style={{ width: '100%', padding: '11px 14px', border: '1px solid #e3e3e3', borderRadius: 10, fontSize: 15 }}
+          style={{ width: '100%', padding: '11px 14px', border:  '1px solid var(--bv-border)', borderRadius: 10, fontSize: 15 }}
         />
       </div>
 
       <div>
-        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#666', marginBottom: 6 }}>
-          Account name {resolving && <span style={{ color: '#888', fontWeight: 400 }}>· resolving…</span>}
+        <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--bv-text-muted)', marginBottom: 6 }}>
+          Account name {resolving && <span style={{ color: 'var(--bv-text-muted)', fontWeight: 400 }}>· resolving…</span>}
         </label>
         <input
           value={accountName}
@@ -70,7 +70,7 @@ export default function BankResolveInput({ value, onChange }) {
             });
           }}
           placeholder="Auto-fills when bank + account are valid"
-          style={{ width: '100%', padding: '11px 14px', border: '1px solid #e3e3e3', borderRadius: 10, fontSize: 15 }}
+          style={{ width: '100%', padding: '11px 14px', border:  '1px solid var(--bv-border)', borderRadius: 10, fontSize: 15 }}
         />
       </div>
 

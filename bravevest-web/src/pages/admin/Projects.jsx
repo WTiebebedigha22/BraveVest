@@ -6,8 +6,8 @@ import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
 
 const COLORS = {
-  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
-  border: '#EAEAEA', accent: '#F6A500',
+  surface: '#FFFFFF', text: 'var(--bv-text)', muted: 'var(--bv-text-muted)',
+  border: 'var(--bv-border)', accent: 'var(--bv-accent)',
   positive: '#0ECB81', negative: '#F6465D', warning: '#F59E0B',
 };
 const PAGE_SIZE = 15;
@@ -66,7 +66,7 @@ export default function AdminProjects() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>Projects</h1>
         <Link to="/admin/projects/new"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', background: COLORS.accent, color: '#FFF', borderRadius: 8, fontWeight: 600, fontSize: 14, textDecoration: 'none' }}>
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', background: COLORS.accent, color: 'var(--bv-bg-elevated)', borderRadius: 8, fontWeight: 600, fontSize: 14, textDecoration: 'none' }}>
           <Plus size={16} /> New project
         </Link>
       </div>
@@ -97,7 +97,7 @@ export default function AdminProjects() {
           <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, overflow: 'hidden' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
               <thead>
-                <tr style={{ background: '#FAFAFA' }}>
+                <tr style={{ background: 'var(--bv-bg)' }}>
                   {['Project', 'Sector', 'Target', 'Raised', 'Status', ''].map((h) => (
                     <th key={h} style={{
                       textAlign: h === 'Target' || h === 'Raised' || h === '' ? 'right' : 'left',

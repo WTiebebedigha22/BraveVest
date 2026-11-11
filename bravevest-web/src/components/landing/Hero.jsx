@@ -31,7 +31,7 @@ export default function Hero() {
           <div className="hero__card-body">
             <div className="hero__card-label">Select Investment Amount</div>
             <div className="hero__card-amount">{format(amount)}</div>
-            <input type="range" min={MIN} max={MAX} step={5000} value={amount} onChange={(e) => setAmount(Number(e.target.value))} className="hero__slider-input" style={{ background: 'linear-gradient(to right, #3FB8C4 0%, #B3D941 ' + ((amount - MIN) / (MAX - MIN)) * 100 + '%, #E5E5E5 ' + ((amount - MIN) / (MAX - MIN)) * 100 + '%, #E5E5E5 100%)' }} />
+            <input type="range" min={MIN} max={MAX} step={5000} value={amount} onChange={(e) => setAmount(Number(e.target.value))} className="hero__slider-input" style={{ background: 'linear-gradient(to right, #3FB8C4 0%, #B3D941 ' + ((amount - MIN) / (MAX - MIN)) * 100 + '%, var(--bv-surface) ' + ((amount - MIN) / (MAX - MIN)) * 100 + '%, var(--bv-surface) 100%)' }} />
             <div className="hero__slider-labels"><span>{format(MIN)}</span><span>{format(MAX)}</span></div>
             <Button as={Link} to="/marketplace" variant="primary" size="lg" className="hero__card-cta">Start Now</Button>
           </div>

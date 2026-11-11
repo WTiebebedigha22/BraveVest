@@ -1,7 +1,7 @@
 import { Shield, Lock, FileText, CheckCircle } from 'lucide-react';
 
 const COLORS = {
-  bg: '#FAFAFA', text: '#1A1A1A', muted: '#6B7280', border: '#EAEAEA',
+  bg: '#FAFAFA', text: 'var(--bv-text)', muted: 'var(--bv-text-muted)', border: 'var(--bv-border)',
 };
 
 const ITEMS = [

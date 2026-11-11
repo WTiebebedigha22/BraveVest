@@ -1,3 +1,3 @@
-.skel { background: linear-gradient(90deg, #f0f0ee 0%, #f7f7f5 50%, #f0f0ee 100%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+.skel { background: linear-gradient(90deg, var(--bv-bg-elevated) 0%, var(--bv-bg-elevated) 50%, var(--bv-bg-elevated) 100%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-.skel-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }
+.skel-card { background: var(--bv-bg-elevated); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; }

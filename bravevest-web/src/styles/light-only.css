@@ -5,22 +5,10 @@
 
 html, body, #root {
   color-scheme: light !important;
-  background: #fafafa !important;
-  color: #1a1a1a !important;
-}
-
-:root {
-  --bg: #fafafa;
-  --surface: #ffffff;
-  --text: #1a1a1a;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --accent: #0d6e4f;
-  --accent-hover: #0a5a40;
-  --accent-soft: #e8f4ef;
-  --positive: #0d8a5f;
-  --negative: #c0392b;
-}
+  background: var(--bv-bg) !important;
+  color: var(--bv-text) !important;
+}/* neutralised by fix-remaining-colors: :root */
+:root { /* rules removed */ }
 
 /* Kill any dark class that might sneak through */
 html.dark,
@@ -31,10 +19,9 @@ body[data-theme="dark"],
 /* Force form controls light */
 input, select, textarea, button {
   color-scheme: light;
-}
+}/* neutralised by fix-remaining-colors: input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input: */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
-  -webkit-text-fill-color: #1a1a1a !important;
-}
+input:-webkit-autofill:focus { /* rules removed */ }

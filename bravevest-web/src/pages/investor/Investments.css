@@ -1,7 +1,7 @@
 .inv-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 .inv-table {
-  background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg);
+  background: var(--bv-bg-elevated); border: 1px solid var(--line); border-radius: var(--r-lg);
   overflow: hidden;
   min-width: 560px;
 }
@@ -28,9 +28,9 @@
 .inv-table__status {
   font-size: 11px; font-weight: 600; padding: 4px 10px;
   border-radius: var(--r-pill); display: inline-block; width: fit-content;
-  background: #F1F1EF;
+  background: var(--bv-bg-elevated);
 }
-.inv-table__status.is-confirmed, .inv-table__status.is-active { background: #EAF7CE; color: #3a5a10; }
-.inv-table__status.is-pending { background: #FDF4DB; color: #8a6c0a; }
-.inv-table__status.is-success { background: #EAF7CE; color: #3a5a10; }
-.inv-table__status.is-failed { background: #FBE6E6; color: #8a2121; }
+.inv-table__status.is-confirmed, .inv-table__status.is-active { background: color-mix(in srgb, var(--bv-success) 15%, var(--bv-bg-elevated)); color: var(--bv-success-text, #3a7d44); }
+.inv-table__status.is-pending { background: color-mix(in srgb, var(--bv-warning) 15%, var(--bv-bg-elevated)); color: var(--bv-warning-text, var(--bv-warning-text)); }
+.inv-table__status.is-success { background: color-mix(in srgb, var(--bv-success) 15%, var(--bv-bg-elevated)); color: var(--bv-success-text, #3a7d44); }
+.inv-table__status.is-failed { background: color-mix(in srgb, var(--bv-danger) 12%, var(--bv-bg-elevated)); color: var(--bv-danger); }

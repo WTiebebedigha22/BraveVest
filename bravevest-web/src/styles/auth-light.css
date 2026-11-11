@@ -4,106 +4,59 @@
 .auth-card,
 .auth-card * {
   color-scheme: light !important;
-}
-
+}/* neutralised by fix-remaining-colors: .auth-page,
+.auth-shell */
 .auth-page,
-.auth-shell {
-  --bg: #fafafa !important;
-  --surface: #ffffff !important;
-  --text: #1a1a1a !important;
-  --muted: #6b7280 !important;
-  --border: #e5e7eb !important;
-  --accent: #0d6e4f !important;
-  --accent-hover: #0a5a40 !important;
-  --accent-soft: #e8f4ef !important;
-  --positive: #0d8a5f !important;
-  --negative: #c0392b !important;
-  background: #fafafa !important;
-  color: #1a1a1a !important;
-  min-height: 100vh;
-}
+.auth-shell { /* rules removed */ }
 
 html.dark .auth-page,
 html[data-theme="dark"] .auth-page,
 html.dark .auth-shell,
 html[data-theme="dark"] .auth-shell {
-  background: #fafafa !important;
-  color: #1a1a1a !important;
+  background: var(--bv-bg) !important;
+  color: var(--bv-text) !important;
 }
 
 .auth-page input,
 .auth-page select,
 .auth-page textarea {
-  background: #ffffff !important;
-  color: #1a1a1a !important;
-  border: 1px solid #e5e7eb !important;
+  background: var(--bv-bg-elevated) !important;
+  color: var(--bv-text) !important;
+  border: 1px solid var(--bv-border) !important;
   border-radius: 10px;
   padding: 12px 14px;
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 15px;
   width: 100%;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
+}/* neutralised by fix-remaining-colors: .auth-page input:focus,
+.auth-page select:focus,
+.auth-page  */
 .auth-page input:focus,
 .auth-page select:focus,
-.auth-page textarea:focus {
-  outline: none;
-  border-color: #0d6e4f !important;
-  box-shadow: 0 0 0 3px rgba(13, 110, 79, 0.12);
-}
-.auth-page input::placeholder { color: #9ca3af !important; }
-
+.auth-page textarea:focus { /* rules removed */ }
+.auth-page input::placeholder { color: var(--bv-text-muted) !important; }/* neutralised by fix-remaining-colors: .auth-page input:-webkit-autofill,
+.auth-page input:-webkit- */
 .auth-page input:-webkit-autofill,
 .auth-page input:-webkit-autofill:hover,
-.auth-page input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
-  -webkit-text-fill-color: #1a1a1a !important;
-  caret-color: #1a1a1a;
-}
+.auth-page input:-webkit-autofill:focus { /* rules removed */ }
 
 .auth-page label {
-  color: #1a1a1a !important;
+  color: var(--bv-text) !important;
   font-size: 14px;
   font-weight: 500;
   font-family: 'Inter', system-ui, sans-serif;
 }
 .auth-page .muted,
 .auth-page .hint,
-.auth-page small { color: #6b7280 !important; }
-
+.auth-page small { color: var(--bv-text-muted) !important; }/* neutralised by fix-remaining-colors: .auth-page button[type="submit"],
+.auth-page .btn-primary */
 .auth-page button[type="submit"],
-.auth-page .btn-primary {
-  background: #0d6e4f !important;
-  color: #ffffff !important;
-  border: none;
-  border-radius: 10px;
-  padding: 14px 20px;
-  font-weight: 600;
-  font-size: 15px;
-  cursor: pointer;
-  width: 100%;
-  transition: background 0.15s ease;
-}
+.auth-page .btn-primary { /* rules removed */ }
 .auth-page button[type="submit"]:hover:not(:disabled),
 .auth-page .btn-primary:hover:not(:disabled) { background: #0a5a40 !important; }
-.auth-page button[type="submit"]:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.auth-page a { color: #0d6e4f !important; text-decoration: none; font-weight: 500; }
-.auth-page a:hover { text-decoration: underline; }
-
-.auth-page .error-banner {
-  background: #fef2f2 !important;
-  border: 1px solid #fecaca !important;
-  color: #991b1b !important;
-  border-radius: 8px;
-  padding: 12px 14px;
-  font-size: 14px;
-}
-.auth-page .success-banner {
-  background: #ecfdf5 !important;
-  border: 1px solid #a7f3d0 !important;
-  color: #065f46 !important;
-  border-radius: 8px;
-  padding: 12px 14px;
-  font-size: 14px;
-}
+.auth-page button[type="submit"]:disabled { opacity: 0.5; cursor: not-allowed; }/* neutralised by fix-remaining-colors: .auth-page a */
+.auth-page a { /* rules removed */ }
+.auth-page a:hover { text-decoration: underline; }/* neutralised by fix-remaining-colors: .auth-page .error-banner */
+.auth-page .error-banner { /* rules removed */ }/* neutralised by fix-remaining-colors: .auth-page .success-banner */
+.auth-page .success-banner { /* rules removed */ }

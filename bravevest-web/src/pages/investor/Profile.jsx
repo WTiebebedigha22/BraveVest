@@ -8,7 +8,7 @@ import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
 
 const CSS = `
-.pf { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-card2:#EDEDF0; --by-line:#E4E4E9; --by-text:#121214; --by-mute:#6B6B76; --by-yellow:#F7A600; --by-amber:#C27C00; --by-green:#0E9F5B; --by-red:#D6334B; --by-warn:#B26A00;
+.pf { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-card2:#EDEDF0; --by-line:#E4E4E9; --by-text:var(--text-main); --by-mute:var(--bv-text-muted); --by-yellow:var(--bv-accent); --by-amber:#C27C00; --by-green:var(--bv-success); --by-red:#D6334B; --by-warn:#B26A00;
   background:var(--by-bg); color:var(--by-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; min-height:60vh; }
 .pf * { box-sizing:border-box; }
 .pf-wrap { max-width:1100px; margin:0 auto; padding:0 20px; }
@@ -24,8 +24,8 @@ const CSS = `
 .pf-card > :last-child { margin-bottom:0; }
 .pf-center { text-align:center; }
 .pf-avwrap { position:relative; display:inline-block; margin-bottom:20px; }
-.pf-av { width:96px; height:96px; border-radius:50%; background:var(--by-yellow); color:#121214; display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:800; letter-spacing:-0.02em; }
-.pf-cam { position:absolute; right:-2px; bottom:-2px; width:32px; height:32px; border-radius:50%; background:#fff; border:1px solid var(--by-line); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--by-mute); transition:border-color .15s, color .15s; }
+.pf-av { width:96px; height:96px; border-radius:50%; background:var(--by-yellow); color: var(--bv-text); display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:800; letter-spacing:-0.02em; }
+.pf-cam { position:absolute; right:-2px; bottom:-2px; width:32px; height:32px; border-radius:50%; background: var(--bv-bg-elevated); border:1px solid var(--by-line); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--by-mute); transition:border-color .15s, color .15s; }
 .pf-cam:hover { border-color:var(--by-yellow); color:var(--by-amber); }
 .pf-name { font-size:20px; font-weight:800; letter-spacing:-0.02em; margin-bottom:4px; }
 .pf-email { font-size:13px; color:var(--by-mute); margin-bottom:20px; display:flex; align-items:center; justify-content:center; gap:6px; word-break:break-all; }
@@ -53,18 +53,18 @@ const CSS = `
 .pf-lbl { display:grid; gap:8px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:16px; }
 .pf-two .pf-lbl { margin-bottom:0; }
 .pf-lbl > span { display:flex; align-items:center; gap:6px; }
-.pf-in { width:100%; height:48px; padding:0 14px; background:#fff; border:1px solid var(--by-line); border-radius:8px; font-family:inherit; font-size:15px; color:var(--by-text); outline:none; transition:border-color .15s; }
+.pf-in { width:100%; height:48px; padding:0 14px; background: var(--bv-bg-elevated); border:1px solid var(--by-line); border-radius:8px; font-family:inherit; font-size:15px; color:var(--by-text); outline:none; transition:border-color .15s; }
 .pf-in::placeholder { color:#B4B4BE; }
 .pf-in:focus { border-color:var(--by-yellow); }
 .pf-in[readonly] { background:var(--by-card2); color:var(--by-mute); cursor:not-allowed; }
 .pf-lbl--last { margin-bottom:24px; }
 
 .pf-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; height:46px; padding:0 24px; border-radius:8px; border:0; font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; transition:background .15s, border-color .15s, color .15s; }
-.pf-btn--y { background:var(--by-yellow); color:#121214; }
+.pf-btn--y { background:var(--by-yellow); color: var(--bv-text); }
 .pf-btn--y:hover:not(:disabled) { background:#FFB82E; }
-.pf-btn--g { background:#fff; color:var(--by-text); border:1px solid var(--by-line); }
+.pf-btn--g { background: var(--bv-bg-elevated); color:var(--by-text); border:1px solid var(--by-line); }
 .pf-btn--g:hover:not(:disabled) { border-color:var(--by-yellow); color:var(--by-amber); }
-.pf-btn--out { background:#fff; color:var(--by-red); border:1px solid rgba(214,51,75,.3); }
+.pf-btn--out { background: var(--bv-bg-elevated); color:var(--by-red); border:1px solid rgba(214,51,75,.3); }
 .pf-btn--out:hover { background:rgba(214,51,75,.06); border-color:var(--by-red); }
 .pf-btn--full { width:100%; }
 .pf-btn:disabled { opacity:.6; cursor:not-allowed; }

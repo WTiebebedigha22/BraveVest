@@ -43,17 +43,17 @@ const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
 
 .elite-light-root {
-  --bg-primary: #FCFBFA;
-  --bg-surface: #FFFFFF;
+  --bg-primary: var(--bv-bg);
+  --bg-surface: var(--bv-bg-elevated);
   --border-color: rgba(194, 124, 0, 0.15);
-  --gold-primary: #F7A600;
+  --bv-accent: var(--bv-orange);
   --gold-dark: #C27C00;
   --gold-light: #FFC94D;
-  --gold-gradient: linear-gradient(135deg, #FFC94D 0%, #F7A600 50%, #C27C00 100%);
-  --gold-text-gradient: linear-gradient(135deg, #12141A 20%, #C27C00 70%, #F7A600 100%);
-  --text-main: #12141A;
-  --text-muted: #5A5F73;
-  --warm-tint: #FFF8E6;
+  --gold-gradient: linear-gradient(135deg, #FFC94D 0%, var(--bv-accent) 50%, #C27C00 100%);
+  --gold-text-gradient: linear-gradient(135deg, var(--bv-text) 20%, #C27C00 70%, var(--bv-accent) 100%);
+  --text-main: var(--text-main);
+  --text-muted: var(--bv-text-muted);
+  --warm-tint: var(--bv-bg-elevated);
   font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-main);
@@ -76,17 +76,17 @@ const CSS = `
   border: 1.5px solid transparent; white-space: nowrap;
 }
 .elite-btn:hover { transform: translateY(-3px); }
-.elite-btn-gold { background: var(--gold-gradient); color: #12141A; box-shadow: 0 16px 32px -10px rgba(247, 166, 0, 0.45); }
+.elite-btn-gold { background: var(--gold-gradient); color: var(--bv-text); box-shadow: 0 16px 32px -10px rgba(247, 166, 0, 0.45); }
 .elite-btn-gold:hover { filter: brightness(1.05); box-shadow: 0 20px 40px -8px rgba(247, 166, 0, 0.65); }
-.elite-btn-outline { background: #FFFFFF; color: var(--text-main); border-color: rgba(18, 20, 26, 0.15); }
-.elite-btn-outline:hover { background: var(--warm-tint); border-color: var(--gold-primary); color: var(--gold-dark); }
+.elite-btn-outline { background: var(--bv-bg-elevated); color: var(--text-main); border-color: rgba(18, 20, 26, 0.15); }
+.elite-btn-outline:hover { background: var(--warm-tint); border-color: var(--bv-accent); color: var(--gold-dark); }
 
 /* Hero with IMAGE background (like Home) */
 .elite-hero-faq {
   position: relative;
   padding: 120px 0 120px;
   text-align: center;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
   background:
     linear-gradient(rgba(18, 18, 20, 0.72), rgba(18, 18, 20, 0.82)),
     url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
@@ -109,18 +109,18 @@ const CSS = `
   line-height: 1.08;
   max-width: 900px;
   margin: 0 auto 24px;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
 }
 
 .elite-hero-faq h1 .elite-gradient-text {
-  background: linear-gradient(135deg, #FFC94D 0%, #F7A600 50%, #FFE29A 100%);
+  background: linear-gradient(135deg, #FFC94D 0%, var(--bv-accent) 50%, #FFE29A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .elite-hero-faq p {
   font-size: clamp(17px, 2vw, 20px);
-  color: #E4E4E9;
+  color: var(--bv-text-muted);
   max-width: 640px;
   margin: 0 auto 40px;
   line-height: 1.6;
@@ -146,7 +146,7 @@ const CSS = `
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
 }
 .elite-hero-search input:focus {
-  border-color: var(--gold-primary);
+  border-color: var(--bv-accent);
   box-shadow: 0 0 0 4px rgba(247, 166, 0, 0.25), 0 12px 32px rgba(0, 0, 0, 0.2);
 }
 .elite-hero-search svg {
@@ -167,7 +167,7 @@ const CSS = `
 .elite-cat-chip {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 12px 20px;
-  background: #FFFFFF;
+  background: var(--bv-bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: 99px;
   font-weight: 600; font-size: 14px;
@@ -176,8 +176,8 @@ const CSS = `
   box-shadow: 0 8px 20px rgba(18, 18, 20, 0.06);
   transition: all 0.2s;
 }
-.elite-cat-chip:hover { border-color: var(--gold-primary); color: var(--gold-dark); transform: translateY(-2px); }
-.elite-cat-chip.active { background: var(--gold-gradient); color: #12141A; border-color: transparent; box-shadow: 0 12px 24px rgba(247, 166, 0, 0.35); }
+.elite-cat-chip:hover { border-color: var(--bv-accent); color: var(--gold-dark); transform: translateY(-2px); }
+.elite-cat-chip.active { background: var(--gold-gradient); color: var(--bv-text); border-color: transparent; box-shadow: 0 12px 24px rgba(247, 166, 0, 0.35); }
 
 /* FAQ List */
 .elite-faq-list {
@@ -186,13 +186,13 @@ const CSS = `
   display: flex; flex-direction: column; gap: 16px;
 }
 .elite-faq-item {
-  background: #FFFFFF;
+  background: var(--bv-bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: 20px;
   padding: 28px 32px;
   transition: all 0.25s;
 }
-.elite-faq-item:hover { border-color: var(--gold-primary); box-shadow: 0 12px 32px rgba(194, 124, 0, 0.1); }
+.elite-faq-item:hover { border-color: var(--bv-accent); box-shadow: 0 12px 32px rgba(194, 124, 0, 0.1); }
 .elite-faq-item summary {
   cursor: pointer;
   font-family: 'Space Grotesk', sans-serif;
@@ -225,7 +225,7 @@ const CSS = `
 /* Empty */
 .elite-empty {
   padding: 80px 24px; text-align: center;
-  background: #FFFFFF;
+  background: var(--bv-bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: 24px;
   max-width: 600px; margin: 48px auto 0;
@@ -235,11 +235,11 @@ const CSS = `
 
 /* Banner */
 .elite-banner {
-  background: linear-gradient(135deg, #12141A 0%, #1F222B 100%);
+  background: linear-gradient(135deg, var(--bv-bg) 0%, var(--bv-bg-elevated) 100%);
   border: 1px solid rgba(247, 166, 0, 0.4);
   border-radius: 36px; padding: 72px 48px;
   text-align: center; position: relative; overflow: hidden;
-  margin: 80px auto 120px; color: #FFFFFF;
+  margin: 80px auto 120px; color: var(--bv-bg-elevated);
   box-shadow: 0 30px 80px rgba(18, 18, 20, 0.2);
   max-width: 1240px;
 }
@@ -249,8 +249,8 @@ const CSS = `
   background: radial-gradient(circle, rgba(247, 166, 0, 0.25), transparent 70%);
   pointer-events: none;
 }
-.elite-banner h2 { font-size: clamp(32px, 4.5vw, 48px); margin: 0 0 16px; color: #FFFFFF; }
-.elite-banner p { color: #9BA1B0; font-size: 18px; max-width: 600px; margin: 0 auto 36px; }
+.elite-banner h2 { font-size: clamp(32px, 4.5vw, 48px); margin: 0 0 16px; color: var(--bv-bg-elevated); }
+.elite-banner p { color: var(--bv-text-muted); font-size: 18px; max-width: 600px; margin: 0 auto 36px; }
 
 @media (max-width: 768px) {
   .elite-hero-faq { padding: 80px 0 100px; }
@@ -282,7 +282,7 @@ export default function Faq() {
       <div className='elite-light-root'>
 
         {/* Hero WITH IMAGE */}
-        <section className='elite-hero-faq'>
+        <section className='elite-hero-faq bv-hero'>
           <div className='elite-container'>
             <div className='elite-badge'>
               <Sparkles size={15} />
@@ -295,7 +295,7 @@ export default function Faq() {
               Everything you need to know about investing, KYC, withdrawals, and returns on BraveVest.
             </p>
 
-            <div className='elite-hero-search'>
+            <div className='elite-hero-search bv-hero'>
               <Search size={20} />
               <input
                 type='search'
@@ -354,7 +354,7 @@ export default function Faq() {
 
         {/* CTA */}
         <div style={{ padding: '0 24px' }}>
-          <div className='elite-banner'>
+          <div className='elite-banner bv-hero'>
             <h2 className='elite-title'>Still need help?</h2>
             <p>Our support team responds within 2 hours on business days.</p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>

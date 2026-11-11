@@ -13,8 +13,8 @@
   --pop-dur: 0.35s;
   --pop-dur-slow: 0.6s;
 
-  --pop-grad-orange: linear-gradient(135deg, #F6A500 0%, #FFD966 100%);
-  --pop-grad-hero: linear-gradient(135deg, #F6A500 0%, #D98F00 100%);
+  --pop-grad-orange: linear-gradient(135deg, var(--bv-accent) 0%, #FFD966 100%);
+  --pop-grad-hero: linear-gradient(135deg, var(--bv-accent) 0%, #D98F00 100%);
   --pop-grad-shine: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 50%, transparent 100%);
 }
 
@@ -81,7 +81,7 @@ html {
 }
 
 h1 .text-gradient {
-  background: linear-gradient(135deg, #F6A500 0%, #FFD966 50%, #F6A500 100%);
+  background: linear-gradient(135deg, var(--bv-accent) 0%, #FFD966 50%, var(--bv-accent) 100%);
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -276,7 +276,7 @@ a.card:hover {
    SPARKLINES — glowing stroke
    ============================================================ */
 svg polyline[stroke="var(--bv-orange)"],
-svg polyline[stroke="#F6A500"] {
+svg polyline[stroke="var(--bv-accent)"] {
   filter: drop-shadow(0 0 6px rgba(246, 165, 0, 0.5));
 }
 

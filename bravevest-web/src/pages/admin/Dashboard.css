@@ -28,14 +28,14 @@
 .admin-queue-item:hover .admin-queue-label { color: var(--ink); }
 .admin-queue-icon { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 11px; }
 .admin-queue-icon--gold { color: #9a6700; background: rgba(245, 181, 61, .15); }
-.admin-queue-icon--blue { color: #2364aa; background: rgba(59, 130, 246, .12); }
-.admin-queue-icon--green { color: #527515; background: rgba(179, 217, 65, .2); }
+.admin-queue-icon--blue { color: var(--bv-info, var(--bv-info)); background: rgba(59, 130, 246, .12); }
+.admin-queue-icon--green { color: var(--bv-success); background: rgba(179, 217, 65, .2); }
 .admin-queue-label { font-size: 13px; font-weight: 650; color: var(--gray-800, #343a32); }
 .admin-queue-count { min-width: 30px; text-align: right; font-size: 15px; color: var(--ink); }
 .admin-queue-arrow { color: var(--gray-500, #8b9086); }
-.admin-queue-footer { display: flex; align-items: flex-start; gap: 8px; margin-top: 15px; padding: 12px; border-radius: 10px; background: #f7f8f4; color: var(--gray-600); font-size: 11px; line-height: 1.5; }
-.admin-queue-footer svg { flex: 0 0 auto; color: #77951c; }
-.admin-dashboard-alert { display: flex; align-items: center; gap: 10px; margin: 16px 0; padding: 12px 14px; border: 1px solid #f1c5bd; border-radius: 10px; background: #fff7f5; color: #853b2e; font-size: 13px; }
+.admin-queue-footer { display: flex; align-items: flex-start; gap: 8px; margin-top: 15px; padding: 12px; border-radius: 10px; background: var(--bv-surface); color: var(--gray-600); font-size: 11px; line-height: 1.5; }
+.admin-queue-footer svg { flex: 0 0 auto; color: var(--bv-success); }
+.admin-dashboard-alert { display: flex; align-items: center; gap: 10px; margin: 16px 0; padding: 12px 14px; border: 1px solid var(--bv-danger); border-radius: 10px; background: var(--bv-surface); color: var(--bv-danger); font-size: 13px; }
 .admin-dashboard-alert button { margin-left: auto; border: 0; background: none; color: inherit; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
 .admin-cell-subtitle { margin-top: 3px; color: var(--gray-600); font-size: 11px; }
 .admin-capitalize { text-transform: capitalize; }

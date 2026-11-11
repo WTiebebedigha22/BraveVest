@@ -74,7 +74,7 @@ export default function Referral() {
               {/* Code card */}
               <div className='bv-card-lift bv-fade-up' style={{ padding: 28, background: 'linear-gradient(135deg, var(--surface) 0%, rgba(246,165,0,0.05) 100%)', border: '1px solid var(--border)', borderRadius: 20, marginBottom: 24 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-muted)', fontSize: 13, fontWeight: 500, marginBottom: 12 }}>
-                  <Gift size={16} color='#F6A500' />
+                  <Gift size={16} color='var(--bv-accent)' />
                   Your referral code
                 </div>
                 <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', marginBottom: 20 }}>
@@ -109,7 +109,7 @@ export default function Referral() {
                 </div>
                 <div className='bv-card-lift' style={{ padding: 24, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-muted)', marginBottom: 8 }}>
-                    <Users size={18} color='#F6A500' />
+                    <Users size={18} color='var(--bv-accent)' />
                     <span style={{ fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>People referred</span>
                   </div>
                   <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--text)' }}>{data.referrals.length}</div>

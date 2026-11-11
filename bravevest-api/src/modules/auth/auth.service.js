@@ -58,4 +58,58 @@ async function me(userId) {
 async function forgotPassword(email) { return { sent: true }; }
 async function resetPassword(token, newPassword) { throw ApiError.badRequest('Not implemented'); }
 
-module.exports = { register, login, refresh, logout, me, forgotPassword, resetPassword };
+
+// ── Session & password management (added by installer) ──
+const bcryptInst = require('bcryptjs');
+const prismaInst = require('../../config/database').prisma;
+const ApiErrorInst = require('../../utils/apiError');
+
+async function changePassword(userId, oldPassword, newPassword, currentRefreshToken = null) {
+  const user = await prismaInst.user.findUnique({ where: { id: userId } });
+  if (!user) throw ApiErrorInst.notFound('User not found');
+  const ok = await bcryptInst.compare(oldPassword, user.passwordHash);
+  if (!ok) throw ApiErrorInst.badRequest('Current password is incorrect');
+  const hash = await bcryptInst.hash(newPassword, 10);
+  await prismaInst.user.update({ where: { id: userId }, data: { passwordHash: hash } });
+  await prismaInst.refreshToken.updateMany({
+    where: {
+      userId,
+      revoked: false,
+      ...(currentRefreshToken ? { token: { not: currentRefreshToken } } : {}),
+    },
+    data: { revoked: true },
+  });
+}
+
+async function listSessions(userId, currentToken) {
+  const now = new Date();
+  const rows = await prismaInst.refreshToken.findMany({
+    where: { userId, revoked: false, expiresAt: { gt: now } },
+    select: {
+      id: true, token: true, userAgent: true,
+      ipAddress: true, createdAt: true, expiresAt: true,
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+  return rows.map(({ token, ...rest }) => ({
+    ...rest,
+    current: currentToken ? token === currentToken : false,
+  }));
+}
+
+async function revokeOtherSessions(userId, currentToken) {
+  const result = await prismaInst.refreshToken.updateMany({
+    where: {
+      userId,
+      revoked: false,
+      ...(currentToken ? { token: { not: currentToken } } : {}),
+    },
+    data: { revoked: true },
+  });
+  return result.count;
+}
+
+module.exports = {
+  changePassword,
+  listSessions,
+  revokeOtherSessions, register, login, refresh, logout, me, forgotPassword, resetPassword };

@@ -43,9 +43,9 @@ export default function Footer() {
   return (
     <footer
       style={{
-        background: '#0A0A0A',
+        background: '#1A1A1A',
         borderTop: '1px solid #1A1A1A',
-        color: '#F5F5F5',
+        color: 'var(--bv-bg-elevated)',
         fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
         marginTop: 'auto',
       }}
@@ -91,7 +91,7 @@ export default function Footer() {
             <p
               style={{
                 fontSize: 14,
-                color: '#A1A1AA',
+                color: 'var(--text-muted)',
                 lineHeight: 1.6,
                 margin: '0 0 16px',
                 maxWidth: 260,
@@ -110,7 +110,7 @@ export default function Footer() {
                 borderRadius: 6,
                 fontSize: 12,
                 fontWeight: 600,
-                color: '#F6A500',
+                color: 'var(--bv-accent)',
               }}
             >
               <Shield size={12} />
@@ -125,7 +125,7 @@ export default function Footer() {
                 style={{
                   fontSize: 12,
                   fontWeight: 700,
-                  color: '#F5F5F5',
+                  color: 'var(--bv-accent)',
                   margin: '0 0 16px',
                   textTransform: 'uppercase',
                   letterSpacing: '0.05em',
@@ -140,7 +140,7 @@ export default function Footer() {
                       to={l.to}
                       style={{
                         fontSize: 14,
-                        color: '#A1A1AA',
+                        color: 'var(--text-muted)',
                         textDecoration: 'none',
                       }}
                     >
@@ -164,20 +164,20 @@ export default function Footer() {
             borderTop: '1px solid #1A1A1A',
             marginBottom: 20,
             fontSize: 13,
-            color: '#A1A1AA',
+            color: 'var(--text-muted)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Mail size={14} color="#F6A500" />
+            <Mail size={14} color="var(--bv-accent)" />
             <a
               href="mailto:support@bravevest.com"
-              style={{ color: '#A1A1AA', textDecoration: 'none' }}
+              style={{ color: 'var(--text-muted)', textDecoration: 'none' }}
             >
               support@bravevest.com
             </a>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <MapPin size={14} color="#F6A500" />
+            <MapPin size={14} color="var(--bv-accent)" />
             <span>Lagos, Nigeria</span>
           </div>
         </div>
@@ -186,16 +186,16 @@ export default function Footer() {
         <p
           style={{
             fontSize: 12,
-            color: '#A1A1AA',
+            color: 'var(--text-muted)',
             lineHeight: 1.6,
             marginBottom: 20,
             opacity: 0.85,
           }}
         >
-          <strong style={{ color: '#F5F5F5' }}>Risk warning:</strong> All investments carry risk. Your
+          <strong style={{ color: 'var(--bv-accent)' }}>Risk warning:</strong> All investments carry risk. Your
           capital is at risk. Returns are projections, not guarantees. Past performance is not
           indicative of future results. Read our{' '}
-          <Link to="/risk-disclosure" style={{ color: '#F6A500', textDecoration: 'none' }}>
+          <Link to="/risk-disclosure" style={{ color: 'var(--bv-accent)', textDecoration: 'none' }}>
             full risk disclosure
           </Link>{' '}
           before investing.
@@ -212,18 +212,18 @@ export default function Footer() {
             paddingTop: 20,
             borderTop: '1px solid #1A1A1A',
             fontSize: 13,
-            color: '#A1A1AA',
+            color: 'var(--text-muted)',
           }}
         >
           <div>© {new Date().getFullYear()} BraveVest. All rights reserved.</div>
           <div style={{ display: 'flex', gap: 20 }}>
-            <Link to="/terms" style={{ color: '#A1A1AA', textDecoration: 'none' }}>
+            <Link to="/terms" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>
               Terms
             </Link>
-            <Link to="/privacy" style={{ color: '#A1A1AA', textDecoration: 'none' }}>
+            <Link to="/privacy" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>
               Privacy
             </Link>
-            <Link to="/risk-disclosure" style={{ color: '#A1A1AA', textDecoration: 'none' }}>
+            <Link to="/risk-disclosure" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>
               Disclosures
             </Link>
           </div>

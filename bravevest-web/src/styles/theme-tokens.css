@@ -31,7 +31,7 @@
   --bg-elev: #FFFFFF;
   --text: #0A0A0A;
   --text-muted: #6B7280;
-  --border: #EAEAEA;
+  --border: var(--bv-border);
   --border-strong: #D4D4D4;
   --surface: #FFFFFF;
   --surface-elev: #FFFFFF;
@@ -47,54 +47,50 @@
 /* ── Global body swap ── */
 [data-theme="dark"] body {
   background: #0A0A0A;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
   color-scheme: dark;
 }
 [data-theme="light"] body {
-  background: #FAFAFA;
-  color: #0A0A0A;
+  background: var(--bv-bg);
+  color: var(--bv-text);
   color-scheme: light;
 }
 
 /* ── PageShell: dark vs light ── */
 [data-theme="dark"] .bv-dark {
   background: #0A0A0A;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
 }
 [data-theme="light"] .bv-dark {
-  background: #FAFAFA;
-  color: #0A0A0A;
+  background: var(--bv-bg);
+  color: var(--bv-text);
 }
 
 [data-theme="light"] .bv-dark h1,
 [data-theme="light"] .bv-dark h2,
 [data-theme="light"] .bv-dark h3,
 [data-theme="light"] .bv-dark h4 {
-  color: #0A0A0A;
+  color: var(--bv-text);
 }
 [data-theme="light"] .bv-dark p {
-  color: #6B7280;
+  color: var(--bv-text-muted);
 }
 
 /* ── Card backgrounds flip ── */
-[data-theme="light"] .bv-dark [style*="background: '#141414'"],
-[data-theme="light"] .bv-dark [style*="background: #141414"] {
-  background: #FFFFFF !important;
-  border-color: #EAEAEA !important;
-}
+
 
 /* ── Gradient text stays orange in both themes ── */
 [data-theme="light"] .bv-gradient-text {
   background: linear-gradient(135deg, #E59500 0%, #F6A500 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: set(--bv-text);
 }
 
 /* ── Pill ghost buttons ── */
 [data-theme="light"] .bv-pill--ghost {
   background: rgba(0,0,0,0.03);
-  color: #0A0A0A;
+  color: var(--bv-text);
   border-color: rgba(0,0,0,0.1);
 }
 [data-theme="light"] .bv-pill--ghost:hover {

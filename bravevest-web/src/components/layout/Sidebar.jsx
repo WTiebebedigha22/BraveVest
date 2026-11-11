@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useIsAdmin } from '@/AppEnhancements';
 import {
   LayoutDashboard, TrendingUp, Wallet, FileText, Target,
   Gift, Users, UserCircle, Calendar, BarChart3, Shield,
@@ -8,11 +9,11 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 
 const COLORS = {
-  bg: '#FFFFFF',
-  text: '#1A1A1A',
-  muted: '#6B7280',
-  border: '#EAEAEA',
-  accent: '#F6A500',
+  bg: 'var(--bv-bg-elevated)',
+  text: 'var(--bv-text)',
+  muted: 'var(--bv-text-muted)',
+  border: 'var(--bv-border)',
+  accent: 'var(--bv-accent)',
   accentSoft: 'rgba(246,165,0,0.1)',
   negative: '#F6465D',
   adminTint: 'rgba(246,165,0,0.04)',
@@ -69,7 +70,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
       <div style={{ padding: '4px 12px 20px', display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{
           width: 32, height: 32, borderRadius: 8,
-          background: COLORS.accent, color: '#FFF',
+          background: COLORS.accent, color: 'var(--bv-bg-elevated)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontWeight: 700, fontSize: 16,
           boxShadow: isAdmin ? '0 0 0 2px rgba(246,165,0,0.3)' : 'none',
@@ -81,7 +82,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
               <span style={{
                 padding: '2px 7px',
                 background: COLORS.accent,
-                color: '#0A0A0A',
+                color: 'var(--bv-text)',
                 borderRadius: 4,
                 fontSize: 9,
                 fontWeight: 800,

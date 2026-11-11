@@ -1,6 +1,6 @@
 .aempty {
   padding: 60px 24px; text-align: center;
-  background: #fff; border: 1px dashed var(--line);
+  background: var(--bv-bg-elevated); border: 1px dashed var(--line);
   border-radius: var(--r-lg);
 }
 .aempty__icon {

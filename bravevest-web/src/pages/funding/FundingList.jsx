@@ -32,7 +32,7 @@ export default function FundingList() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
         <div>
           <h1 style={{ margin: 0, fontSize: 32 }}>Funding opportunities</h1>
-          <p style={{ margin: '4px 0 0', color: '#666' }}>Curated opportunities from verified borrowers. Each is a peer-to-peer loan.</p>
+          <p style={{ margin: '4px 0 0', color: 'var(--bv-text-muted)' }}>Curated opportunities from verified borrowers. Each is a peer-to-peer loan.</p>
         </div>
         <Link to="/funding/new" className="btn btn-primary">Request funding</Link>
       </div>
@@ -42,21 +42,21 @@ export default function FundingList() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search…"
-          style={{ padding: '10px 14px', border: '1px solid #e3e3e3', borderRadius: 999, minWidth: 200, flex: '1 1 200px' }}
+          style={{ padding: '10px 14px', border:  '1px solid var(--bv-border)', borderRadius: 999, minWidth: 200, flex: '1 1 200px' }}
         />
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          style={{ padding: '10px 14px', border: '1px solid #e3e3e3', borderRadius: 999 }}
+          style={{ padding: '10px 14px', border:  '1px solid var(--bv-border)', borderRadius: 999 }}
         >
           {CATEGORIES.map((c) => <option key={c} value={c}>{c.replace('_', ' ')}</option>)}
         </select>
       </div>
 
       {loading && <div style={{ padding: 40, textAlign: 'center' }}>Loading…</div>}
-      {error && <div style={{ padding: 40, textAlign: 'center', color: '#b71c1c' }}>Couldn’t load: {error.message}</div>}
+      {error && <div style={{ padding: 40, textAlign: 'center', color: 'var(--bv-danger)' }}>Couldn’t load: {error.message}</div>}
       {!loading && !error && items.length === 0 && (
-        <div style={{ padding: 60, textAlign: 'center', color: '#888' }}>No published opportunities yet.</div>
+        <div style={{ padding: 60, textAlign: 'center', color: 'var(--bv-text-muted)' }}>No published opportunities yet.</div>
       )}
 
       <div

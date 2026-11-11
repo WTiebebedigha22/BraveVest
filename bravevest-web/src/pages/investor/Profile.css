@@ -1,14 +1,14 @@
 .profile-hero {
   display: flex; align-items: center; gap: 24px;
   padding: 28px; margin-bottom: 28px;
-  background: #fff; border: 1px solid var(--line);
+  background: var(--bv-bg-elevated); border: 1px solid var(--line);
   border-radius: var(--r-lg);
 }
 
 .profile-hero__avatar {
   width: 84px; height: 84px; border-radius: 50%;
   background: linear-gradient(135deg, var(--teal), var(--lime));
-  color: #fff;
+  color: var(--bv-bg-elevated);
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-serif); font-size: 32px;
   overflow: hidden;
@@ -29,8 +29,8 @@
   text-transform: uppercase; letter-spacing: .04em;
   background: var(--surface-soft); color: var(--gray-700);
 }
-.profile-badge.is-ok { background: #EAF7CE; color: #3a5a10; }
-.profile-badge.is-warn { background: #FDF4DB; color: #8a6c0a; }
+.profile-badge.is-ok { background: color-mix(in srgb, var(--bv-success) 15%, var(--bv-bg-elevated)); color: var(--bv-success-text, #3a7d44); }
+.profile-badge.is-warn { background: color-mix(in srgb, var(--bv-warning) 15%, var(--bv-bg-elevated)); color: var(--bv-warning-text, var(--bv-warning-text)); }
 
 .profile-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
@@ -60,8 +60,8 @@
 
 .profile-notice {
   margin-top: 18px; padding: 14px 16px;
-  background: #E5F0F5; border-radius: var(--r-md);
-  font-size: 12.5px; color: #1a5276; line-height: 1.55;
+  background: var(--bv-surface); border-radius: var(--r-md);
+  font-size: 12.5px; color: var(--bv-info-text, var(--bv-info-text)); line-height: 1.55;
 }
 
 @media (max-width: 900px) {

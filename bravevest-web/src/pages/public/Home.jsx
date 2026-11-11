@@ -8,20 +8,20 @@ const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
 
 .elite-light-root {
-  --bg-primary: #FCFBFA;
-  --bg-surface: #FFFFFF;
+  --bg-primary: var(--bv-bg);
+  --bg-surface: var(--bv-bg-elevated);
   --bg-surface-glass: rgba(255, 255, 255, 0.85);
   --border-color: rgba(194, 124, 0, 0.15);
   --border-hover: rgba(247, 166, 0, 0.5);
-  --gold-primary: #F7A600;
+  --bv-accent: var(--bv-orange);
   --gold-dark: #C27C00;
   --gold-light: #FFC94D;
-  --gold-gradient: linear-gradient(135deg, #FFC94D 0%, #F7A600 50%, #C27C00 100%);
-  --gold-text-gradient: linear-gradient(135deg, #12141A 20%, #C27C00 70%, #F7A600 100%);
-  --text-main: #12141A;
-  --text-muted: #5A5F73;
-  --success-green: #0E9F5B;
-  --warm-tint: #FFF8E6;
+  --gold-gradient: linear-gradient(135deg, #FFC94D 0%, var(--bv-accent) 50%, #C27C00 100%);
+  --gold-text-gradient: linear-gradient(135deg, var(--bv-text) 20%, #C27C00 70%, var(--bv-accent) 100%);
+  --text-main: var(--text-main);
+  --text-muted: var(--bv-text-muted);
+  --success-green: var(--bv-success);
+  --warm-tint: var(--bv-bg-elevated);
   font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-main);
@@ -85,7 +85,7 @@ const CSS = `
 
 .elite-btn-gold {
   background: var(--gold-gradient);
-  color: #12141A;
+  color: var(--bv-text);
   box-shadow: 0 16px 32px -10px rgba(247, 166, 0, 0.45);
 }
 .elite-btn-gold:hover {
@@ -94,14 +94,14 @@ const CSS = `
 }
 
 .elite-btn-outline {
-  background: #FFFFFF;
+  background: var(--bv-bg-elevated);
   color: var(--text-main);
   border-color: rgba(18, 20, 26, 0.15);
   box-shadow: 0 4px 12px rgba(18, 18, 20, 0.04);
 }
 .elite-btn-outline:hover {
   background: var(--warm-tint);
-  border-color: var(--gold-primary);
+  border-color: var(--bv-accent);
   color: var(--gold-dark);
 }
 
@@ -110,7 +110,7 @@ const CSS = `
   position: relative;
   padding: 100px 0 140px;
   text-align: center;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
   background: linear-gradient(rgba(18, 18, 20, 0.65), rgba(18, 18, 20, 0.65)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
   overflow: hidden;
 }
@@ -136,18 +136,18 @@ const CSS = `
   line-height: 1.08;
   max-width: 900px;
   margin: 0 auto 24px;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
 }
 
 .elite-hero h1 .elite-gradient-text {
-  background: linear-gradient(135deg, #FFC94D 0%, #F7A600 50%, #FFE29A 100%);
+  background: linear-gradient(135deg, #FFC94D 0%, var(--bv-accent) 50%, #FFE29A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .elite-hero p {
   font-size: clamp(16px, 1.8vw, 19px);
-  color: #E4E4E9;
+  color: var(--bv-text-muted);
   max-width: 640px;
   margin: 0 auto 36px;
   line-height: 1.6;
@@ -163,13 +163,13 @@ const CSS = `
 
 .elite-hero .elite-btn-outline {
   background: rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
   border-color: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(8px);
 }
 .elite-hero .elite-btn-outline:hover {
   background: rgba(255, 255, 255, 0.2);
-  border-color: var(--gold-primary);
+  border-color: var(--bv-accent);
   color: var(--gold-light);
 }
 
@@ -183,7 +183,7 @@ const CSS = `
 }
 
 .elite-stat-card {
-  background: #FFFFFF;
+  background: var(--bv-bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 20px 16px;
@@ -196,7 +196,7 @@ const CSS = `
 }
 
 .elite-stat-card:hover {
-  border-color: var(--gold-primary);
+  border-color: var(--bv-accent);
   transform: translateY(-4px);
   box-shadow: 0 20px 40px rgba(194, 124, 0, 0.1);
 }
@@ -210,7 +210,7 @@ const CSS = `
 }
 
 .elite-stat-card .label { font-size: 12.5px; color: var(--text-muted); font-weight: 600; line-height: 1.3; }
-.elite-stat-card .value { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+.elite-stat-card .value { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
 .elite-stat-card .trend { font-size: 11px; color: var(--success-green); background: rgba(14, 159, 91, 0.1); padding: 2px 6px; border-radius: 6px; font-weight: 700; white-space: nowrap; }
 
 /* Wealth Calculator Section */
@@ -223,7 +223,7 @@ const CSS = `
 }
 
 .elite-calc-box {
-  background: linear-gradient(145deg, #FFFFFF 0%, #FFFDF7 100%);
+  background: linear-gradient(145deg, var(--bv-bg-elevated) 0%, var(--bv-bg-elevated) 100%);
   border: 1px solid rgba(247, 166, 0, 0.3);
   border-radius: 32px;
   padding: 48px;
@@ -244,14 +244,14 @@ const CSS = `
 .elite-amount-box {
   display: flex;
   align-items: center;
-  background: #FCFBFA;
+  background: var(--bv-bg-elevated);
   border: 1.5px solid rgba(18, 18, 20, 0.12);
   border-radius: 16px;
   padding: 0 20px;
   height: 64px;
   transition: border-color 0.2s, background 0.2s;
 }
-.elite-amount-box:focus-within { border-color: var(--gold-primary); background: #FFFFFF; box-shadow: 0 0 0 4px rgba(247, 166, 0, 0.15); }
+.elite-amount-box:focus-within { border-color: var(--bv-accent); background: var(--bv-bg-elevated); box-shadow: 0 0 0 4px rgba(247, 166, 0, 0.15); }
 .elite-amount-box span { font-size: 26px; font-weight: 700; color: var(--gold-dark); }
 .elite-amount-box input {
   flex: 1;
@@ -267,7 +267,7 @@ const CSS = `
 
 .elite-quick-chips { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
 .elite-chip {
-  background: #F5F5F7;
+  background: var(--bv-bg-elevated);
   border: 1px solid rgba(18, 18, 20, 0.08);
   color: var(--text-main);
   padding: 6px 14px;
@@ -279,20 +279,20 @@ const CSS = `
 }
 .elite-chip:hover, .elite-chip.active {
   background: var(--warm-tint);
-  border-color: var(--gold-primary);
+  border-color: var(--bv-accent);
   color: var(--gold-dark);
 }
 
 .elite-slider {
   width: 100%;
-  accent-color: var(--gold-primary);
+  accent-color: var(--bv-accent);
   height: 6px;
   cursor: pointer;
   margin: 16px 0 8px;
 }
 
 .elite-calc-output {
-  background: linear-gradient(135deg, #12141A 0%, #2B2B33 100%);
+  background: linear-gradient(135deg, var(--bv-bg) 0%, var(--bv-bg-elevated) 100%);
   border: 1px solid rgba(247, 166, 0, 0.3);
   border-radius: 24px;
   padding: 36px;
@@ -302,12 +302,12 @@ const CSS = `
   height: 100%;
   position: relative;
   overflow: hidden;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
 }
 
 .elite-calc-output small { font-size: 13px; font-weight: 700; color: var(--gold-light); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 8px; }
-.elite-calc-output .big-earn { font-family: 'Space Grotesk', sans-serif; font-size: 44px; font-weight: 800; color: #34D399; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; }
-.elite-calc-output .total-val { font-size: 15px; font-weight: 600; color: #E4E4E9; margin-bottom: 32px; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 16px; }
+.elite-calc-output .big-earn { font-family: 'Space Grotesk', sans-serif; font-size: 44px; font-weight: 800; color: var(--bv-success); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; }
+.elite-calc-output .total-val { font-size: 15px; font-weight: 600; color: var(--bv-text-muted); margin-bottom: 32px; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 16px; }
 
 /* Sections & Cards */
 .elite-section { padding: 90px 0; position: relative; }
@@ -319,7 +319,7 @@ const CSS = `
 .elite-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 
 .elite-card {
-  background: #FFFFFF;
+  background: var(--bv-bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: 24px;
   padding: 36px 32px;
@@ -332,7 +332,7 @@ const CSS = `
 
 .elite-card:hover {
   transform: translateY(-8px);
-  border-color: var(--gold-primary);
+  border-color: var(--bv-accent);
   box-shadow: 0 30px 60px rgba(194, 124, 0, 0.12), 0 0 30px rgba(247, 166, 0, 0.1);
 }
 
@@ -349,7 +349,7 @@ const CSS = `
 
 .elite-card:hover .elite-card-icon {
   background: var(--gold-gradient);
-  color: #12141A;
+  color: var(--bv-text);
   transform: scale(1.08);
 }
 
@@ -358,7 +358,7 @@ const CSS = `
 
 /* Image Asset Cards Showcase */
 .elite-asset-card {
-  background: #FFFFFF;
+  background: var(--bv-bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: 24px;
   overflow: hidden;
@@ -387,11 +387,11 @@ const CSS = `
 }
 
 /* Trust Strip */
-.elite-strip { background: #FFFDF7; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 50px 0; text-align: center; }
+.elite-strip { background: var(--bv-bg-elevated); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 50px 0; text-align: center; }
 .elite-logos { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; margin-top: 24px; }
 .elite-logo-pill {
   display: inline-flex; align-items: center; gap: 10px;
-  background: #FFFFFF;
+  background: var(--bv-bg-elevated);
   border: 1px solid var(--border-color);
   padding: 12px 24px;
   border-radius: 99px;
@@ -404,7 +404,7 @@ const CSS = `
 
 /* Banner CTA */
 .elite-banner {
-  background: linear-gradient(135deg, #12141A 0%, #1F222B 100%);
+  background: linear-gradient(135deg, var(--bv-bg) 0%, var(--bv-bg-elevated) 100%);
   border: 1px solid rgba(247, 166, 0, 0.4);
   border-radius: 36px;
   padding: 80px 60px;
@@ -412,7 +412,7 @@ const CSS = `
   position: relative;
   overflow: hidden;
   margin: 60px auto 120px;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
   box-shadow: 0 30px 80px rgba(18, 18, 20, 0.2);
 }
 
@@ -456,7 +456,7 @@ export default function Home() {
         <div className='elite-ambient' />
 
         {/* Hero Section */}
-        <section className='elite-hero'>
+        <section className='elite-hero bv-hero'>
           <div className='elite-container'>
             <div className='elite-badge'>
               <Sparkles size={15} />
@@ -468,7 +468,7 @@ export default function Home() {
             <p>
               Access rigorously vetted private credit, real estate development, and high-growth SME opportunities across Nigeria yielding up to 18% per annum.
             </p>
-            <div className='elite-hero-cta'>
+            <div className='elite-hero-cta bv-hero'>
               <Link to='/register' className='elite-btn elite-btn-gold'>
                 Start Investing Today <ArrowRight size={18} />
               </Link>
@@ -547,7 +547,7 @@ export default function Home() {
                       </button>
                     ))}
                   </div>
-                  {!valid && <p style={{ color: '#DC2626', fontSize: '13px', marginTop: '8px' }}>Minimum investment is ₦5,000.</p>}
+                  {!valid && <p style={{ color: 'var(--bv-danger)', fontSize: '13px', marginTop: '8px' }}>Minimum investment is ₦5,000.</p>}
                 </div>
 
                 <div className='elite-input-group' style={{ marginBottom: '0' }}>
@@ -577,7 +577,7 @@ export default function Home() {
                   <div className='big-earn'>+{fmt(annualEarn)}</div>
                   <div className='total-val'>
                     <span>Total Portfolio Value:</span>
-                    <b style={{ fontFamily: 'Space Grotesk', fontSize: '18px', color: '#fff' }}>
+                    <b style={{ fontFamily: 'Space Grotesk', fontSize: '18px', color: 'var(--bv-text-muted)' }}>
                       {fmt(valid ? amount + annualEarn : 0)}
                     </b>
                   </div>
@@ -633,7 +633,7 @@ export default function Home() {
         </section>
 
         {/* Curated Asset Classes with Professional Images */}
-        <section className='elite-section' style={{ background: '#FFFDF7' }}>
+        <section className='elite-section' style={{ background: 'var(--bv-bg-elevated)' }}>
           <div className='elite-container'>
             <div className='elite-section-header'>
               <h2 className='elite-title'>Curated Asset Classes</h2>
@@ -746,11 +746,11 @@ export default function Home() {
 
         {/* Final Conversion Banner */}
         <div className='elite-container'>
-          <div className='elite-banner'>
+          <div className='elite-banner bv-hero'>
             <h2 className='elite-title' style={{ fontSize: 'clamp(32px, 4.5vw, 48px)', marginBottom: '16px' }}>
               Ready to Accelerate Your Wealth?
             </h2>
-            <p style={{ color: '#9BA1B0', fontSize: '18px', maxWidth: '600px', margin: '0 auto 36px' }}>
+            <p style={{ color: 'var(--bv-text-muted)', fontSize: '18px', maxWidth: '600px', margin: '0 auto 36px' }}>
               Join over 14,000 smart investors securing dependable fixed returns with Bravelion.
             </p>
             <form onSubmit={handleSignup} style={{ display: 'flex', gap: '12px', maxWidth: '480px', margin: '0 auto', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -768,7 +768,7 @@ export default function Home() {
                   borderRadius: '14px',
                   background: 'rgba(255, 255, 255, 0.08)',
                   border: '1.5px solid rgba(255, 255, 255, 0.2)',
-                  color: '#fff',
+                  color: 'var(--bv-bg-elevated)',
                   fontSize: '15px',
                   outline: 'none',
                 }}

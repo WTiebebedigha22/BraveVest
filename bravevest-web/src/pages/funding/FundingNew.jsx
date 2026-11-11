@@ -55,24 +55,24 @@ export default function FundingNew() {
   return (
     <div className="page" style={{ padding: '32px 16px', maxWidth: 720, margin: '0 auto' }}>
       <h1 style={{ fontSize: 28 }}>New funding request</h1>
-      <p style={{ color: '#666' }}>Save as draft, then submit for review. Admin approval publishes it.</p>
+      <p style={{ color: 'var(--bv-text-muted)' }}>Save as draft, then submit for review. Admin approval publishes it.</p>
 
       <div style={{
         margin: '20px 0 24px',
         padding: '16px 18px',
-        background: '#f0f7f0',
+        background: 'var(--bv-surface)',
         border: '1px solid #cfe3cf',
         borderRadius: 12,
       }}>
         <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 6 }}>How this works</div>
-        <div style={{ color: '#444', fontSize: 13, lineHeight: 1.6 }}>
+        <div style={{ color: 'var(--bv-text-muted)', fontSize: 13, lineHeight: 1.6 }}>
           You're requesting <strong>funding</strong> from individual investors on BraveVest.
           Each commitment is a <strong>peer-to-peer loan</strong> — you'll receive the capital
           upfront and repay it over the agreed term, with the return percentage you set below.
         </div>
       </div>
 
-      {error && <div style={{ padding: 12, background: '#ffebee', color: '#b71c1c', borderRadius: 8, margin: '16px 0' }}>{error}</div>}
+      {error && <div style={{ padding: 12, background: 'var(--bv-danger-bg, var(--bv-surface))', color: 'var(--bv-danger)', borderRadius: 8, margin: '16px 0' }}>{error}</div>}
 
       <form onSubmit={submit} style={{ display: 'grid', gap: 16, marginTop: 24 }}>
         <Field label="Title" required>
@@ -130,7 +130,7 @@ export default function FundingNew() {
 const inputStyle = {
   width: '100%',
   padding: '10px 14px',
-  border: '1px solid #e3e3e3',
+  border: '1px solid var(--bv-border)',
   borderRadius: 10,
   fontSize: 15,
   background: 'var(--bv-surface)',
@@ -139,7 +139,7 @@ const inputStyle = {
 function Field({ label, required, children }) {
   return (
     <label style={{ display: 'block' }}>
-      <div style={{ fontSize: 12, color: '#666', marginBottom: 6, fontWeight: 500 }}>
+      <div style={{ fontSize: 12, color: 'var(--bv-text-muted)', marginBottom: 6, fontWeight: 500 }}>
         {label}{required ? ' *' : ''}
       </div>
       {children}

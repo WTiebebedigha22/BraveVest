@@ -2,7 +2,7 @@ import { AlertTriangle } from 'lucide-react';
 import PageShell from '@/components/shared/PageShell';
 
 const CSS = `
-.by { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-line:#E4E4E9; --by-text:#121214; --by-mute:#6B6B76; --by-amber:#C27C00; --by-red:#C0392B;
+.by { --by-bg: var(--bv-bg); --by-card: var(--bv-bg-elevated); --by-line: var(--bv-border); --by-text: var(--bv-text); --by-mute: var(--bv-text-muted); --by-amber:#C27C00; --by-red:#C0392B;
   background:var(--by-bg); color:var(--by-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; }
 .by * { box-sizing:border-box; }
 .by-wrap { max-width:900px; margin:0 auto; padding:0 20px; }

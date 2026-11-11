@@ -3,14 +3,14 @@ import { ArrowLeft, Home, Search } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="page-light" style={{ minHeight: '100vh', background: '#FAFAFA', display: 'grid', placeItems: 'center', padding: '120px 24px' }}>
+    <div className="page-light" style={{ minHeight: '100vh', background: 'var(--bv-bg)', display: 'grid', placeItems: 'center', padding: '120px 24px' }}>
       <div style={{ textAlign: 'center', maxWidth: '560px', width: '100%' }}>
 
         {/* Eyebrow */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '12px', fontWeight: '600', color: '#666', textTransform: 'uppercase', letterSpacing: '0.16em', marginBottom: '24px' }}>
-          <span style={{ width: '20px', height: '2px', background: '#F6A500' }} />
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', fontSize: '12px', fontWeight: '600', color: 'var(--bv-text-muted)', textTransform: 'uppercase', letterSpacing: '0.16em', marginBottom: '24px' }}>
+          <span style={{ width: '20px', height: '2px', background: 'var(--bv-accent)' }} />
           Error 404
-          <span style={{ width: '20px', height: '2px', background: '#F6A500' }} />
+          <span style={{ width: '20px', height: '2px', background: 'var(--bv-accent)' }} />
         </div>
 
         {/* Big numeral */}
@@ -20,7 +20,7 @@ export default function NotFound() {
           fontWeight: '800',
           lineHeight: 1,
           letterSpacing: '-0.06em',
-          color: '#F6A500',
+          color: 'var(--bv-accent)',
           marginBottom: '16px',
           textShadow: '0 20px 60px rgba(246, 165, 0, 0.15)',
         }}>
@@ -29,11 +29,11 @@ export default function NotFound() {
 
         {/* Title */}
         <h1 style={{ fontSize: '32px', fontWeight: '700', color: 'var(--bybit-text)', marginBottom: '16px', letterSpacing: '-0.02em' }}>
-          Page not <em style={{ fontStyle: 'italic', color: '#F6A500' }}>found.</em>
+          Page not <em style={{ fontStyle: 'italic', color: 'var(--bv-accent)' }}>found.</em>
         </h1>
 
         {/* Subtitle */}
-        <p style={{ fontSize: '16px', color: '#666', lineHeight: 1.6, maxWidth: '420px', margin: '0 auto 40px' }}>
+        <p style={{ fontSize: '16px', color: 'var(--bv-text-muted)', lineHeight: 1.6, maxWidth: '420px', margin: '0 auto 40px' }}>
           The page you're looking for has been moved, renamed, or never existed. Let's get you back on track.
         </p>
 
@@ -44,7 +44,7 @@ export default function NotFound() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: '8px',
               padding: '14px 28px',
-              background: '#F6A500', color: 'var(--bv-surface)',
+              background: 'var(--bv-accent)', color: 'var(--bv-surface)',
               border: 'none', borderRadius: '8px',
               fontSize: '15px', fontWeight: '600',
               textDecoration: 'none',
@@ -58,7 +58,7 @@ export default function NotFound() {
               display: 'inline-flex', alignItems: 'center', gap: '8px',
               padding: '14px 28px',
               background: 'var(--bybit-black)', color: 'var(--bybit-text)',
-              border: '1px solid #EAEAEA', borderRadius: '8px',
+              border: '1px solid var(--bv-border)', borderRadius: '8px',
               fontSize: '15px', fontWeight: '600',
               cursor: 'pointer', fontFamily: 'inherit',
             }}
@@ -68,8 +68,8 @@ export default function NotFound() {
         </div>
 
         {/* Quick Links */}
-        <div style={{ marginTop: '64px', paddingTop: '32px', borderTop: '1px solid #EAEAEA' }}>
-          <div style={{ fontSize: '12px', fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>
+        <div style={{ marginTop: '64px', paddingTop: '32px', borderTop: '1px solid var(--bv-border)' }}>
+          <div style={{ fontSize: '12px', fontWeight: '600', color: 'var(--bv-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>
             Popular Pages
           </div>
           <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>

@@ -5,7 +5,7 @@ import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
 
 const CSS = `
-.pn { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-line:#E4E4E9; --by-text:#121214; --by-mute:#6B6B76; --by-yellow:#F7A600; --by-amber:#C27C00; --by-red:#D6334B;
+.pn { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-line:#E4E4E9; --by-text:var(--text-main); --by-mute:var(--bv-text-muted); --by-yellow:var(--bv-accent); --by-amber:#C27C00; --by-red:#D6334B;
   background:var(--by-bg); color:var(--by-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; min-height:60vh; padding:40px 20px 96px; }
 .pn * { box-sizing:border-box; }
 .pn-inner { max-width:720px; margin:0 auto; }
@@ -15,14 +15,14 @@ const CSS = `
 
 .pn-card { background:var(--by-card); border:1px solid var(--by-line); border-radius:20px; padding:28px; }
 .pn-lbl { display:grid; gap:8px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:20px; }
-.pn-in, .pn-ta { width:100%; background:#fff; border:1px solid var(--by-line); border-radius:8px; font-family:inherit; font-size:15px; color:var(--by-text); outline:none; transition:border-color .15s; }
+.pn-in, .pn-ta { width:100%; background: var(--bv-bg-elevated); border:1px solid var(--by-line); border-radius:8px; font-family:inherit; font-size:15px; color:var(--by-text); outline:none; transition:border-color .15s; }
 .pn-in { height:48px; padding:0 14px; font-variant-numeric:tabular-nums; }
 .pn-ta { padding:12px 14px; line-height:1.6; resize:vertical; }
 .pn-in::placeholder, .pn-ta::placeholder { color:#B4B4BE; }
 .pn-in:focus, .pn-ta:focus { border-color:var(--by-yellow); }
 .pn-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:0 16px; }
 
-.pn-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; height:50px; padding:0 28px; border:0; border-radius:8px; background:var(--by-yellow); color:#121214; font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; transition:background .15s; }
+.pn-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; height:50px; padding:0 28px; border:0; border-radius:8px; background:var(--by-yellow); color: var(--bv-text); font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; transition:background .15s; }
 .pn-btn:hover:not(:disabled) { background:#FFB82E; }
 .pn-btn:disabled { opacity:.6; cursor:not-allowed; }
 .pn-btn:focus-visible, .pn-in:focus-visible, .pn-ta:focus-visible, .pn-back:focus-visible { outline:2px solid #121214; outline-offset:2px; }

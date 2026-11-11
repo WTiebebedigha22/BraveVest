@@ -4,7 +4,14 @@ const asyncHandler = require('../../utils/asyncHandler');
 const { validate } = require('../../middleware/validate');
 const { authRequired } = require('../../middleware/auth.middleware');
 const { authLimiter } = require('../../middleware/rateLimit');
-const { registerSchema, loginSchema, refreshSchema, forgotSchema, resetSchema } = require('./auth.validator');
+const {
+  registerSchema,
+  loginSchema,
+  refreshSchema,
+  forgotSchema,
+  resetSchema,
+  changePasswordSchema,
+} = require('./auth.validator');
 
 router.post('/register', authLimiter, validate({ body: registerSchema }), asyncHandler(ctrl.register));
 router.post('/login', authLimiter, validate({ body: loginSchema }), asyncHandler(ctrl.login));
@@ -13,5 +20,15 @@ router.post('/logout', asyncHandler(ctrl.logout));
 router.get('/me', authRequired, asyncHandler(ctrl.me));
 router.post('/forgot-password', authLimiter, validate({ body: forgotSchema }), asyncHandler(ctrl.forgotPassword));
 router.post('/reset-password', authLimiter, validate({ body: resetSchema }), asyncHandler(ctrl.resetPassword));
+
+// ── New: session & password management ──────────────────────────
+router.post(
+  '/change-password',
+  authRequired,
+  validate({ body: changePasswordSchema }),
+  asyncHandler(ctrl.changePassword)
+);
+router.get('/sessions', authRequired, asyncHandler(ctrl.listSessions));
+router.post('/logout-others', authRequired, asyncHandler(ctrl.logoutOthers));
 
 module.exports = router;

@@ -95,7 +95,7 @@ export default function ProjectDetail() {
             <style>{'@media (min-width: 900px) { .project-detail-grid { grid-template-columns: minmax(0, 1fr) 380px !important; } }'}</style>
             <main>
               <div style={{ marginBottom: 24 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#F6A500', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>{project.category || 'Investment'}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--bv-accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>{project.category || 'Investment'}</div>
                 <h1 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 700, margin: '0 0 12px', lineHeight: 1.2 }}>{project.title || project.name}</h1>
                 <p style={{ fontSize: 15, color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>{project.summary || project.description}</p>
               </div>
@@ -124,7 +124,7 @@ export default function ProjectDetail() {
                     <span style={{ fontSize: 15, fontWeight: 700 }}>{funded}%</span>
                   </div>
                   <div style={{ height: 8, background: 'var(--bg-soft)', borderRadius: 4, overflow: 'hidden', marginBottom: 8 }}>
-                    <div style={{ height: '100%', width: funded + '%', background: '#F6A500', transition: 'width 0.3s' }} />
+                    <div style={{ height: '100%', width: funded + '%', background: 'var(--bv-accent)', transition: 'width 0.3s' }} />
                   </div>
                   <div style={{ fontSize: 13, color: 'var(--text-muted)' }}><strong style={{ color: 'var(--text)' }}>{format(raised)}</strong> raised of {format(target)} target</div>
                 </div>

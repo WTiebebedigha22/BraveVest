@@ -10,18 +10,18 @@ const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
 
 .elite-light-root {
-  --bg-primary: #FCFBFA;
-  --bg-surface: #FFFFFF;
+  --bg-primary: var(--bv-bg);
+  --bg-surface: var(--bv-bg-elevated);
   --border-color: rgba(194, 124, 0, 0.15);
-  --gold-primary: #F7A600;
+  --bv-accent: var(--bv-orange);
   --gold-dark: #C27C00;
   --gold-light: #FFC94D;
-  --gold-gradient: linear-gradient(135deg, #FFC94D 0%, #F7A600 50%, #C27C00 100%);
-  --gold-text-gradient: linear-gradient(135deg, #12141A 20%, #C27C00 70%, #F7A600 100%);
-  --text-main: #12141A;
-  --text-muted: #5A5F73;
-  --success-green: #0E9F5B;
-  --warm-tint: #FFF8E6;
+  --gold-gradient: linear-gradient(135deg, #FFC94D 0%, var(--bv-accent) 50%, #C27C00 100%);
+  --gold-text-gradient: linear-gradient(135deg, var(--bv-text) 20%, #C27C00 70%, var(--bv-accent) 100%);
+  --text-main: var(--text-main);
+  --text-muted: var(--bv-text-muted);
+  --success-green: var(--bv-success);
+  --warm-tint: var(--bv-bg-elevated);
   font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-main);
@@ -52,17 +52,17 @@ const CSS = `
   border: 1.5px solid transparent; white-space: nowrap;
 }
 .elite-btn:hover { transform: translateY(-3px); }
-.elite-btn-gold { background: var(--gold-gradient); color: #12141A; box-shadow: 0 16px 32px -10px rgba(247, 166, 0, 0.45); }
+.elite-btn-gold { background: var(--gold-gradient); color: var(--bv-text); box-shadow: 0 16px 32px -10px rgba(247, 166, 0, 0.45); }
 .elite-btn-gold:hover { filter: brightness(1.05); box-shadow: 0 20px 40px -8px rgba(247, 166, 0, 0.65); }
-.elite-btn-outline { background: #FFFFFF; color: var(--text-main); border-color: rgba(18, 20, 26, 0.15); box-shadow: 0 4px 12px rgba(18, 18, 20, 0.04); }
-.elite-btn-outline:hover { background: var(--warm-tint); border-color: var(--gold-primary); color: var(--gold-dark); }
+.elite-btn-outline { background: var(--bv-bg-elevated); color: var(--text-main); border-color: rgba(18, 20, 26, 0.15); box-shadow: 0 4px 12px rgba(18, 18, 20, 0.04); }
+.elite-btn-outline:hover { background: var(--warm-tint); border-color: var(--bv-accent); color: var(--gold-dark); }
 
 /* ── HERO with image ── */
 .elite-hero-about {
   position: relative;
   padding: 120px 0 180px;
   text-align: center;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
   background:
     linear-gradient(rgba(18, 18, 20, 0.72), rgba(18, 18, 20, 0.85)),
     url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
@@ -73,16 +73,16 @@ const CSS = `
   line-height: 1.08;
   max-width: 900px;
   margin: 0 auto 24px;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
 }
 .elite-hero-about h1 .elite-gradient-text {
-  background: linear-gradient(135deg, #FFC94D 0%, #F7A600 50%, #FFE29A 100%);
+  background: linear-gradient(135deg, #FFC94D 0%, var(--bv-accent) 50%, #FFE29A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .elite-hero-about p {
   font-size: clamp(17px, 2vw, 20px);
-  color: #E4E4E9;
+  color: var(--bv-text-muted);
   max-width: 720px;
   margin: 0 auto;
   line-height: 1.6;
@@ -111,7 +111,7 @@ const CSS = `
   z-index: 5;
 }
 .elite-stat-card {
-  background: #FFFFFF;
+  background: var(--bv-bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: 20px;
   padding: 28px;
@@ -119,13 +119,13 @@ const CSS = `
   box-shadow: 0 20px 40px rgba(18, 18, 20, 0.08);
   transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
-.elite-stat-card:hover { border-color: var(--gold-primary); transform: translateY(-4px); box-shadow: 0 24px 48px rgba(194, 124, 0, 0.15); }
+.elite-stat-card:hover { border-color: var(--bv-accent); transform: translateY(-4px); box-shadow: 0 24px 48px rgba(194, 124, 0, 0.15); }
 .elite-stat-card .value { font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; color: var(--gold-dark); margin-bottom: 6px; }
 .elite-stat-card .label { font-size: 13px; color: var(--text-muted); font-weight: 600; }
 
 /* Sections */
 .elite-section { padding: 90px 0; position: relative; }
-.elite-section-alt { background: #FFFDF7; }
+.elite-section-alt { background: var(--bv-bg-elevated); }
 .elite-section-header { text-align: center; max-width: 700px; margin: 0 auto 64px; }
 .elite-section-header h2 { font-size: clamp(32px, 4vw, 46px); margin: 0 0 16px; }
 .elite-section-header p { color: var(--text-muted); font-size: 17px; line-height: 1.6; margin: 0; }
@@ -138,7 +138,7 @@ const CSS = `
 .elite-story-visual {
   position: relative;
   padding: 40px;
-  background: linear-gradient(145deg, #FFFFFF 0%, #FFFDF7 100%);
+  background: linear-gradient(145deg, var(--bv-bg-elevated) 0%, var(--bv-bg-elevated) 100%);
   border: 1px solid rgba(247, 166, 0, 0.25);
   border-radius: 28px;
   box-shadow: 0 24px 60px rgba(18, 18, 20, 0.08);
@@ -151,14 +151,14 @@ const CSS = `
   border-radius: 16px;
   text-align: left;
 }
-.elite-story-cell .cell-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--gold-gradient); color: #12141A; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+.elite-story-cell .cell-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--gold-gradient); color: var(--bv-text); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
 .elite-story-cell .cell-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
 .elite-story-cell .cell-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
 
 /* Mission/Vision */
 .elite-mv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
 .elite-mv-card {
-  background: #FFFFFF;
+  background: var(--bv-bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: 24px;
   padding: 40px;
@@ -173,7 +173,7 @@ const CSS = `
   background: radial-gradient(circle, rgba(247, 166, 0, 0.12) 0%, transparent 70%);
   pointer-events: none;
 }
-.elite-mv-card:hover { transform: translateY(-6px); border-color: var(--gold-primary); box-shadow: 0 30px 60px rgba(194, 124, 0, 0.12); }
+.elite-mv-card:hover { transform: translateY(-6px); border-color: var(--bv-accent); box-shadow: 0 30px 60px rgba(194, 124, 0, 0.12); }
 .elite-mv-icon {
   width: 64px; height: 64px; border-radius: 18px;
   background: var(--warm-tint);
@@ -183,7 +183,7 @@ const CSS = `
   margin-bottom: 24px;
   transition: all 0.3s;
 }
-.elite-mv-card:hover .elite-mv-icon { background: var(--gold-gradient); color: #12141A; transform: scale(1.08); }
+.elite-mv-card:hover .elite-mv-icon { background: var(--gold-gradient); color: var(--bv-text); transform: scale(1.08); }
 .elite-mv-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; margin: 0 0 12px; }
 .elite-mv-card p { color: var(--text-muted); font-size: 15px; line-height: 1.7; margin: 0; position: relative; }
 
@@ -192,7 +192,7 @@ const CSS = `
 .elite-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 
 .elite-card {
-  background: #FFFFFF;
+  background: var(--bv-bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: 24px;
   padding: 36px 32px;
@@ -200,7 +200,7 @@ const CSS = `
   box-shadow: 0 12px 36px rgba(18, 18, 20, 0.05);
   text-align: left;
 }
-.elite-card:hover { transform: translateY(-8px); border-color: var(--gold-primary); box-shadow: 0 30px 60px rgba(194, 124, 0, 0.12), 0 0 30px rgba(247, 166, 0, 0.1); }
+.elite-card:hover { transform: translateY(-8px); border-color: var(--bv-accent); box-shadow: 0 30px 60px rgba(194, 124, 0, 0.12), 0 0 30px rgba(247, 166, 0, 0.1); }
 .elite-card-icon {
   width: 64px; height: 64px; border-radius: 18px;
   background: var(--warm-tint); border: 1px solid rgba(247, 166, 0, 0.3);
@@ -208,16 +208,16 @@ const CSS = `
   color: var(--gold-dark); margin-bottom: 24px;
   transition: all 0.3s;
 }
-.elite-card:hover .elite-card-icon { background: var(--gold-gradient); color: #12141A; transform: scale(1.08); }
+.elite-card:hover .elite-card-icon { background: var(--gold-gradient); color: var(--bv-text); transform: scale(1.08); }
 .elite-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; margin: 0 0 10px; }
 .elite-card p { color: var(--text-muted); font-size: 15px; line-height: 1.65; margin: 0; }
 
 /* Trust Strip */
-.elite-strip { background: #FFFDF7; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 50px 0; text-align: center; }
+.elite-strip { background: var(--bv-bg-elevated); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 50px 0; text-align: center; }
 .elite-logos { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 24px; }
 .elite-logo-pill {
   display: inline-flex; align-items: center; gap: 10px;
-  background: #FFFFFF; border: 1px solid var(--border-color);
+  background: var(--bv-bg-elevated); border: 1px solid var(--border-color);
   padding: 12px 24px; border-radius: 99px;
   font-weight: 700; color: var(--text-main); font-size: 15px;
   box-shadow: 0 4px 12px rgba(18, 18, 20, 0.03);
@@ -226,14 +226,14 @@ const CSS = `
 
 /* Banner */
 .elite-banner {
-  background: linear-gradient(135deg, #12141A 0%, #1F222B 100%);
+  background: linear-gradient(135deg, var(--bv-bg) 0%, var(--bv-bg-elevated) 100%);
   border: 1px solid rgba(247, 166, 0, 0.4);
   border-radius: 36px;
   padding: 72px 48px;
   text-align: center;
   position: relative; overflow: hidden;
   margin: 60px auto 120px;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
   box-shadow: 0 30px 80px rgba(18, 18, 20, 0.2);
 }
 .elite-banner::before {
@@ -242,8 +242,8 @@ const CSS = `
   background: radial-gradient(circle, rgba(247, 166, 0, 0.25), transparent 70%);
   pointer-events: none;
 }
-.elite-banner h2 { font-size: clamp(32px, 4.5vw, 48px); margin: 0 0 16px; color: #FFFFFF; }
-.elite-banner p { color: #9BA1B0; font-size: 18px; max-width: 600px; margin: 0 auto 36px; }
+.elite-banner h2 { font-size: clamp(32px, 4.5vw, 48px); margin: 0 0 16px; color: var(--bv-bg-elevated); }
+.elite-banner p { color: var(--bv-text-muted); font-size: 18px; max-width: 600px; margin: 0 auto 36px; }
 
 @media (max-width: 968px) {
   .elite-hero-about { padding: 72px 0 140px; }
@@ -261,7 +261,7 @@ export default function About() {
       <div className='elite-light-root'>
 
         {/* HERO with image background */}
-        <section className='elite-hero-about'>
+        <section className='elite-hero-about bv-hero'>
           <div className='elite-container'>
             <div className='elite-badge'>
               <Sparkles size={15} />
@@ -417,7 +417,7 @@ export default function About() {
 
         {/* CTA */}
         <div className='elite-container'>
-          <div className='elite-banner'>
+          <div className='elite-banner bv-hero'>
             <h2 className='elite-title'>Invest alongside Bravelion</h2>
             <p>Join 14,000+ investors earning fixed returns on vetted private credit.</p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>

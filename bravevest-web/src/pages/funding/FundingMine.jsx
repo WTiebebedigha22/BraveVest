@@ -35,10 +35,10 @@ export default function FundingMine() {
       </div>
 
       {loading && <div style={{ padding: 40, textAlign: 'center' }}>Loading…</div>}
-      {error && <div style={{ padding: 40, textAlign: 'center', color: '#b71c1c' }}>{error.message}</div>}
+      {error && <div style={{ padding: 40, textAlign: 'center', color: 'var(--bv-danger)' }}>{error.message}</div>}
       {!loading && items.length === 0 && (
-        <div style={{ padding: 60, textAlign: 'center', color: '#888' }}>
-          No credit requests yet. <Link to="/funding/new" style={{ color: '#1b5e20' }}>Request funding</Link>.
+        <div style={{ padding: 60, textAlign: 'center', color: 'var(--bv-text-muted)' }}>
+          No credit requests yet. <Link to="/funding/new" style={{ color: 'var(--bv-success)' }}>Request funding</Link>.
         </div>
       )}
 
@@ -52,7 +52,7 @@ export default function FundingMine() {
               alignItems: 'center',
               gap: 16,
               padding: 20,
-              border: '1px solid #e3e3e3',
+              border: '1px solid var(--bv-border)',
               borderRadius: 14,
               background: 'var(--bv-surface)',
               flexWrap: 'wrap',
@@ -63,7 +63,7 @@ export default function FundingMine() {
                 <Link to={`/funding/${it.id}`} style={{ color: 'inherit', fontWeight: 600 }}>{it.title}</Link>
                 <StatusBadge status={it.status} />
               </div>
-              <div style={{ fontSize: 13, color: '#888', marginTop: 6 }}>
+              <div style={{ fontSize: 13, color: 'var(--bv-text-muted)', marginTop: 6 }}>
                 {fmt(it.amountRequested)} · {it.category?.replace('_', ' ')} · {it.durationMonths ? `${it.durationMonths}mo` : '—'}
               </div>
             </div>

@@ -15,13 +15,13 @@
 }
 .ie-select {
   padding: 14px 18px; border: 1px solid var(--line);
-  border-radius: var(--r-pill); background: #fff; font-size: 14px; outline: none;
+  border-radius: var(--r-pill); background: var(--bv-bg-elevated); font-size: 14px; outline: none;
 }
 .ie-select:focus { border-color: var(--ink); }
 
 .ie-textarea {
   padding: 16px 18px; border: 1px solid var(--line);
-  border-radius: var(--r-md); background: #fff;
+  border-radius: var(--r-md); background: var(--bv-bg-elevated);
   font-size: 14px; font-family: inherit; line-height: 1.7;
   outline: none; resize: vertical; min-height: 320px;
   transition: border-color .15s ease;

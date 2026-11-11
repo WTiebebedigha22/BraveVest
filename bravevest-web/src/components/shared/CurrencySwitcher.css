@@ -1,11 +1,11 @@
 .cur { position: relative; }
-.cur__btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border: 1px solid var(--line); border-radius: var(--r-pill); background: #fff; font-size: 12.5px; font-weight: 600; }
+.cur__btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border: 1px solid var(--line); border-radius: var(--r-pill); background: var(--bv-bg-elevated); font-size: 12.5px; font-weight: 600; }
 .cur__btn:hover { border-color: var(--ink); }
 .cur__caret { font-size: 8px; color: var(--gray-600); }
-.cur__menu { position: absolute; right: 0; top: calc(100% + 8px); background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 24px 48px rgba(15,15,16,.12); min-width: 200px; padding: 6px; z-index: 80; }
+.cur__menu { position: absolute; right: 0; top: calc(100% + 8px); background: var(--bv-bg-elevated); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 24px 48px rgba(15,15,16,.12); min-width: 200px; padding: 6px; z-index: 80; }
 .cur__item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 12px; border-radius: 8px; font-size: 13px; text-align: left; }
 .cur__item:hover { background: var(--surface-soft); }
-.cur__item.is-active { background: var(--ink); color: #fff; }
+.cur__item.is-active { background: var(--ink); color: var(--bv-bg-elevated); }
 .cur__item-symbol { width: 16px; font-weight: 700; }
 .cur__item-code { font-weight: 600; min-width: 36px; }
 .cur__item-label { color: var(--gray-600); font-size: 12px; margin-left: auto; }

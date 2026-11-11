@@ -10,19 +10,19 @@ const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
 
 .elite-light-root {
-  --bg-primary: #FCFBFA;
-  --bg-surface: #FFFFFF;
+  --bg-primary: var(--bv-bg);
+  --bg-surface: var(--bv-bg-elevated);
   --bg-surface-glass: rgba(255, 255, 255, 0.85);
   --border-color: rgba(194, 124, 0, 0.15);
-  --gold-primary: #F7A600;
+  --bv-accent: var(--bv-orange);
   --gold-dark: #C27C00;
   --gold-light: #FFC94D;
-  --gold-gradient: linear-gradient(135deg, #FFC94D 0%, #F7A600 50%, #C27C00 100%);
-  --gold-text-gradient: linear-gradient(135deg, #12141A 20%, #C27C00 70%, #F7A600 100%);
-  --text-main: #12141A;
-  --text-muted: #5A5F73;
-  --success-green: #0E9F5B;
-  --warm-tint: #FFF8E6;
+  --gold-gradient: linear-gradient(135deg, #FFC94D 0%, var(--bv-accent) 50%, #C27C00 100%);
+  --gold-text-gradient: linear-gradient(135deg, var(--bv-text) 20%, #C27C00 70%, var(--bv-accent) 100%);
+  --text-main: var(--text-main);
+  --text-muted: var(--bv-text-muted);
+  --success-green: var(--bv-success);
+  --warm-tint: var(--bv-bg-elevated);
   font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-main);
@@ -53,17 +53,17 @@ const CSS = `
   border: 1.5px solid transparent; white-space: nowrap;
 }
 .elite-btn:hover { transform: translateY(-3px); }
-.elite-btn-gold { background: var(--gold-gradient); color: #12141A; box-shadow: 0 16px 32px -10px rgba(247, 166, 0, 0.45); }
+.elite-btn-gold { background: var(--gold-gradient); color: var(--bv-text); box-shadow: 0 16px 32px -10px rgba(247, 166, 0, 0.45); }
 .elite-btn-gold:hover { filter: brightness(1.05); box-shadow: 0 20px 40px -8px rgba(247, 166, 0, 0.65); }
-.elite-btn-outline { background: #FFFFFF; color: var(--text-main); border-color: rgba(18, 20, 26, 0.15); box-shadow: 0 4px 12px rgba(18, 18, 20, 0.04); }
-.elite-btn-outline:hover { background: var(--warm-tint); border-color: var(--gold-primary); color: var(--gold-dark); }
+.elite-btn-outline { background: var(--bv-bg-elevated); color: var(--text-main); border-color: rgba(18, 20, 26, 0.15); box-shadow: 0 4px 12px rgba(18, 18, 20, 0.04); }
+.elite-btn-outline:hover { background: var(--warm-tint); border-color: var(--bv-accent); color: var(--gold-dark); }
 
 /* ── HERO with image ── */
 .elite-hero-hiw {
   position: relative;
   padding: 120px 0 130px;
   text-align: center;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
   background:
     linear-gradient(rgba(18, 18, 20, 0.72), rgba(18, 18, 20, 0.85)),
     url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
@@ -74,16 +74,16 @@ const CSS = `
   line-height: 1.08;
   max-width: 900px;
   margin: 0 auto 24px;
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
 }
 .elite-hero-hiw h1 .elite-gradient-text {
-  background: linear-gradient(135deg, #FFC94D 0%, #F7A600 50%, #FFE29A 100%);
+  background: linear-gradient(135deg, #FFC94D 0%, var(--bv-accent) 50%, #FFE29A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .elite-hero-hiw p {
   font-size: clamp(17px, 2vw, 20px);
-  color: #E4E4E9;
+  color: var(--bv-text-muted);
   max-width: 720px;
   margin: 0 auto 40px;
   line-height: 1.6;
@@ -92,13 +92,13 @@ const CSS = `
 /* Outline button reads on dark hero */
 .elite-hero-hiw .elite-btn-outline {
   background: rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
+  color: var(--bv-bg-elevated);
   border-color: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(8px);
 }
 .elite-hero-hiw .elite-btn-outline:hover {
   background: rgba(255, 255, 255, 0.2);
-  border-color: var(--gold-primary);
+  border-color: var(--bv-accent);
   color: var(--gold-light);
 }
 
@@ -115,7 +115,7 @@ const CSS = `
 }
 
 .elite-section { padding: 90px 0; position: relative; }
-.elite-section-alt { background: #FFFDF7; }
+.elite-section-alt { background: var(--bv-bg-elevated); }
 .elite-section-header { text-align: center; max-width: 700px; margin: 0 auto 64px; }
 .elite-section-header h2 { font-size: clamp(32px, 4vw, 46px); margin: 0 0 16px; }
 .elite-section-header p { color: var(--text-muted); font-size: 17px; line-height: 1.6; margin: 0; }
@@ -131,7 +131,7 @@ const CSS = `
   position: absolute;
   left: 48px; top: 60px; bottom: 60px;
   width: 2px;
-  background: linear-gradient(180deg, var(--gold-primary) 0%, var(--gold-light) 50%, var(--gold-primary) 100%);
+  background: linear-gradient(180deg, var(--bv-accent) 0%, var(--gold-light) 50%, var(--bv-accent) 100%);
   opacity: 0.4;
 }
 
@@ -140,17 +140,17 @@ const CSS = `
   grid-template-columns: 96px 1fr;
   gap: 24px;
   align-items: flex-start;
-  background: #FFFFFF;
+  background: var(--bv-bg-elevated);
   border: 1px solid var(--border-color);
   border-radius: 24px;
   padding: 32px;
   transition: all 0.3s;
   box-shadow: 0 12px 36px rgba(18, 18, 20, 0.05);
 }
-.elite-step:hover { border-color: var(--gold-primary); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(194, 124, 0, 0.1); }
+.elite-step:hover { border-color: var(--bv-accent); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(194, 124, 0, 0.1); }
 .elite-step-num {
   width: 72px; height: 72px; border-radius: 20px;
-  background: var(--gold-gradient); color: #12141A;
+  background: var(--gold-gradient); color: var(--bv-text);
   display: flex; align-items: center; justify-content: center;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 32px; font-weight: 800;
@@ -167,30 +167,30 @@ const CSS = `
 /* Feature Grid */
 .elite-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
 .elite-card {
-  background: #FFFFFF; border: 1px solid var(--border-color);
+  background: var(--bv-bg-elevated); border: 1px solid var(--border-color);
   border-radius: 24px; padding: 36px 32px;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 12px 36px rgba(18, 18, 20, 0.05);
 }
-.elite-card:hover { transform: translateY(-8px); border-color: var(--gold-primary); box-shadow: 0 30px 60px rgba(194, 124, 0, 0.12), 0 0 30px rgba(247, 166, 0, 0.1); }
+.elite-card:hover { transform: translateY(-8px); border-color: var(--bv-accent); box-shadow: 0 30px 60px rgba(194, 124, 0, 0.12), 0 0 30px rgba(247, 166, 0, 0.1); }
 .elite-card-icon {
   width: 64px; height: 64px; border-radius: 18px;
   background: var(--warm-tint); border: 1px solid rgba(247, 166, 0, 0.3);
   display: flex; align-items: center; justify-content: center;
   color: var(--gold-dark); margin-bottom: 24px; transition: all 0.3s;
 }
-.elite-card:hover .elite-card-icon { background: var(--gold-gradient); color: #12141A; transform: scale(1.08); }
+.elite-card:hover .elite-card-icon { background: var(--gold-gradient); color: var(--bv-text); transform: scale(1.08); }
 .elite-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; margin: 0 0 10px; }
 .elite-card p { color: var(--text-muted); font-size: 15px; line-height: 1.65; margin: 0; }
 
 /* FAQ-style details */
 .elite-faq { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
 .elite-faq-item {
-  background: #FFFFFF; border: 1px solid var(--border-color);
+  background: var(--bv-bg-elevated); border: 1px solid var(--border-color);
   border-radius: 16px; padding: 24px 28px;
   transition: all 0.2s;
 }
-.elite-faq-item:hover { border-color: var(--gold-primary); }
+.elite-faq-item:hover { border-color: var(--bv-accent); }
 .elite-faq-item summary { cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; }
 .elite-faq-item summary::-webkit-details-marker { display: none; }
 .elite-faq-item summary::after { content: '+'; font-size: 24px; color: var(--gold-dark); transition: transform 0.2s; }
@@ -198,11 +198,11 @@ const CSS = `
 .elite-faq-item p { color: var(--text-muted); font-size: 15px; line-height: 1.7; margin: 16px 0 0; }
 
 .elite-banner {
-  background: linear-gradient(135deg, #12141A 0%, #1F222B 100%);
+  background: linear-gradient(135deg, var(--bv-bg) 0%, var(--bv-bg-elevated) 100%);
   border: 1px solid rgba(247, 166, 0, 0.4);
   border-radius: 36px; padding: 72px 48px;
   text-align: center; position: relative; overflow: hidden;
-  margin: 60px auto 120px; color: #FFFFFF;
+  margin: 60px auto 120px; color: var(--bv-bg-elevated);
   box-shadow: 0 30px 80px rgba(18, 18, 20, 0.2);
 }
 .elite-banner::before {
@@ -211,8 +211,8 @@ const CSS = `
   background: radial-gradient(circle, rgba(247, 166, 0, 0.25), transparent 70%);
   pointer-events: none;
 }
-.elite-banner h2 { font-size: clamp(32px, 4.5vw, 48px); margin: 0 0 16px; color: #FFFFFF; }
-.elite-banner p { color: #9BA1B0; font-size: 18px; max-width: 600px; margin: 0 auto 36px; }
+.elite-banner h2 { font-size: clamp(32px, 4.5vw, 48px); margin: 0 0 16px; color: var(--bv-bg-elevated); }
+.elite-banner p { color: var(--bv-text-muted); font-size: 18px; max-width: 600px; margin: 0 auto 36px; }
 
 @media (max-width: 968px) {
   .elite-hero-hiw { padding: 72px 0 90px; }
@@ -232,7 +232,7 @@ export default function HowItWorks() {
         <div className='elite-ambient' />
 
         {/* HERO with image background */}
-        <section className='elite-hero-hiw'>
+        <section className='elite-hero-hiw bv-hero'>
           <div className='elite-container'>
             <div className='elite-badge'>
               <Sparkles size={15} />
@@ -375,7 +375,7 @@ export default function HowItWorks() {
 
         {/* CTA */}
         <div className='elite-container'>
-          <div className='elite-banner'>
+          <div className='elite-banner bv-hero'>
             <h2 className='elite-title'>Start Earning Today</h2>
             <p>Join 14,250+ investors compounding capital on BraveVest.</p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>

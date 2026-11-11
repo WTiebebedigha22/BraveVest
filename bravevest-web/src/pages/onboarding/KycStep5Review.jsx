@@ -61,24 +61,24 @@ export default function KycStep5Review() {
 
       <Section title="Documents">
         {documents.length === 0 ? (
-          <div style={{ color: '#888', fontSize: 13 }}>No documents uploaded yet.</div>
+          <div style={{ color: 'var(--bv-text-muted)', fontSize: 13 }}>No documents uploaded yet.</div>
         ) : (
           documents.map((d) => (
             <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: 13 }}>
-              <span style={{ color: '#555' }}>{d.type?.replace('_', ' ')}</span>
-              <a href={d.fileUrl} target="_blank" rel="noreferrer" style={{ color: '#1b5e20', fontWeight: 600 }}>View</a>
+              <span style={{ color: 'var(--text-main)' }}>{d.type?.replace('_', ' ')}</span>
+              <a href={d.fileUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--bv-success)', fontWeight: 600 }}>View</a>
             </div>
           ))
         )}
       </Section>
 
       {(missingBank || missingDocs) && (
-        <div style={{ padding: 14, background: '#fff8e1', border: '1px solid #ffe082', borderRadius: 10, marginTop: 16, fontSize: 13, color: '#8d6e00' }}>
+        <div style={{ padding: 14, background: 'var(--bv-surface)', border: '1px solid var(--bv-border)', borderRadius: 10, marginTop: 16, fontSize: 13, color: 'var(--bv-text-muted)0' }}>
           Missing information: {missingBank && 'bank details'}{missingBank && missingDocs && ', '}{missingDocs && 'ID document'}. Go back and complete these sections.
         </div>
       )}
 
-      <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginTop: 24, fontSize: 13, color: '#666', cursor: 'pointer' }}>
+      <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginTop: 24, fontSize: 13, color: 'var(--bv-text-muted)', cursor: 'pointer' }}>
         <input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} style={{ marginTop: 3 }} />
         <span>I confirm the information above is accurate and agree to BraveVest's Terms and Privacy Policy. I understand that falsified information may result in account termination.</span>
       </label>
@@ -97,10 +97,10 @@ export default function KycStep5Review() {
 
 function Section({ title, edit, children }) {
   return (
-    <div style={{ border: '1px solid #eee', borderRadius: 12, padding: 16, marginBottom: 12 }}>
+    <div style={{ border: '1px solid var(--bv-border)', borderRadius: 12, padding: 16, marginBottom: 12 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: '#0d0d0d' }}>{title}</div>
-        {edit && <button onClick={edit} style={{ background: 'none', border: 'none', color: '#1b5e20', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>Edit</button>}
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--bv-text)' }}>{title}</div>
+        {edit && <button onClick={edit} style={{ background: 'none', border: 'none', color: 'var(--bv-success)', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>Edit</button>}
       </div>
       {children}
     </div>
@@ -109,8 +109,8 @@ function Section({ title, edit, children }) {
 function Row({ label, value }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: 13 }}>
-      <span style={{ color: '#888' }}>{label}</span>
-      <span style={{ color: '#333', fontWeight: 500 }}>{value || '—'}</span>
+      <span style={{ color: 'var(--bv-text-muted)' }}>{label}</span>
+      <span style={{ color: 'var(--bv-text)', fontWeight: 500 }}>{value || '—'}</span>
     </div>
   );
 }

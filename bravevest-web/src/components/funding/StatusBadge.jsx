@@ -1,16 +1,16 @@
 import React from 'react';
 
 const COLORS = {
-  DRAFT:         { bg: '#eee',   fg: '#555' },
-  SUBMITTED:     { bg: '#e3f2fd', fg: '#0d47a1' },
-  UNDER_REVIEW:  { bg: '#fff8e1', fg: '#8d6e00' },
-  APPROVED:      { bg: '#e8f5e9', fg: '#1b5e20' },
-  PUBLISHED:     { bg: '#e8f5e9', fg: '#1b5e20' },
-  FUNDED:        { bg: '#c8e6c9', fg: '#1b5e20' },
-  CANCELLED:     { bg: '#eceff1', fg: '#455a64' },
-  REJECTED:      { bg: '#ffebee', fg: '#b71c1c' },
-  DEFAULTED:     { bg: '#ffcdd2', fg: '#b71c1c' },
-  CLOSED:        { bg: '#eceff1', fg: '#455a64' },
+  DRAFT:         { bg: 'var(--bv-surface)',   fg: 'var(--bv-text-muted)' },
+  SUBMITTED:     { bg: 'color-mix(in srgb, var(--bv-info, var(--bv-info)) 15%, var(--bv-bg-elevated))', fg: 'var(--bv-info-text, #60a5fa)' },
+  UNDER_REVIEW:  { bg: 'color-mix(in srgb, var(--bv-warning, #f59e0b) 15%, var(--bv-bg-elevated))', fg: 'var(--bv-warning-text, #fbbf24)' },
+  APPROVED:      { bg: 'color-mix(in srgb, var(--bv-success) 15%, var(--bv-bg-elevated))', fg: 'var(--bv-success)' },
+  PUBLISHED:     { bg: 'color-mix(in srgb, var(--bv-success) 15%, var(--bv-bg-elevated))', fg: 'var(--bv-success)' },
+  FUNDED:        { bg: '#c8e6c9', fg: 'var(--bv-success)' },
+  CANCELLED:     { bg: 'var(--bv-surface)', fg: 'var(--bv-text-muted)' },
+  REJECTED:      { bg: 'color-mix(in srgb, var(--bv-danger) 15%, var(--bv-bg-elevated))', fg: 'var(--bv-danger)' },
+  DEFAULTED:     { bg: 'color-mix(in srgb, var(--bv-danger) 40%, var(--bv-bg-elevated))', fg: 'var(--bv-danger)' },
+  CLOSED:        { bg: 'var(--bv-surface)', fg: 'var(--bv-text-muted)' },
 };
 
 export default function StatusBadge({ status }) {

@@ -36,7 +36,7 @@
 .pd__side { position: sticky; top: 100px; }
 @media (max-width: 900px) { .pd__side { position: static; } }
 .pd__stat-card {
-  background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg);
+  background: var(--bv-bg-elevated); border: 1px solid var(--line); border-radius: var(--r-lg);
   padding: clamp(20px, 4vw, 28px); display: flex; flex-direction: column; gap: 18px;
 }
 .pd__stat-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
@@ -44,7 +44,7 @@
 .pd__stat-big { font-family: var(--font-serif); font-size: clamp(32px, 6vw, 40px); margin-top: 6px; }
 .pd__stat-big small { font-size: 14px; color: var(--gray-600); font-family: var(--font-sans); margin-left: 4px; }
 .pd__stat-badge {
-  background: #EAF7CE; color: #3a5a10; font-size: 12px; font-weight: 600;
+  background: color-mix(in srgb, var(--bv-success) 15%, var(--bv-bg-elevated)); color: var(--bv-success-text, #3a7d44); font-size: 12px; font-weight: 600;
   padding: 5px 12px; border-radius: var(--r-pill); white-space: nowrap;
 }
 .pd__progress { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }

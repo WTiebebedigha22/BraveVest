@@ -1,11 +1,11 @@
 .acard {
-  background: #fff;
+  background: var(--bv-bg-elevated);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   overflow: hidden;
   transition: border-color .15s ease;
 }
-.acard:hover { border-color: #d6d6d6; }
+.acard:hover { border-color: var(--text-main); }
 .acard--pad { padding: 24px; }
 
 .acard__header {

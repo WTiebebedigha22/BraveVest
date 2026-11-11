@@ -77,7 +77,7 @@ const input = { width: '100%', padding: '11px 14px', border: '1px solid #e3e3e3'
 function Field({ label, required, children }) {
   return (
     <label style={{ display: 'block' }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: '#666', marginBottom: 6 }}>{label}{required ? ' *' : ''}</div>
+      <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--bv-text-muted)', marginBottom: 6 }}>{label}{required ? ' *' : ''}</div>
       {children}
     </label>
   );

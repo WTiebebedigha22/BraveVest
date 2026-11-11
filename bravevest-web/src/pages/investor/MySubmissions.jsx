@@ -9,8 +9,8 @@ const STATUS = {
   PENDING_REVIEW: { label: 'Pending review', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', Icon: Clock },
   OPEN: { label: 'Approved — live on marketplace', color: '#0ECB81', bg: 'rgba(14,203,129,0.1)', Icon: CheckCircle },
   CLOSED: { label: 'Rejected or closed', color: '#F6465D', bg: 'rgba(246,70,93,0.1)', Icon: XCircle },
-  DRAFT: { label: 'Draft', color: '#6B7280', bg: 'rgba(107,114,128,0.1)', Icon: Clock },
-  FUNDED: { label: 'Funded', color: '#F6A500', bg: 'rgba(246,165,0,0.1)', Icon: CheckCircle },
+  DRAFT: { label: 'Draft', color: 'var(--bv-text-muted)', bg: 'rgba(107,114,128,0.1)', Icon: Clock },
+  FUNDED: { label: 'Funded', color: 'var(--bv-accent)', bg: 'rgba(246,165,0,0.1)', Icon: CheckCircle },
 };
 
 export default function MySubmissions() {

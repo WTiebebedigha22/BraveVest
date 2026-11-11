@@ -9,7 +9,7 @@ import { useCurrency } from '@/context/CurrencyContext';
 import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
 
-const CHART_COLORS = ['#F6A500', '#0ECB81', '#3B82F6', '#8B5CF6', '#F6465D', '#14B8A6'];
+const CHART_COLORS = ['var(--bv-accent)', '#0ECB81', 'var(--bv-info)', '#8B5CF6', '#F6465D', '#14B8A6'];
 const PAGE_SIZE = 8;
 
 export default function Portfolio() {
@@ -127,7 +127,7 @@ export default function Portfolio() {
                       <XAxis dataKey="month" stroke="var(--text-muted)" fontSize={12} />
                       <YAxis stroke="var(--text-muted)" fontSize={12} />
                       <Tooltip formatter={(v) => format(v)} contentStyle={tooltipStyle} />
-                      <Bar dataKey="value" fill="#F6A500" radius={[6, 6, 0, 0]} />
+                      <Bar dataKey="value" fill="var(--bv-accent)" radius={[6, 6, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -193,7 +193,7 @@ export default function Portfolio() {
                                                 <td style={{ padding: '16px 20px', textAlign: 'right' }}>
                           <div style={{ display: 'inline-flex', gap: 8 }}>
                             <Link to={'/investments/' + h.id + '/log'} style={{ padding: '6px 12px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 6, color: 'var(--text)', textDecoration: 'none', fontSize: 12, fontWeight: 600 }}>Log</Link>
-                            <Link to={'/investments/' + h.id} style={{ padding: '6px 12px', background: 'var(--accent)', borderRadius: 6, color: '#0A0A0A', textDecoration: 'none', fontSize: 12, fontWeight: 600 }}>View</Link>
+                            <Link to={'/investments/' + h.id} style={{ padding: '6px 12px', background: 'var(--accent)', borderRadius: 6, color: 'var(--bv-text)', textDecoration: 'none', fontSize: 12, fontWeight: 600 }}>View</Link>
                           </div>
                         </td>
                       </tr>

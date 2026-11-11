@@ -3,5 +3,5 @@
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 12px; color: var(--gray-600);
 }
-.trust__badge svg { color: #3a5a10; }
+.trust__badge svg { color: var(--bv-success-text, #3a7d44); }
 .trust--lg .trust__badge { font-size: 13px; gap: 8px; }

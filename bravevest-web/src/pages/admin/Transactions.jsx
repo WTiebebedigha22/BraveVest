@@ -5,8 +5,8 @@ import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
 
 const COLORS = {
-  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
-  border: '#EAEAEA', accent: '#F6A500',
+  surface: '#FFFFFF', text: 'var(--bv-text)', muted: 'var(--bv-text-muted)',
+  border: 'var(--bv-border)', accent: 'var(--bv-accent)',
   positive: '#0ECB81', negative: '#F6465D',
 };
 const PAGE_SIZE = 25;
@@ -101,7 +101,7 @@ export default function Transactions() {
           <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, overflow: 'hidden' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
               <thead>
-                <tr style={{ background: '#FAFAFA' }}>
+                <tr style={{ background: 'var(--bv-bg)' }}>
                   {['Date', 'Reference', 'Investor', 'Type', 'Amount'].map((h) => (
                     <th key={h} style={{
                       textAlign: h === 'Amount' ? 'right' : 'left',

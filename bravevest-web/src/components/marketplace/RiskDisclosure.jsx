@@ -3,9 +3,9 @@ import { useState } from 'react';
 import './RiskDisclosure.css';
 
 const LEVELS = {
-  low: { label: 'Low', color: '#3a5a10', bg: '#EAF7CE', bar: 33 },
-  medium: { label: 'Medium', color: '#8a6c0a', bg: '#FDF4DB', bar: 66 },
-  high: { label: 'High', color: '#8a2121', bg: '#FBE6E6', bar: 100 },
+  low: { label: 'Low', color: 'var(--bv-success-text, #3a7d44)', bg: 'color-mix(in srgb, var(--bv-success) 15%, var(--bv-bg-elevated))', bar: 33 },
+  medium: { label: 'Medium', color: 'var(--bv-warning-text, var(--bv-warning-text))', bg: 'color-mix(in srgb, var(--bv-warning) 15%, var(--bv-bg-elevated))', bar: 66 },
+  high: { label: 'High', color: 'var(--bv-danger)', bg: 'color-mix(in srgb, var(--bv-danger) 15%, var(--bv-bg-elevated))', bar: 100 },
 };
 
 export default function RiskDisclosure({ level = 'medium' }) {

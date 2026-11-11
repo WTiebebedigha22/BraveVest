@@ -56,7 +56,7 @@ input:focus, select:focus, textarea:focus {
    ============================================================ */
 .btn--primary {
   background: var(--bv-orange);
-  color: #FFFFFF !important;
+  color: var(--bv-bg-elevated) !important;
   font-weight: 600;
 }
 .btn--primary:hover {
@@ -88,7 +88,7 @@ input:focus, select:focus, textarea:focus {
 /* Danger / success buttons */
 .btn--danger {
   background: var(--bv-red);
-  color: #FFFFFF !important;
+  color: var(--bv-bg-elevated) !important;
 }
 
 /* ============================================================
@@ -117,7 +117,7 @@ input:focus, select:focus, textarea:focus {
   font-weight: 600;
 }
 :root[data-theme="light"] .pill--orange {
-  background: #FFF4E0;
+  background: var(--bv-surface);
   border-color: #FFE0A8;
 }
 .pill--green {
@@ -126,7 +126,7 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--bv-green-soft);
 }
 :root[data-theme="light"] .pill--green {
-  background: #E6F7EF;
+  background: color-mix(in srgb, var(--bv-success) 12%, var(--bv-bg-elevated));
   border-color: #B8E9D1;
 }
 .pill--red {
@@ -135,7 +135,7 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--bv-red-soft);
 }
 :root[data-theme="light"] .pill--red {
-  background: #FEE9EB;
+  background: color-mix(in srgb, var(--bv-danger) 12%, var(--bv-bg-elevated));
   border-color: #FBBCC3;
 }
 
@@ -220,7 +220,7 @@ a:hover {
   background: var(--bv-orange-soft) !important;
 }
 :root[data-theme="light"] .sidebar a[style*="var(--bv-orange)"] {
-  background: #FFF4E0 !important;
+  background: var(--bv-surface) !important;
   color: #B87600 !important;
 }
 
@@ -228,12 +228,12 @@ a:hover {
    CARDS — subtle border darkening on hover in light mode
    ============================================================ */
 :root[data-theme="light"] .card {
-  border-color: #E5E5E2;
-  background: #FFFFFF;
+  border-color: var(--bv-border);
+  background: var(--bv-bg-elevated);
 }
 :root[data-theme="light"] .card:hover {
-  border-color: #D1D1CE;
-  background: #FEFEFE;
+  border-color: var(--text-main);
+  background: var(--bv-bg-elevated);
 }
 
 /* ============================================================
@@ -248,7 +248,7 @@ a:hover {
 }
 :root[data-theme="light"] .alert-error,
 :root[data-theme="light"] .error-box {
-  background: #FEE9EB;
+  background: color-mix(in srgb, var(--bv-danger) 12%, var(--bv-bg-elevated));
   border-color: #FBBCC3;
   color: #C8253A;
 }
@@ -257,11 +257,11 @@ a:hover {
    GRADIENTS — hero and accent gradients per theme
    ============================================================ */
 :root {
-  --bv-gradient-orange: linear-gradient(135deg, #F6A500 0%, #D98F00 100%);
+  --bv-gradient-orange: linear-gradient(135deg, var(--bv-accent) 0%, #D98F00 100%);
   --bv-gradient-subtle: linear-gradient(135deg, #1A1A1A 0%, #111111 100%);
 }
 :root[data-theme="light"] {
-  --bv-gradient-orange: linear-gradient(135deg, #F6A500 0%, #E69400 100%);
+  --bv-gradient-orange: linear-gradient(135deg, var(--bv-accent) 0%, #E69400 100%);
   --bv-gradient-subtle: linear-gradient(135deg, #F9F9F8 0%, #F2F2F0 100%);
 }
 
@@ -282,7 +282,7 @@ button:disabled, .btn:disabled {
 }
 :root[data-theme="light"] ::selection {
   background: #FFE0A8;
-  color: #0F0F10;
+  color: var(--bv-text);
 }
 
 /* ============================================================
@@ -299,5 +299,5 @@ button:disabled, .btn:disabled {
 :root[data-theme="light"] h2,
 :root[data-theme="light"] h3 {
   font-weight: 700;
-  color: #0F0F10;
+  color: var(--bv-text);
 }

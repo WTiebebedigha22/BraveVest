@@ -19,7 +19,7 @@ export default function RouteLoader() {
             height: 40,
             borderRadius: '50%',
             border: '3px solid var(--border, #262626)',
-            borderTopColor: '#F6A500',
+            borderTopColor: 'var(--bv-accent)',
             animation: 'bv-spin 0.8s linear infinite',
           }}
         />

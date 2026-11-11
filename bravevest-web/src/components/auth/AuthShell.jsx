@@ -36,7 +36,7 @@ export default function AuthShell({ title, subtitle, footer, children }) {
             {subtitle && <p className="auth-subtitle">{subtitle}</p>}
           </header>
           <div className="auth-form-body">{children}</div>
-          {footer && <footer className="auth-footer">{footer}</footer>}
+          {footer && <footer className="auth-footer bv-always-dark">{footer}</footer>}
         </div>
       </main>
     </div>

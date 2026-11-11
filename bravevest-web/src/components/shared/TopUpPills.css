@@ -6,7 +6,7 @@
 .topup__pills { display: flex; gap: 8px; flex-wrap: wrap; }
 .topup__pill {
   padding: 9px 16px; border-radius: var(--r-pill);
-  border: 1px solid var(--line); background: #fff;
+  border: 1px solid var(--line); background: var(--bv-bg-elevated);
   font-size: 13px; font-weight: 500; color: var(--ink);
   transition: all .12s ease;
 }

@@ -167,6 +167,7 @@ enum ReferralStatus {
 }
 
 model User {
+  notifications Notification[]
   id            String     @id @default(cuid())
   email         String     @unique
   phone         String?    @unique
@@ -216,7 +217,8 @@ model RefreshToken {
   createdAt DateTime @default(now())
 
   @@index([userId])
-  @@map("refresh_tokens")
+  @@map("refresh_tokens")  userAgent String?
+  ipAddress String?
 }
 
 model KycProfile {
@@ -685,4 +687,21 @@ model OtpCode {
   @@index([userId])
   @@index([code])
   @@map("otp_codes")
+}
+
+// ── Notifications (added by installer) ──────────────────
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  title     String
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+  @@map("notifications")
 }

@@ -58,7 +58,7 @@ export default function Notifications() {
               {items.map((n) => {
                 const kind = n.kind || (n.type && n.type.toLowerCase()) || 'default';
                 const Icon = kind === 'investment' ? TrendingUp : kind === 'wallet' ? Wallet : kind === 'kyc' ? Shield : Bell;
-                const tone = kind === 'investment' ? '#0ECB81' : kind === 'wallet' ? '#F6A500' : kind === 'kyc' ? '#F59E0B' : '#A1A1AA';
+                const tone = kind === 'investment' ? '#0ECB81' : kind === 'wallet' ? 'var(--bv-accent)' : kind === 'kyc' ? '#F59E0B' : '#A1A1AA';
                 return (
                   <li key={n.id} className='bv-card-lift' style={{ display: 'flex', gap: 16, padding: 20, background: n.read ? 'var(--surface)' : 'rgba(246,165,0,0.05)', border: '1px solid ' + (n.read ? 'var(--border)' : 'rgba(246,165,0,0.25)'), borderRadius: 16 }}>
                     <div style={{ width: 40, height: 40, borderRadius: 10, background: tone + '20', display: 'flex', alignItems: 'center', justifyContent: 'center', color: tone, flexShrink: 0 }}><Icon size={18} /></div>

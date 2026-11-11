@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
+  background: var(--bv-bg-elevated);
   padding: clamp(48px, 10vw, 96px) clamp(16px, 4vw, 24px);
   isolation: isolate;
 }
@@ -58,7 +58,7 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--gray-600, #666);
+  color: var(--gray-600, var(--bv-text-muted));
   background: rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(0, 0, 0, 0.06);
   padding: 6px 12px;
@@ -87,7 +87,7 @@
 .nf__title {
   font-family: var(--font-serif, Georgia, serif);
   font-size: clamp(26px, 5vw, 44px);
-  color: var(--ink, #111);
+  color: var(--ink, var(--bv-text));
   margin: clamp(12px, 2vw, 20px) 0 0;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -95,7 +95,7 @@
 }
 
 .nf__sub {
-  color: var(--gray-600, #666);
+  color: var(--gray-600, var(--bv-text-muted));
   font-size: clamp(14px, 1.8vw, 16px);
   max-width: 52ch;
   margin: clamp(12px, 2vw, 16px) auto 0;
@@ -121,11 +121,11 @@
   flex-wrap: wrap;
   margin-top: clamp(28px, 5vw, 48px);
   font-size: 13.5px;
-  color: var(--gray-600, #666);
+  color: var(--gray-600, var(--bv-text-muted));
 }
 
 .nf__links a {
-  color: var(--ink, #111);
+  color: var(--ink, var(--bv-text));
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
@@ -139,7 +139,7 @@
 }
 
 .nf__links a:focus-visible {
-  outline: 2px solid var(--ink, #111);
+  outline: 2px solid var(--ink, var(--bv-text));
   outline-offset: 3px;
   border-radius: 3px;
 }

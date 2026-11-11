@@ -10,8 +10,8 @@
 html,
 body,
 #root {
-  background: #FAFAFA !important;
-  color: #1A1A1A !important;
+  background: var(--bv-bg) !important;
+  color: var(--bv-text) !important;
   color-scheme: light !important;
 }
 
@@ -21,8 +21,8 @@ html[data-theme="Dark"],
 body.dark,
 body[data-theme="dark"],
 body[data-theme="Dark"] {
-  background: #FAFAFA !important;
-  color: #1A1A1A !important;
+  background: var(--bv-bg) !important;
+  color: var(--bv-text) !important;
   color-scheme: light !important;
 }
 
@@ -31,24 +31,18 @@ select,
 textarea,
 button {
   color-scheme: light;
-  color: #1A1A1A;
-}
-
+  color: var(--bv-text);
+}/* neutralised by fix-remaining-colors: input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input: */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
-  -webkit-text-fill-color: #1A1A1A !important;
-  caret-color: #1A1A1A;
-}
-
-* {
-  scrollbar-color: #EAEAEA #FAFAFA;
-}
+input:-webkit-autofill:focus { /* rules removed */ }/* neutralised by fix-remaining-colors: * */
+* { /* rules removed */ }
 
 @media (prefers-color-scheme: dark) {
   html, body, #root {
-    background: #FAFAFA !important;
-    color: #1A1A1A !important;
+    background: var(--bv-bg) !important;
+    color: var(--bv-text) !important;
   }
 }

@@ -70,7 +70,7 @@ export default function InsightDetail() {
         })}
       </div>
 
-      <footer className="insd__foot">
+      <footer className="insd__foot bv-always-dark">
         <div className="insd__foot-title">Want to invest in opportunities like these?</div>
         <Link to="/marketplace" className="insd__foot-cta">Browse the marketplace →</Link>
       </footer>

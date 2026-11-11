@@ -7,8 +7,8 @@
 
 :root {
   /* Deeper, more saturated navy — closer to ink than slate */
-  --ink-1000: #03060F;
-  --ink-950:  #050A18;
+  --ink-1000: var(--text-main);
+  --ink-950:  var(--text-main);
   --ink-900:  #070D1E;
   --ink-850:  #0A1224;
   --ink-800:  #0D1628;
@@ -26,9 +26,9 @@
   --vellum-dim: #C9C2B2;
 
   /* Ink text */
-  --ink-text: #E8E4DB;
-  --ink-mute: #8A8678;
-  --ink-faint: #4A4750;
+  --ink-text: var(--text-main);
+  --ink-mute: var(--text-muted);
+  --ink-faint: var(--text-main);
 
   /* Hairlines */
   --hairline: rgba(232, 207, 160, 0.08);

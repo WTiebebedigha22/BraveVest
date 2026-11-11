@@ -5,7 +5,7 @@ import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
 
 const CSS = `
-.kd { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-line:#E4E4E9; --by-text:#121214; --by-mute:#6B6B76; --by-yellow:#F7A600; --by-amber:#C27C00; --by-green:#0E9F5B; --by-red:#D6334B;
+.kd { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-line:#E4E4E9; --by-text:var(--text-main); --by-mute:var(--bv-text-muted); --by-yellow:var(--bv-accent); --by-amber:#C27C00; --by-green:var(--bv-success); --by-red:#D6334B;
   background:var(--by-bg); color:var(--by-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; min-height:60vh; padding:40px 20px 96px; }
 .kd * { box-sizing:border-box; }
 .kd-inner { max-width:800px; margin:0 auto; }
@@ -23,14 +23,14 @@ const CSS = `
 .kd-dl .mono { font-family:ui-monospace,Menlo,monospace; font-size:14px; }
 
 .kd-lbl { display:grid; gap:8px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:20px; }
-.kd-lbl textarea { width:100%; padding:12px 14px; background:#fff; border:1px solid var(--by-line); border-radius:8px; font-family:inherit; font-size:15px; line-height:1.5; color:var(--by-text); resize:vertical; outline:none; transition:border-color .15s; }
+.kd-lbl textarea { width:100%; padding:12px 14px; background: var(--bv-bg-elevated); border:1px solid var(--by-line); border-radius:8px; font-family:inherit; font-size:15px; line-height:1.5; color:var(--by-text); resize:vertical; outline:none; transition:border-color .15s; }
 .kd-lbl textarea::placeholder { color:#B4B4BE; }
 .kd-lbl textarea:focus { border-color:var(--by-yellow); }
 .kd-actions { display:flex; gap:12px; flex-wrap:wrap; }
 .kd-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; height:48px; padding:0 24px; border-radius:8px; font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; transition:background .15s, border-color .15s; }
-.kd-btn--ok { background:var(--by-green); color:#fff; border:0; }
+.kd-btn--ok { background:var(--by-green); color: var(--bv-bg-elevated); border:0; }
 .kd-btn--ok:hover:not(:disabled) { background:#0B8A4F; }
-.kd-btn--no { background:#fff; color:var(--by-red); border:1px solid rgba(214,51,75,.4); }
+.kd-btn--no { background: var(--bv-bg-elevated); color:var(--by-red); border:1px solid rgba(214,51,75,.4); }
 .kd-btn--no:hover:not(:disabled) { background:rgba(214,51,75,.06); border-color:var(--by-red); }
 .kd-btn:disabled { opacity:.6; cursor:not-allowed; }
 .kd-btn:focus-visible, .kd-lbl textarea:focus-visible, .kd-back:focus-visible { outline:2px solid #121214; outline-offset:2px; }

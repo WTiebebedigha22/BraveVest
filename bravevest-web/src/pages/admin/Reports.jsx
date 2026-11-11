@@ -5,8 +5,8 @@ import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
 
 const COLORS = {
-  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
-  border: '#EAEAEA', accent: '#F6A500', positive: '#0ECB81', negative: '#F6465D',
+  surface: '#FFFFFF', text: '#1A1A1A', muted: 'var(--bv-text-muted)',
+  border: 'var(--bv-border)', accent: 'var(--bv-accent)', positive: '#0ECB81', negative: '#F6465D',
 };
 
 const REPORTS = [

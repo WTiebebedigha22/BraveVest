@@ -39,7 +39,7 @@ export default function SuccessStats() {
                   style={{
                     background: b.color,
                     height: `${b.height}%`,
-                    color: b.textDark ? '#0F0F10' : 'var(--bv-surface)',
+                    color: b.textDark ? 'var(--bv-text)' : 'var(--bv-surface)',
                   }}
                 >
                   <span className="success__bar-value">{formatCompact(b.value)}</span>

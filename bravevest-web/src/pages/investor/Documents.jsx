@@ -86,7 +86,7 @@ export default function Documents() {
             </div>
           ) : filtered.length === 0 ? (
             <div className='bv-card-lift bv-fade-up' style={{ padding: 64, textAlign: 'center', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 20 }}>
-              <FileText size={48} color='#F6A500' style={{ margin: '0 auto 24px' }} />
+              <FileText size={48} color='var(--bv-accent)' style={{ margin: '0 auto 24px' }} />
               <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8, color: 'var(--text)' }}>
                 {search ? 'No documents match your search' : 'No documents yet'}
               </h3>
@@ -102,7 +102,7 @@ export default function Documents() {
                   padding: 16,
                   background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12,
                 }}>
-                  <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(246,165,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F6A500', flexShrink: 0 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(246,165,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--bv-accent)', flexShrink: 0 }}>
                     <FileText size={18} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>

@@ -1,5 +1,5 @@
 .pchart {
-  background: #fff; border: 1px solid var(--line);
+  background: var(--bv-bg-elevated); border: 1px solid var(--line);
   border-radius: var(--r-lg); padding: 26px;
 }
 .pchart--empty { padding: 60px 24px; text-align: center; color: var(--gray-600); font-size: 14px; }

@@ -135,11 +135,11 @@ export default function TickerBar() {
               >
                 <span className="font-bold text-[#121214] tracking-tight">{m.symbol}</span>
                 <span className="font-semibold text-[#33333B]">
-                  <span className="text-[11px] text-[#6B6B76] mr-0.5 font-normal">{m.prefix}</span>
+                  <span className="text-[11px] text-[var(--bv-text-muted)] mr-0.5 font-normal">{m.prefix}</span>
                   {m.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
                 <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold tracking-wide ${
-                  isUp ? 'text-[#0E9F5B] bg-[#0E9F5B]/10' : 'text-[#DC2626] bg-[#DC2626]/10'
+                  isUp ? 'text-[var(--bv-success)] bg-[var(--bv-success)]/10' : 'text-[var(--bv-danger)] bg-[var(--bv-danger)]/10'
                 }`}>
                   {isUp ? '+' : ''}{m.change.toFixed(2)}%
                 </span>

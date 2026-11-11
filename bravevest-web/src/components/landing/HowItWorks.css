@@ -29,7 +29,7 @@
 
 .hiw__icon {
   width: 48px; height: 48px;
-  background: #fff; border-radius: 12px;
+  background: var(--bv-bg-elevated); border-radius: 12px;
   display: inline-flex; align-items: center; justify-content: center;
   margin-bottom: 22px;
   box-shadow: 0 6px 14px rgba(15,15,16,.08);

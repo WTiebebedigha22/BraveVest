@@ -130,7 +130,7 @@ export default function Goals() {
             </div>
           ) : items.length === 0 ? (
             <div className='bv-card-lift bv-fade-up' style={{ padding: 64, textAlign: 'center', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 20 }}>
-              <Target size={48} color='#F6A500' style={{ margin: '0 auto 24px' }} />
+              <Target size={48} color='var(--bv-accent)' style={{ margin: '0 auto 24px' }} />
               <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8, color: 'var(--text)' }}>No goals yet</h3>
               <p style={{ color: 'var(--text-muted)', marginBottom: 24, fontSize: 14 }}>
                 Set a savings target to stay motivated and track progress.
@@ -166,7 +166,7 @@ export default function Goals() {
                       </div>
                     </div>
                     <div style={{ height: 8, background: 'var(--bg-soft)', borderRadius: 4, overflow: 'hidden' }}>
-                      <div style={{ height: '100%', width: progress + '%', background: '#F6A500', borderRadius: 4 }} />
+                      <div style={{ height: '100%', width: progress + '%', background: 'var(--bv-accent)', borderRadius: 4 }} />
                     </div>
                   </Link>
                 );

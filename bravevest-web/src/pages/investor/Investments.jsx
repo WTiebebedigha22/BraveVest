@@ -157,7 +157,7 @@ export default function Investments() {
                         minWidth: 36,
                         padding: '8px 12px',
                         background: n === page ? 'var(--accent)' : 'var(--surface)',
-                        color: n === page ? '#0A0A0A' : 'var(--text)',
+                        color: n === page ? 'var(--bv-text)' : 'var(--text)',
                         border: `1px solid ${n === page ? 'var(--accent)' : 'var(--border)'}`,
                         borderRadius: 8,
                         cursor: 'pointer',

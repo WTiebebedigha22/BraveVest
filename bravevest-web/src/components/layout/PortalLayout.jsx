@@ -27,8 +27,8 @@ export default function PortalLayout({
       {/* Admin mode banner */}
       {isAdmin && (
         <div style={{
-          background: '#F6A500',
-          color: '#0A0A0A',
+          background: 'var(--bv-accent)',
+          color: 'var(--bv-text)',
           padding: '8px 24px',
           fontSize: 13,
           fontWeight: 600,
@@ -54,10 +54,10 @@ export default function PortalLayout({
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
                 padding: '8px 14px',
-                background: 'var(--bg-soft, #1a1a1a)',
+                background:  'var(--bg-soft, var(--bv-bg-elevated))',
                 border: '1px solid var(--border, #262626)',
                 borderRadius: 8,
-                color: 'var(--text, #f5f5f5)',
+                color: 'var(--text, var(--bv-bg-elevated))',
                 fontSize: 14, fontWeight: 600, cursor: 'pointer',
                 fontFamily: 'inherit',
               }}

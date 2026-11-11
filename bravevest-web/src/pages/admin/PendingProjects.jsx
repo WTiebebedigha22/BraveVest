@@ -92,7 +92,7 @@ export default function PendingProjects() {
                     <button
                       onClick={() => act(p.id, 'approve')}
                       disabled={acting === p.id + '-approve'}
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#0ECB81', color: '#0A0A0A', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: acting ? 'not-allowed' : 'pointer', opacity: acting === p.id + '-approve' ? 0.6 : 1 }}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#0ECB81', color: 'var(--bv-text)', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: acting ? 'not-allowed' : 'pointer', opacity: acting === p.id + '-approve' ? 0.6 : 1 }}
                     >
                       {acting === p.id + '-approve' ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <CheckCircle size={16} />}
                       Approve

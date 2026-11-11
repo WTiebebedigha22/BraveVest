@@ -43,7 +43,7 @@ export default function YearInReview() {
     try {
       const html2canvas = (await import('html2canvas')).default;
       const canvas = await html2canvas(cardRef.current, {
-        backgroundColor: '#0A0A0A',
+        backgroundColor: 'var(--bv-bg)',
         scale: 2,
         useCORS: true,
       });
@@ -143,7 +143,7 @@ export default function YearInReview() {
           {/* Empty state */}
           {isEmpty && (
             <div style={{ padding: 64, textAlign: 'center', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 20 }}>
-              <Sparkles size={48} color='#F6A500' style={{ margin: '0 auto 24px' }} />
+              <Sparkles size={48} color='var(--bv-accent)' style={{ margin: '0 auto 24px' }} />
               <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: 'var(--text)' }}>
                 Your story starts here
               </h2>
@@ -163,7 +163,7 @@ export default function YearInReview() {
                 ref={cardRef}
                 style={{
                   padding: 'clamp(24px, 5vw, 48px)',
-                  background: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%)',
+                  background: 'linear-gradient(135deg, var(--bv-bg) 0%, var(--bv-bg-elevated) 100%)',
                   borderRadius: 24,
                   border: '1px solid #262626',
                   position: 'relative',
@@ -177,22 +177,22 @@ export default function YearInReview() {
                 {/* Header */}
                 <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40, flexWrap: 'wrap', gap: 16 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <span style={{ width: 40, height: 40, borderRadius: 10, background: '#F6A500', color: '#0A0A0A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 20 }}>B</span>
+                    <span style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--bv-accent)', color: 'var(--bv-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 20 }}>B</span>
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#F6A500', textTransform: 'uppercase', letterSpacing: '0.05em' }}>BraveVest</div>
-                      <div style={{ fontSize: 11, color: '#A1A1AA' }}>Year in Review</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--bv-accent)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>BraveVest</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Year in Review</div>
                     </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 'clamp(32px, 6vw, 56px)', fontWeight: 800, color: '#FFFFFF', lineHeight: 1, letterSpacing: '-0.03em' }}>{year}</div>
-                    <div style={{ fontSize: 11, color: '#A1A1AA', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 4 }}>Your year</div>
+                    <div style={{ fontSize: 'clamp(32px, 6vw, 56px)', fontWeight: 800, color: 'var(--bv-bg-elevated)', lineHeight: 1, letterSpacing: '-0.03em' }}>{year}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 4 }}>Your year</div>
                   </div>
                 </div>
 
                 {/* Name */}
                 <div style={{ position: 'relative', marginBottom: 40 }}>
-                  <div style={{ fontSize: 13, color: '#A1A1AA', marginBottom: 4 }}>This year belongs to</div>
-                  <div style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em', fontFamily: 'Playfair Display, Georgia, serif' }}>
+                  <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 4 }}>This year belongs to</div>
+                  <div style={{ fontSize: 'clamp(28px, 5vw, 44px)', fontWeight: 800, color: 'var(--bv-bg-elevated)', letterSpacing: '-0.02em', fontFamily: 'Playfair Display, Georgia, serif' }}>
                     {user?.firstName || data.user?.firstName || 'Investor'} {user?.lastName || data.user?.lastName || ''}
                   </div>
                 </div>
@@ -200,25 +200,25 @@ export default function YearInReview() {
                 {/* Stats grid */}
                 <div style={{ position: 'relative', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 20, marginBottom: 32 }}>
                   <div>
-                    <div style={{ fontSize: 11, color: '#A1A1AA', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Total invested</div>
-                    <div style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 800, color: '#FFFFFF', lineHeight: 1 }}>{format(data.totalInvested)}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Total invested</div>
+                    <div style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 800, color: 'var(--bv-bg-elevated)', lineHeight: 1 }}>{format(data.totalInvested)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 11, color: '#A1A1AA', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Returns earned</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Returns earned</div>
                     <div style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 800, color: '#0ECB81', lineHeight: 1 }}>{format(data.totalReturns)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 11, color: '#A1A1AA', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Investments</div>
-                    <div style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 800, color: '#FFFFFF', lineHeight: 1 }}>{data.investmentsCount}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Investments</div>
+                    <div style={{ fontSize: 'clamp(24px, 4vw, 32px)', fontWeight: 800, color: 'var(--bv-bg-elevated)', lineHeight: 1 }}>{data.investmentsCount}</div>
                   </div>
                 </div>
 
                 {/* Footer */}
                 <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 24, borderTop: '1px solid #262626', flexWrap: 'wrap', gap: 12 }}>
-                  <div style={{ fontSize: 12, color: '#A1A1AA' }}>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
                     bravevest.com
                   </div>
-                  <div style={{ fontSize: 11, color: '#F6A500', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <div style={{ fontSize: 11, color: 'var(--bv-accent)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Bravelion Holdings
                   </div>
                 </div>
@@ -228,7 +228,7 @@ export default function YearInReview() {
               {data.bestDeal && (
                 <div style={{ padding: 24, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, marginBottom: 24 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                    <Award size={20} color='#F6A500' />
+                    <Award size={20} color='var(--bv-accent)' />
                     <h3 style={{ fontSize: 15, fontWeight: 700, margin: 0, color: 'var(--text)' }}>Your best performing deal</h3>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
@@ -246,7 +246,7 @@ export default function YearInReview() {
               {/* Monthly breakdown */}
               <div style={{ padding: 24, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, marginBottom: 24 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                  <Calendar size={20} color='#F6A500' />
+                  <Calendar size={20} color='var(--bv-accent)' />
                   <h3 style={{ fontSize: 15, fontWeight: 700, margin: 0, color: 'var(--text)' }}>Investments by month</h3>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 6, alignItems: 'end', height: 120 }}>
@@ -254,7 +254,7 @@ export default function YearInReview() {
                     const heightPct = (m.amount / maxMonthly) * 100;
                     return (
                       <div key={m.month} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%', gap: 4 }}>
-                        <div style={{ width: '100%', height: (heightPct || 4) + '%', background: m.amount > 0 ? '#F6A500' : 'var(--border)', borderRadius: 3, minHeight: 4, transition: 'height 0.3s' }} title={m.amount > 0 ? format(m.amount) : ''} />
+                        <div style={{ width: '100%', height: (heightPct || 4) + '%', background: m.amount > 0 ? 'var(--bv-accent)' : 'var(--border)', borderRadius: 3, minHeight: 4, transition: 'height 0.3s' }} title={m.amount > 0 ? format(m.amount) : ''} />
                         <div style={{ fontSize: 9, color: 'var(--text-muted)', fontWeight: 500 }}>{MONTH_NAMES[m.month - 1]}</div>
                       </div>
                     );

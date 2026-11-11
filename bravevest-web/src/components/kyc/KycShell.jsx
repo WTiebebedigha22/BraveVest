@@ -14,14 +14,14 @@ export default function KycShell({ step, title, subtitle, children }) {
   }, [profile, loading, navigate]);
 
   if (loading) {
-    return <div style={{ padding: 80, textAlign: 'center', color: '#666' }}>Loading…</div>;
+    return <div style={{ padding: 80, textAlign: 'center', color: 'var(--bv-text-muted)' }}>Loading…</div>;
   }
 
   return (
     <div style={{ maxWidth: 720, margin: '0 auto', padding: '40px 20px 80px' }}>
       <div style={{ marginBottom: 24 }}>
         <h1 style={{ fontSize: 28, margin: 0 }}>{title}</h1>
-        {subtitle && <p style={{ color: '#666', marginTop: 6 }}>{subtitle}</p>}
+        {subtitle && <p style={{ color: 'var(--bv-text-muted)', marginTop: 6 }}>{subtitle}</p>}
       </div>
       <KycStepper current={step} />
       {children}

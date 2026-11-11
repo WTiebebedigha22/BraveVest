@@ -6,7 +6,7 @@ import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
 
 const CSS = `
-.wd { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-card2:#EDEDF0; --by-line:#E4E4E9; --by-text:#121214; --by-mute:#6B6B76; --by-yellow:#F7A600; --by-amber:#C27C00; --by-green:#0E9F5B; --by-red:#D6334B;
+.wd { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-card2:#EDEDF0; --by-line:#E4E4E9; --by-text:var(--text-main); --by-mute:var(--bv-text-muted); --by-yellow:var(--bv-accent); --by-amber:#C27C00; --by-green:var(--bv-success); --by-red:#D6334B;
   color:var(--by-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; }
 .wd * { box-sizing:border-box; }
 .wd--page { background:var(--by-bg); min-height:60vh; padding:48px 20px 96px; }
@@ -24,7 +24,7 @@ const CSS = `
 
 .wd-card { background:var(--by-card); border:1px solid var(--by-line); border-radius:20px; padding:28px; }
 .wd-field { display:grid; gap:8px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:20px; }
-.wd-amt { display:flex; align-items:center; gap:8px; height:56px; padding:0 16px; background:#fff; border:1px solid var(--by-line); border-radius:10px; transition:border-color .15s; }
+.wd-amt { display:flex; align-items:center; gap:8px; height:56px; padding:0 16px; background: var(--bv-bg-elevated); border:1px solid var(--by-line); border-radius:10px; transition:border-color .15s; }
 .wd-amt:focus-within { border-color:var(--by-yellow); }
 .wd-amt span { font-size:22px; font-weight:700; color:var(--by-mute); }
 .wd-amt input { flex:1; min-width:0; border:0; background:transparent; outline:none; font-family:inherit; font-size:26px; font-weight:800; letter-spacing:-0.02em; color:var(--by-text); font-variant-numeric:tabular-nums; -moz-appearance:textfield; }
@@ -32,13 +32,13 @@ const CSS = `
 .wd-amt input::placeholder { color:#B4B4BE; }
 .wd-all { justify-self:start; background:none; border:0; padding:0; font-family:inherit; font-size:13px; font-weight:600; color:var(--by-amber); cursor:pointer; }
 .wd-all:hover { text-decoration:underline; }
-.wd-sel { width:100%; height:48px; padding:0 14px; background:#fff; border:1px solid var(--by-line); border-radius:8px; font-family:inherit; font-size:15px; color:var(--by-text); outline:none; transition:border-color .15s; }
+.wd-sel { width:100%; height:48px; padding:0 14px; background: var(--bv-bg-elevated); border:1px solid var(--by-line); border-radius:8px; font-family:inherit; font-size:15px; color:var(--by-text); outline:none; transition:border-color .15s; }
 .wd-sel:focus { border-color:var(--by-yellow); }
-.wd-none { padding:14px; background:#fff; border:1px dashed var(--by-line); border-radius:8px; color:var(--by-mute); font-size:13px; font-weight:500; line-height:1.6; }
+.wd-none { padding:14px; background: var(--bv-bg-elevated); border:1px dashed var(--by-line); border-radius:8px; color:var(--by-mute); font-size:13px; font-weight:500; line-height:1.6; }
 .wd-none a { color:var(--by-amber); font-weight:600; text-decoration:none; }
 .wd-none a:hover { text-decoration:underline; }
 
-.wd-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; height:50px; border:0; border-radius:8px; background:var(--by-yellow); color:#121214; font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; transition:background .15s; }
+.wd-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; height:50px; border:0; border-radius:8px; background:var(--by-yellow); color: var(--bv-text); font-family:inherit; font-size:15px; font-weight:600; cursor:pointer; transition:background .15s; }
 .wd-btn:hover:not(:disabled) { background:#FFB82E; }
 .wd-btn:disabled { opacity:.6; cursor:not-allowed; }
 .wd-btn:focus-visible, .wd-all:focus-visible, .wd-sel:focus-visible { outline:2px solid #121214; outline-offset:2px; }

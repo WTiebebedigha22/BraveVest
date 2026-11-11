@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Globe, ArrowRight, Smartphone, Mail, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { ThemeLogo } from '@/components/shared/ThemeLogo';
+
 
 export default function Login() {
   const nav = useNavigate();
@@ -53,7 +55,7 @@ export default function Login() {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#F7F7F7', fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bv-bg)', fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       
       {/* ── RESPONSIVE STYLES ── */}
       <style>{`
@@ -63,7 +65,7 @@ export default function Login() {
           flex-direction: column;
           justify-content: space-between;
           padding: 56px 64px;
-          background: linear-gradient(135deg, rgba(11, 15, 25, 0.85) 0%, rgba(11, 15, 25, 0.7) 100%), url('watermarked_img_10228335117829985453.jpg') center/cover no-repeat;
+          background: linear-gradient(135deg, rgba(11, 15, 25, 0.85) 0%, rgba(11, 15, 25, 0.7) 100%), url('https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
           position: relative;
           overflow: hidden;
         }
@@ -74,33 +76,33 @@ export default function Login() {
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          background: #F7F7F7;
+          background: var(--bv-bg);
           padding: 40px 24px;
         }
 
         .auth-input {
           width: 100%;
           padding: 14px 16px;
-          background: #F5F5F5;
+          background: var(--bv-bg-elevated);
           border: 1px solid transparent;
           border-radius: 8px;
           font-size: 15px;
-          color: #111;
+          color: var(--bv-text);
           outline: none;
           font-family: inherit;
           transition: border-color 0.2s, background-color 0.2s;
         }
 
         .auth-input:focus {
-          background: #FFFFFF;
-          border-color: #F6A500;
+          background: var(--bv-bg-elevated);
+          border-color: var(--bv-accent);
         }
 
         .social-btn {
           flex: 1;
           padding: 11px;
-          background: #FFF;
-          border: 1px solid #EAEAEA;
+          background: var(--bv-bg-elevated);
+          border: 1px solid var(--bv-border);
           border-radius: 8px;
           font-size: 13px;
           font-weight: 500;
@@ -109,14 +111,14 @@ export default function Login() {
           align-items: center;
           justify-content: center;
           gap: 8px;
-          color: #111;
+          color: var(--bv-text);
           font-family: inherit;
           transition: background-color 0.2s, border-color 0.2s;
         }
 
         .social-btn:hover:not(:disabled) {
-          background-color: #FAF9F6;
-          border-color: #DDD;
+          background-color: var(--bv-bg-elevated);
+          border-color: var(--bv-border);
         }
 
         @media (max-width: 900px) {
@@ -133,13 +135,13 @@ export default function Login() {
       {/* ── Left Promo Section with Enhanced High-Contrast Text ── */}
       <div className="login-left-promo">
         <div style={{ position: 'relative', zIndex: 10 }}>
-          <span style={{ display: 'inline-block', padding: '6px 14px', background: 'rgba(246, 165, 0, 0.25)', color: '#FFB81C', borderRadius: '20px', fontSize: '12px', fontWeight: '700', letterSpacing: '0.5px', marginBottom: '20px', backdropFilter: 'blur(6px)', border: '1px solid rgba(246, 165, 0, 0.3)' }}>
+          <span style={{ display: 'inline-block', padding: '6px 14px', background: 'rgba(246, 165, 0, 0.25)', color: 'var(--bv-orange)', borderRadius: '20px', fontSize: '12px', fontWeight: '700', letterSpacing: '0.5px', marginBottom: '20px', backdropFilter: 'blur(6px)', border: '1px solid rgba(246, 165, 0, 0.3)' }}>
             ENTERPRISE-GRADE SECURITY
           </span>
-          <h1 style={{ fontSize: '38px', fontWeight: '800', color: '#FFFFFF', lineHeight: 1.2, letterSpacing: '-0.5px', textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>
+          <h1 style={{ fontSize: '40px', fontWeight: '900', color: 'var(--bv-orange)', lineHeight: 1.2, letterSpacing: '-0.5px', textShadow: '0 2px 12px rgba(0,0,0,0.6)' }}>
             Invest directly<br />in Africa's real economy.
           </h1>
-          <p style={{ fontSize: '16px', color: '#F0F0F0', marginTop: '16px', maxWidth: '400px', lineHeight: 1.6, fontWeight: '400', textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
+          <p style={{ fontSize: '16px', color: '#F0F3F6', marginTop: '16px', maxWidth: '400px', lineHeight: 1.6, fontWeight: '400', textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
             Fixed returns engineered from fully vetted private credit, commercial real estate, and high-growth SME transactions.
           </p>
         </div>
@@ -147,12 +149,12 @@ export default function Login() {
         {/* Stats Strip with High Contrast */}
         <div style={{ display: 'flex', gap: '48px', position: 'relative', zIndex: '10', borderTop: '1px solid rgba(255, 255, 255, 0.2)', paddingTop: '28px' }}>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '800', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>₦184B+</div>
-            <div style={{ fontSize: '13px', color: '#E0E0E0', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Assets Under Management</div>
+            <div style={{ fontSize: '32px', fontWeight: '800', color: 'var(--bv-orange)', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>₦184B+</div>
+            <div style={{ fontSize: '13px', color: '#F0F3F6', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Assets Under Management</div>
           </div>
           <div>
-            <div style={{ fontSize: '32px', fontWeight: '800', color: '#FFFFFF', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>52,000+</div>
-            <div style={{ fontSize: '13px', color: '#E0E0E0', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Active Investors</div>
+            <div style={{ fontSize: '32px', fontWeight: '800', color: 'var(--bv-orange)', textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>52,000+</div>
+            <div style={{ fontSize: '13px', color: '#F0F3F6', marginTop: '4px', fontWeight: '500', letterSpacing: '0.3px' }}>Active Investors</div>
           </div>
         </div>
       </div>
@@ -164,32 +166,28 @@ export default function Login() {
           {/* Header & Logo */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
             <Link to="/" style={{ display: 'inline-block', textDecoration: 'none' }}>
-              <img
-                src="/icons/logo-light.png"
-                alt="BraveVest Logo"
-                style={{ height: '36px', width: 'auto', display: 'block', objectFit: 'contain' }}
-              />
+              <ThemeLogo height={36} alt="BraveVest Logo" />
             </Link>
             <button
               type="button"
               aria-label="Change language"
-              style={{ background: 'none', border: 'none', color: '#111', cursor: 'pointer', padding: '8px' }}
+              style={{ background: 'none', border: 'none', color: 'var(--bv-text)', cursor: 'pointer', padding: '8px' }}
             >
               <Globe size={20} />
             </button>
           </div>
 
           {/* Form Card */}
-          <div style={{ background: '#fff', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid #EAEAEA' }}>
+          <div style={{ background: 'var(--bv-bg-elevated)', borderRadius: '16px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid var(--bv-border)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: 0, color: '#111' }}>Welcome back</h2>
-              <Link to="/register" style={{ fontSize: '13px', color: '#F6A500', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '600', margin: 0, color: 'var(--bv-text)' }}>Welcome back</h2>
+              <Link to="/register" style={{ fontSize: '13px', color: 'var(--bv-accent)', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
                 Sign up
               </Link>
             </div>
 
             {/* Auth Method Tabs */}
-            <div style={{ display: 'flex', borderBottom: '1px solid #EAEAEA', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', borderBottom: '1px solid var(--bv-border)', marginBottom: '24px' }}>
               {['email', 'mobile'].map((m) => (
                 <button
                   key={m}
@@ -202,8 +200,8 @@ export default function Login() {
                     padding: '12px 0',
                     fontSize: '14px',
                     fontWeight: authMethod === m ? '600' : '400',
-                    color: authMethod === m ? '#111' : '#888',
-                    borderBottom: authMethod === m ? '2px solid #F6A500' : '2px solid transparent',
+                    color: authMethod === m ? 'var(--bv-text)' : 'var(--bv-text-muted)',
+                    borderBottom: authMethod === m ? '2px solid var(--bv-accent)' : '2px solid transparent',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -277,7 +275,7 @@ export default function Login() {
                     transform: 'translateY(-50%)',
                     background: 'none',
                     border: 'none',
-                    color: '#888',
+                    color: 'var(--bv-text-muted)',
                     cursor: 'pointer',
                     padding: '4px',
                     display: 'flex',
@@ -290,7 +288,7 @@ export default function Login() {
 
               {/* Forgot Password Link */}
               <div style={{ textAlign: 'right', marginBottom: '16px' }}>
-                <Link to="/forgot-password" style={{ fontSize: '12px', color: '#666', textDecoration: 'none', fontWeight: '500' }}>
+                <Link to="/forgot-password" style={{ fontSize: '12px', color: 'var(--bv-text-muted)', textDecoration: 'none', fontWeight: '500' }}>
                   Forgot password?
                 </Link>
               </div>
@@ -309,8 +307,8 @@ export default function Login() {
                 style={{
                   width: '100%',
                   padding: '14px',
-                  background: '#F6A500',
-                  color: '#fff',
+                  background: 'var(--bv-accent)',
+                  color: 'var(--bv-bg-elevated)',
                   border: 'none',
                   borderRadius: '8px',
                   fontSize: '16px',
@@ -328,9 +326,9 @@ export default function Login() {
 
             {/* Divider */}
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-              <div style={{ flex: 1, height: '1px', background: '#EAEAEA' }} />
-              <span style={{ padding: '0 12px', fontSize: '12px', color: '#888' }}>or continue with</span>
-              <div style={{ flex: 1, height: '1px', background: '#EAEAEA' }} />
+              <div style={{ flex: 1, height: '1px', background: 'var(--bv-border)' }} />
+              <span style={{ padding: '0 12px', fontSize: '12px', color: 'var(--bv-text-muted)' }}>or continue with</span>
+              <div style={{ flex: 1, height: '1px', background: 'var(--bv-border)' }} />
             </div>
 
             {/* Social Auth Options */}
@@ -358,16 +356,16 @@ export default function Login() {
             </div>
 
             {/* Footer Navigation Link */}
-            <div style={{ textAlign: 'center', borderTop: '1px solid #EAEAEA', paddingTop: '20px' }}>
-              <Link to="/register" style={{ fontSize: '13px', color: '#F6A500', fontWeight: '500', display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
+            <div style={{ textAlign: 'center', borderTop: '1px solid var(--bv-border)', paddingTop: '20px' }}>
+              <Link to="/register" style={{ fontSize: '13px', color: 'var(--bv-accent)', fontWeight: '500', display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
                 Need an account? Sign up <ArrowRight size={14} />
               </Link>
             </div>
           </div>
 
           {/* Legal / Terms */}
-          <p style={{ textAlign: 'center', fontSize: '12px', color: '#888', marginTop: '24px', lineHeight: 1.6 }}>
-            By continuing, you agree to BraveVest's <a href="/terms" style={{ color: '#111', textDecoration: 'underline' }}>Terms</a> and <a href="/privacy" style={{ color: '#111', textDecoration: 'underline' }}>Privacy Policy</a>.
+          <p style={{ textAlign: 'center', fontSize: '12px', color: 'var(--bv-text-muted)', marginTop: '24px', lineHeight: 1.6 }}>
+            By continuing, you agree to BraveVest's <a href="/terms" style={{ color: 'var(--bv-text)', textDecoration: 'underline' }}>Terms</a> and <a href="/privacy" style={{ color: 'var(--bv-text)', textDecoration: 'underline' }}>Privacy Policy</a>.
           </p>
 
         </div>

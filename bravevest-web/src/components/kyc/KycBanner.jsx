@@ -7,11 +7,11 @@ export default function KycBanner() {
   if (profile.status === 'APPROVED') return null;
 
   const map = {
-    NOT_STARTED: { bg: '#fff8e1', border: '#ffe082', color: '#8d6e00', title: 'Complete KYC to invest', cta: 'Start KYC', to: '/kyc' },
-    PENDING: { bg: '#fff8e1', border: '#ffe082', color: '#8d6e00', title: 'Complete KYC to invest', cta: 'Continue KYC', to: '/kyc' },
-    UNDER_REVIEW: { bg: '#e3f2fd', border: '#90caf9', color: '#0d47a1', title: 'KYC under review', cta: 'View status', to: '/kyc/review' },
-    REJECTED: { bg: '#ffebee', border: '#ffcdd2', color: '#b71c1c', title: 'KYC rejected — action needed', cta: 'Review', to: '/kyc/review' },
-    EXPIRED: { bg: '#f5f5f5', border: '#e0e0e0', color: '#333', title: 'KYC expired', cta: 'Re-verify', to: '/kyc/review' },
+    NOT_STARTED: { bg: 'color-mix(in srgb, var(--bv-warning, #f59e0b) 15%, var(--bv-bg-elevated))', border: 'color-mix(in srgb, var(--bv-warning, #f59e0b) 40%, var(--bv-bg-elevated))', color: 'var(--bv-warning-text, #fbbf24)', title: 'Complete KYC to invest', cta: 'Start KYC', to: '/kyc' },
+    PENDING: { bg: 'color-mix(in srgb, var(--bv-warning, #f59e0b) 15%, var(--bv-bg-elevated))', border: 'color-mix(in srgb, var(--bv-warning, #f59e0b) 40%, var(--bv-bg-elevated))', color: 'var(--bv-warning-text, #fbbf24)', title: 'Complete KYC to invest', cta: 'Continue KYC', to: '/kyc' },
+    UNDER_REVIEW: { bg: 'color-mix(in srgb, var(--bv-info, var(--bv-info)) 15%, var(--bv-bg-elevated))', border: 'color-mix(in srgb, var(--bv-info, var(--bv-info)) 40%, var(--bv-bg-elevated))', color: 'var(--bv-info-text, #60a5fa)', title: 'KYC under review', cta: 'View status', to: '/kyc/review' },
+    REJECTED: { bg: 'color-mix(in srgb, var(--bv-danger) 15%, var(--bv-bg-elevated))', border: 'color-mix(in srgb, var(--bv-danger) 40%, var(--bv-bg-elevated))', color: 'var(--bv-danger)', title: 'KYC rejected — action needed', cta: 'Review', to: '/kyc/review' },
+    EXPIRED: { bg: 'var(--bv-surface)', border: 'var(--bv-border)', color: 'var(--bv-text)', title: 'KYC expired', cta: 'Re-verify', to: '/kyc/review' },
   };
   const cfg = map[profile.status] ?? map.NOT_STARTED;
 

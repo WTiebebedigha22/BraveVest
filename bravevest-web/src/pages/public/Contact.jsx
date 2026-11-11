@@ -4,20 +4,20 @@ import { apiFetch } from '@/lib/api';
 import PageShell from '@/components/shared/PageShell';
 
 const CSS = `
-.ct { --ct-bg:#FFFFFF; --ct-card:#F9F9FB; --ct-card2:#F5F5F7; --ct-line:#E4E4E9; --ct-text:#121214; --ct-mute:#6B6B76; --ct-yellow:#F7A600; --ct-amber:#C27C00; --ct-green:#0E9F5B;
+.ct { --ct-bg: var(--bv-bg); --ct-card: var(--bv-bg-elevated); --ct-card2: var(--bv-surface); --ct-line: var(--bv-border); --ct-text: var(--bv-text); --ct-mute: var(--bv-text-muted); --ct-yellow: var(--bv-accent); --ct-amber:#C27C00; --ct-green:var(--bv-success);
   background:var(--ct-bg); color:var(--ct-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; }
 .ct * { box-sizing:border-box; }
 .ct-wrap { max-width:1200px; margin:0 auto; padding:0 20px; }
 
 /* Hero Banner with Dark Overlay */
-.ct-hero { position:relative; overflow:hidden; padding:96px 0 80px; background-color:#121214; color:#FFFFFF; text-align:center; }
+.ct-hero { position:relative; overflow:hidden; padding:96px 0 80px; background-color: var(--bv-text); color: var(--bv-bg-elevated); text-align:center; }
 .ct-hero-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.35; filter:brightness(0.8); }
 .ct-hero-overlay { position:absolute; inset:0; background:linear-gradient(180deg, rgba(18,18,20,0.6) 0%, rgba(18,18,20,0.85) 100%); }
 .ct-hero .ct-wrap { position:relative; z-index:2; max-width:760px; }
 .ct-chip { display:inline-flex; padding:6px 14px; border-radius:6px; background:rgba(247,166,0,0.15); border:1px solid rgba(247,166,0,0.3); font-size:13px; font-weight:700; color:var(--ct-yellow); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:16px; }
 .ct-hero h1 { font-size:clamp(38px, 5.5vw, 60px); font-weight:800; letter-spacing:-0.035em; margin:0 0 16px; line-height:1.08; }
 .ct-hero h1 em { font-style:normal; color:var(--ct-yellow); }
-.ct-hero p { font-size:clamp(16px, 1.8vw, 18px); color:#D1D5DB; line-height:1.6; margin:0; }
+.ct-hero p { font-size:clamp(16px, 1.8vw, 18px); color: var(--bv-border); line-height:1.6; margin:0; }
 
 /* Contact Body Grid */
 .ct-body { padding:72px 0 96px; background:var(--ct-bg); }
@@ -25,15 +25,15 @@ const CSS = `
 .ct-form-card { background:var(--ct-card); border:1px solid var(--ct-line); border-radius:20px; padding:36px; box-shadow:0 12px 32px -12px rgba(18,18,20,0.06); }
 .ct-form-card h2 { font-size:22px; font-weight:800; margin:0 0 24px; color:var(--ct-text); }
 .ct-field { display:grid; gap:8px; font-size:13px; font-weight:600; color:var(--ct-text); margin-bottom:20px; }
-.ct-input, .ct-textarea { width:100%; padding:14px 16px; background:#FFFFFF; border:1px solid var(--ct-line); border-radius:10px; font-size:14px; color:var(--ct-text); font-family:inherit; outline:none; transition:border-color .2s, box-shadow .2s; }
+.ct-input, .ct-textarea { width:100%; padding:14px 16px; background: var(--bv-bg-elevated); border:1px solid var(--ct-line); border-radius:10px; font-size:14px; color:var(--ct-text); font-family:inherit; outline:none; transition:border-color .2s, box-shadow .2s; }
 .ct-input:focus, .ct-textarea:focus { border-color:var(--ct-yellow); box-shadow:0 0 0 3px rgba(247,166,0,0.15); }
 .ct-textarea { resize:vertical; min-height:130px; }
-.ct-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; height:52px; padding:0 32px; border-radius:10px; font-weight:700; font-size:15px; text-decoration:none; border:0; cursor:pointer; background:var(--ct-yellow); color:#121214; transition:background .15s, transform .15s; box-shadow:0 8px 20px -6px rgba(247,166,0,0.5); }
+.ct-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; height:52px; padding:0 32px; border-radius:10px; font-weight:700; font-size:15px; text-decoration:none; border:0; cursor:pointer; background:var(--ct-yellow); color: var(--bv-text); transition:background .15s, transform .15s; box-shadow:0 8px 20px -6px rgba(247,166,0,0.5); }
 .ct-btn:hover { background:#FFB82E; transform:translateY(-1px); }
 .ct-btn:disabled { opacity:.6; cursor:not-allowed; transform:none; }
 
 .ct-banner { display:flex; gap:12px; align-items:flex-start; padding:14px 16px; border-radius:10px; font-size:13px; margin-bottom:24px; font-weight:500; }
-.ct-banner--err { background:rgba(220,38,38,0.08); border:1px solid rgba(220,38,38,0.2); color:#DC2626; }
+.ct-banner--err { background: color-mix(in srgb, var(--bv-danger) 8%, transparent); border: 1px solid color-mix(in srgb, var(--bv-danger) 20%, transparent); color:var(--bv-danger); }
 .ct-banner--ok { background:rgba(14,159,91,0.08); border:1px solid rgba(14,159,91,0.2); color:var(--ct-green); }
 
 .ct-info-list { display:flex; flex-direction:column; gap:16px; }

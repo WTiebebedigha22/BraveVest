@@ -1,7 +1,7 @@
 .modal-backdrop { position: fixed; inset: 0; background: rgba(15, 15, 16, .45); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
-.modal { background: #fff; border-radius: var(--r-lg); width: 100%; max-width: 520px; max-height: calc(100vh - 40px); overflow-y: auto; box-shadow: var(--shadow-lg); }
+.modal { background: var(--bv-bg-elevated); border-radius: var(--r-lg); width: 100%; max-width: 520px; max-height: calc(100vh - 40px); overflow-y: auto; box-shadow: var(--shadow-lg); }
 @media (max-width: 600px) { .modal-backdrop { padding: 0; align-items: flex-end; } .modal { max-width: 100%; border-radius: 20px 20px 0 0; max-height: 92vh; } }
-.modal__header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: #fff; z-index: 1; }
+.modal__header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--bv-bg-elevated); z-index: 1; }
 .modal__close { font-size: 26px; color: var(--gray-600); }
 .modal__body { padding: 24px; }
 .modal__footer { padding: 16px 24px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 12px; }

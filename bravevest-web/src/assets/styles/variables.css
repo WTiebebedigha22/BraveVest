@@ -1,6 +1,6 @@
 :root {
-  --ink: #0F0F10;
-  --ink-80: #2a2a2c;
+  --ink: var(--text-main);
+  --ink-80: var(--text-main);
   --gray-700: #4a4a4c;
   --gray-600: #6B6B6B;
   --gray-400: #a8a8ab;
@@ -37,7 +37,7 @@ html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-sans);
   font-size: 15px; line-height: 1.55; color: var(--ink);
-  background: #fff; -webkit-font-smoothing: antialiased;
+  background: var(--bv-bg-elevated); -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 a { color: inherit; text-decoration: none; }

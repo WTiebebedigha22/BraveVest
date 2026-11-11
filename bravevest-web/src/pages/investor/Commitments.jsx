@@ -5,8 +5,8 @@ import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
 
 const COLORS = {
-  surface: '#FFFFFF', text: '#1A1A1A', muted: '#6B7280',
-  border: '#EAEAEA', accent: '#F6A500', positive: '#0ECB81', negative: '#F6465D',
+  surface: '#FFFFFF', text: '#1A1A1A', muted: 'var(--bv-text-muted)',
+  border: 'var(--bv-border)', accent: 'var(--bv-accent)', positive: '#0ECB81', negative: '#F6465D',
 };
 const PAGE_SIZE = 10;
 
@@ -73,7 +73,7 @@ export default function Commitments() {
           <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, overflow: 'hidden' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
               <thead>
-                <tr style={{ background: '#FAFAFA' }}>
+                <tr style={{ background: 'var(--bv-bg)' }}>
                   {['Project', 'Amount', 'Status', 'Date'].map((h) => (
                     <th key={h} style={{ textAlign: h === 'Amount' ? 'right' : 'left', padding: '12px 16px', fontSize: 12, fontWeight: 600, color: COLORS.muted, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{h}</th>
                   ))}
