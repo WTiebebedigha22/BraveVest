@@ -9,20 +9,20 @@ const CSS = `
 .wd { --by-bg:#FFFFFF; --by-card:#F5F5F7; --by-card2:#EDEDF0; --by-line:#E4E4E9; --by-text:var(--text-main); --by-mute:var(--bv-text-muted); --by-yellow:var(--bv-accent); --by-amber:#C27C00; --by-green:var(--bv-success); --by-red:#D6334B;
   color:var(--by-text); font-family:'Inter','Helvetica Neue',Arial,sans-serif; }
 .wd * { box-sizing:border-box; }
-.wd--page { background:var(--by-bg); min-height:60vh; padding:48px 20px 96px; }
+.wd--page { background:var(--by-bg-elevated); min-height:60vh; padding:48px 20px 96px; }
 .wd-inner { max-width:560px; }
 .wd--page .wd-inner { margin:0 auto; }
 .wd-title { font-size:24px; font-weight:800; letter-spacing:-0.03em; margin:0 0 20px; }
 .wd--page .wd-title { font-size:clamp(28px,4vw,38px); }
 
-.wd-hero { position:relative; overflow:hidden; background:var(--by-card); border:1px solid var(--by-line); border-radius:20px; padding:28px; margin-bottom:16px; }
+.wd-hero { position:relative; overflow:hidden; background:var(--by-bg-elevated); border:1px solid var(--by-line); border-radius:20px; padding:28px; margin-bottom:16px; }
 .wd-hero::before { content:''; position:absolute; inset:0; pointer-events:none; background:radial-gradient(320px 180px at 100% 0%, rgba(247,166,0,.22), transparent 70%); }
 .wd-hero > * { position:relative; }
 .wd-lbl { display:flex; align-items:center; gap:10px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:10px; }
 .wd-ic { width:34px; height:34px; border-radius:8px; background:rgba(247,166,0,.16); color:var(--by-amber); display:flex; align-items:center; justify-content:center; }
 .wd-big { font-size:clamp(32px,5vw,44px); font-weight:800; letter-spacing:-0.035em; line-height:1.1; font-variant-numeric:tabular-nums; }
 
-.wd-card { background:var(--by-card); border:1px solid var(--by-line); border-radius:20px; padding:28px; }
+.wd-card { background: var(--bv-bg-elevated); border:1px solid var(--by-line); border-radius:20px; padding:28px; }
 .wd-field { display:grid; gap:8px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:20px; }
 .wd-amt { display:flex; align-items:center; gap:8px; height:56px; padding:0 16px; background: var(--bv-bg-elevated); border:1px solid var(--by-line); border-radius:10px; transition:border-color .15s; }
 .wd-amt:focus-within { border-color:var(--by-yellow); }

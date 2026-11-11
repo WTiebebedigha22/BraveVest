@@ -16,7 +16,7 @@ const CSS = `
 .tf--page .tf-title { font-size:clamp(28px,4vw,38px); }
 .tf-sub { font-size:15px; color:var(--by-mute); margin:0 0 24px; line-height:1.6; }
 
-.tf-card { background:var(--by-card); border:1px solid var(--by-line); border-radius:20px; padding:28px; }
+.tf-card { background: var(--bv-bg-elevated); border:1px solid var(--by-line); border-radius:20px; padding:28px; }
 .tf-field { display:grid; gap:8px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:20px; }
 .tf-field > label, .tf-field > span { display:flex; align-items:center; gap:6px; }
 .tf-in { width:100%; height:48px; padding:0 14px; background: var(--bv-bg-elevated); border:1px solid var(--by-line); border-radius:8px; font-family:inherit; font-size:15px; color:var(--by-text); outline:none; transition:border-color .15s; }

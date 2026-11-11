@@ -1,22 +1,39 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useIsAdmin } from '@/AppEnhancements';
 import {
-  LayoutDashboard, TrendingUp, Wallet, FileText, Target,
-  Gift, Users, UserCircle, Calendar, BarChart3, Shield,
-  FolderOpen, Settings, Inbox, PieChart, ArrowLeftRight, LogOut, X,
-  Plus, FileCheck, Clock,
+  LayoutDashboard,
+  TrendingUp,
+  Wallet,
+  FileText,
+  Target,
+  Gift,
+  Users,
+  UserCircle,
+  Calendar,
+  BarChart3,
+  Shield,
+  FolderOpen,
+  Settings,
+  Inbox,
+  PieChart,
+  ArrowLeftRight,
+  LogOut,
+  X,
+  Plus,
+  FileCheck,
+  Clock,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 /* ── Sidebar always-dark palette ─────────────────── */
 const COLORS = {
-  bg: '#151A21',                 // elevated surface
-  text: '#F0F3F6',               // primary text
-  muted: '#848E9C',              // muted text
-  border: '#2B313A',             // border
-  accent: '#F0B90B',             // brand gold
-  accentSoft: 'rgba(240,185,11,0.10)',  // gold tint (active item bg)
-  negative: '#FF4D4F',           // sign out hover
+  bg: '#151A21', // elevated surface
+  text: '#F0F3F6', // primary text
+  muted: '#848E9C', // muted text
+  border: '#2B313A', // border
+  accent: '#F0B90B', // brand gold
+  accentSoft: 'rgba(240,185,11,0.10)', // gold tint (active item bg)
+  negative: '#FF4D4F', // sign out hover
   adminTint: 'rgba(240,185,11,0.05)',
   adminBorder: 'rgba(240,185,11,0.18)',
 };
@@ -56,7 +73,10 @@ const ADMIN_LINKS = [
 export default function Sidebar({ mobileOpen, onClose }) {
   const { user, logout } = useAuth();
   const nav = useNavigate();
-  const isAdmin = user?.roles?.includes('ADMIN') || user?.role === 'ADMIN' || user?.roles?.includes('SUPER_ADMIN');
+  const isAdmin =
+    user?.roles?.includes('ADMIN') ||
+    user?.role === 'ADMIN' ||
+    user?.roles?.includes('SUPER_ADMIN');
   const links = isAdmin ? ADMIN_LINKS : INVESTOR_LINKS;
 
   function handleLogout() {
@@ -69,44 +89,171 @@ export default function Sidebar({ mobileOpen, onClose }) {
     <>
       {/* Brand with ADMIN badge */}
       <div style={{ padding: '4px 12px 20px', display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div style={{
-          width: 32, height: 32, borderRadius: 8,
-          background: COLORS.accent, color: '#000',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontWeight: 700, fontSize: 16,
-          boxShadow: isAdmin ? '0 0 0 2px rgba(240,185,11,0.30)' : 'none',
-        }}>B</div>
+        {/* Avatar — image if set, else initials */}
+        {user?.image ? (
+          <img
+            src={user.image}
+            alt={user.firstName || 'User'}
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              objectFit: 'cover',
+              border: `2px solid ${COLORS.accent}`,
+              flexShrink: 0,
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: '50%',
+              background: COLORS.accent,
+              color: '#000',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 700,
+              fontSize: 12,
+              flexShrink: 0,
+              boxShadow: isAdmin ? '0 0 0 2px rgba(240,185,11,0.30)' : 'none',
+            }}
+          >
+            {((user?.firstName?.[0] || '') + (user?.lastName?.[0] || '')).toUpperCase() || 'U'}
+          </div>
+        )}
+
+        {/* Name + UID + type badge */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 15, fontWeight: 700, color: COLORS.text, letterSpacing: '-0.01em' }}>BraveVest</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                color: COLORS.text,
+                letterSpacing: '-0.01em',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'BraveVest'}
+            </span>
             {isAdmin && (
-              <span style={{
-                padding: '2px 7px',
-                background: COLORS.accent,
-                color: '#000',
-                borderRadius: 4,
-                fontSize: 9,
-                fontWeight: 800,
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-                lineHeight: 1.4,
-              }}>Admin</span>
+              <span
+                style={{
+                  padding: '1px 6px',
+                  background: COLORS.accent,
+                  color: '#000',
+                  borderRadius: 4,
+                  fontSize: 9,
+                  fontWeight: 800,
+                  letterSpacing: '0.06em',
+                  textTransform: 'uppercase',
+                  lineHeight: 1.4,
+                  flexShrink: 0,
+                }}
+              >
+                Admin
+              </span>
             )}
           </div>
-          <div style={{ fontSize: 10, fontWeight: 600, color: isAdmin ? COLORS.accent : COLORS.muted, textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 1 }}>
-            {isAdmin ? 'Platform control' : 'Investor portal'}
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              fontSize: 10,
+              fontWeight: 600,
+              color: COLORS.muted,
+              lineHeight: 1.2,
+            }}
+          >
+            {/* Username handle if present, else UID */}
+            {user?.username ? (
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                @{typeof user.username === 'string' ? user.username : user.username.handle || ''}
+              </span>
+            ) : (
+              <span style={{ fontFamily: 'ui-monospace, Menlo, monospace' }}>
+                UID: {(user?.id || '').slice(0, 8) || '—'}
+              </span>
+            )}
+
+            {/* User type — verified or admin */}
+            <span style={{ color: COLORS.border }}>·</span>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 3,
+                color: isAdmin
+                  ? COLORS.accent
+                  : user?.kycStatus === 'APPROVED' || user?.kyc?.status === 'APPROVED'
+                    ? COLORS.accent
+                    : COLORS.muted,
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+              }}
+            >
+              {isAdmin ? (
+                'Admin'
+              ) : user?.kycStatus === 'APPROVED' || user?.kyc?.status === 'APPROVED' ? (
+                <>
+                  <svg
+                    width="8"
+                    height="8"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Verified
+                </>
+              ) : (
+                'Unverified'
+              )}
+            </span>
           </div>
         </div>
+
         {onClose && (
-          <button onClick={onClose} aria-label='Close menu' style={{ background: 'none', border: 'none', color: COLORS.muted, cursor: 'pointer', padding: 4 }}>
+          <button
+            onClick={onClose}
+            aria-label="Close menu"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: COLORS.muted,
+              cursor: 'pointer',
+              padding: 4,
+              flexShrink: 0,
+            }}
+          >
             <X size={18} />
           </button>
         )}
       </div>
 
       {/* Nav */}
-      <nav aria-label='Dashboard navigation' style={{ flex: 1, overflowY: 'auto' }}>
-        <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <nav aria-label="Dashboard navigation" style={{ flex: 1, overflowY: 'auto' }}>
+        <ul
+          style={{
+            listStyle: 'none',
+            margin: 0,
+            padding: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
           {links.map(({ to, label, icon: Icon }) => {
             const end = to === '/admin' || to === '/dashboard';
             return (
@@ -131,7 +278,11 @@ export default function Sidebar({ mobileOpen, onClose }) {
                 >
                   {({ isActive }) => (
                     <>
-                      <Icon size={18} color={isActive ? COLORS.accent : COLORS.muted} aria-hidden='true' />
+                      <Icon
+                        size={18}
+                        color={isActive ? COLORS.accent : COLORS.muted}
+                        aria-hidden="true"
+                      />
                       <span>{label}</span>
                     </>
                   )}
@@ -145,19 +296,35 @@ export default function Sidebar({ mobileOpen, onClose }) {
       {/* Footer */}
       <div style={{ borderTop: `1px solid ${COLORS.border}`, paddingTop: 12, marginTop: 12 }}>
         <button
-          type='button'
+          type="button"
           onClick={handleLogout}
           style={{
-            width: '100%', display: 'flex', alignItems: 'center', gap: 10,
-            padding: '10px 12px', borderRadius: 8, fontSize: 14, fontWeight: 500,
-            color: COLORS.muted, background: 'transparent', border: 'none',
-            cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            padding: '10px 12px',
+            borderRadius: 8,
+            fontSize: 14,
+            fontWeight: 500,
+            color: COLORS.muted,
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            textAlign: 'left',
+            fontFamily: 'inherit',
             transition: 'background 0.15s, color 0.15s',
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.color = COLORS.negative; e.currentTarget.style.background = 'rgba(255,77,79,0.08)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.color = COLORS.muted; e.currentTarget.style.background = 'transparent'; }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = COLORS.negative;
+            e.currentTarget.style.background = 'rgba(255,77,79,0.08)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = COLORS.muted;
+            e.currentTarget.style.background = 'transparent';
+          }}
         >
-          <LogOut size={18} aria-hidden='true' />
+          <LogOut size={18} aria-hidden="true" />
           <span>Sign out</span>
         </button>
       </div>
@@ -178,12 +345,12 @@ export default function Sidebar({ mobileOpen, onClose }) {
     top: 64,
     height: 'calc(100vh - 64px)',
     overflowY: 'auto',
-    colorScheme: 'dark',   // forces native form controls / scrollbars to dark
+    colorScheme: 'dark', // forces native form controls / scrollbars to dark
   };
 
   return (
     <>
-      <aside aria-label='Dashboard navigation' className='bv-sidebar' style={sidebarStyle}>
+      <aside aria-label="Dashboard navigation" className="bv-sidebar" style={sidebarStyle}>
         {content}
       </aside>
 
@@ -199,8 +366,8 @@ export default function Sidebar({ mobileOpen, onClose }) {
             }}
           />
           <aside
-            aria-label='Dashboard navigation'
-            className='bv-sidebar bv-sidebar--mobile'
+            aria-label="Dashboard navigation"
+            className="bv-sidebar bv-sidebar--mobile"
             style={{
               ...sidebarStyle,
               position: 'fixed',
