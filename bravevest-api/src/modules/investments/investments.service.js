@@ -1,4 +1,5 @@
 const { prisma } = require('../../config/database');
+const notifications = require('../notifications/notifications.service');
 const ApiError = require('../../utils/apiError');
 const { getPagination, paginatedMeta } = require('../../utils/pagination');
 const { decorate: decorateProject } = require('../projects/projects.service');
@@ -15,6 +16,23 @@ async function create(userId, { projectId, amount }) {
   if (!kyc || kyc.status !== 'APPROVED') throw ApiError.forbidden('KYC approval required');
   const expectedReturn = (amount * Number(project.expectedReturnPct)) / 100;
   const inv = await prisma.investment.create({ data: { userId, projectId, amount, expectedReturn, status: 'PENDING' } });
+  // Notify investor
+  try {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: { title: true },
+    });
+    await notifications.push({
+      userId: user.id,
+      type: 'INVESTMENT_CONFIRMED',
+      title: 'Investment confirmed',
+      message: `Your ₦${Number(amount).toLocaleString()} investment in ${project?.title || 'project'} is now active.`,
+      metadata: { projectId },
+    });
+  } catch (e) {
+    // don't block the response if notification fails
+  }
+
   return serialize(inv);
 }
 

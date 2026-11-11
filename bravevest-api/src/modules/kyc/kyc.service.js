@@ -1,4 +1,5 @@
 const { prisma } = require('../../config/database');
+const notifications = require('../notifications/notifications.service');
 const ApiError = require('../../utils/apiError');
 
 async function ensure(userId) {

@@ -13,8 +13,7 @@ const CSS = `
 .dp--page .dp-inner { margin:0 auto; }
 .dp-title { font-size:24px; font-weight:800; letter-spacing:-0.03em; margin:0 0 20px; }
 .dp--page .dp-title { font-size:clamp(28px,4vw,38px); }
-
-.dp-card { background:var(--by-card); border:1px solid var(--by-line); border-radius:20px; padding:28px; margin-bottom:16px; }
+.dp-card { background: transparent; border:1px solid var(--by-line); border-radius:20px; padding:28px; margin-bottom:16px; }
 .dp-h { font-size:15px; font-weight:700; margin:0 0 12px; }
 .dp-lbl { display:grid; gap:8px; font-size:13px; font-weight:600; color:var(--by-mute); margin-bottom:12px; }
 .dp-amt { display:flex; align-items:center; gap:8px; height:56px; padding:0 16px; background: var(--bv-bg-elevated); border:1px solid var(--by-line); border-radius:10px; transition:border-color .15s; }

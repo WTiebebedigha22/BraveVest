@@ -3,9 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Globe, ArrowRight, Smartphone, Mail, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemeLogo } from '@/components/shared/ThemeLogo';
+import { CountrySelect, useGeoCountry } from '@/AppEnhancements';
 
 
 export default function Login() {
+  const [country, setCountry] = useGeoCountry('NG');
   const nav = useNavigate();
   const { login, socialLogin } = useAuth();
   const [authMethod, setAuthMethod] = useState('email');

@@ -6,6 +6,7 @@ const registerSchema = z.object({
   email: z.string().email().toLowerCase().trim(),
   phone: z.string().optional(),
   password: passwordRule,
+  country: z.string().length(2).optional(),
 });
 const loginSchema = z.object({ email: z.string().email().toLowerCase().trim(), password: z.string().min(1) });
 const refreshSchema = z.object({ refreshToken: z.string().min(10) });

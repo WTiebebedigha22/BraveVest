@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { CountrySelect, useGeoCountry } from '@/AppEnhancements';
 import {
   Mail, Lock, User, MapPin, ArrowRight, ArrowLeft,
   CheckCircle, Loader2, AlertCircle, Globe, Smartphone,
@@ -15,6 +16,7 @@ const STEPS = [
 ];
 
 export default function Register() {
+  const [country, setCountry] = useGeoCountry('NG');
   const nav = useNavigate();
   const { register, socialLogin } = useAuth();
   const [step, setStep] = useState(1);

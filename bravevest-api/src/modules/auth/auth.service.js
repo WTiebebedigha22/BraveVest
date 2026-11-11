@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const { prisma } = require('../../config/database');
+const notifications = require('../notifications/notifications.service');
 const ApiError = require('../../utils/apiError');
 const { hashPassword, comparePassword } = require('../../utils/password');
 const { signAccess, signRefresh, verifyRefresh } = require('../../utils/jwt');
@@ -19,6 +20,18 @@ async function register({ firstName, lastName, email, phone, password }) {
   if (existing) throw ApiError.conflict('Email already registered');
   const passwordHash = await hashPassword(password);
   const user = await prisma.user.create({ data: { firstName, lastName, email, phone: phone || null, passwordHash, role: 'INVESTOR', status: 'ACTIVE', kyc: { create: {} } } });
+  // Welcome notification
+  try {
+    await notifications.push({
+      userId: user.id,
+      type: 'WELCOME',
+      title: 'Welcome to BraveVest',
+      message: 'Your account is ready. Complete KYC to start investing.',
+    });
+  } catch (e) {
+    // don't block registration
+  }
+
   return { user: publicUser(user), ...(await issueTokens(user)) };
 }
 

@@ -8,16 +8,17 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
+/* ── Sidebar always-dark palette ─────────────────── */
 const COLORS = {
-  bg: 'var(--bv-bg-elevated)',
-  text: 'var(--bv-text)',
-  muted: 'var(--bv-text-muted)',
-  border: 'var(--bv-border)',
-  accent: 'var(--bv-accent)',
-  accentSoft: 'rgba(246,165,0,0.1)',
-  negative: '#F6465D',
-  adminTint: 'rgba(246,165,0,0.04)',
-  adminBorder: 'rgba(246,165,0,0.15)',
+  bg: '#151A21',                 // elevated surface
+  text: '#F0F3F6',               // primary text
+  muted: '#848E9C',              // muted text
+  border: '#2B313A',             // border
+  accent: '#F0B90B',             // brand gold
+  accentSoft: 'rgba(240,185,11,0.10)',  // gold tint (active item bg)
+  negative: '#FF4D4F',           // sign out hover
+  adminTint: 'rgba(240,185,11,0.05)',
+  adminBorder: 'rgba(240,185,11,0.18)',
 };
 
 const INVESTOR_LINKS = [
@@ -55,7 +56,7 @@ const ADMIN_LINKS = [
 export default function Sidebar({ mobileOpen, onClose }) {
   const { user, logout } = useAuth();
   const nav = useNavigate();
-  const isAdmin = user?.roles?.includes('ADMIN') || user?.role === 'ADMIN';
+  const isAdmin = user?.roles?.includes('ADMIN') || user?.role === 'ADMIN' || user?.roles?.includes('SUPER_ADMIN');
   const links = isAdmin ? ADMIN_LINKS : INVESTOR_LINKS;
 
   function handleLogout() {
@@ -70,10 +71,10 @@ export default function Sidebar({ mobileOpen, onClose }) {
       <div style={{ padding: '4px 12px 20px', display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{
           width: 32, height: 32, borderRadius: 8,
-          background: COLORS.accent, color: 'var(--bv-bg-elevated)',
+          background: COLORS.accent, color: '#000',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontWeight: 700, fontSize: 16,
-          boxShadow: isAdmin ? '0 0 0 2px rgba(246,165,0,0.3)' : 'none',
+          boxShadow: isAdmin ? '0 0 0 2px rgba(240,185,11,0.30)' : 'none',
         }}>B</div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -82,7 +83,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
               <span style={{
                 padding: '2px 7px',
                 background: COLORS.accent,
-                color: 'var(--bv-text)',
+                color: '#000',
                 borderRadius: 4,
                 fontSize: 9,
                 fontWeight: 800,
@@ -153,7 +154,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
             cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
             transition: 'background 0.15s, color 0.15s',
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.color = COLORS.negative; e.currentTarget.style.background = 'rgba(246,70,93,0.06)'; }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = COLORS.negative; e.currentTarget.style.background = 'rgba(255,77,79,0.08)'; }}
           onMouseLeave={(e) => { e.currentTarget.style.color = COLORS.muted; e.currentTarget.style.background = 'transparent'; }}
         >
           <LogOut size={18} aria-hidden='true' />
@@ -177,6 +178,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
     top: 64,
     height: 'calc(100vh - 64px)',
     overflowY: 'auto',
+    colorScheme: 'dark',   // forces native form controls / scrollbars to dark
   };
 
   return (
