@@ -110,11 +110,6 @@ html, body, #root {
 }
 
 /* ── Always-dark containers (navbar, footer) ── */
-.bv-always-dark,
-.bv-always-dark h1, .bv-always-dark h2, .bv-always-dark h3,
-.bv-always-dark p, .bv-always-dark a, .bv-always-dark span:not([class*="btn"]) {
-  color: var(--bv-text, #F0F3F6);
-}
 .bv-always-dark {
   --bv-bg: #0B0E11;
   --bv-bg-elevated: #151A21;
@@ -128,6 +123,11 @@ html, body, #root {
   color-scheme: dark;
   background-color: #0B0E11 !important;
   color: #F0F3F6 !important;
+}
+.bv-always-dark h1, .bv-always-dark h2, .bv-always-dark h3,
+.bv-always-dark p, .bv-always-dark a,
+.bv-always-dark span:not([class*="btn"]) {
+  color: #F0F3F6;
 }
 .bv-always-dark.bv-footer,
 .bv-always-dark .bv-footer__inner {
@@ -182,14 +182,13 @@ html, body, #root {
 .elite-banner p {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
-/* Buttons in the banner keep their own colors */
 .elite-banner .bv-btn,
 .elite-banner .bv-btn *,
 .elite-banner button {
   text-shadow: none;
 }
 
-/* ── Hero overlay: force light text over dark image backgrounds ── */
+/* ── Hero overlay ── */
 .bv-hero,
 .bv-hero h1,
 .bv-hero h2,
@@ -217,6 +216,299 @@ html, body, #root {
 }
 .bv-hero p {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+/* ════════════════════════════════════════════════════════════
+   BUTTON SYSTEM — .bv-pill, .btn, page-specific
+   ════════════════════════════════════════════════════════════ */
+
+.bv-pill,
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  border: none;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.bv-pill:disabled,
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Primary */
+.bv-pill--primary,
+.btn-primary,
+.btn--primary {
+  background: var(--bv-accent);
+  color: #000;
+}
+.bv-pill--primary:hover:not(:disabled),
+.btn-primary:hover:not(:disabled),
+.btn--primary:hover:not(:disabled) {
+  background: var(--bv-accent-hover);
+}
+
+/* Ghost / secondary */
+.bv-pill--ghost,
+.btn-ghost,
+.btn--ghost,
+.btn-secondary,
+.btn--secondary {
+  background: transparent;
+  color: var(--bv-text);
+  border: 1px solid var(--bv-border);
+}
+.bv-pill--ghost:hover:not(:disabled),
+.btn-ghost:hover:not(:disabled),
+.btn--ghost:hover:not(:disabled),
+.btn-secondary:hover:not(:disabled),
+.btn--secondary:hover:not(:disabled) {
+  background: var(--bv-surface);
+  border-color: var(--bv-border-strong);
+}
+
+/* Danger */
+.bv-pill--danger,
+.btn-danger {
+  background: var(--bv-danger);
+  color: #fff;
+}
+.bv-pill--danger:hover:not(:disabled),
+.btn-danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--bv-danger) 85%, black);
+}
+
+/* Sizes */
+.btn--sm,
+.bv-pill--sm {
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   PAGE-SPECIFIC BUTTONS
+   ════════════════════════════════════════════════════════════ */
+
+/* Profile */
+.pf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 24px;
+  border-radius: 8px;
+  border: 0;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.pf-btn--y {
+  background: var(--bv-accent);
+  color: #000;
+}
+.pf-btn--y:hover:not(:disabled) { background: var(--bv-accent-hover); }
+.pf-btn--g {
+  background: var(--bv-bg-elevated);
+  color: var(--bv-text);
+  border: 1px solid var(--bv-border);
+}
+.pf-btn--g:hover:not(:disabled) {
+  border-color: var(--bv-accent);
+  color: var(--bv-accent);
+}
+.pf-btn--out {
+  background: var(--bv-bg-elevated);
+  color: var(--bv-danger);
+  border: 1px solid color-mix(in srgb, var(--bv-danger) 30%, transparent);
+}
+.pf-btn--out:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--bv-danger) 8%, transparent);
+  border-color: var(--bv-danger);
+}
+.pf-btn--full { width: 100%; }
+.pf-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Deposit */
+.dp-chip {
+  padding: 8px 16px;
+  background: var(--bv-surface);
+  color: var(--bv-text);
+  border: 1px solid var(--bv-border);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.dp-chip:hover {
+  border-color: var(--bv-accent);
+  color: var(--bv-accent);
+}
+.dp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 20px;
+  background: var(--bv-accent);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.dp-btn:hover:not(:disabled) { background: var(--bv-accent-hover); }
+.dp-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Transfer */
+.tf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--bv-accent);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.tf-btn:hover:not(:disabled) { background: var(--bv-accent-hover); }
+.tf-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Withdraw */
+.wd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--bv-accent);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.wd-btn:hover:not(:disabled) { background: var(--bv-accent-hover); }
+.wd-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* KYC detail */
+.kd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--bv-border);
+  background: var(--bv-bg-elevated);
+  color: var(--bv-text);
+  transition: all 0.15s;
+}
+.kd-btn:hover:not(:disabled) {
+  border-color: var(--bv-accent);
+  color: var(--bv-accent);
+}
+.kd-btn--ok {
+  background: var(--bv-success);
+  color: #fff;
+  border-color: var(--bv-success);
+}
+.kd-btn--ok:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--bv-success) 85%, black);
+  border-color: color-mix(in srgb, var(--bv-success) 85%, black);
+  color: #fff;
+}
+.kd-btn--no {
+  background: var(--bv-danger);
+  color: #fff;
+  border-color: var(--bv-danger);
+}
+.kd-btn--no:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--bv-danger) 85%, black);
+  border-color: color-mix(in srgb, var(--bv-danger) 85%, black);
+  color: #fff;
+}
+.kd-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--bv-text-muted);
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.kd-back:hover { color: var(--bv-text); }
+
+/* Project new */
+.pn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--bv-accent);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.pn-btn:hover:not(:disabled) { background: var(--bv-accent-hover); }
+.pn-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.pn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--bv-text-muted);
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.pn-back:hover { color: var(--bv-text); }
+
+/* Card lift effect */
+.bv-card-lift {
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.bv-card-lift:hover {
+  transform: translateY(-2px);
+  border-color: var(--bv-border-strong);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.2);
 }
 `;
 
@@ -667,7 +959,7 @@ export function FloatingAIChat() {
           width: 56,
           height: 56,
           borderRadius: '50%',
-          background: 'var(--bv-orange)',
+          background: 'var(--bv-accent)',
           color: '#000',
           border: 'none',
           cursor: 'pointer',
