@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, AlertCircle, Loader2, Shield, Calendar, Wallet, CheckCircle, Info, Percent } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Loader2, Shield, Calendar, Wallet, CheckCircle, Info, Percent, Home } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
 import { useCurrency } from '@/context/CurrencyContext';
 import PageShell from '@/components/shared/PageShell';
+import ReturnCalculator from '@/components/shared/ReturnCalculator';
 
 export default function ProjectDetail() {
   const { slug } = useParams();
@@ -88,7 +89,20 @@ export default function ProjectDetail() {
             <div>
               <div style={{ fontWeight: 600, marginBottom: 4 }}>Could not load project</div>
               <div style={{ fontSize: 13 }}>{error || 'Project not found.'}</div>
-              <Link to='/marketplace' style={{ display: 'inline-block', marginTop: 12, color: 'var(--bv-danger)', fontWeight: 600, fontSize: 13 }}>← Back to marketplace</Link>
+              
+          <div style={{ display: 'flex', gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
+            <Link
+              to="/"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                color: 'var(--bv-text-muted)', textDecoration: 'none',
+                fontSize: 13, fontWeight: 500,
+              }}
+            >
+              <Home size={14} /> Home
+            </Link>
+            <Link to='/marketplace' style={{ display: 'inline-block', marginTop: 12, color: 'var(--bv-danger)', fontWeight: 600, fontSize: 13 }}>← Back to marketplace</Link>
+          </div>
             </div>
           </div>
         </div>
@@ -160,6 +174,7 @@ export default function ProjectDetail() {
             </main>
             <aside>
               <div className='bv-card-lift' style={{ position: 'sticky', top: 88, padding: 24, background: 'var(--bv-bg-elevated)', border: '1px solid var(--bv-border)', borderRadius: 16 }}>
+                <ReturnCalculator minInvestment={minAmount} annualRate={annualRate} tenorMonths={tenor} payoutFrequency={project?.payoutFrequency} />
                 <h2 style={{ fontSize: 18, fontWeight: 600, margin: '0 0 16px', color: 'var(--bv-text)' }}>Invest in this project</h2>
                 {investErr && <div style={{ display: 'flex', gap: 8, padding: '10px 12px', background: 'color-mix(in srgb, var(--bv-danger) 10%, transparent)', borderRadius: 8, color: 'var(--bv-danger)', fontSize: 13, marginBottom: 16 }}><AlertCircle size={16} /> {investErr}</div>}
                 {investOk && <div style={{ display: 'flex', gap: 8, padding: '10px 12px', background: 'color-mix(in srgb, var(--bv-success) 10%, transparent)', borderRadius: 8, color: 'var(--bv-success)', fontSize: 13, marginBottom: 16 }}><CheckCircle size={16} /> {investOk}</div>}

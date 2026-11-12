@@ -92,5 +92,6 @@ app.use('/api/funding', require('./modules/funding/notes.routes'));
 
 app.use(notFound);
 app.use(errorHandler);
+app.use('/api/chat', require('./modules/chat/chat.routes'));
 
 module.exports = app;

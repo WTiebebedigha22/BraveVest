@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { riskCategory, riskColor } from '@/lib/format';
 import {
   Search,
   Star,
@@ -173,7 +174,7 @@ export default function Marketplace() {
                     color: 'var(--bv-text)',
                   }}
                 >
-                  Explore Markets
+                  Explore Marketplace
                 </h1>
                 <p style={{ color: 'var(--bv-text-muted)', fontSize: 15, margin: 0 }}>
                   Discover vetted institutional credit and high-yield asset opportunities.
@@ -952,7 +953,7 @@ export default function Marketplace() {
                             color: 'var(--bv-accent)',
                           }}
                         >
-                          Risk Grade {project.riskLevel || 'A'}
+                          Risk: {riskCategory(project.riskLevel || 'A')}
                         </span>
                       </div>
 

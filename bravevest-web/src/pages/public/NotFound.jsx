@@ -74,7 +74,7 @@ export default function NotFound() {
           </div>
           <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link to="/marketplace" style={{ fontSize: '14px', color: 'var(--bybit-text)', textDecoration: 'none', fontWeight: '500' }}>
-              Markets
+              Marketplace
             </Link>
             <Link to="/how-it-works" style={{ fontSize: '14px', color: 'var(--bybit-text)', textDecoration: 'none', fontWeight: '500' }}>
               How It Works

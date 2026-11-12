@@ -1,6 +1,21 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, ArrowRight, CheckCircle, BadgeCheck, TrendingUp, Landmark, Building2, Store, UserPlus, Wallet, Sparkles, Zap, Award, ArrowUpRight } from 'lucide-react';
+import {
+  Shield,
+  ArrowRight,
+  CheckCircle,
+  BadgeCheck,
+  TrendingUp,
+  Landmark,
+  Building2,
+  Store,
+  UserPlus,
+  Wallet,
+  Sparkles,
+  Zap,
+  Award,
+  ArrowUpRight,
+} from 'lucide-react';
 import PageShell from '@/components/shared/PageShell';
 
 /* ============ Elite Sophisticated Light Theme Palette & Styling ============ */
@@ -39,15 +54,6 @@ const CSS = `
   width: 1100px; height: 700px;
   background: radial-gradient(circle, rgba(247, 166, 0, 0.14) 0%, rgba(252, 251, 250, 0) 70%);
   z-index: 1; pointer-events: none;
-}
-
-/* Glass Card */
-.elite-glass {
-  background: var(--bg-surface-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-color);
-  border-radius: 24px;
 }
 
 /* Typography */
@@ -108,10 +114,10 @@ const CSS = `
 /* Hero Section */
 .elite-hero {
   position: relative;
-  padding: 100px 0 140px;
+  padding: 100px 0 110px;
   text-align: center;
   color: var(--bv-bg-elevated);
-  background: linear-gradient(rgba(18, 18, 20, 0.65), rgba(18, 18, 20, 0.65)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+  background: linear-gradient(rgba(18, 18, 20, 0.72), rgba(18, 18, 20, 0.78)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
   overflow: hidden;
 }
 
@@ -213,10 +219,147 @@ const CSS = `
 .elite-stat-card .value { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
 .elite-stat-card .trend { font-size: 11px; color: var(--success-green); background: rgba(14, 159, 91, 0.1); padding: 2px 6px; border-radius: 6px; font-weight: 700; white-space: nowrap; }
 
+/* Elevated Security & Trust Strip (Immediately Below Hero) */
+.elite-strip {
+  background: var(--bv-bg-elevated);
+  border-bottom: 1px solid var(--border-color);
+  padding: 28px 0;
+  text-align: center;
+  position: relative;
+  z-index: 5;
+  box-shadow: 0 10px 30px rgba(18, 18, 20, 0.04);
+}
+.elite-strip-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.elite-strip-label {
+  color: var(--text-muted);
+  font-size: 19px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  position: relative;
+  gap: 8px;
+  margin-bottom: 16px;
+}.elite-strip-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 20px;
+}
+
+.elite-logos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+}
+
+.elite-logo-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--bv-bg);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 99px;
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 13.5px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.elite-logo-pill:hover {
+  border-color: var(--bv-accent);
+  transform: translateY(-1px);
+}
+
+.elite-logo-pill svg { color: var(--gold-dark); }
+
+/* Sections & Cards */
+.elite-section { padding: 84px 0; position: relative; }
+.elite-section-header { text-align: center; max-width: 720px; margin: 0 auto 56px; }
+.elite-section-header h2 { font-size: clamp(32px, 4vw, 46px); margin-bottom: 16px; }
+.elite-section-header p { color: var(--text-muted); font-size: 17px; line-height: 1.6; }
+
+.elite-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.elite-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+.elite-card {
+  background: var(--bv-bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 36px 32px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 0 12px 36px rgba(18, 18, 20, 0.05);
+}
+
+.elite-card.featured-pillar {
+  border: 1.5px solid rgba(247, 166, 0, 0.55);
+  box-shadow: 0 20px 50px rgba(194, 124, 0, 0.12);
+}
+
+.elite-pillar-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold-dark);
+  background: rgba(247, 166, 0, 0.12);
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.elite-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--bv-accent);
+  box-shadow: 0 30px 60px rgba(194, 124, 0, 0.12), 0 0 30px rgba(247, 166, 0, 0.1);
+}
+
+.elite-card-icon {
+  width: 60px; height: 60px;
+  border-radius: 16px;
+  background: var(--warm-tint);
+  border: 1px solid rgba(247, 166, 0, 0.3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold-dark);
+  margin-bottom: 24px;
+  transition: all 0.3s;
+}
+
+.elite-card:hover .elite-card-icon,
+.elite-card.featured-pillar .elite-card-icon {
+  background: var(--gold-gradient);
+  color: var(--bv-text);
+  transform: scale(1.05);
+}
+
+.elite-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+.elite-card p { color: var(--text-muted); font-size: 15px; line-height: 1.7; margin: 0; }
+
 /* Wealth Calculator Section */
 .elite-calc-wrapper {
-  max-width: 1080px;
-  margin: -40px auto 100px;
+  max-width: 1120px;
+  margin: 0 auto 90px;
   position: relative;
   z-index: 10;
   padding: 0 24px;
@@ -224,7 +367,7 @@ const CSS = `
 
 .elite-calc-box {
   background: linear-gradient(145deg, var(--bv-bg-elevated) 0%, var(--bv-bg-elevated) 100%);
-  border: 1px solid rgba(247, 166, 0, 0.3);
+  border: 1px solid rgba(247, 166, 0, 0.35);
   border-radius: 32px;
   padding: 48px;
   box-shadow: 0 40px 100px rgba(18, 18, 20, 0.08), 0 0 40px rgba(247, 166, 0, 0.12);
@@ -245,7 +388,7 @@ const CSS = `
   display: flex;
   align-items: center;
   background: var(--bv-bg-elevated);
-  border: 1.5px solid rgba(18, 18, 20, 0.12);
+  border: 1.5px solid rgba(18, 20, 26, 0.12);
   border-radius: 16px;
   padding: 0 20px;
   height: 64px;
@@ -292,8 +435,8 @@ const CSS = `
 }
 
 .elite-calc-output {
-  background: linear-gradient(135deg, var(--bv-bg) 0%, var(--bv-bg-elevated) 100%);
-  border: 1px solid rgba(247, 166, 0, 0.3);
+  background: linear-gradient(135deg, #121316 0%, #1C1E24 100%);
+  border: 1px solid rgba(247, 166, 0, 0.4);
   border-radius: 24px;
   padding: 36px;
   display: flex;
@@ -302,59 +445,12 @@ const CSS = `
   height: 100%;
   position: relative;
   overflow: hidden;
-  color: var(--bv-bg-elevated);
+  color: #FFFFFF;
 }
 
 .elite-calc-output small { font-size: 13px; font-weight: 700; color: var(--gold-light); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 8px; }
 .elite-calc-output .big-earn { font-family: 'Space Grotesk', sans-serif; font-size: 44px; font-weight: 800; color: var(--bv-success); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; }
-.elite-calc-output .total-val { font-size: 15px; font-weight: 600; color: var(--bv-text-muted); margin-bottom: 32px; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 16px; }
-
-/* Sections & Cards */
-.elite-section { padding: 90px 0; position: relative; }
-.elite-section-header { text-align: center; max-width: 700px; margin: 0 auto 64px; }
-.elite-section-header h2 { font-size: clamp(32px, 4vw, 46px); margin-bottom: 16px; }
-.elite-section-header p { color: var(--text-muted); font-size: 17px; line-height: 1.6; }
-
-.elite-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
-.elite-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-
-.elite-card {
-  background: var(--bv-bg-elevated);
-  border: 1px solid var(--border-color);
-  border-radius: 24px;
-  padding: 36px 32px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-  overflow: hidden;
-  text-align: left;
-  box-shadow: 0 12px 36px rgba(18, 18, 20, 0.05);
-}
-
-.elite-card:hover {
-  transform: translateY(-8px);
-  border-color: var(--bv-accent);
-  box-shadow: 0 30px 60px rgba(194, 124, 0, 0.12), 0 0 30px rgba(247, 166, 0, 0.1);
-}
-
-.elite-card-icon {
-  width: 64px; height: 64px;
-  border-radius: 18px;
-  background: var(--warm-tint);
-  border: 1px solid rgba(247, 166, 0, 0.3);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--gold-dark);
-  margin-bottom: 28px;
-  transition: all 0.3s;
-}
-
-.elite-card:hover .elite-card-icon {
-  background: var(--gold-gradient);
-  color: var(--bv-text);
-  transform: scale(1.08);
-}
-
-.elite-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 12px; }
-.elite-card p { color: var(--text-muted); font-size: 15px; line-height: 1.7; margin: 0; }
+.elite-calc-output .total-val { font-size: 15px; font-weight: 600; color: rgba(255, 255, 255, 0.75); margin-bottom: 32px; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 16px; }
 
 /* Image Asset Cards Showcase */
 .elite-asset-card {
@@ -386,25 +482,9 @@ const CSS = `
   flex: 1;
 }
 
-/* Trust Strip */
-.elite-strip { background: var(--bv-bg-elevated); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 50px 0; text-align: center; }
-.elite-logos { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; margin-top: 24px; }
-.elite-logo-pill {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: var(--bv-bg-elevated);
-  border: 1px solid var(--border-color);
-  padding: 12px 24px;
-  border-radius: 99px;
-  font-weight: 700;
-  color: var(--text-main);
-  font-size: 15px;
-  box-shadow: 0 4px 12px rgba(18, 18, 20, 0.03);
-}
-.elite-logo-pill svg { color: var(--gold-dark); }
-
 /* Banner CTA */
 .elite-banner {
-  background: linear-gradient(135deg, var(--bv-bg) 0%, var(--bv-bg-elevated) 100%);
+  background: linear-gradient(135deg, #121316 0%, #1C1E24 100%);
   border: 1px solid rgba(247, 166, 0, 0.4);
   border-radius: 36px;
   padding: 80px 60px;
@@ -412,7 +492,7 @@ const CSS = `
   position: relative;
   overflow: hidden;
   margin: 60px auto 120px;
-  color: var(--bv-bg-elevated);
+  color: #FFFFFF;
   box-shadow: 0 30px 80px rgba(18, 18, 20, 0.2);
 }
 
@@ -427,6 +507,7 @@ const CSS = `
 
 @media (max-width: 968px) {
   .elite-stats-ribbon { grid-template-columns: repeat(2, 1fr); }
+  .elite-strip-inner { flex-direction: column; justify-content: center; }
   .elite-calc-grid { grid-template-columns: 1fr; }
   .elite-grid-3, .elite-grid-4 { grid-template-columns: 1fr; }
   .elite-calc-box { padding: 28px; }
@@ -455,7 +536,7 @@ export default function Home() {
       <div className='elite-light-root'>
         <div className='elite-ambient' />
 
-        {/* Hero Section */}
+        {/* 1. Hero Section */}
         <section className='elite-hero bv-hero'>
           <div className='elite-container'>
             <div className='elite-badge'>
@@ -511,7 +592,60 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Interactive Wealth Calculator */}
+        {/* 2. Elevated Security & Institutional Trust Bar (Moved Up) */}
+        <div className='elite-strip'>
+          <div className='elite-container'>
+            <div className='elite-strip-inner'>
+              <div className='elite-strip-label'>
+                <Shield size={16} style={{ color: 'var(--gold-dark)' }} />
+                <span>Institutional Security &amp; Compliance</span>
+              </div>
+              <div className='elite-logos'>
+                <div className='elite-logo-pill'><Shield size={16} /> Bravelion Risk Engine</div>
+                <div className='elite-logo-pill'><CheckCircle size={16} /> Paystack Encrypted Gateway</div>
+                <div className='elite-logo-pill'><BadgeCheck size={16} /> SEC-Aligned Compliance</div>
+                <div className='elite-logo-pill'><Award size={16} /> 0% Default Record</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Prioritized Core Selling Points (Why Bravelion) */}
+        <section className='elite-section'>
+          <div className='elite-container'>
+            <div className='elite-section-header'>
+              <h2 className='elite-title'>Built for Capital Preservation &amp; Yield</h2>
+              <p>We eliminate stock market volatility by prioritizing asset-backed security first, predictable fixed returns second, and effortless access third.</p>
+            </div>
+            <div className='elite-grid-3'>
+              {/* Priority #1: Security & Underwriting */}
+              <div className='elite-card featured-pillar'>
+                <span className='elite-pillar-tag'>01 · Capital Protection</span>
+                <div className='elite-card-icon'><Shield size={28} /></div>
+                <h3>7-Tier Institutional Vetting</h3>
+                <p>Every facility undergoes strict underwriting, audited cash-flow verification, and legal collateralization—sustaining a 0.00% default record.</p>
+              </div>
+
+              {/* Priority #2: Fixed High-Yield Returns */}
+              <div className='elite-card'>
+                <span className='elite-pillar-tag'>02 · Predictable Growth</span>
+                <div className='elite-card-icon'><TrendingUp size={28} /></div>
+                <h3>Fixed 12%–18% Annual Yields</h3>
+                <p>Lock in inflation-beating, contractually fixed returns backed by tangible corporate assets and enforceable receivables rather than market speculation.</p>
+              </div>
+
+              {/* Priority #3: Low Friction & Liquidity */}
+              <div className='elite-card'>
+                <span className='elite-pillar-tag'>03 · Seamless Access</span>
+                <div className='elite-card-icon'><Zap size={28} /></div>
+                <h3>Start From Just ₦5,000</h3>
+                <p>Access private credit deals previously reserved for institutions with automated quarterly payouts and instant Paystack funding.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 4. Interactive Wealth Calculator */}
         <div className='elite-calc-wrapper'>
           <div className='elite-calc-box'>
             <div className='elite-calc-grid'>
@@ -577,7 +711,7 @@ export default function Home() {
                   <div className='big-earn'>+{fmt(annualEarn)}</div>
                   <div className='total-val'>
                     <span>Total Portfolio Value:</span>
-                    <b style={{ fontFamily: 'Space Grotesk', fontSize: '18px', color: 'var(--bv-text-muted)' }}>
+                    <b style={{ fontFamily: 'Space Grotesk', fontSize: '18px' }}>
                       {fmt(valid ? amount + annualEarn : 0)}
                     </b>
                   </div>
@@ -590,49 +724,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Trust Banner */}
-        <div className='elite-strip'>
-          <div className='elite-container'>
-            <p style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              Built with Institutional Standards &amp; Regulatory Alignment
-            </p>
-            <div className='elite-logos'>
-              <div className='elite-logo-pill'><Shield size={18} /> Bravelion Risk Engine</div>
-              <div className='elite-logo-pill'><CheckCircle size={18} /> Paystack Encrypted Gateway</div>
-              <div className='elite-logo-pill'><BadgeCheck size={18} /> SEC-Aligned Compliance</div>
-              <div className='elite-logo-pill'><Award size={18} /> 0% Default Record</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Why Bravelion Section */}
-        <section className='elite-section'>
-          <div className='elite-container'>
-            <div className='elite-section-header'>
-              <h2 className='elite-title'>The Bravelion Advantage</h2>
-              <p>We eliminate stock market volatility by backing recession-resistant private debt and asset-backed transactions.</p>
-            </div>
-            <div className='elite-grid-3'>
-              <div className='elite-card'>
-                <div className='elite-card-icon'><TrendingUp size={28} /></div>
-                <h3>Guaranteed Fixed Yields</h3>
-                <p>Earn predictable 12–18% annual returns secured by tangible underlying corporate assets and enforceable legal receivables.</p>
-              </div>
-              <div className='elite-card'>
-                <div className='elite-card-icon'><Shield size={28} /></div>
-                <h3>Rigorous Risk Vetting</h3>
-                <p>Every credit facility is subjected to a 7-tier institutional credit assessment by our senior underwriting partners.</p>
-              </div>
-              <div className='elite-card'>
-                <div className='elite-card-icon'><Zap size={28} /></div>
-                <h3>Low Barrier to Entry</h3>
-                <p>Gain institutional-grade access to private markets starting from just ₦5,000 with automated quarterly dividend payouts.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Curated Asset Classes with Professional Images */}
+        {/* 5. Curated Asset Classes */}
         <section className='elite-section' style={{ background: 'var(--bv-bg-elevated)' }}>
           <div className='elite-container'>
             <div className='elite-section-header'>
@@ -712,7 +804,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* How It Works */}
+        {/* 6. How It Works */}
         <section className='elite-section'>
           <div className='elite-container'>
             <div className='elite-section-header'>
@@ -744,7 +836,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Final Conversion Banner */}
+        {/* 7. Final Conversion Banner */}
         <div className='elite-container'>
           <div className='elite-banner bv-hero'>
             <h2 className='elite-title' style={{ fontSize: 'clamp(32px, 4.5vw, 48px)', marginBottom: '16px' }}>
@@ -768,7 +860,7 @@ export default function Home() {
                   borderRadius: '14px',
                   background: 'rgba(255, 255, 255, 0.08)',
                   border: '1.5px solid rgba(255, 255, 255, 0.2)',
-                  color: 'var(--bv-bg-elevated)',
+                  color: '#FFFFFF',
                   fontSize: '15px',
                   outline: 'none',
                 }}

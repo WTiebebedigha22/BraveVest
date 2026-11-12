@@ -3,6 +3,7 @@ const asyncHandler = require('../../utils/asyncHandler');
 const ctrl = require('./admin.controller');
 const { authRequired } = require('../../middleware/auth.middleware');
 const { requireAdmin, requireSuperAdmin } = require('../../middleware/requireAdmin');
+const { creditInterest } = require('../wallet/wallet.service');
 
 // Inline admin guard (added by iji.js)
 const adminOnly = (req, res, next) => {

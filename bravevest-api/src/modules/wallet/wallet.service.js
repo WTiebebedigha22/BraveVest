@@ -86,4 +86,76 @@ async function debit(userId, amount, { type, description, reference, transaction
   });
 }
 
-module.exports = { ensureWallet, getWallet, getRecentLedger, credit, debit };
+
+
+/**
+ * Credit interest earnings to a user's wallet.
+ * Creates a RETURN transaction, a LedgerEntry, updates wallet balance,
+ * and creates a notification. Idempotent on reference.
+ */
+async function creditInterest({ userId, amount, source, reference, description }) {
+  const numAmount = Number(amount);
+  if (!(numAmount > 0)) throw new Error('Amount must be greater than 0');
+
+  const existing = await prisma.transaction.findUnique({ where: { reference } });
+  if (existing) return existing;
+
+  const wallet = await prisma.wallet.upsert({
+    where: { userId },
+    update: {},
+    create: { userId, balance: 0, currency: 'NGN' },
+  });
+
+  return await prisma.$transaction(async (tx) => {
+    const txn = await tx.transaction.create({
+      data: {
+        reference,
+        userId,
+        type: 'RETURN',
+        status: 'SUCCESS',
+        amount: numAmount,
+        fee: 0,
+        netAmount: numAmount,
+        description: description || `Interest from ${source || 'investment'}`,
+        paidAt: new Date(),
+      },
+    });
+
+    const newBalance = Number(wallet.balance) + numAmount;
+    await tx.wallet.update({
+      where: { userId },
+      data: { balance: newBalance },
+    });
+
+    await tx.ledgerEntry.create({
+      data: {
+        reference: `LEDGER-${reference}`,
+        userId,
+        type: 'payout',
+        direction: 'credit',
+        amount: numAmount,
+        currency: 'NGN',
+        balanceAfter: newBalance,
+        description: description || 'Interest credit',
+        transactionId: txn.id,
+      },
+    });
+
+    try {
+      await tx.notification.create({
+        data: {
+          userId,
+          type: 'INTEREST_CREDITED',
+          title: 'Interest earned',
+          message: `₦${numAmount.toLocaleString()} interest has been credited to your wallet.`,
+          metadata: { transactionId: txn.id, source },
+        },
+      });
+    } catch (e) { /* notifications may not be enabled */ }
+
+    return txn;
+  });
+}
+
+
+module.exports = { ensureWallet, getWallet, getRecentLedger, credit, debit, creditInterest };

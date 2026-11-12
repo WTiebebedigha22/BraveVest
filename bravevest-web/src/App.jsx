@@ -24,6 +24,7 @@ export default function App() {
           </CurrencyProvider>
         </ToastProvider>
       </HashRouter>
+      <FloatingAIChat />
     </ThemeProvider>
   );
 }

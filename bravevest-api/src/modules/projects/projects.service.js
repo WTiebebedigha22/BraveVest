@@ -4,8 +4,29 @@ const { uniqueSlug } = require('../../utils/slug');
 const { getPagination, paginatedMeta } = require('../../utils/pagination');
 
 function decorate(p) {
-  const target = Number(p.targetAmount), raised = Number(p.raisedAmount);
-  return { ...p, targetAmount: target, raisedAmount: raised, minInvestment: Number(p.minInvestment), expectedReturnPct: Number(p.expectedReturnPct), percentFunded: target > 0 ? Math.min(100, Math.round((raised / target) * 100)) : 0 };
+  const target = Number(p.targetAmount);
+  const raised = Number(p.raisedAmount);
+  const rate = Number(p.expectedReturnPct);
+  const tenor = Number(p.tenorMonths);
+  const minInvestment = Number(p.minInvestment);
+
+  const payoutFrequency = p.payoutFrequency || (tenor <= 12 ? 'monthly' : 'bullet');
+  const periodsPerYear = payoutFrequency === 'monthly' ? 12 : payoutFrequency === 'quarterly' ? 4 : 1;
+  const monthlyReturn = target > 0 ? (target * (rate / 100) / 12) : 0;
+  const yearlyReturn = target > 0 ? (target * (rate / 100)) : 0;
+
+  return {
+    ...p,
+    targetAmount: target,
+    raisedAmount: raised,
+    minInvestment,
+    expectedReturnPct: rate,
+    percentFunded: target > 0 ? Math.min(100, Math.round((raised / target) * 100)) : 0,
+    payoutFrequency,
+    periodsPerYear,
+    monthlyReturn,
+    yearlyReturn,
+  };
 }
 
 async function list({ category, status, featured, q, page, limit, adminView = false }) {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, AlertCircle, Loader2, TrendingUp, Calendar, Wallet, FileText } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Loader2, TrendingUp, Calendar, Wallet, FileText, Home } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { useCurrency } from '@/context/CurrencyContext';
 import PortalLayout from '@/components/layout/PortalLayout';
@@ -71,9 +71,22 @@ export default function InvestmentDetail() {
     <PortalLayout theme='dark'>
       <section style={{ padding: '32px 20px 96px' }}>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
-          <Link to='/investments' style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', textDecoration: 'none', fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
+          
+          <div style={{ display: 'flex', gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
+            <Link
+              to="/"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                color: 'var(--bv-text-muted)', textDecoration: 'none',
+                fontSize: 13, fontWeight: 500,
+              }}
+            >
+              <Home size={14} /> Home
+            </Link>
+            <Link to='/investments' style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--text-muted)', textDecoration: 'none', fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
             <ArrowLeft size={14} /> Back to investments
           </Link>
+          </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8, flexWrap: 'wrap', gap: 12 }}>
             <div>

@@ -4,7 +4,8 @@ import { Wallet, LogOut, Sun, Moon, Download } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 const LINKS = [
-  { to: '/marketplace', label: 'Markets' },
+  { to: '/', label: 'Home' },
+  { to: '/marketplace', label: 'Marketplace' },
   { to: '/how-it-works', label: 'How It Works' },
   { to: '/about', label: 'About' },
   { to: '/faq', label: 'FAQ' },
