@@ -1170,22 +1170,45 @@ export function NotificationBell() {
 export function FloatingAIChat() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'assistant', text: 'Hi! I can help with BraveVest questions.' },
+    { role: 'assistant', text: 'Hi! I can help with BraveVest questions. Pick one below or ask your own.' },
   ]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
+  const [longWait, setLongWait] = useState(false);
   const listRef = useRef(null);
+
+  const SUGGESTIONS = [
+    'How does KYC work?',
+    'What is the minimum investment?',
+    'How do I withdraw my returns?',
+    'Can I reinvest my earnings?',
+    'How does the referral program work?',
+    'Where do I see my wallet balance?',
+  ];
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, open]);
 
-  async function send() {
-    const text = input.trim();
-    if (!text || busy) return;
+  // Show "still working" after 10 seconds
+  useEffect(() => {
+    if (!busy) { setLongWait(false); return; }
+    const id = setTimeout(() => setLongWait(true), 10000);
+    return () => clearTimeout(id);
+  }, [busy]);
+
+  async function sendText(text) {
+    const trimmed = text.trim();
+    if (!trimmed || busy) return;
+
     setInput('');
-    setMessages((m) => [...m, { role: 'user', text }]);
+    setMessages((m) => [...m, { role: 'user', text: trimmed }]);
     setBusy(true);
+    setLongWait(false);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
+
     try {
       const r = await fetch('/api/chat', {
         method: 'POST',
@@ -1194,23 +1217,62 @@ export function FloatingAIChat() {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify({
-          message: text,
-          history: messages.map((m) => ({
+          message: trimmed,
+          history: messages.slice(-10).map((m) => ({
             role: m.role === 'assistant' ? 'model' : 'user',
             parts: [{ text: m.text }],
           })),
         }),
+        signal: controller.signal,
       });
+
       const d = await r.json();
+
+      // Robust extraction — handles every response shape
+      const reply =
+        d?.data?.reply ||
+        d?.data?.data?.reply ||
+        d?.reply ||
+        d?.response ||
+        d?.answer ||
+        d?.data?.text ||
+        (typeof d === 'string' ? d : null);
+
+      if (!reply) {
+        console.warn('[chat] Unexpected response shape:', d);
+      }
+
       setMessages((m) => [
         ...m,
-        { role: 'assistant', text: d?.data?.reply || d?.reply || 'Sorry, no answer.' },
+        {
+          role: 'assistant',
+          text:
+            reply ||
+            d?.message ||
+            'Hmm, no answer came back. Try asking in a different way.',
+        },
       ]);
-    } catch {
-      setMessages((m) => [...m, { role: 'assistant', text: 'Network error. Please try again.' }]);
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        setMessages((m) => [
+          ...m,
+          { role: 'assistant', text: 'Request timed out. Try a shorter question.' },
+        ]);
+      } else {
+        setMessages((m) => [
+          ...m,
+          { role: 'assistant', text: 'Network error. Please check your connection and try again.' },
+        ]);
+      }
     } finally {
+      clearTimeout(timeoutId);
       setBusy(false);
+      setLongWait(false);
     }
+  }
+
+  async function send() {
+    await sendText(input);
   }
 
   if (!open) {
@@ -1306,16 +1368,7 @@ export function FloatingAIChat() {
               justifyContent: 'center',
             }}
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
           </div>
@@ -1375,11 +1428,63 @@ export function FloatingAIChat() {
               border: m.role === 'assistant' ? '1px solid var(--bv-border)' : 'none',
               lineHeight: 1.5,
               wordBreak: 'break-word',
+              whiteSpace: 'pre-wrap',
             }}
           >
             {m.text}
           </div>
         ))}
+
+        {/* Suggestion chips — show only at start or when user hasn't sent anything yet */}
+        {messages.length <= 1 && (
+          <div style={{ padding: '4px 0 0' }}>
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: 'var(--bv-text-muted)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                marginBottom: 8,
+              }}
+            >
+              Try asking
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {SUGGESTIONS.map((q) => (
+                <button
+                  key={q}
+                  type="button"
+                  onClick={() => sendText(q)}
+                  style={{
+                    padding: '6px 10px',
+                    borderRadius: 999,
+                    border: '1px solid var(--bv-border)',
+                    background: 'var(--bv-surface)',
+                    color: 'var(--bv-text)',
+                    fontSize: 12,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                    fontFamily: 'inherit',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'var(--bv-bg)';
+                    e.currentTarget.style.borderColor = 'var(--bv-accent)';
+                    e.currentTarget.style.color = 'var(--bv-accent)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'var(--bv-surface)';
+                    e.currentTarget.style.borderColor = 'var(--bv-border)';
+                    e.currentTarget.style.color = 'var(--bv-text)';
+                  }}
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {busy && (
           <div
             style={{
@@ -1393,7 +1498,7 @@ export function FloatingAIChat() {
               fontStyle: 'italic',
             }}
           >
-            Thinking…
+            {longWait ? 'Still working on it… network is a bit slow.' : 'Thinking…'}
           </div>
         )}
       </div>
@@ -1412,6 +1517,7 @@ export function FloatingAIChat() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && send()}
           placeholder="Ask anything about BraveVest…"
+          disabled={busy}
           style={{
             flex: 1,
             padding: '10px 14px',
@@ -1430,8 +1536,8 @@ export function FloatingAIChat() {
           style={{
             padding: '10px 16px',
             borderRadius: 8,
-            background: input.trim() ? 'var(--bv-accent)' : 'var(--bv-surface)',
-            color: input.trim() ? '#000' : 'var(--bv-text-muted)',
+            background: input.trim() && !busy ? 'var(--bv-accent)' : 'var(--bv-surface)',
+            color: input.trim() && !busy ? '#000' : 'var(--bv-text-muted)',
             border: 'none',
             fontWeight: 700,
             fontSize: 13,

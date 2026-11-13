@@ -13,8 +13,6 @@ const { success } = require('./utils/apiResponse');
 const app = express();
 
 // ── CORS allowlist ──────────────────────────────────────────
-// Driven by FRONTEND_URLS (comma-separated). Falls back to
-// FRONTEND_URL for backwards compat, then localhost.
 const rawOrigins =
   process.env.FRONTEND_URLS ||
   process.env.FRONTEND_URL ||
@@ -29,7 +27,6 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(
   cors({
     origin: (origin, cb) => {
-      // no origin: curl, server-to-server, Postman
       if (!origin) return cb(null, true);
       if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
       logger.warn('CORS blocked: ' + origin);
@@ -90,8 +87,11 @@ app.use('/api/currency', require('./modules/currency/currency.routes'));
 
 app.use('/api/funding', require('./modules/funding/notes.routes'));
 
+// ── Chat (must be above notFound) ──────────────────────────
+app.use('/api/chat', require('./modules/chat/chat.routes'));
+
+// ── 404 + error handlers (must be last) ────────────────────
 app.use(notFound);
 app.use(errorHandler);
-app.use('/api/chat', require('./modules/chat/chat.routes'));
 
 module.exports = app;
