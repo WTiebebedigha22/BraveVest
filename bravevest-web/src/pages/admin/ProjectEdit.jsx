@@ -176,11 +176,9 @@ export default function ProjectEdit() {
                     Risk level
                     <select value={form.riskLevel} onChange={(e) => setForm({ ...form, riskLevel: e.target.value })} style={input}>
                       <option value="">—</option>
-                      <option value="A">A (Low)</option>
-                      <option value="AA">AA (Very Low)</option>
-                      <option value="BBB">BBB (Medium)</option>
-                      <option value="BB">BB (High)</option>
-                      <option value="B">B (Very High)</option>
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
                     </select>
                   </label>
                 </div>

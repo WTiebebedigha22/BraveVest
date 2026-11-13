@@ -1,12 +1,13 @@
 // Risk category mapping — letter grade → Low / Medium / High
+
+// Risk category mapping — accepts both new ('Low'/'Medium'/'High')
+// and legacy letter grades (A/AA/BBB/BB/B) for backward compat
 export function riskCategory(level) {
   if (!level) return 'Medium';
-  const l = String(level).toUpperCase();
-  if (l.includes('AAA') || l.includes('AA') || l === 'A' || l === 'A+') return 'Low';
-  if (l.includes('BBB') || l === 'BB' || l === 'B+' || l === 'B') return 'Medium';
-  if (l === 'C' || l.includes('CCC') || l.includes('CC') || l === 'D' || l.includes('HIGH')) return 'High';
-  if (l.includes('LOW')) return 'Low';
-  if (l.includes('MEDIUM') || l.includes('MID')) return 'Medium';
+  const l = String(level).trim().toLowerCase();
+  if (l === 'low' || l === 'a' || l === 'aa') return 'Low';
+  if (l === 'high' || l === 'bb' || l === 'b') return 'High';
+  if (l === 'medium' || l === 'bbb') return 'Medium';
   return 'Medium';
 }
 
