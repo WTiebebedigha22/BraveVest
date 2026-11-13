@@ -21,7 +21,7 @@ router.get('/', authRequired, async (req, res, next) => {
         take: 8,
       }).catch(() => []),
       prisma.transaction.findMany({
-        where: { userId, type: 'PAYOUT', status: 'PENDING' },
+        where: { userId, type: 'RETURN', status: 'PENDING' },
         orderBy: { createdAt: 'asc' },
         take: 1,
       }).catch(() => []),
