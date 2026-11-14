@@ -57,6 +57,8 @@ const Terms          = lazy(() => import('@/pages/public/Terms'));
 const Privacy        = lazy(() => import('@/pages/public/Privacy'));
 const HowItWorks     = lazy(() => import('@/pages/public/HowItWorks'));
 const Support        = lazy(() => import('@/pages/public/Support'));
+const PublicInsights = lazy(() => import('@/pages/public/Insights'));
+const PublicStories = lazy(() => import('@/pages/public/Stories'));
 
 // ═══════════════════════════════════════════════════════════
 // AUTH
@@ -116,6 +118,8 @@ const AdminInsightEditor  = lazy(() => import('@/pages/admin/InsightEditor'));
 const AdminFundingReview  = lazy(() => import('@/pages/admin/AdminFundingReview'));
 const AdminContact        = lazy(() => import('@/pages/admin/ContactInbox'));
 const AdminSettings       = lazy(() => import('@/pages/admin/Settings'));
+const AdminStories = lazy(() => import('@/pages/admin/Stories'));
+const AdminStoryEditor = lazy(() => import('@/pages/admin/StoryEditor'));
 
 // ═══════════════════════════════════════════════════════════
 // ROUTES
@@ -137,6 +141,9 @@ export default function AppRoutes() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/support" element={<Support />} />
+        <Route path="/insights" element={<PublicInsights />} />
+        <Route path="/insights/:id" element={<PublicInsights />} />
+        <Route path="/stories" element={<PublicStories />} />
 
         {/* ─── AUTH ───────────────────────────────────── */}
         <Route path="/login" element={<Login />} />
@@ -195,6 +202,9 @@ export default function AppRoutes() {
           <Route path="/admin/insights/:id/edit" element={<AdminInsightEditor />} />
           <Route path="/admin/funding/review" element={<AdminFundingReview />} />
           <Route path="/admin/contact" element={<AdminContact />} />
+          <Route path="/admin/stories" element={<AdminStories />} />
+          <Route path="/admin/stories/new" element={<AdminStoryEditor />} />
+          <Route path="/admin/stories/:id/edit" element={<AdminStoryEditor />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
           <Route path="/admin/submissions" element={<AdminSubmissions />} />
           <Route path="/admin/submissions/:id" element={<AdminSubmissionDetail />} />

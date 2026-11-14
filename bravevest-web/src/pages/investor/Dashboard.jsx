@@ -6,6 +6,7 @@ import {
   Calendar, ArrowRight,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import StoriesWidget from '@/components/investor/StoriesWidget';
 import { useCurrency } from '@/context/CurrencyContext';
 import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';

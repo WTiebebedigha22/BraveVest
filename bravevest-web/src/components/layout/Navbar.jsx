@@ -6,6 +6,8 @@ import { useAuth } from '@/hooks/useAuth';
 const LINKS = [
   { to: '/', label: 'Home' },
   { to: '/marketplace', label: 'Marketplace' },
+  { to: '/stories', label: 'Stories' },
+  { to: '/insights', label: 'Insights' },  
   { to: '/how-it-works', label: 'How It Works' },
   { to: '/about', label: 'About' },
   { to: '/faq', label: 'FAQ' },

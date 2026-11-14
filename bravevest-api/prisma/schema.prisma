@@ -740,3 +740,24 @@ model AdminPromotionRequest {
   @@index([requestedById])
   @@map("admin_promotion_requests")
 }
+
+model Story {
+  id          String    @id @default(cuid())
+  name        String
+  role        String
+  quote       String    @db.Text
+  highlight   String?
+  avatarText  String?
+  imageUrl    String?
+  isPublished Boolean   @default(false)
+  isFeatured  Boolean   @default(false)
+  order       Int       @default(0)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isPublished, order])
+  @@index([isFeatured])
+  @@map("stories")
+}
+

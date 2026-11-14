@@ -4,6 +4,8 @@ const asyncHandler = require('../../utils/asyncHandler');
 const { authRequired } = require('../../middleware/auth.middleware');
 const { requireRole } = require('../../middleware/role');
 
+router.get('/published', asyncHandler(ctrl.listPublished));
+
 router.get('/', asyncHandler(ctrl.list));
 router.get('/admin/list', authRequired, requireRole('ADMIN', 'SUPER_ADMIN'), asyncHandler(ctrl.adminList));
 router.post('/', authRequired, requireRole('ADMIN', 'SUPER_ADMIN'), asyncHandler(ctrl.create));

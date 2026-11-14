@@ -93,6 +93,7 @@ app.use('/api/funding', require('./modules/funding/notes.routes'));
 app.use('/api/chat', require('./modules/chat/chat.routes'));
 
 // ── 404 + error handlers (must be last) ────────────────────
+app.use('/api/stories', require('./modules/stories/stories.routes'));
 app.use(notFound);
 app.use(errorHandler);
 

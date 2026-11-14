@@ -6,6 +6,22 @@ async function list({ category, limit = 20 } = {}) {
   if (category) where.category = category;
   return prisma.insight.findMany({ where, orderBy: { publishedAt: 'desc' }, take: limit });
 }
+async function listPublished() {
+  return prisma.insight.findMany({
+    where: { isPublished: true },
+    orderBy: [{ publishedAt: 'desc' }, { createdAt: 'desc' }],
+    select: {
+      id: true,
+      title: true,
+      summary: true,
+      category: true,
+      coverImage: true,
+      publishedAt: true,
+      createdAt: true,
+      body: true,
+    },
+  });
+}
 async function getByIdOrSlug(id) {
   const i = await prisma.insight.findFirst({ where: { OR: [{ id }, { id }], isPublished: true } });
   if (!i) throw ApiError.notFound('Not found');
@@ -44,4 +60,4 @@ async function togglePublish(id) {
   const next = !i.isPublished;
   return prisma.insight.update({ where: { id }, data: { isPublished: next, publishedAt: next ? (i.publishedAt || new Date()) : null } });
 }
-module.exports = { list, getByIdOrSlug, adminList, adminGet, create, update, remove, togglePublish };
+module.exports = { list, listPublished, getByIdOrSlug, adminList, adminGet, create, update, remove, togglePublish };

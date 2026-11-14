@@ -99,6 +99,16 @@ const ADMIN_LINKS = [
   { to: '/wallet', label: 'My Wallet', icon: Wallet },
   { to: '/statement', label: 'My Statement', icon: FileText },
   // ──────────────────────────────────────────────────────
+  {
+    to: '/admin/stories',
+    label: 'Stories',
+    icon: FileText,
+    matchPaths: ['/admin/stories', '/admin/stories/new'],
+    children: [
+      { to: '/admin/stories', label: 'All Stories', icon: FileText },
+      { to: '/admin/stories/new', label: 'New Story', icon: Plus },
+    ],
+  },
   { to: '/admin/contact', label: 'Contact Inbox', icon: Inbox },
   { to: '/admin/settings', label: 'Settings', icon: Settings },
   { to: '/profile', label: 'Profile', icon: UserCircle },
