@@ -1,121 +1,226 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Shield, FolderOpen, TrendingUp, Loader2, AlertCircle, ArrowRight } from 'lucide-react';
+import {
+  Users, Shield, FolderOpen, TrendingUp, ArrowLeftRight,
+  Loader2, AlertCircle, RefreshCw, ChevronRight, Activity,
+} from 'lucide-react';
 import { apiFetch } from '@/lib/api';
-import { useCurrency } from '@/context/CurrencyContext';
 import PortalLayout from '@/components/layout/PortalLayout';
+import AdminShell from '@/components/admin/AdminShell';
+
+const statCard = {
+  padding: 20,
+  background: 'var(--bv-bg-elevated)',
+  border: '1px solid var(--bv-border)',
+  borderRadius: 12,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 6,
+};
+
+const statIcon = {
+  width: 36,
+  height: 36,
+  borderRadius: 8,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'color-mix(in srgb, var(--bv-accent) 15%, transparent)',
+  color: 'var(--bv-accent)',
+  marginBottom: 8,
+};
+
+const fmtMoney = (n) => '₦' + Number(n || 0).toLocaleString('en-NG', { maximumFractionDigits: 0 });
 
 export default function AdminDashboard() {
-  const { format } = useCurrency();
-  const [data, setData] = useState(null);
+  const [stats, setStats] = useState(null);
+  const [activity, setActivity] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const result = await apiFetch('/admin/dashboard');
-        if (!cancelled) setData(result);
-      } catch (e) {
-        if (!cancelled) setError(e?.message || 'Could not load overview.');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, []);
-
-  if (loading) {
-    return (
-      <PortalLayout theme='dark'>
-        <div style={{ padding: 96, display: 'flex', alignItems: 'center', gap: 12, color: 'var(--text-muted)' }}>
-          <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />
-          Loading admin overview…
-          <style>{'@keyframes spin { to { transform: rotate(360deg); } }'}</style>
-        </div>
-      </PortalLayout>
-    );
+  async function load() {
+    setLoading(true);
+    setError('');
+    try {
+      const [statsRes, activityRes] = await Promise.all([
+        apiFetch('/admin/dashboard').catch((e) => ({ error: e.message })),
+        apiFetch('/admin/activity').catch(() => ({ data: [] })),
+      ]);
+      setStats(statsRes?.data || statsRes || null);
+      setActivity(Array.isArray(activityRes?.data) ? activityRes.data : []);
+    } catch (e) {
+      setError(e?.message || 'Failed to load dashboard');
+    } finally {
+      setLoading(false);
+    }
   }
 
-  if (error) {
-    return (
-      <PortalLayout theme='dark'>
-        <div style={{ padding: 48, maxWidth: 480, margin: '0 auto' }}>
-          <div role='alert' style={{ padding: 16, background: 'rgba(246,70,93,0.1)', border: '1px solid rgba(246,70,93,0.25)', borderRadius: 12, color: 'var(--negative)', display: 'flex', gap: 12 }}>
-            <AlertCircle size={20} /> {error}
-          </div>
-        </div>
-      </PortalLayout>
-    );
-  }
-
-  const stats = data?.stats ?? {};
-  const recentKyc = data?.recentKyc ?? [];
+  useEffect(() => { load(); }, []);
 
   return (
-    <PortalLayout theme='dark'>
-      <section style={{ padding: '32px 20px 96px' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-          <h1 style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 800, margin: '0 0 8px', color: 'var(--text)', letterSpacing: '-0.02em' }}>
-            Admin Overview
-          </h1>
-          <p style={{ margin: '0 0 32px', color: 'var(--text-muted)', fontSize: 15 }}>
-            Platform health and activity at a glance.
-          </p>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 32 }}>
-            <AdminStat icon={<Users size={18} />} label='Total Investors' value={stats.totalInvestors ?? 0} href='/admin/investors' />
-            <AdminStat icon={<Shield size={18} />} label='Pending KYC' value={stats.pendingKyc ?? 0} href='/admin/kyc' tone='warning' />
-            <AdminStat icon={<FolderOpen size={18} />} label='Open Projects' value={stats.openProjects ?? 0} href='/admin/projects' />
-            <AdminStat icon={<TrendingUp size={18} />} label='Investments MTD' value={format(stats.investmentsMtd ?? 0)} href='/admin/investments' />
+    <PortalLayout>
+      <AdminShell
+        title="Overview"
+        description="Platform stats and recent activity"
+        actions={
+          <button
+            onClick={load}
+            disabled={loading}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '10px 16px', borderRadius: 8,
+              background: 'var(--bv-accent)', color: '#000',
+              border: 'none', fontWeight: 700, fontSize: 13,
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.6 : 1,
+            }}
+          >
+            <RefreshCw size={14} /> {loading ? 'Loading…' : 'Refresh'}
+          </button>
+        }
+      >
+        {error && (
+          <div style={{
+            padding: 16,
+            background: 'color-mix(in srgb, var(--bv-danger) 10%, transparent)',
+            border: '1px solid color-mix(in srgb, var(--bv-danger) 25%, transparent)',
+            borderRadius: 12,
+            color: 'var(--bv-danger)',
+            display: 'flex', gap: 10,
+            marginBottom: 16,
+          }}>
+            <AlertCircle size={18} /> {error}
           </div>
+        )}
 
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: 'var(--text)' }}>Recent KYC submissions</h2>
-              <Link to='/admin/kyc' style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600, textDecoration: 'none' }}>
-                View queue <ArrowRight size={14} style={{ verticalAlign: 'middle' }} />
-              </Link>
+        {loading && !stats ? (
+          <div style={{ padding: 60, textAlign: 'center', color: 'var(--bv-text-muted)' }}>
+            <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto 12px' }} />
+            Loading stats…
+          </div>
+        ) : stats && (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: 16,
+            marginBottom: 32,
+          }}>
+            <div style={statCard}>
+              <div style={statIcon}><Users size={18} /></div>
+              <div style={{ fontSize: 12, color: 'var(--bv-text-muted)' }}>Total Users</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--bv-text)' }}>
+                {Number(stats.totalUsers || 0).toLocaleString()}
+              </div>
             </div>
 
-            {recentKyc.length === 0 ? (
-              <div style={{ padding: 48, textAlign: 'center', color: 'var(--text-muted)', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, fontSize: 14 }}>
-                No pending KYC submissions.
+            <div style={statCard}>
+              <div style={statIcon}><Shield size={18} /></div>
+              <div style={{ fontSize: 12, color: 'var(--bv-text-muted)' }}>Pending KYC</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--bv-warning)' }}>
+                {Number(stats.pendingKyc || 0).toLocaleString()}
+              </div>
+            </div>
+
+            <div style={statCard}>
+              <div style={statIcon}><FolderOpen size={18} /></div>
+              <div style={{ fontSize: 12, color: 'var(--bv-text-muted)' }}>Active Projects</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--bv-text)' }}>
+                {Number(stats.activeInvestments || stats.totalProjects || 0).toLocaleString()}
+              </div>
+            </div>
+
+            <div style={statCard}>
+              <div style={statIcon}><TrendingUp size={18} /></div>
+              <div style={{ fontSize: 12, color: 'var(--bv-text-muted)' }}>Total Invested</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--bv-success)' }}>
+                {fmtMoney(stats.totalInvested)}
+              </div>
+            </div>
+
+            <div style={statCard}>
+              <div style={statIcon}><ArrowLeftRight size={18} /></div>
+              <div style={{ fontSize: 12, color: 'var(--bv-text-muted)' }}>Transactions</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--bv-text)' }}>
+                {Number(stats.totalTransactions || 0).toLocaleString()}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: 20 }}>
+          <div style={{
+            background: 'var(--bv-bg-elevated)',
+            border: '1px solid var(--bv-border)',
+            borderRadius: 12,
+            padding: 20,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+              <Activity size={16} color="var(--bv-text-muted)" />
+              <h2 style={{ fontSize: 16, fontWeight: 700, margin: 0, color: 'var(--bv-text)' }}>
+                Recent Activity
+              </h2>
+            </div>
+
+            {activity.length === 0 ? (
+              <div style={{ padding: 20, textAlign: 'center', fontSize: 13, color: 'var(--bv-text-muted)' }}>
+                No activity yet
               </div>
             ) : (
-              <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {recentKyc.map((k) => (
-                  <li key={k.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 }}>
-                    <div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>{k.name}</div>
-                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
-                        Submitted {k.submittedAt ? new Date(k.submittedAt).toLocaleDateString('en-NG', { month: 'short', day: 'numeric' }) : '—'}
-                      </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {activity.slice(0, 8).map((a, i) => (
+                  <div key={i} style={{
+                    padding: '10px 12px',
+                    background: 'var(--bv-surface)',
+                    borderRadius: 8,
+                    fontSize: 13,
+                  }}>
+                    <div style={{ color: 'var(--bv-text)' }}>
+                      {a.message || a.action || 'Activity'}
                     </div>
-                    <Link to={`/admin/kyc/${k.id}`} style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600, textDecoration: 'none' }}>
-                      Review →
-                    </Link>
-                  </li>
+                    <div style={{ fontSize: 11, color: 'var(--bv-text-muted)', marginTop: 2 }}>
+                      {a.createdAt ? new Date(a.createdAt).toLocaleString() : ''}
+                    </div>
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
           </div>
-        </div>
-      </section>
-    </PortalLayout>
-  );
-}
 
-function AdminStat({ icon, label, value, href, tone }) {
-  const color = tone === 'warning' ? '#F59E0B' : 'var(--text)';
-  return (
-    <Link to={href || '#'} style={{ padding: 24, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, textDecoration: 'none', color: 'var(--text)', display: 'block' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-muted)', marginBottom: 8 }}>
-        {icon}
-        <span style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</span>
-      </div>
-      <div style={{ fontSize: 28, fontWeight: 800, color }}>{value}</div>
-    </Link>
+          <div style={{
+            background: 'var(--bv-bg-elevated)',
+            border: '1px solid var(--bv-border)',
+            borderRadius: 12,
+            padding: 20,
+          }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, margin: '0 0 16px', color: 'var(--bv-text)' }}>
+              Quick Actions
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {[
+                { to: '/admin/submissions', label: 'Review submissions' },
+                { to: '/admin/kyc', label: 'Review KYC queue' },
+                { to: '/admin/investors', label: 'Manage investors' },
+                { to: '/admin/projects', label: 'Manage projects' },
+                { to: '/admin/transactions', label: 'View transactions' },
+              ].map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '10px 12px', borderRadius: 8,
+                    background: 'var(--bv-surface)', color: 'var(--bv-text)',
+                    textDecoration: 'none', fontSize: 13, fontWeight: 500,
+                  }}
+                >
+                  {item.label}
+                  <ChevronRight size={14} color="var(--bv-text-muted)" />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </AdminShell>
+    </PortalLayout>
   );
 }

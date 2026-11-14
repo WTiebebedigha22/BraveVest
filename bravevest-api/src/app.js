@@ -73,6 +73,8 @@ app.use('/api/streaks', require('./modules/streaks/streaks.routes'));
 app.use('/api/insights', require('./modules/insights/insights.routes'));
 app.use('/api/referrals', require('./modules/referrals/referrals.routes'));
 app.use('/api/admin', require('./modules/admin/admin.routes'));
+app.use('/api/admin/submissions', require('./modules/admin/submissions.routes'));
+app.use('/api/admin/promotions', require('./modules/admin/promotions.routes'));
 
 app.use('/api/funding', require('./modules/funding/commitment.routes'));
 app.use('/api/funding', require('./modules/funding/funding.routes'));

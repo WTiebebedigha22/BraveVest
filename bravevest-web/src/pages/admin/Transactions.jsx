@@ -1,150 +1,145 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Search, AlertCircle, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useCurrency } from '@/context/CurrencyContext';
+import { useEffect, useState } from 'react';
+import { Loader2, AlertCircle, ArrowLeftRight, Search } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
+import AdminShell from '@/components/admin/AdminShell';
 
-const COLORS = {
-  surface: '#FFFFFF', text: 'var(--bv-text)', muted: 'var(--bv-text-muted)',
-  border: 'var(--bv-border)', accent: 'var(--bv-accent)',
-  positive: '#0ECB81', negative: '#F6465D',
+const inputStyle = {
+  padding: '10px 14px',
+  background: 'var(--bv-bg)',
+  border: '1px solid var(--bv-border)',
+  borderRadius: 8,
+  color: 'var(--bv-text)',
+  fontSize: 13,
+  fontFamily: 'inherit',
+  outline: 'none',
 };
-const PAGE_SIZE = 25;
 
-export default function Transactions() {
-  const { format } = useCurrency();
+const fmt = (n) => '₦' + Number(n || 0).toLocaleString('en-NG', { maximumFractionDigits: 0 });
+
+export default function AdminTransactions() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
-  const [type, setType] = useState('all');
-  const [page, setPage] = useState(1);
+  const [typeFilter, setTypeFilter] = useState('');
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const data = await apiFetch('/admin/transactions');
-        if (!cancelled) setItems(Array.isArray(data) ? data : data.transactions ?? []);
-      } catch (e) {
-        if (!cancelled) setError(e?.message || 'Could not load transactions.');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, []);
-
-  const filtered = useMemo(() => {
-    let list = items;
-    if (type !== 'all') list = list.filter((t) => (t.type || '').toLowerCase() === type);
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter((t) =>
-        (t.reference || '').toLowerCase().includes(q) ||
-        (t.investorName || t.userName || '').toLowerCase().includes(q) ||
-        (t.description || '').toLowerCase().includes(q)
-      );
+  async function load() {
+    setLoading(true);
+    setError('');
+    try {
+      const params = new URLSearchParams();
+      if (search.trim()) params.set('q', search.trim());
+      if (typeFilter) params.set('type', typeFilter);
+      const res = await apiFetch('/admin/transactions?' + params.toString());
+      const list = Array.isArray(res?.data)
+        ? res.data
+        : Array.isArray(res?.data?.items)
+        ? res.data.items
+        : Array.isArray(res) ? res : [];
+      setItems(list);
+    } catch (e) {
+      setError(e?.message || 'Failed to load transactions');
+    } finally {
+      setLoading(false);
     }
-    return list;
-  }, [items, type, search]);
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const safePage = Math.min(page, totalPages);
-  const pageItems = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
-
-  if (loading) {
-    return (
-    <PortalLayout theme="dark">
-      <div style={{ padding: 48, display: 'flex', alignItems: 'center', gap: 12, color: COLORS.muted }}>
-        <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Loading transactions…
-        <style>{'@keyframes spin { to { transform: rotate(360deg); } }'}</style>
-      </div>
-    </PortalLayout>
-  );
   }
-  if (error) {
-    return <div role="alert" style={{ padding: 24, color: COLORS.negative, display: 'flex', gap: 8 }}><AlertCircle size={20} /> {error}</div>;
-  }
+
+  useEffect(() => { load(); }, [typeFilter]);
 
   return (
-    <div style={{ padding: '24px 20px', maxWidth: 1200, margin: '0 auto', color: COLORS.text }}>
-      <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 20px' }}>Transactions</h1>
-
-      <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
-        <div style={{ position: 'relative', flex: '1 1 280px' }}>
-          <Search size={16} color={COLORS.muted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
-          <input
-            type="search" value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            placeholder="Search by reference, investor, or description"
-            aria-label="Search transactions"
-            style={{ width: '100%', padding: '10px 12px 10px 36px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, outline: 'none', background: COLORS.surface }}
-          />
-        </div>
-        <select value={type} onChange={(e) => { setType(e.target.value); setPage(1); }} aria-label="Filter by type"
-          style={{ padding: '10px 12px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, background: COLORS.surface, cursor: 'pointer' }}>
-          <option value="all">All types</option>
-          <option value="deposit">Deposits</option>
-          <option value="withdrawal">Withdrawals</option>
-          <option value="investment">Investments</option>
-          <option value="payout">Payouts</option>
-        </select>
-      </div>
-
-      {pageItems.length === 0 ? (
-        <div style={{ padding: 40, textAlign: 'center', color: COLORS.muted, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, fontSize: 14 }}>
-          {search || type !== 'all' ? 'No transactions match your filters.' : 'No transactions yet.'}
-        </div>
-      ) : (
-        <>
-          <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
-              <thead>
-                <tr style={{ background: 'var(--bv-bg)' }}>
-                  {['Date', 'Reference', 'Investor', 'Type', 'Amount'].map((h) => (
-                    <th key={h} style={{
-                      textAlign: h === 'Amount' ? 'right' : 'left',
-                      padding: '12px 16px', fontSize: 12, fontWeight: 600,
-                      color: COLORS.muted, textTransform: 'uppercase', letterSpacing: '0.04em',
-                    }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {pageItems.map((t) => {
-                  const isCredit = t.direction === 'credit' || (t.type || '').toLowerCase() === 'deposit' || (t.type || '').toLowerCase() === 'payout';
-                  return (
-                    <tr key={t.id} style={{ borderTop: `1px solid ${COLORS.border}` }}>
-                      <td style={{ padding: '14px 16px', color: COLORS.muted, fontSize: 13 }}>{t.date}</td>
-                      <td style={{ padding: '14px 16px', fontFamily: 'monospace', fontSize: 12, color: COLORS.muted }}>{t.reference || '—'}</td>
-                      <td style={{ padding: '14px 16px', fontWeight: 500 }}>{t.investorName || t.userName || '—'}</td>
-                      <td style={{ padding: '14px 16px', textTransform: 'capitalize', color: COLORS.muted }}>{t.type || '—'}</td>
-                      <td style={{ padding: '14px 16px', textAlign: 'right', fontWeight: 600, color: isCredit ? COLORS.positive : COLORS.text }}>
-                        {isCredit ? '+' : ''}{format(t.amount)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+    <PortalLayout>
+      <AdminShell
+        title="Transactions"
+        description="All platform transactions"
+      >
+        <div style={{
+          display: 'flex', flexWrap: 'wrap', gap: 10,
+          marginBottom: 20, padding: 14,
+          background: 'var(--bv-bg-elevated)',
+          border: '1px solid var(--bv-border)', borderRadius: 12,
+        }}>
+          <div style={{ position: 'relative', flex: '1 1 240px' }}>
+            <Search size={16} color="var(--bv-text-muted)" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
+            <input
+              type="text"
+              placeholder="Search by reference, description"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && load()}
+              style={{ ...inputStyle, paddingLeft: 36, width: '100%' }}
+            />
           </div>
+          <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} style={inputStyle}>
+            <option value="">All types</option>
+            <option value="DEPOSIT">Deposit</option>
+            <option value="INVESTMENT">Investment</option>
+            <option value="RETURN">Return</option>
+            <option value="WITHDRAWAL">Withdrawal</option>
+            <option value="REFUND">Refund</option>
+            <option value="FEE">Fee</option>
+          </select>
+        </div>
 
-          {totalPages > 1 && (
-            <nav aria-label="Pagination" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 12, marginTop: 16 }}>
-              <button type="button" onClick={() => setPage(Math.max(1, safePage - 1))} disabled={safePage <= 1} aria-label="Previous page"
-                style={{ padding: 8, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 6, cursor: safePage <= 1 ? 'not-allowed' : 'pointer', opacity: safePage <= 1 ? 0.4 : 1 }}>
-                <ChevronLeft size={16} />
-              </button>
-              <span style={{ fontSize: 13, color: COLORS.muted }}>Page {safePage} of {totalPages} · {filtered.length} total</span>
-              <button type="button" onClick={() => setPage(Math.min(totalPages, safePage + 1))} disabled={safePage >= totalPages} aria-label="Next page"
-                style={{ padding: 8, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 6, cursor: safePage >= totalPages ? 'not-allowed' : 'pointer', opacity: safePage >= totalPages ? 0.4 : 1 }}>
-                <ChevronRight size={16} />
-              </button>
-            </nav>
-          )}
-        </>
-      )}
-    </div>
+        {loading ? (
+          <div style={{ padding: 60, textAlign: 'center', color: 'var(--bv-text-muted)' }}>
+            <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto 12px' }} />
+            Loading transactions…
+          </div>
+        ) : error ? (
+          <div style={{ padding: 20, background: 'color-mix(in srgb, var(--bv-danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--bv-danger) 25%, transparent)', borderRadius: 12, color: 'var(--bv-danger)', display: 'flex', gap: 10 }}>
+            <AlertCircle size={18} /> {error}
+          </div>
+        ) : items.length === 0 ? (
+          <div style={{ padding: 60, textAlign: 'center', background: 'var(--bv-bg-elevated)', border: '1px dashed var(--bv-border)', borderRadius: 12 }}>
+            <ArrowLeftRight size={28} color="var(--bv-text-muted)" style={{ margin: '0 auto 12px' }} />
+            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--bv-text)', marginBottom: 4 }}>
+              No transactions
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--bv-text-muted)' }}>
+              Transactions will appear here as users deposit and invest.
+            </div>
+          </div>
+        ) : (
+          <div style={{ background: 'var(--bv-bg-elevated)', border: '1px solid var(--bv-border)', borderRadius: 12, overflow: 'hidden' }}>
+            {items.map((t) => (
+              <div key={t.id} style={{
+                display: 'grid',
+                gridTemplateColumns: 'minmax(0, 2fr) 120px 130px 140px',
+                alignItems: 'center', gap: 16, padding: '16px 20px',
+                borderBottom: '1px solid var(--bv-border-soft)',
+                color: 'var(--bv-text)',
+              }}>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {t.description || t.reference}
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--bv-text-muted)' }}>
+                    {t.reference} · {new Date(t.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
+                <div>
+                  <span style={{ padding: '3px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600, background: 'var(--bv-surface)', color: 'var(--bv-text-muted)' }}>
+                    {t.type}
+                  </span>
+                </div>
+                <div>
+                  <span style={{
+                    padding: '3px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+                    background: t.status === 'SUCCESS' ? 'color-mix(in srgb, var(--bv-success) 15%, var(--bv-bg-elevated))' : 'var(--bv-surface)',
+                    color: t.status === 'SUCCESS' ? 'var(--bv-success)' : 'var(--bv-text-muted)',
+                  }}>
+                    {t.status}
+                  </span>
+                </div>
+                <div style={{ textAlign: 'right', fontSize: 14, fontWeight: 700, color: 'var(--bv-text)' }}>
+                  {fmt(t.amount)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </AdminShell>
+    </PortalLayout>
   );
 }

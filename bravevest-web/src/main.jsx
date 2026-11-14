@@ -13,6 +13,7 @@ import './styles/light-only.css';
 import './styles/dashboard-light.css';
 import './styles/theme-tokens.css';
 import { ThemeStyles, applyTheme } from './AppEnhancements';
+import { AuthProvider } from '@/context/AuthContext';        // ← ADDED
 
 // Apply saved (or device) theme on first paint — do NOT wipe it.
 applyTheme();
@@ -20,7 +21,9 @@ applyTheme();
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ThemeStyles />
-    <App />
+    <AuthProvider>                                            {/* ← ADDED */}
+      <App />
+    </AuthProvider>                                           {/* ← ADDED */}
   </React.StrictMode>
 );
 

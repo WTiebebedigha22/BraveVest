@@ -201,8 +201,11 @@ model User {
   wallet              Wallet?
   ledger              LedgerEntry[]
   otpCodes            OtpCode[]
-  preferences         Json?                    @default("{}")
-
+    preferences              Json?                    @default("{}")
+  promotionRequestsMade    AdminPromotionRequest[]  @relation("PromotionRequester")
+  promotionRequestsForMe   AdminPromotionRequest[]  @relation("PromotionCandidate")
+  promotionReviews         AdminPromotionRequest[]  @relation("PromotionReviewer")
+  
   @@index([email])
   @@map("users")
 }
@@ -704,4 +707,36 @@ model Notification {
   @@index([userId, read])
   @@index([userId, createdAt])
   @@map("notifications")
+}
+
+// ── Admin promotion requests ────────────────────────────────
+enum PromotionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+model AdminPromotionRequest {
+  id            String          @id @default(cuid())
+  candidateId   String
+  candidate     User            @relation("PromotionCandidate", fields: [candidateId], references: [id], onDelete: Cascade)
+  requestedById String
+  requestedBy   User            @relation("PromotionRequester", fields: [requestedById], references: [id], onDelete: Cascade)
+
+  reason        String          @db.Text
+  status        PromotionStatus @default(PENDING)
+
+  reviewedById  String?
+  reviewedBy    User?           @relation("PromotionReviewer", fields: [reviewedById], references: [id])
+  reviewedAt    DateTime?
+  reviewNote    String?         @db.Text
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([status])
+  @@index([candidateId])
+  @@index([requestedById])
+  @@map("admin_promotion_requests")
 }

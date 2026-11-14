@@ -5,22 +5,68 @@ const ApiError = require('../../utils/apiError');
 const { hashPassword, comparePassword } = require('../../utils/password');
 const { signAccess, signRefresh, verifyRefresh } = require('../../utils/jwt');
 
-const publicUser = (u) => ({ id: u.id, email: u.email, firstName: u.firstName, lastName: u.lastName, role: u.role, status: u.status, createdAt: u.createdAt });
+/**
+ * publicUser — canonical shape returned to the frontend.
+ * IMPORTANT: uses `roles` (array) not `role` (singular) to match the
+ * UserRole[] field in schema.prisma.
+ */
+const publicUser = (u) => ({
+  id: u.id,
+  email: u.email,
+  firstName: u.firstName,
+  lastName: u.lastName,
+  image: u.image ?? null,
+  roles: u.roles || [],
+  status: u.status,
+  createdAt: u.createdAt,
+});
+
+/** Pick a "primary" role for the JWT — highest privilege wins. */
+function primaryRole(roles) {
+  const r = roles || [];
+  if (r.includes('SUPER_ADMIN')) return 'SUPER_ADMIN';
+  if (r.includes('ADMIN')) return 'ADMIN';
+  if (r.includes('BORROWER')) return 'BORROWER';
+  return 'INVESTOR';
+}
 
 async function issueTokens(user) {
-  const accessToken = signAccess({ sub: user.id, role: user.role });
+  const roles = user.roles || ['INVESTOR'];
+  const role = primaryRole(roles);
+
+  const accessToken = signAccess({ sub: user.id, role, roles });
   const refreshToken = signRefresh({ sub: user.id });
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  await prisma.refreshToken.create({ data: { userId: user.id, token: crypto.createHash('sha256').update(refreshToken).digest('hex'), expiresAt } });
+
+  await prisma.refreshToken.create({
+    data: {
+      userId: user.id,
+      token: crypto.createHash('sha256').update(refreshToken).digest('hex'),
+      expiresAt,
+    },
+  });
+
   return { accessToken, refreshToken };
 }
 
 async function register({ firstName, lastName, email, phone, password }) {
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) throw ApiError.conflict('Email already registered');
+
   const passwordHash = await hashPassword(password);
-  const user = await prisma.user.create({ data: { firstName, lastName, email, phone: phone || null, passwordHash, role: 'INVESTOR', status: 'ACTIVE', kyc: { create: {} } } });
-  // Welcome notification
+  const user = await prisma.user.create({
+    data: {
+      firstName,
+      lastName,
+      email,
+      phone: phone || null,
+      passwordHash,
+      roles: ['INVESTOR'],       // array — matches schema
+      status: 'ACTIVE',
+      kyc: { create: {} },
+    },
+  });
+
   try {
     await notifications.push({
       userId: user.id,
@@ -38,20 +84,35 @@ async function register({ firstName, lastName, email, phone, password }) {
 async function login({ email, password }) {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw ApiError.unauthorized('Invalid email or password');
+
   const ok = await comparePassword(password, user.passwordHash);
   if (!ok) throw ApiError.unauthorized('Invalid email or password');
-  if (user.status === 'SUSPENDED' || user.status === 'DEACTIVATED') throw ApiError.forbidden('Account inactive');
+
+  if (user.status === 'SUSPENDED' || user.status === 'DEACTIVATED') {
+    throw ApiError.forbidden('Account inactive');
+  }
+
   return { user: publicUser(user), ...(await issueTokens(user)) };
 }
 
 async function refresh(refreshToken) {
   let payload;
-  try { payload = verifyRefresh(refreshToken); } catch { throw ApiError.unauthorized('Invalid refresh token'); }
+  try {
+    payload = verifyRefresh(refreshToken);
+  } catch {
+    throw ApiError.unauthorized('Invalid refresh token');
+  }
+
   const hashed = crypto.createHash('sha256').update(refreshToken).digest('hex');
   const stored = await prisma.refreshToken.findUnique({ where: { token: hashed } });
-  if (!stored || stored.revoked || stored.expiresAt < new Date()) throw ApiError.unauthorized('Refresh token invalid');
+
+  if (!stored || stored.revoked || stored.expiresAt < new Date()) {
+    throw ApiError.unauthorized('Refresh token invalid');
+  }
+
   const user = await prisma.user.findUnique({ where: { id: payload.sub } });
   if (!user) throw ApiError.unauthorized('User not found');
+
   await prisma.refreshToken.update({ where: { id: stored.id }, data: { revoked: true } });
   return { user: publicUser(user), ...(await issueTokens(user)) };
 }
@@ -59,20 +120,44 @@ async function refresh(refreshToken) {
 async function logout(refreshToken) {
   if (!refreshToken) return;
   const hashed = crypto.createHash('sha256').update(refreshToken).digest('hex');
-  await prisma.refreshToken.updateMany({ where: { token: hashed, revoked: false }, data: { revoked: true } });
+  await prisma.refreshToken.updateMany({
+    where: { token: hashed, revoked: false },
+    data: { revoked: true },
+  });
 }
 
 async function me(userId) {
-  const user = await prisma.user.findUnique({ where: { id: userId }, include: { kyc: true } });
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      image: true,
+      roles: true,
+      status: true,
+      createdAt: true,
+      kyc: { select: { status: true } },
+    },
+  });
   if (!user) throw ApiError.notFound('User not found');
-  return { ...publicUser(user), kycStatus: user.kyc?.status || 'NOT_STARTED' };
+
+  return {
+    ...publicUser(user),
+    kycStatus: user.kyc?.status || 'NOT_STARTED',
+  };
 }
 
-async function forgotPassword(email) { return { sent: true }; }
-async function resetPassword(token, newPassword) { throw ApiError.badRequest('Not implemented'); }
+async function forgotPassword(email) {
+  return { sent: true };
+}
 
+async function resetPassword(token, newPassword) {
+  throw ApiError.badRequest('Not implemented');
+}
 
-// ── Session & password management (added by installer) ──
+// ── Session & password management ───────────────────────────
 const bcryptInst = require('bcryptjs');
 const prismaInst = require('../../config/database').prisma;
 const ApiErrorInst = require('../../utils/apiError');
@@ -80,10 +165,13 @@ const ApiErrorInst = require('../../utils/apiError');
 async function changePassword(userId, oldPassword, newPassword, currentRefreshToken = null) {
   const user = await prismaInst.user.findUnique({ where: { id: userId } });
   if (!user) throw ApiErrorInst.notFound('User not found');
+
   const ok = await bcryptInst.compare(oldPassword, user.passwordHash);
   if (!ok) throw ApiErrorInst.badRequest('Current password is incorrect');
+
   const hash = await bcryptInst.hash(newPassword, 10);
   await prismaInst.user.update({ where: { id: userId }, data: { passwordHash: hash } });
+
   await prismaInst.refreshToken.updateMany({
     where: {
       userId,
@@ -99,8 +187,12 @@ async function listSessions(userId, currentToken) {
   const rows = await prismaInst.refreshToken.findMany({
     where: { userId, revoked: false, expiresAt: { gt: now } },
     select: {
-      id: true, token: true, userAgent: true,
-      ipAddress: true, createdAt: true, expiresAt: true,
+      id: true,
+      token: true,
+      userAgent: true,
+      ipAddress: true,
+      createdAt: true,
+      expiresAt: true,
     },
     orderBy: { createdAt: 'desc' },
   });
@@ -125,4 +217,12 @@ async function revokeOtherSessions(userId, currentToken) {
 module.exports = {
   changePassword,
   listSessions,
-  revokeOtherSessions, register, login, refresh, logout, me, forgotPassword, resetPassword };
+  revokeOtherSessions,
+  register,
+  login,
+  refresh,
+  logout,
+  me,
+  forgotPassword,
+  resetPassword,
+};

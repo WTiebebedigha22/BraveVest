@@ -1,5 +1,5 @@
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useIsAdmin } from '@/AppEnhancements';
+import { useEffect, useState } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   TrendingUp,
@@ -22,27 +22,37 @@ import {
   Plus,
   FileCheck,
   Clock,
+  ChevronDown,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 /* ── Sidebar always-dark palette ─────────────────── */
 const COLORS = {
-  bg: '#151A21', // elevated surface
-  text: '#F0F3F6', // primary text
-  muted: '#848E9C', // muted text
-  border: '#2B313A', // border
-  accent: '#F0B90B', // brand gold
-  accentSoft: 'rgba(240,185,11,0.10)', // gold tint (active item bg)
-  negative: '#FF4D4F', // sign out hover
+  bg: '#151A21',
+  text: '#F0F3F6',
+  muted: '#848E9C',
+  border: '#2B313A',
+  accent: '#F0B90B',
+  accentSoft: 'rgba(240,185,11,0.10)',
+  negative: '#FF4D4F',
   adminTint: 'rgba(240,185,11,0.05)',
   adminBorder: 'rgba(240,185,11,0.18)',
 };
 
+// ── Investor nav ───────────────────────────────────────────
 const INVESTOR_LINKS = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/investments', label: 'Investments', icon: TrendingUp },
-  { to: '/opportunities/new', label: 'Submit Opportunity', icon: Plus },
-  { to: '/opportunities/mine', label: 'My Submissions', icon: FileCheck },
+  {
+    to: '/opportunities/new',
+    label: 'Submissions',
+    icon: FileText,
+    matchPaths: ['/opportunities/new', '/opportunities/mine'],
+    children: [
+      { to: '/opportunities/new', label: 'New Submission', icon: Plus },
+      { to: '/opportunities/mine', label: 'My Submissions', icon: FileCheck },
+    ],
+  },
   { to: '/portfolio', label: 'Portfolio', icon: PieChart },
   { to: '/wallet', label: 'Wallet', icon: Wallet },
   { to: '/statement', label: 'Statement', icon: FileText },
@@ -55,29 +65,79 @@ const INVESTOR_LINKS = [
   { to: '/profile', label: 'Profile', icon: UserCircle },
 ];
 
+// ── Admin nav ──────────────────────────────────────────────
 const ADMIN_LINKS = [
   { to: '/admin', label: 'Overview', icon: BarChart3 },
+  { to: '/admin/submissions', label: 'Submissions', icon: FileText },
   { to: '/admin/investors', label: 'Investors', icon: Users },
   { to: '/admin/kyc', label: 'KYC Queue', icon: Shield },
-  { to: '/admin/projects', label: 'Projects', icon: FolderOpen },
-  { to: '/admin/projects/pending', label: 'Pending Review', icon: Clock },
+  {
+    to: '/admin/projects',
+    label: 'Projects',
+    icon: FolderOpen,
+    matchPaths: ['/admin/projects', '/admin/projects/pending'],
+    children: [
+      { to: '/admin/projects', label: 'All Projects', icon: FolderOpen },
+      { to: '/admin/projects/pending', label: 'Pending Review', icon: Clock },
+    ],
+  },
   { to: '/admin/investments', label: 'Investments', icon: TrendingUp },
   { to: '/admin/transactions', label: 'Transactions', icon: ArrowLeftRight },
   { to: '/admin/reports', label: 'Reports', icon: FileText },
   { to: '/admin/funding/review', label: 'Funding Review', icon: Inbox },
-  { to: '/admin/insights', label: 'Insights', icon: FileText },
+  {
+    to: '/admin/insights',
+    label: 'Insights',
+    icon: FileText,
+    matchPaths: ['/admin/insights', '/admin/insights/new'],
+    children: [
+      { to: '/admin/insights', label: 'All Insights', icon: FileText },
+      { to: '/admin/insights/new', label: 'New Insight', icon: Plus },
+    ],
+  },
+  // ── Personal (admin as a user) ────────────────────────
+  { to: '/wallet', label: 'My Wallet', icon: Wallet },
+  { to: '/statement', label: 'My Statement', icon: FileText },
+  // ──────────────────────────────────────────────────────
   { to: '/admin/contact', label: 'Contact Inbox', icon: Inbox },
   { to: '/admin/settings', label: 'Settings', icon: Settings },
+  { to: '/profile', label: 'Profile', icon: UserCircle },
 ];
 
 export default function Sidebar({ mobileOpen, onClose }) {
   const { user, logout } = useAuth();
   const nav = useNavigate();
+  const location = useLocation();
+
   const isAdmin =
-    user?.roles?.includes('ADMIN') ||
+    user?.isAdmin === true ||
     user?.role === 'ADMIN' ||
+    user?.roles?.includes('ADMIN') ||
     user?.roles?.includes('SUPER_ADMIN');
+  const isSuperAdmin = user?.roles?.includes('SUPER_ADMIN') || user?.role === 'SUPER_ADMIN';
+
   const links = isAdmin ? ADMIN_LINKS : INVESTOR_LINKS;
+
+  // ── Dropdown open/closed state ─────────────────────────
+  const [openGroups, setOpenGroups] = useState({});
+  useEffect(() => {
+    const next = {};
+    links.forEach((item) => {
+      if (!item.children) return;
+      const matches = (item.matchPaths || [item.to]).some((p) =>
+        p === '/admin/insights' || p === '/admin/projects'
+          ? location.pathname.startsWith(p)
+          : location.pathname === p || location.pathname.startsWith(p + '/')
+      );
+      if (matches) next[item.to] = true;
+    });
+    setOpenGroups((prev) => ({ ...prev, ...next }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
+
+  function toggleGroup(key) {
+    setOpenGroups((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
 
   function handleLogout() {
     if (logout) logout();
@@ -87,9 +147,8 @@ export default function Sidebar({ mobileOpen, onClose }) {
 
   const content = (
     <>
-      {/* Brand with ADMIN badge */}
+      {/* Brand with ADMIN / SUPER ADMIN badge */}
       <div style={{ padding: '4px 12px 20px', display: 'flex', alignItems: 'center', gap: 10 }}>
-        {/* Avatar — image if set, else initials */}
         {user?.image ? (
           <img
             src={user.image}
@@ -124,7 +183,6 @@ export default function Sidebar({ mobileOpen, onClose }) {
           </div>
         )}
 
-        {/* Name + UID + type badge */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
             <span
@@ -155,7 +213,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
                   flexShrink: 0,
                 }}
               >
-                Admin
+                {isSuperAdmin ? 'Super' : 'Admin'}
               </span>
             )}
           </div>
@@ -171,7 +229,6 @@ export default function Sidebar({ mobileOpen, onClose }) {
               lineHeight: 1.2,
             }}
           >
-            {/* Username handle if present, else UID */}
             {user?.username ? (
               <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 @{typeof user.username === 'string' ? user.username : user.username.handle || ''}
@@ -182,7 +239,6 @@ export default function Sidebar({ mobileOpen, onClose }) {
               </span>
             )}
 
-            {/* User type — verified or admin */}
             <span style={{ color: COLORS.border }}>·</span>
             <span
               style={{
@@ -199,7 +255,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
               }}
             >
               {isAdmin ? (
-                'Admin'
+                isSuperAdmin ? 'Super Admin' : 'Admin'
               ) : user?.kycStatus === 'APPROVED' || user?.kyc?.status === 'APPROVED' ? (
                 <>
                   <svg
@@ -254,13 +310,24 @@ export default function Sidebar({ mobileOpen, onClose }) {
             gap: 2,
           }}
         >
-          {links.map(({ to, label, icon: Icon }) => {
-            const end = to === '/admin' || to === '/dashboard';
+          {links.map((item) => {
+            const { to, label, icon: Icon, children } = item;
+            const hasChildren = Array.isArray(children) && children.length > 0;
+            const isOpen = !!openGroups[to];
+
+            const matchesGroup =
+              hasChildren &&
+              (item.matchPaths || [to]).some((p) =>
+                p === '/admin/insights' || p === '/admin/projects'
+                  ? location.pathname.startsWith(p)
+                  : location.pathname === p || location.pathname.startsWith(p + '/')
+              );
+
             return (
               <li key={to}>
                 <NavLink
                   to={to}
-                  end={end}
+                  end={to === '/admin' || to === '/dashboard'}
                   onClick={onClose}
                   style={({ isActive }) => ({
                     display: 'flex',
@@ -269,9 +336,9 @@ export default function Sidebar({ mobileOpen, onClose }) {
                     padding: '10px 12px',
                     borderRadius: 8,
                     fontSize: 14,
-                    fontWeight: isActive ? 600 : 500,
-                    color: isActive ? COLORS.text : COLORS.muted,
-                    background: isActive ? COLORS.accentSoft : 'transparent',
+                    fontWeight: isActive || matchesGroup ? 600 : 500,
+                    color: isActive || matchesGroup ? COLORS.text : COLORS.muted,
+                    background: isActive || matchesGroup ? COLORS.accentSoft : 'transparent',
                     textDecoration: 'none',
                     transition: 'background 0.15s, color 0.15s',
                   })}
@@ -280,13 +347,90 @@ export default function Sidebar({ mobileOpen, onClose }) {
                     <>
                       <Icon
                         size={18}
-                        color={isActive ? COLORS.accent : COLORS.muted}
+                        color={isActive || matchesGroup ? COLORS.accent : COLORS.muted}
                         aria-hidden="true"
                       />
-                      <span>{label}</span>
+                      <span style={{ flex: 1 }}>{label}</span>
+
+                      {hasChildren && (
+                        <button
+                          type="button"
+                          aria-label={isOpen ? 'Collapse' : 'Expand'}
+                          aria-expanded={isOpen}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleGroup(to);
+                          }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 2,
+                            marginLeft: 4,
+                            cursor: 'pointer',
+                            color: COLORS.muted,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                            transition: 'transform 0.15s',
+                          }}
+                        >
+                          <ChevronDown size={14} />
+                        </button>
+                      )}
                     </>
                   )}
                 </NavLink>
+
+                {hasChildren && isOpen && (
+                  <ul
+                    style={{
+                      listStyle: 'none',
+                      margin: '2px 0 2px 0',
+                      padding: '0 0 0 28px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1,
+                    }}
+                  >
+                    {children.map((child) => {
+                      const ChildIcon = child.icon;
+                      return (
+                        <li key={child.to}>
+                          <NavLink
+                            to={child.to}
+                            end
+                            onClick={onClose}
+                            style={({ isActive }) => ({
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 8,
+                              padding: '8px 10px',
+                              borderRadius: 6,
+                              fontSize: 13,
+                              fontWeight: isActive ? 600 : 500,
+                              color: isActive ? COLORS.text : COLORS.muted,
+                              background: isActive ? COLORS.accentSoft : 'transparent',
+                              textDecoration: 'none',
+                              transition: 'background 0.15s, color 0.15s',
+                            })}
+                          >
+                            {({ isActive }) => (
+                              <>
+                                <ChildIcon
+                                  size={14}
+                                  color={isActive ? COLORS.accent : COLORS.muted}
+                                  aria-hidden="true"
+                                />
+                                <span>{child.label}</span>
+                              </>
+                            )}
+                          </NavLink>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
               </li>
             );
           })}
@@ -345,7 +489,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
     top: 64,
     height: 'calc(100vh - 64px)',
     overflowY: 'auto',
-    colorScheme: 'dark', // forces native form controls / scrollbars to dark
+    colorScheme: 'dark',
   };
 
   return (

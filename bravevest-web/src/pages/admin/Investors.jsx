@@ -1,138 +1,179 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, AlertCircle, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Search, Loader2, AlertCircle, ChevronRight,
+  ShieldCheck, ShieldX, UserCircle2,
+} from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
+import AdminShell from '@/components/admin/AdminShell';
 
-const COLORS = {
-  surface: '#FFFFFF', text: 'var(--bv-text)', muted: 'var(--bv-text-muted)',
-  border: 'var(--bv-border)', accent: 'var(--bv-accent)',
-  positive: '#0ECB81', warning: '#F59E0B', negative: '#F6465D',
+const inputStyle = {
+  padding: '10px 14px',
+  background: 'var(--bv-bg)',
+  border: '1px solid var(--bv-border)',
+  borderRadius: 8,
+  color: 'var(--bv-text)',
+  fontSize: 13,
+  fontFamily: 'inherit',
+  outline: 'none',
 };
-const PAGE_SIZE = 20;
 
 export default function AdminInvestors() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState('all');
-  const [page, setPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState('');
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const data = await apiFetch('/admin/investors');
-        if (!cancelled) setItems(Array.isArray(data) ? data : data.investors ?? []);
-      } catch (e) {
-        if (!cancelled) setError(e?.message || 'Could not load investors.');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, []);
-
-  const filtered = useMemo(() => {
-    let list = items;
-    if (filter !== 'all') list = list.filter((i) => (i.kycStatus || '').toLowerCase() === filter);
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter((i) => (i.name || '').toLowerCase().includes(q) || (i.email || '').toLowerCase().includes(q));
+  async function load() {
+    setLoading(true);
+    setError('');
+    try {
+      const params = new URLSearchParams();
+      if (search.trim()) params.set('q', search.trim());
+      if (statusFilter) params.set('status', statusFilter);
+      const res = await apiFetch('/admin/investors?' + params.toString());
+      const list = Array.isArray(res?.data)
+        ? res.data
+        : Array.isArray(res?.data?.items)
+        ? res.data.items
+        : Array.isArray(res) ? res : [];
+      setItems(list);
+    } catch (e) {
+      setError(e?.message || 'Failed to load investors');
+    } finally {
+      setLoading(false);
     }
-    return list;
-  }, [items, search, filter]);
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const safePage = Math.min(page, totalPages);
-  const pageItems = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
-
-  if (loading) {
-    return <div style={{ padding: 48, display: 'flex', alignItems: 'center', gap: 12, color: COLORS.muted }}>
-      <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Loading investors…
-      <style>{'@keyframes spin { to { transform: rotate(360deg); } }'}</style>
-    </div>;
   }
-  if (error) {
-    return <div role="alert" style={{ padding: 24, color: COLORS.negative, display: 'flex', gap: 8 }}><AlertCircle size={20} /> {error}</div>;
-  }
+
+  useEffect(() => { load(); }, [statusFilter]);
 
   return (
-    <PortalLayout theme="dark">
-      <div style={{ padding: '24px 20px', maxWidth: 1200, margin: '0 auto', color: COLORS.text }}>
-      <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 20px' }}>Investors</h1>
-
-      <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
-        <div style={{ position: 'relative', flex: '1 1 280px' }}>
-          <Search size={16} color={COLORS.muted} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
-          <input type="search" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            placeholder="Search by name or email" aria-label="Search investors"
-            style={{ width: '100%', padding: '10px 12px 10px 36px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, outline: 'none', background: COLORS.surface }} />
-        </div>
-        <select value={filter} onChange={(e) => { setFilter(e.target.value); setPage(1); }} aria-label="Filter by KYC status"
-          style={{ padding: '10px 12px', border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, background: COLORS.surface, cursor: 'pointer' }}>
-          <option value="all">All statuses</option>
-          <option value="verified">Verified</option>
-          <option value="pending">Pending</option>
-          <option value="rejected">Rejected</option>
-        </select>
-      </div>
-
-      {pageItems.length === 0 ? (
-        <div style={{ padding: 40, textAlign: 'center', color: COLORS.muted, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12 }}>
-          {search || filter !== 'all' ? 'No investors match your filters.' : 'No investors yet.'}
-        </div>
-      ) : (
-        <>
-          <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
-              <thead>
-                <tr style={{ background: 'var(--bv-bg)' }}>
-                  {['Name', 'Email', 'KYC', ''].map((h) => (
-                    <th key={h} style={{ textAlign: h === '' ? 'right' : 'left', padding: '12px 16px', fontSize: 12, fontWeight: 600, color: COLORS.muted, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {pageItems.map((inv) => {
-                  const status = (inv.kycStatus || 'pending').toLowerCase();
-                  const statusColor = status === 'verified' ? COLORS.positive : status === 'rejected' ? COLORS.negative : COLORS.warning;
-                  return (
-                    <tr key={inv.id} style={{ borderTop: `1px solid ${COLORS.border}` }}>
-                      <td style={{ padding: '14px 16px', fontWeight: 500 }}>{inv.name}</td>
-                      <td style={{ padding: '14px 16px', color: COLORS.muted }}>{inv.email}</td>
-                      <td style={{ padding: '14px 16px' }}>
-                        <span style={{ display: 'inline-block', padding: '3px 8px', background: `${statusColor}22`, color: statusColor, borderRadius: 4, fontSize: 12, fontWeight: 600, textTransform: 'capitalize' }}>
-                          {status}
-                        </span>
-                      </td>
-                      <td style={{ padding: '14px 16px', textAlign: 'right' }}>
-                        <Link to={`/admin/investors/${inv.id}`} style={{ color: COLORS.accent, fontWeight: 600, textDecoration: 'none', fontSize: 13 }}>View →</Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+    <PortalLayout>
+      <AdminShell
+        title="Investors"
+        description="All registered users with KYC and activity status"
+      >
+        <div style={{
+          display: 'flex', flexWrap: 'wrap', gap: 10,
+          marginBottom: 20, padding: 14,
+          background: 'var(--bv-bg-elevated)',
+          border: '1px solid var(--bv-border)', borderRadius: 12,
+        }}>
+          <div style={{ position: 'relative', flex: '1 1 240px' }}>
+            <Search size={16} color="var(--bv-text-muted)" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
+            <input
+              type="text"
+              placeholder="Search by name, email, phone"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && load()}
+              style={{ ...inputStyle, paddingLeft: 36, width: '100%' }}
+            />
           </div>
+          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} style={inputStyle}>
+            <option value="">All statuses</option>
+            <option value="ACTIVE">Active</option>
+            <option value="SUSPENDED">Suspended</option>
+            <option value="PENDING_VERIFICATION">Pending verification</option>
+          </select>
+        </div>
 
-          {totalPages > 1 && (
-            <nav aria-label="Pagination" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 12, marginTop: 16 }}>
-              <button type="button" onClick={() => setPage(Math.max(1, safePage - 1))} disabled={safePage <= 1} aria-label="Previous page"
-                style={{ padding: 8, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 6, cursor: safePage <= 1 ? 'not-allowed' : 'pointer', opacity: safePage <= 1 ? 0.4 : 1 }}>
-                <ChevronLeft size={16} />
-              </button>
-              <span style={{ fontSize: 13, color: COLORS.muted }}>Page {safePage} of {totalPages} · {filtered.length} total</span>
-              <button type="button" onClick={() => setPage(Math.min(totalPages, safePage + 1))} disabled={safePage >= totalPages} aria-label="Next page"
-                style={{ padding: 8, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 6, cursor: safePage >= totalPages ? 'not-allowed' : 'pointer', opacity: safePage >= totalPages ? 0.4 : 1 }}>
-                <ChevronRight size={16} />
-              </button>
-            </nav>
-          )}
-        </>
-      )}
-    </div>
+        {loading ? (
+          <div style={{ padding: 60, textAlign: 'center', color: 'var(--bv-text-muted)' }}>
+            <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto 12px' }} />
+            Loading investors…
+          </div>
+        ) : error ? (
+          <div style={{ padding: 20, background: 'color-mix(in srgb, var(--bv-danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--bv-danger) 25%, transparent)', borderRadius: 12, color: 'var(--bv-danger)', display: 'flex', gap: 10 }}>
+            <AlertCircle size={18} /> {error}
+          </div>
+        ) : items.length === 0 ? (
+          <div style={{ padding: 60, textAlign: 'center', background: 'var(--bv-bg-elevated)', border: '1px dashed var(--bv-border)', borderRadius: 12 }}>
+            <UserCircle2 size={28} color="var(--bv-text-muted)" style={{ margin: '0 auto 12px' }} />
+            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--bv-text)', marginBottom: 4 }}>
+              No investors found
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--bv-text-muted)' }}>
+              Try a different search or filter.
+            </div>
+          </div>
+        ) : (
+          <div style={{ background: 'var(--bv-bg-elevated)', border: '1px solid var(--bv-border)', borderRadius: 12, overflow: 'hidden' }}>
+            {items.map((u) => (
+              <div key={u.id} style={{
+                display: 'grid',
+                gridTemplateColumns: 'minmax(0, 2fr) 150px 130px 100px',
+                alignItems: 'center', gap: 16, padding: '16px 20px',
+                borderBottom: '1px solid var(--bv-border-soft)',
+                color: 'var(--bv-text)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: '50%',
+                    background: 'var(--bv-accent)', color: '#000',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontWeight: 700, fontSize: 13, flexShrink: 0,
+                  }}>
+                    {((u.firstName?.[0] || '') + (u.lastName?.[0] || '')).toUpperCase() || 'U'}
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {u.firstName} {u.lastName}
+                    </div>
+                    <div style={{ fontSize: 12, color: 'var(--bv-text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {u.email}
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ fontSize: 12 }}>
+                  {u.kyc?.status === 'APPROVED' ? (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: 'var(--bv-success)', fontWeight: 600 }}>
+                      <ShieldCheck size={12} /> Verified
+                    </span>
+                  ) : u.kyc?.status === 'REJECTED' ? (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: 'var(--bv-danger)', fontWeight: 600 }}>
+                      <ShieldX size={12} /> Rejected
+                    </span>
+                  ) : (
+                    <span style={{ color: 'var(--bv-warning)', fontWeight: 600 }}>Pending</span>
+                  )}
+                </div>
+
+                <div>
+                  <span style={{
+                    padding: '3px 8px', borderRadius: 6, fontSize: 11, fontWeight: 600,
+                    background: u.status === 'ACTIVE' ? 'color-mix(in srgb, var(--bv-success) 15%, var(--bv-bg-elevated))'
+                              : u.status === 'SUSPENDED' ? 'color-mix(in srgb, var(--bv-danger) 15%, var(--bv-bg-elevated))'
+                              : 'var(--bv-surface)',
+                    color: u.status === 'ACTIVE' ? 'var(--bv-success)'
+                          : u.status === 'SUSPENDED' ? 'var(--bv-danger)'
+                          : 'var(--bv-text-muted)',
+                  }}>
+                    {u.status?.replace('_', ' ') || 'Unknown'}
+                  </span>
+                </div>
+
+                <div style={{ textAlign: 'right' }}>
+                  <Link
+                    to={'/admin/investors/' + u.id}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 4,
+                      padding: '6px 10px', borderRadius: 6,
+                      background: 'var(--bv-surface)', color: 'var(--bv-text)',
+                      textDecoration: 'none', fontSize: 12, fontWeight: 600,
+                    }}
+                  >
+                    View <ChevronRight size={12} />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </AdminShell>
     </PortalLayout>
   );
 }
