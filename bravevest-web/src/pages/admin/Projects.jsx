@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FolderOpen, Loader2, AlertCircle, ChevronRight, Plus, Search } from 'lucide-react';
+import { FolderOpen, Loader2, AlertCircle, ChevronRight, Plus, Search, Eye, Edit3 } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import { riskCategory, riskColor } from '@/lib/format';
 import PortalLayout from '@/components/layout/PortalLayout';
@@ -53,7 +53,7 @@ export default function AdminProjects() {
     <PortalLayout>
       <AdminShell
         title="Projects"
-        description="Manage marketplace projects"
+        description="Manage marketplace projects, risk tiers, and funding statuses"
         actions={
           <Link
             to="/admin/projects/new"
@@ -120,7 +120,7 @@ export default function AdminProjects() {
               return (
                 <div key={p.id} style={{
                   display: 'grid',
-                  gridTemplateColumns: 'minmax(0, 2fr) 120px 130px 100px',
+                  gridTemplateColumns: 'minmax(0, 2fr) 120px 120px 140px',
                   alignItems: 'center', gap: 16, padding: '16px 20px',
                   borderBottom: '1px solid var(--bv-border-soft)',
                   color: 'var(--bv-text)',
@@ -147,9 +147,29 @@ export default function AdminProjects() {
                       {p.status}
                     </span>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <Link to={'/admin/projects/' + p.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 10px', borderRadius: 6, background: 'var(--bv-surface)', color: 'var(--bv-text)', textDecoration: 'none', fontSize: 12, fontWeight: 600 }}>
-                      Edit <ChevronRight size={12} />
+                  <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
+                    <Link
+                      to={'/admin/projects/' + p.id}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 4,
+                        padding: '6px 10px', borderRadius: 6,
+                        background: 'var(--bv-surface)', color: 'var(--bv-text)',
+                        textDecoration: 'none', fontSize: 12, fontWeight: 600,
+                      }}
+                    >
+                      <Eye size={12} /> View
+                    </Link>
+                    <Link
+                      to={'/admin/projects/' + p.id + '/edit'}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 4,
+                        padding: '6px 10px', borderRadius: 6,
+                        background: 'color-mix(in srgb, var(--bv-accent) 15%, var(--bv-bg-elevated))',
+                        color: 'var(--bv-accent)',
+                        textDecoration: 'none', fontSize: 12, fontWeight: 600,
+                      }}
+                    >
+                      <Edit3 size={12} /> Edit
                     </Link>
                   </div>
                 </div>

@@ -66,7 +66,7 @@ const CSS = `
   color: var(--bv-bg-elevated);
   background:
     linear-gradient(rgba(18, 18, 20, 0.72), rgba(18, 18, 20, 0.85)),
-    url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+    url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
   overflow: hidden;
 }
 .elite-hero-hiw h1 {

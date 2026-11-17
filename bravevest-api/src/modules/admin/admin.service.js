@@ -71,7 +71,7 @@ async function rejectKyc(id, adminId, reason) {
 }
 
 // ---------- Investors ----------
-async function listInvestors({ q, role, page = 1, limit = 50 }) {
+async function listInvestors({ q, role, status, page = 1, limit = 50 }) {
   const where = {};
   if (q) {
     where.OR = [
@@ -81,6 +81,7 @@ async function listInvestors({ q, role, page = 1, limit = 50 }) {
     ];
   }
   if (role) where.roles = { has: role };
+  if (status) where.status = status;
   const skip = (Number(page) - 1) * Number(limit);
   const [items, total] = await Promise.all([
     prisma.user.findMany({

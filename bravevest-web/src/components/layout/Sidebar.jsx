@@ -35,7 +35,6 @@ const COLORS = {
   accent: '#F0B90B',
   accentSoft: 'rgba(240,185,11,0.10)',
   negative: '#FF4D4F',
-  adminTint: 'rgba(240,185,11,0.05)',
   adminBorder: 'rgba(240,185,11,0.18)',
 };
 
@@ -488,9 +487,7 @@ export default function Sidebar({ mobileOpen, onClose }) {
   const sidebarStyle = {
     width: 260,
     flexShrink: 0,
-    background: isAdmin
-      ? `linear-gradient(180deg, ${COLORS.adminTint} 0%, ${COLORS.bg} 40%)`
-      : COLORS.bg,
+    background: COLORS.bg,
     borderRight: `1px solid ${isAdmin ? COLORS.adminBorder : COLORS.border}`,
     padding: '20px 12px',
     display: 'flex',

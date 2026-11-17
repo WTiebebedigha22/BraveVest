@@ -3,23 +3,68 @@ const { authRequired } = require('../../middleware/auth.middleware');
 const asyncHandler = require('../../utils/asyncHandler');
 const { success } = require('../../utils/apiResponse');
 const ApiError = require('../../utils/apiError');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { GoogleGenAI } = require('@google/genai');
+const { getTargetedKnowledgeBase } = require('./context.service');
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-const MODEL = 'gemini-2.0-flash-exp';
+const MODELS = [
+  process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+  'gemini-2.5-flash-lite',
+];
 
-const SYSTEM = `You are the BraveVest assistant. BraveVest is a Nigerian
+const BASE_SYSTEM = `You are the BraveVest assistant. BraveVest is a Nigerian
 investment marketplace for verified property, energy, agriculture, SME, and
-infrastructure opportunities. Answer questions about: investing, KYC,
-wallet, deposits, withdrawals, portfolio tracking, referral program, and how
-to navigate the app. Refuse anything off-topic in one polite sentence and
-redirect to BraveVest topics. Keep answers under 120 words unless the user
-asks for detail. Never invent figures — if asked about a specific
-investment's numbers, tell the user to open the investment page.`;
+infrastructure opportunities. 
 
-// Cache common questions for instant repeat responses
+Use the repository structure and live database state provided below to answer questions accurately about available investments, platform features, KYC, wallets, deposits, withdrawals, portfolio tracking, and referrals.
+- Never invent figures — quote exact numbers from the live database state.
+- If asked about a specific investment's numbers or details not present, direct the user to the marketplace page.
+- Refuse off-topic requests in one polite sentence and redirect to BraveVest topics.
+- Keep answers under 120 words unless the user asks for detail.
+`;
+
 const responseCache = new Map();
 const MAX_CACHE = 50;
+const CACHE_TTL_MS = 60 * 60 * 1000;
+const RETRYABLE_STATUS = new Set([429, 500, 503, 504]);
+const ATTEMPTS_PER_MODEL = 2;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+let _ai = null;
+function getAI() {
+  if (_ai) return _ai;
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) throw new Error('GEMINI_API_KEY not set');
+  _ai = new GoogleGenAI({ apiKey: key });
+  return _ai;
+}
+
+function isRetryable(err) {
+  const status = Number(err.status || err.code);
+  if (RETRYABLE_STATUS.has(status)) return true;
+  return /UNAVAILABLE|high demand|overloaded|RESOURCE_EXHAUSTED/i.test(err.message || '');
+}
+
+async function generateWithFallback(ai, contents, systemInstruction) {
+  let lastErr;
+  for (const model of MODELS) {
+    for (let attempt = 0; attempt < ATTEMPTS_PER_MODEL; attempt++) {
+      try {
+        const response = await ai.models.generateContent({
+          model,
+          contents,
+          config: { systemInstruction },
+        });
+        return { response, model };
+      } catch (err) {
+        lastErr = err;
+        if (!isRetryable(err)) throw err;
+        await sleep(500 * 2 ** attempt + Math.random() * 250);
+      }
+    }
+  }
+  throw lastErr;
+}
 
 router.post(
   '/',
@@ -31,27 +76,14 @@ router.post(
     }
 
     if (!process.env.GEMINI_API_KEY) {
-      console.error('[chat] GEMINI_API_KEY missing');
-      return success(
-        res,
-        {
-          reply:
-            "The assistant isn't configured yet. Add GEMINI_API_KEY to bravevest-api/.env and restart the server. In the meantime, you can browse the marketplace at /marketplace, complete KYC at /profile, or check your balance at /wallet.",
-        },
-        'No API key'
-      );
+      return success(res, { reply: "Assistant not configured." }, 'No API key');
     }
 
-    // Cache hit
-    const cacheKey = message.trim().toLowerCase();
-    if (responseCache.has(cacheKey)) {
-      return success(
-        res,
-        { reply: responseCache.get(cacheKey), cached: true },
-        'OK (cached)'
-      );
-    }
+    // 1. Pass the user message to scan keywords across FAQs, How It Works, and Database
+    const siteKnowledge = await getTargetedKnowledgeBase(message.trim());
+    const dynamicSystemInstruction = `${BASE_SYSTEM}\n\n${siteKnowledge}`;
 
+    // Sanitize history
     const sanitizedHistory = Array.isArray(history)
       ? history
           .filter((h) => h && (h.role === 'user' || h.role === 'model'))
@@ -65,45 +97,28 @@ router.post(
           .filter((h) => h.parts.length > 0)
       : [];
 
-    const start = Date.now();
+    const contents = [
+      ...sanitizedHistory,
+      { role: 'user', parts: [{ text: message.trim() }] },
+    ];
+
     try {
-      const model = genAI.getGenerativeModel({
-        model: MODEL,
-        systemInstruction: SYSTEM,
-      });
-      const chat = model.startChat({ history: sanitizedHistory });
-      const result = await chat.sendMessage(message.trim());
-      const reply = result.response.text();
+      const ai = getAI();
+      const { response } = await generateWithFallback(ai, contents, dynamicSystemInstruction);
+      const reply = typeof response.text === 'string' ? response.text.trim() : '';
 
-      console.log(
-        `[chat] Gemini replied in ${Date.now() - start}ms: "${reply.slice(0, 60)}..."`
-      );
-
-      // Cache (only if short — skip long replies to save memory)
-      if (reply.length < 1000 && responseCache.size < MAX_CACHE) {
-        responseCache.set(cacheKey, reply);
+      if (!reply) {
+        return success(res, { reply: "I couldn't generate a response for that." }, 'Empty reply');
       }
 
       return success(res, { reply }, 'OK');
     } catch (err) {
       console.error('[chat] Gemini error:', err.message);
-      console.error('[chat] Full error:', err);
-
-      const isDev = process.env.NODE_ENV !== 'production';
-
-      // Fallback reply — single-line string, no embedded newlines
-      const fallbackReply =
-        "I'm having trouble reaching my knowledge base right now. " +
-        "In the meantime: browse opportunities at /marketplace, " +
-        "complete KYC at /profile, check your balance at /wallet, " +
-        "or fund your wallet at /wallet?tab=deposit. " +
-        "If this keeps happening, contact support@bravevest.com.";
-
       return success(
         res,
         {
-          reply: fallbackReply,
-          error: isDev ? err.message : undefined,
+          reply: "I'm having trouble reaching my knowledge base right now. Please check /marketplace.",
+          degraded: true,
         },
         'Fallback reply'
       );

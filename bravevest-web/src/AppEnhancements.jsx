@@ -1190,7 +1190,6 @@ export function FloatingAIChat() {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, open]);
 
-  // Show "still working" after 10 seconds
   useEffect(() => {
     if (!busy) { setLongWait(false); return; }
     const id = setTimeout(() => setLongWait(true), 10000);
@@ -1200,6 +1199,15 @@ export function FloatingAIChat() {
   async function sendText(text) {
     const trimmed = text.trim();
     if (!trimmed || busy) return;
+
+    const accessToken = localStorage.getItem('bv_access');   // ← CHANGED
+    if (!accessToken) {
+      setMessages((m) => [
+        ...m,
+        { role: 'assistant', text: 'Please log in first to chat with the assistant.' },
+      ]);
+      return;
+    }
 
     setInput('');
     setMessages((m) => [...m, { role: 'user', text: trimmed }]);
@@ -1214,7 +1222,7 @@ export function FloatingAIChat() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${accessToken}`,          // ← CHANGED
         },
         body: JSON.stringify({
           message: trimmed,
@@ -1228,7 +1236,22 @@ export function FloatingAIChat() {
 
       const d = await r.json();
 
-      // Robust extraction — handles every response shape
+      // Handle HTTP-level errors before trying to parse reply
+      if (!r.ok) {
+        console.error('[chat] HTTP', r.status, d);
+        setMessages((m) => [
+          ...m,
+          {
+            role: 'assistant',
+            text:
+              r.status === 401
+                ? 'Your session expired. Please log in again.'
+                : d?.message || d?.error || `Server error (${r.status}). Please try again.`,
+          },
+        ]);
+        return;
+      }
+
       const reply =
         d?.data?.reply ||
         d?.data?.data?.reply ||
@@ -1246,10 +1269,7 @@ export function FloatingAIChat() {
         ...m,
         {
           role: 'assistant',
-          text:
-            reply ||
-            d?.message ||
-            'Hmm, no answer came back. Try asking in a different way.',
+          text: reply || d?.message || 'Hmm, no answer came back. Try asking in a different way.',
         },
       ]);
     } catch (err) {

@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { User, Mail, Phone, Shield, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
+import {
+  Mail, Phone, ShieldCheck, ShieldX, Clock,
+  AlertCircle, Loader2, ArrowLeft, Calendar, Wallet, TrendingUp,
+} from 'lucide-react';
 import { useCurrency } from '@/context/CurrencyContext';
 import { apiFetch } from '@/lib/api';
 import PortalLayout from '@/components/layout/PortalLayout';
+import AdminShell from '@/components/admin/AdminShell';
 
-const COLORS = {
-  surface: '#FFFFFF', text: 'var(--bv-text)', muted: 'var(--bv-text-muted)',
-  border: 'var(--bv-border)', accent: 'var(--bv-accent)',
-  positive: '#0ECB81', negative: '#F6465D', warning: '#F59E0B',
+const cardStyle = {
+  padding: 20,
+  background: 'var(--bv-bg-elevated)',
+  border: '1px solid var(--bv-border)',
+  borderRadius: 12,
 };
 
 export default function InvestorDetail() {
@@ -23,7 +28,7 @@ export default function InvestorDetail() {
     (async () => {
       try {
         const result = await apiFetch(`/admin/investors/${id}`);
-        if (!cancelled) setData(json);
+        if (!cancelled) setData(result?.data ?? result);
       } catch (e) {
         if (!cancelled) setError(e?.message || 'Could not load investor.');
       } finally {
@@ -33,96 +38,346 @@ export default function InvestorDetail() {
     return () => { cancelled = true; };
   }, [id]);
 
-  if (loading) {
-    return (
-    <PortalLayout theme="dark">
-      <div style={{ padding: 48, display: 'flex', alignItems: 'center', gap: 12, color: COLORS.muted }}>
-        <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Loading investor…
-        <style>{'@keyframes spin { to { transform: rotate(360deg); } }'}</style>
-      </div>
-    </PortalLayout>
-  );
-  }
-  if (error) {
-    return <div role="alert" style={{ padding: 24, color: COLORS.negative, display: 'flex', gap: 8 }}><AlertCircle size={20} /> {error}</div>;
-  }
-
   const investor = data?.investor ?? data;
-  const investments = data?.investments ?? [];
-  const kyc = (investor?.kycStatus || 'pending').toLowerCase();
-  const kycColor = kyc === 'verified' ? COLORS.positive : kyc === 'rejected' ? COLORS.negative : COLORS.warning;
+  const investments = Array.isArray(data?.investments)
+    ? data.investments
+    : Array.isArray(investor?.investments)
+    ? investor.investments
+    : [];
+
+  const fullName =
+    [investor?.firstName, investor?.lastName].filter(Boolean).join(' ') ||
+    investor?.name ||
+    'Investor';
+
+  const initials =
+    ((investor?.firstName?.[0] || '') + (investor?.lastName?.[0] || '')).toUpperCase() ||
+    fullName[0]?.toUpperCase() ||
+    'U';
+
+  // Normalize KYC status across both nested `kyc.status` and flat `kycStatus`
+  const rawKyc = (investor?.kyc?.status || investor?.kycStatus || 'PENDING').toUpperCase();
+  const isApproved = rawKyc === 'APPROVED' || rawKyc === 'VERIFIED';
+  const isRejected = rawKyc === 'REJECTED';
+
+  // Compute total invested dynamically if backend doesn't return an aggregate
+  const totalInvested =
+    data?.totalInvested ??
+    investments.reduce((sum, inv) => sum + Number(inv.amount || 0), 0);
+
+  const walletBalance =
+    investor?.wallet?.balance ?? investor?.walletBalance ?? 0;
 
   return (
-    <div style={{ padding: '24px 20px', maxWidth: 1000, margin: '0 auto', color: COLORS.text }}>
-      <Link to="/admin/investors" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: COLORS.muted, textDecoration: 'none', fontSize: 13, fontWeight: 500, marginBottom: 16 }}>
-        <ArrowLeft size={14} /> Back to investors
-      </Link>
-
-      <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 20px' }}>{investor?.name || 'Investor'}</h1>
-
-      <section aria-label="Investor details" style={{ padding: 20, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, marginBottom: 20 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-          <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(246,165,0,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: COLORS.accent, flexShrink: 0 }}>
-            <User size={24} />
+    <PortalLayout>
+      <AdminShell
+        title={loading ? 'Investor Profile' : fullName}
+        description={investor?.email || 'Investor account overview and portfolio history'}
+        actions={
+          <Link
+            to="/admin/investors"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '8px 14px',
+              borderRadius: 8,
+              background: 'var(--bv-surface)',
+              border: '1px solid var(--bv-border)',
+              color: 'var(--bv-text)',
+              textDecoration: 'none',
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+          >
+            <ArrowLeft size={14} /> Back to investors
+          </Link>
+        }
+      >
+        {loading ? (
+          <div style={{ padding: 60, textAlign: 'center', color: 'var(--bv-text-muted)' }}>
+            <Loader2 size={24} className="animate-spin" style={{ margin: '0 auto 12px' }} />
+            Loading investor…
           </div>
-          <div style={{ flex: 1, minWidth: 180 }}>
-            <div style={{ fontSize: 16, fontWeight: 600 }}>{investor?.name}</div>
-            <div style={{ fontSize: 13, color: COLORS.muted, marginTop: 4, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-              <Mail size={12} /> {investor?.email}
-              {investor?.phone && <><span style={{ margin: '0 4px' }}>·</span><Phone size={12} /> {investor.phone}</>}
-            </div>
-          </div>
-          <span style={{ padding: '4px 10px', borderRadius: 6, fontSize: 12, fontWeight: 600, background: `${kycColor}22`, color: kycColor, textTransform: 'capitalize' }}>
-            KYC {kyc}
-          </span>
-        </div>
-      </section>
-
-      <section aria-label="Stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 20 }}>
-        <div style={{ padding: 16, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12 }}>
-          <div style={{ fontSize: 12, color: COLORS.muted, fontWeight: 500, marginBottom: 4 }}>Total invested</div>
-          <div style={{ fontSize: 20, fontWeight: 700 }}>{format(data?.totalInvested || 0)}</div>
-        </div>
-        <div style={{ padding: 16, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12 }}>
-          <div style={{ fontSize: 12, color: COLORS.muted, fontWeight: 500, marginBottom: 4 }}>Wallet balance</div>
-          <div style={{ fontSize: 20, fontWeight: 700 }}>{format(investor?.walletBalance || 0)}</div>
-        </div>
-        <div style={{ padding: 16, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12 }}>
-          <div style={{ fontSize: 12, color: COLORS.muted, fontWeight: 500, marginBottom: 4 }}>Joined</div>
-          <div style={{ fontSize: 20, fontWeight: 700 }}>{investor?.createdAt || '—'}</div>
-        </div>
-      </section>
-
-      <section aria-label="Investments">
-        <h2 style={{ fontSize: 16, fontWeight: 600, margin: '0 0 12px' }}>Investments</h2>
-        {investments.length === 0 ? (
-          <div style={{ padding: 32, textAlign: 'center', color: COLORS.muted, background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, fontSize: 14 }}>
-            No investments yet.
+        ) : error ? (
+          <div
+            role="alert"
+            style={{
+              padding: 16,
+              background: 'color-mix(in srgb, var(--bv-danger) 10%, transparent)',
+              border: '1px solid color-mix(in srgb, var(--bv-danger) 25%, transparent)',
+              borderRadius: 12,
+              color: 'var(--bv-danger)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+            }}
+          >
+            <AlertCircle size={18} /> {error}
           </div>
         ) : (
-          <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 12, overflow: 'hidden' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
-              <thead>
-                <tr style={{ background: 'var(--bv-bg)' }}>
-                  {['Project', 'Amount', 'Invested', 'Status'].map((h) => (
-                    <th key={h} style={{ textAlign: h === 'Amount' ? 'right' : 'left', padding: '12px 16px', fontSize: 12, fontWeight: 600, color: COLORS.muted, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {investments.map((inv) => (
-                  <tr key={inv.id} style={{ borderTop: `1px solid ${COLORS.border}` }}>
-                    <td style={{ padding: '14px 16px', fontWeight: 500 }}>{inv.projectName || inv.name}</td>
-                    <td style={{ padding: '14px 16px', textAlign: 'right', fontWeight: 600 }}>{format(inv.amount)}</td>
-                    <td style={{ padding: '14px 16px', color: COLORS.muted, fontSize: 13 }}>{inv.date}</td>
-                    <td style={{ padding: '14px 16px', textTransform: 'capitalize', color: COLORS.muted }}>{inv.status || '—'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            {/* Profile Header Card */}
+            <section aria-label="Investor details" style={cardStyle}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                <div
+                  style={{
+                    width: 54,
+                    height: 54,
+                    borderRadius: '50%',
+                    background: 'var(--bv-accent)',
+                    color: '#000',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 700,
+                    fontSize: 18,
+                    flexShrink: 0,
+                  }}
+                >
+                  {initials}
+                </div>
+
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--bv-text)' }}>
+                    {fullName}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      color: 'var(--bv-text-muted)',
+                      marginTop: 4,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      flexWrap: 'wrap',
+                    }}
+                  >
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                      <Mail size={13} /> {investor?.email || '—'}
+                    </span>
+                    {investor?.phone && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                        <Phone size={13} /> {investor.phone}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                  {/* KYC Badge */}
+                  {isApproved ? (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 5,
+                        padding: '5px 10px',
+                        borderRadius: 6,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        background: 'color-mix(in srgb, var(--bv-success) 15%, var(--bv-bg-elevated))',
+                        color: 'var(--bv-success)',
+                      }}
+                    >
+                      <ShieldCheck size={14} /> KYC Verified
+                    </span>
+                  ) : isRejected ? (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 5,
+                        padding: '5px 10px',
+                        borderRadius: 6,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        background: 'color-mix(in srgb, var(--bv-danger) 15%, var(--bv-bg-elevated))',
+                        color: 'var(--bv-danger)',
+                      }}
+                    >
+                      <ShieldX size={14} /> KYC Rejected
+                    </span>
+                  ) : (
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 5,
+                        padding: '5px 10px',
+                        borderRadius: 6,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        background: 'color-mix(in srgb, var(--bv-warning) 15%, var(--bv-bg-elevated))',
+                        color: 'var(--bv-warning)',
+                      }}
+                    >
+                      <Clock size={14} /> KYC Pending
+                    </span>
+                  )}
+
+                  {/* Account Status Badge */}
+                  {investor?.status && (
+                    <span
+                      style={{
+                        padding: '5px 10px',
+                        borderRadius: 6,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        background: 'var(--bv-surface)',
+                        color:
+                          investor.status === 'ACTIVE'
+                            ? 'var(--bv-success)'
+                            : investor.status === 'SUSPENDED'
+                            ? 'var(--bv-danger)'
+                            : 'var(--bv-text-muted)',
+                      }}
+                    >
+                      {investor.status.replace('_', ' ')}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {/* KPI Summary Cards */}
+            <section
+              aria-label="Stats"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: 12,
+              }}
+            >
+              <div style={cardStyle}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--bv-text-muted)', marginBottom: 6 }}>
+                  <TrendingUp size={14} /> Total Invested
+                </div>
+                <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--bv-success)' }}>
+                  {format(totalInvested)}
+                </div>
+              </div>
+
+              <div style={cardStyle}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--bv-text-muted)', marginBottom: 6 }}>
+                  <Wallet size={14} /> Wallet Balance
+                </div>
+                <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--bv-text)' }}>
+                  {format(walletBalance)}
+                </div>
+              </div>
+
+              <div style={cardStyle}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--bv-text-muted)', marginBottom: 6 }}>
+                  <Calendar size={14} /> Member Since
+                </div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--bv-text)' }}>
+                  {investor?.createdAt
+                    ? new Date(investor.createdAt).toLocaleDateString('en-NG', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })
+                    : '—'}
+                </div>
+              </div>
+            </section>
+
+            {/* Investments Table */}
+            <section aria-label="Investments">
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--bv-text)', margin: '0 0 12px' }}>
+                Investments ({investments.length})
+              </h2>
+
+              {investments.length === 0 ? (
+                <div
+                  style={{
+                    ...cardStyle,
+                    padding: 40,
+                    textAlign: 'center',
+                    color: 'var(--bv-text-muted)',
+                    fontSize: 14,
+                  }}
+                >
+                  This investor hasn't made any investments yet.
+                </div>
+              ) : (
+                <div
+                  style={{
+                    background: 'var(--bv-bg-elevated)',
+                    border: '1px solid var(--bv-border)',
+                    borderRadius: 12,
+                    overflowX: 'auto',
+                  }}
+                >
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid var(--bv-border)' }}>
+                        {['Project', 'Amount', 'Expected Return', 'Date', 'Status'].map((h) => (
+                          <th
+                            key={h}
+                            style={{
+                              textAlign: h === 'Amount' || h === 'Expected Return' ? 'right' : 'left',
+                              padding: '12px 16px',
+                              fontSize: 11,
+                              fontWeight: 700,
+                              color: 'var(--bv-text-muted)',
+                              textTransform: 'uppercase',
+                              letterSpacing: 0.4,
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {h}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {investments.map((inv) => (
+                        <tr key={inv.id} style={{ borderTop: '1px solid var(--bv-border-soft)' }}>
+                          <td style={{ padding: '14px 16px', fontWeight: 600, color: 'var(--bv-text)' }}>
+                            {inv.project?.title || inv.projectName || inv.name || '—'}
+                          </td>
+                          <td style={{ padding: '14px 16px', textAlign: 'right', fontWeight: 600, color: 'var(--bv-text)', whiteSpace: 'nowrap' }}>
+                            {format(inv.amount || 0)}
+                          </td>
+                          <td style={{ padding: '14px 16px', textAlign: 'right', color: 'var(--bv-success)', whiteSpace: 'nowrap' }}>
+                            {inv.expectedReturn != null ? format(inv.expectedReturn) : '—'}
+                          </td>
+                          <td style={{ padding: '14px 16px', color: 'var(--bv-text-muted)', whiteSpace: 'nowrap' }}>
+                            {inv.createdAt
+                              ? new Date(inv.createdAt).toLocaleDateString()
+                              : inv.date || '—'}
+                          </td>
+                          <td style={{ padding: '14px 16px', whiteSpace: 'nowrap' }}>
+                            <span
+                              style={{
+                                padding: '3px 8px',
+                                borderRadius: 6,
+                                fontSize: 11,
+                                fontWeight: 600,
+                                background: 'var(--bv-surface)',
+                                color:
+                                  inv.status === 'ACTIVE' || inv.status === 'CONFIRMED'
+                                    ? 'var(--bv-success)'
+                                    : inv.status === 'MATURED'
+                                    ? 'var(--bv-info)'
+                                    : 'var(--bv-text-muted)',
+                              }}
+                            >
+                              {inv.status || '—'}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
           </div>
         )}
-      </section>
-    </div>
+      </AdminShell>
+    </PortalLayout>
   );
 }

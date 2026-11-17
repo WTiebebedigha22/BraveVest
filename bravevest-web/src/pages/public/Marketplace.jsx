@@ -128,7 +128,7 @@ export default function Marketplace() {
     <PageShell theme="light" ticker>
       <style>{`
         .market-root {
-          background-color: var(--bv-bg-elevated);
+          background-color: var(--bv-bg);
           color: var(--bv-text);
           min-height: 100vh;
         }
