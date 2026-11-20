@@ -169,7 +169,7 @@ const CSS = `
 }
 .elite-amount-box:focus-within { border-color: var(--bv-accent); background: var(--bv-bg-elevated); box-shadow: 0 0 0 4px rgba(247, 166, 0, 0.15); }
 .elite-amount-box span { font-size: 26px; font-weight: 700; color: var(--gold-dark); }
-.elite-amount-box input { flex: 1; background: transparent; border: none; color: var(--text-main); font-family: 'Space Grotesk', sans-serif; font-size: 30px; font-weight: 700; outline: none; padding-left: 8px; }
+.elite-amount-box input { flex: 1; background: transparent; border: none; color: var(--text-main); font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; outline: none; padding-left: 8px; }
 .elite-quick-chips { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
 .elite-chip { background: var(--bv-bg-elevated); border: 1px solid rgba(18, 18, 20, 0.08); color: var(--text-main); padding: 6px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
 .elite-chip:hover, .elite-chip.active { background: var(--warm-tint); border-color: var(--bv-accent); color: var(--gold-dark); }
