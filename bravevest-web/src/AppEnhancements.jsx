@@ -14,6 +14,7 @@ import React, {
 } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { FAQ_QUESTIONS, FAQ_CONTEXT } from '@/data/faq';
 
 /* ============================================================
  * SECTION 1 — THEME TOKENS
@@ -1177,14 +1178,15 @@ export function FloatingAIChat() {
   const [longWait, setLongWait] = useState(false);
   const listRef = useRef(null);
 
-  const SUGGESTIONS = [
-    'How does KYC work?',
-    'What is the minimum investment?',
-    'How do I withdraw my returns?',
-    'Can I reinvest my earnings?',
-    'How does the referral program work?',
-    'Where do I see my wallet balance?',
-  ];
+  // ← Suggestion chips now come from the FAQ page's data
+  const SUGGESTIONS = useMemo(() => {
+  const pool = [...FAQ_QUESTIONS];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, 6);
+}, []);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
@@ -1200,7 +1202,7 @@ export function FloatingAIChat() {
     const trimmed = text.trim();
     if (!trimmed || busy) return;
 
-    const accessToken = localStorage.getItem('bv_access');   // ← CHANGED
+    const accessToken = localStorage.getItem('bv_access');
     if (!accessToken) {
       setMessages((m) => [
         ...m,
@@ -1222,10 +1224,14 @@ export function FloatingAIChat() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,          // ← CHANGED
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
           message: trimmed,
+          // ← Ship the FAQ so the backend can ground its answers in it.
+          // The API should still use its own canonical copy — this is
+          // for logging/debugging and as a fallback.
+          faq: FAQ_CONTEXT,
           history: messages.slice(-10).map((m) => ({
             role: m.role === 'assistant' ? 'model' : 'user',
             parts: [{ text: m.text }],
@@ -1236,7 +1242,6 @@ export function FloatingAIChat() {
 
       const d = await r.json();
 
-      // Handle HTTP-level errors before trying to parse reply
       if (!r.ok) {
         console.error('[chat] HTTP', r.status, d);
         setMessages((m) => [
@@ -1455,7 +1460,7 @@ export function FloatingAIChat() {
           </div>
         ))}
 
-        {/* Suggestion chips — show only at start or when user hasn't sent anything yet */}
+        {/* Suggestion chips — pulled from the FAQ page data */}
         {messages.length <= 1 && (
           <div style={{ padding: '4px 0 0' }}>
             <div

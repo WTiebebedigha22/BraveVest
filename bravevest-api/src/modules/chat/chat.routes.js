@@ -7,8 +7,8 @@ const { GoogleGenAI } = require('@google/genai');
 const { getTargetedKnowledgeBase } = require('./context.service');
 
 const MODELS = [
-  process.env.GEMINI_MODEL || 'gemini-2.5-flash',
-  'gemini-2.5-flash-lite',
+  process.env.GEMINI_MODEL || 'gemini-3.8-flash',
+  'gemini-3.5-flash-lite',
 ];
 
 const BASE_SYSTEM = `You are the BraveVest assistant. BraveVest is a Nigerian

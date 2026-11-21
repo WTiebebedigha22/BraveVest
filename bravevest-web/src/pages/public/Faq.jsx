@@ -6,38 +6,7 @@ import {
 } from 'lucide-react';
 import PageShell from '@/components/shared/PageShell';
 
-const CATEGORIES = [
-  { id: 'general', label: 'General', icon: MessageCircle },
-  { id: 'investing', label: 'Investing', icon: FileText },
-  { id: 'wallet', label: 'Wallet & Payments', icon: Wallet },
-  { id: 'security', label: 'Security & KYC', icon: Shield },
-  { id: 'taxation', label: 'Returns & Taxation', icon: TrendingUp },
-  { id: 'diaspora', label: 'Diaspora', icon: Globe },
-  { id: 'products', label: 'Products', icon: Layers },
-];
-
-const FAQS = [
-  { cat: 'general', q: 'What is BraveVest?', a: 'BraveVest is a private credit platform connecting investors to vetted, collateralized lending opportunities across Nigeria. We originate, underwrite, and service credit facilities across energy, real estate, agri, and SME trade finance.' },
-  { cat: 'general', q: 'Who can invest on BraveVest?', a: 'Any Nigerian resident aged 18+ with a valid government-issued ID and a bank account. Diaspora investors can invest through USD-denominated products.' },
-  { cat: 'general', q: 'Is BraveVest regulated?', a: 'BraveVest operates in alignment with SEC Nigeria guidelines and partners only with CBN-licensed custodians. All investor funds are held in segregated accounts.' },
-  { cat: 'general', q: 'What are the fees?', a: 'BraveVest charges a 1% origination fee (built into the yield) and a 10% performance fee above the target. No deposit or withdrawal fees.' },
-  { cat: 'investing', q: 'How do I start investing?', a: 'Create an account, complete KYC, deposit funds, and browse the marketplace. Once invested, capital deploys immediately and returns begin accruing.' },
-  { cat: 'investing', q: 'What is the minimum investment?', a: 'Minimum varies by project — typically ₦5,000 to ₦100,000. Premium real estate notes require ₦200,000+.' },
-  { cat: 'investing', q: 'How are returns paid?', a: 'Returns are paid to your BraveVest wallet monthly or quarterly depending on the deal. Most deals pay quarterly.' },
-  { cat: 'investing', q: 'What happens if a borrower defaults?', a: 'All loans are collateralized. Our recovery team liquidates collateral to recover capital. Our default rate since 2023 is zero.' },
-  { cat: 'wallet', q: 'How do I fund my wallet?', a: 'Bank transfer is free and instant. Paystack card deposits incur a 1.5% fee. Deposits reflect in your wallet immediately.' },
-  { cat: 'wallet', q: 'Are there withdrawal fees?', a: 'No. Withdrawals to your verified Nigerian bank account are free. Same-day processing if requested before 3 PM WAT.' },
-  { cat: 'wallet', q: 'How long do deposits take?', a: 'NGN bank transfers reflect instantly during business hours. SWIFT USD transfers take 1–3 business days.' },
-  { cat: 'security', q: 'What KYC documents do I need?', a: "A valid government ID (NIN, driver's license, or passport), a selfie for liveness, and proof of address not older than 3 months." },
-  { cat: 'security', q: 'How long does KYC take?', a: 'Most verifications complete within 24 hours. Complex cases may take up to 3 business days.' },
-  { cat: 'security', q: 'Is my data secure?', a: 'Yes. Bank-grade 256-bit encryption, ISO 27001 certified, NDPR compliant. We never sell or share your data.' },
-  { cat: 'taxation', q: 'How is my investment return taxed?', a: 'Interest income is subject to Withholding Tax (WHT). For Nigerian residents, WHT on interest is 10%, deducted at source.' },
-  { cat: 'taxation', q: 'Do I need to file taxes on BraveVest earnings?', a: 'Yes. WHT is a prepayment, not final tax. Report earnings on your annual Personal Income Tax return. BraveVest issues a downloadable WHT credit note every January.' },
-  { cat: 'diaspora', q: 'Can I invest from outside Nigeria?', a: 'Yes. Diaspora investors can access USD-denominated products launching Q4 2026. You need a Nigerian BVN, international passport, and USD funding source.' },
-  { cat: 'diaspora', q: 'How do I fund my wallet from abroad?', a: 'USD via SWIFT wire transfer (1–3 business days) or USDC via our partner on-ramp (launching Q1 2027).' },
-  { cat: 'products', q: 'Lagos Solar Fund II — what is it?', a: 'A 40MW distributed solar portfolio across Lagos and Ogun. Target yield 14.5% over 18 months, paid quarterly. Senior-secured with 15% first-loss protection.' },
-  { cat: 'products', q: 'Abuja Real Estate Note — what is it?', a: "A 24-month note backed by 12 serviced plots in Abuja's Guzape district. Yield 12.0% quarterly, 20% first-loss protection, 1.8x collateral coverage." },
-];
+import { FAQ_CATEGORIES as CATEGORIES, FAQS } from '@/data/faq';
 
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
