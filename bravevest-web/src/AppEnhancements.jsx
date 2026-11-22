@@ -15,6 +15,7 @@ import React, {
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { FAQ_QUESTIONS, FAQ_CONTEXT } from '@/data/faq';
+import { api } from '@/api/client';
 
 /* ============================================================
  * SECTION 1 — THEME TOKENS
@@ -1202,11 +1203,6 @@ export function FloatingAIChat() {
     const trimmed = text.trim();
     if (!trimmed || busy) return;
 
-    // Optional token — guests proceed without one
-    const accessToken = localStorage.getItem('bv_access');
-    const headers = { 'Content-Type': 'application/json' };
-    if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
-
     setInput('');
     setMessages((m) => [...m, { role: 'user', text: trimmed }]);
     setBusy(true);
@@ -1216,49 +1212,18 @@ export function FloatingAIChat() {
     const timeoutId = setTimeout(() => controller.abort(), 60000);
 
     try {
-      const r = await fetch('/api/chat', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          message: trimmed,
-          history: messages.slice(-10).map((m) => ({
-            role: m.role === 'assistant' ? 'model' : 'user',
-            parts: [{ text: m.text }],
-          })),
-        }),
+      const response = await api.post('/chat', {
+        message: trimmed,
+        history: messages.slice(-10).map((m) => ({
+          role: m.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: m.text }],
+        })),
+      }, {
         signal: controller.signal,
+        timeout: 60000,
+        skipRetry: true,
       });
-
-      const d = await r.json();
-
-      // Guest quota exhausted — invite them to log in
-      if (r.status === 429) {
-        setMessages((m) => [
-          ...m,
-          {
-            role: 'assistant',
-            text:
-              d?.error ||
-              'You’ve reached the guest message limit. Please log in to keep chatting.',
-          },
-        ]);
-        return;
-      }
-
-      if (!r.ok) {
-        console.error('[chat] HTTP', r.status, d);
-        setMessages((m) => [
-          ...m,
-          {
-            role: 'assistant',
-            text:
-              r.status === 401
-                ? 'Your session expired. Please log in again.'
-                : d?.message || d?.error || `Server error (${r.status}). Please try again.`,
-          },
-        ]);
-        return;
-      }
+      const d = response.data;
 
       const reply =
         d?.data?.reply ||
@@ -1281,10 +1246,43 @@ export function FloatingAIChat() {
         },
       ]);
     } catch (err) {
-      if (err.name === 'AbortError') {
+      const status = err.response?.status;
+      const errorData = err.response?.data;
+
+      if (status === 429) {
+        setMessages((m) => [
+          ...m,
+          {
+            role: 'assistant',
+            text:
+              errorData?.error ||
+              errorData?.message ||
+              'You’ve reached the guest message limit. Please log in to keep chatting.',
+          },
+        ]);
+      } else if (status === 401) {
+        setMessages((m) => [
+          ...m,
+          { role: 'assistant', text: 'Your session expired. Please log in again.' },
+        ]);
+      } else if (status) {
+        console.error('[chat] HTTP', status, errorData);
+        setMessages((m) => [
+          ...m,
+          {
+            role: 'assistant',
+            text: errorData?.message || errorData?.error || `Server error (${status}). Please try again.`,
+          },
+        ]);
+      } else if (controller.signal.aborted || err.code === 'ECONNABORTED' || err.code === 'ETIMEDOUT') {
         setMessages((m) => [
           ...m,
           { role: 'assistant', text: 'Request timed out. Try a shorter question.' },
+        ]);
+      } else if (err.code === 'ERR_CANCELED') {
+        setMessages((m) => [
+          ...m,
+          { role: 'assistant', text: 'Request was cancelled. Please try again.' },
         ]);
       } else {
         setMessages((m) => [

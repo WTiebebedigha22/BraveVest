@@ -49,8 +49,13 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config;
 
-    const isRetryable = !error.response || RETRYABLE.includes(error.response.status);
-    if (isRetryable && (original._retryCount || 0) < MAX_RETRIES) {
+    const isCancelled = error.code === 'ERR_CANCELED' || original?.signal?.aborted;
+    const isRetryable =
+      !original?.skipRetry &&
+      !isCancelled &&
+      !error.isOffline &&
+      (!error.response || RETRYABLE.includes(error.response.status));
+    if (isRetryable && original && (original._retryCount || 0) < MAX_RETRIES) {
       original._retryCount = (original._retryCount || 0) + 1;
       await new Promise((res) => setTimeout(res, 400 * Math.pow(3, original._retryCount - 1)));
       return api(original);
