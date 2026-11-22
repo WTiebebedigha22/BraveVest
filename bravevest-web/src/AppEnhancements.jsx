@@ -1178,15 +1178,15 @@ export function FloatingAIChat() {
   const [longWait, setLongWait] = useState(false);
   const listRef = useRef(null);
 
-  // ← Suggestion chips now come from the FAQ page's data
+  // Suggestion chips from FAQ page data — randomised 6 per session
   const SUGGESTIONS = useMemo(() => {
-  const pool = [...FAQ_QUESTIONS];
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  return pool.slice(0, 6);
-}, []);
+    const pool = [...FAQ_QUESTIONS];
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, 6);
+  }, []);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
@@ -1202,14 +1202,10 @@ export function FloatingAIChat() {
     const trimmed = text.trim();
     if (!trimmed || busy) return;
 
+    // Optional token — guests proceed without one
     const accessToken = localStorage.getItem('bv_access');
-    if (!accessToken) {
-      setMessages((m) => [
-        ...m,
-        { role: 'assistant', text: 'Please log in first to chat with the assistant.' },
-      ]);
-      return;
-    }
+    const headers = { 'Content-Type': 'application/json' };
+    if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
 
     setInput('');
     setMessages((m) => [...m, { role: 'user', text: trimmed }]);
@@ -1222,16 +1218,9 @@ export function FloatingAIChat() {
     try {
       const r = await fetch('/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers,
         body: JSON.stringify({
           message: trimmed,
-          // ← Ship the FAQ so the backend can ground its answers in it.
-          // The API should still use its own canonical copy — this is
-          // for logging/debugging and as a fallback.
-          faq: FAQ_CONTEXT,
           history: messages.slice(-10).map((m) => ({
             role: m.role === 'assistant' ? 'model' : 'user',
             parts: [{ text: m.text }],
@@ -1241,6 +1230,20 @@ export function FloatingAIChat() {
       });
 
       const d = await r.json();
+
+      // Guest quota exhausted — invite them to log in
+      if (r.status === 429) {
+        setMessages((m) => [
+          ...m,
+          {
+            role: 'assistant',
+            text:
+              d?.error ||
+              'You’ve reached the guest message limit. Please log in to keep chatting.',
+          },
+        ]);
+        return;
+      }
 
       if (!r.ok) {
         console.error('[chat] HTTP', r.status, d);
