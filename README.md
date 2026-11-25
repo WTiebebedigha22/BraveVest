@@ -15,7 +15,6 @@ A multi-opportunity investment marketplace for verified property, project, incom
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
-  - [Environment Variables](#environment-variables)
   - [Database Setup](#database-setup)
   - [Running Locally](#running-locally)
 - [Theme System](#theme-system)
@@ -219,41 +218,6 @@ BraveVest/
 - Paystack test keys
 - Google Gemini API key (for AI assistant)
 
-### Environment Variables
-
-**`bravevest-api/.env`**
-
-```env
-# Database — use :5432 (session pooler) for dev, :6543 for serverless prod
-DATABASE_URL="postgresql://postgres.<ref>:<pass>@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
-DIRECT_URL="postgresql://postgres.<ref>:<pass>@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
-
-# Auth
-JWT_SECRET=<random 64-char string>
-JWT_EXPIRES_IN=15m
-REFRESH_TOKEN_EXPIRES_IN=7d
-
-# Paystack
-PAYSTACK_SECRET_KEY=sk_test_...
-PAYSTACK_PUBLIC_KEY=pk_test_...
-
-# Gemini
-GEMINI_API_KEY=AIzaSy...
-
-# Email
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=...
-SMTP_PASS=...
-
-# Runtime
-NODE_ENV=development
-PORT=3001
-CORS_ORIGIN=http://localhost:5173
-bravevest-web/.env
-
-env
-VITE_API_URL=http://localhost:3001
 Database Setup
 bash
 cd bravevest-api
@@ -358,7 +322,7 @@ Caps response length
 
 Never invents numbers — points user to the relevant page
 
-Requires GEMINI_API_KEY in bravevest-api/.env. Get one at https://aistudio.google.com/apikey.
+Configure Google Gemini credentials for the AI assistant. Get an API key at https://aistudio.google.com/apikey.
 
 Demo Accounts
 All accounts use password DemoPass123!.
