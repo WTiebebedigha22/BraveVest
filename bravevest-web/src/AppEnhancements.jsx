@@ -870,9 +870,7 @@ export function LockedField({ children, hint = 'Contact support to change this f
       }}
     >
       <div style={{ pointerEvents: 'none' }}>{children}</div>
-      <div style={{ fontSize: 11, color: 'var(--bv-text-muted)', marginTop: 4 }}>
-        🔒 {hint}
-      </div>
+      <div style={{ fontSize: 11, color: 'var(--bv-text-muted)', marginTop: 4 }}>🔒 {hint}</div>
     </div>
   );
 }
@@ -1172,7 +1170,10 @@ export function NotificationBell() {
 export function FloatingAIChat() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'assistant', text: 'Hi! I can help with BraveVest questions. Pick one below or ask your own.' },
+    {
+      role: 'assistant',
+      text: 'Hi! I can help with BraveVest questions. Pick one below or ask your own.',
+    },
   ]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
@@ -1194,7 +1195,10 @@ export function FloatingAIChat() {
   }, [messages, open]);
 
   useEffect(() => {
-    if (!busy) { setLongWait(false); return; }
+    if (!busy) {
+      setLongWait(false);
+      return;
+    }
     const id = setTimeout(() => setLongWait(true), 10000);
     return () => clearTimeout(id);
   }, [busy]);
@@ -1212,17 +1216,21 @@ export function FloatingAIChat() {
     const timeoutId = setTimeout(() => controller.abort(), 60000);
 
     try {
-      const response = await api.post('/chat', {
-        message: trimmed,
-        history: messages.slice(-10).map((m) => ({
-          role: m.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: m.text }],
-        })),
-      }, {
-        signal: controller.signal,
-        timeout: 60000,
-        skipRetry: true,
-      });
+      const response = await api.post(
+        '/chat',
+        {
+          message: trimmed,
+          history: messages.slice(-10).map((m) => ({
+            role: m.role === 'assistant' ? 'model' : 'user',
+            parts: [{ text: m.text }],
+          })),
+        },
+        {
+          signal: controller.signal,
+          timeout: 60000,
+          skipRetry: true,
+        }
+      );
       const d = response.data;
 
       const reply =
@@ -1271,10 +1279,17 @@ export function FloatingAIChat() {
           ...m,
           {
             role: 'assistant',
-            text: errorData?.message || errorData?.error || `Server error (${status}). Please try again.`,
+            text:
+              errorData?.message ||
+              errorData?.error ||
+              `Server error (${status}). Please try again.`,
           },
         ]);
-      } else if (controller.signal.aborted || err.code === 'ECONNABORTED' || err.code === 'ETIMEDOUT') {
+      } else if (
+        controller.signal.aborted ||
+        err.code === 'ECONNABORTED' ||
+        err.code === 'ETIMEDOUT'
+      ) {
         setMessages((m) => [
           ...m,
           { role: 'assistant', text: 'Request timed out. Try a shorter question.' },
@@ -1394,7 +1409,16 @@ export function FloatingAIChat() {
               justifyContent: 'center',
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
           </div>
@@ -1422,7 +1446,15 @@ export function FloatingAIChat() {
           }}
           aria-label="Close"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
